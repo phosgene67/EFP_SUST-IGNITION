@@ -67,11 +67,11 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 
 # Qualification baseline. All navigation vectors below use the Phobos frame.
 # Tuning values require validation with the official simulator/jet allocator.
-MAX_SPEED = 10.0
-MAX_ACCEL = 0.25
+MAX_SPEED = 12.0
+MAX_ACCEL = 0.30
 BRAKE_ACCEL = 0.12
 VELOCITY_GAIN = 0.6
-HORIZON = 30
+HORIZON = 40
 PLAN_PERIOD = 0.5
 HOLD_RADIUS = 45.0
 
@@ -135,6 +135,8 @@ class QualificationPlanner:
         self.track_counter = 0
         self.approach_direction = None
         self.previous_velocity = np.zeros(3)
+        self.last_horizon = HORIZON
+        self.last_delta_v = 0.0
         # Deterministic sphere samples plus an explicit goal candidate.
         k = np.arange(48)
         z = 1.0 - 2.0 * (k + 0.5) / len(k)
@@ -242,24 +244,44 @@ class QualificationPlanner:
         speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*goal_distance), 0.4*goal_distance)
         desired = np.asarray(target_vel) + speed*direction
         centers, speeds, radii = self.obstacles(now, loc, vel, radar)
-        candidates = [desired, np.asarray(target_vel), self.previous_velocity]
+        # Retained/coasting commands must obey the current terminal speed limit,
+        # rather than carrying an old high-speed command into the holding area.
+        previous = np.asarray(target_vel)+limit_vector(self.previous_velocity-target_vel, speed)
+        coast = np.asarray(target_vel)+limit_vector(vel-target_vel, speed)
+        candidates = [desired, np.asarray(target_vel), previous, coast]
+        # Fine alternatives close to the goal direction avoid making a large
+        # sideways detour just because the coarse sphere misses a safe corridor.
+        if goal_distance > 1e-6:
+            reference = np.eye(3)[np.argmin(np.abs(direction))]
+            lateral = np.cross(direction, reference)
+            lateral /= np.linalg.norm(lateral)
+            vertical = np.cross(direction, lateral)
+            for angle in (np.deg2rad(12.0), np.deg2rad(25.0)):
+                for azimuth in np.arange(8)*np.pi/4:
+                    offset = np.cos(azimuth)*lateral + np.sin(azimuth)*vertical
+                    candidates.append(np.asarray(target_vel) + speed*(np.cos(angle)*direction+np.sin(angle)*offset))
         for fraction in (1.0, 0.5):
             candidates.extend(np.asarray(target_vel) + fraction*speed*self.directions)
         candidates = np.asarray(candidates)
+        # Cover the nominal full-stop time plus reaction time at higher speeds.
+        # Retain a bounded horizon so uncertainty/CPU cost cannot grow unbounded.
+        horizon = int(np.clip(np.ceil(np.linalg.norm(vel-target_vel)/MAX_ACCEL)+8, HORIZON, 65))
+        self.last_horizon = horizon
         # Conservative reachability filter avoids spending rollout time on distant
         # objects; includes current speed so an overspeed shuttle stays protected.
         if len(centers):
-            travel = HORIZON * max(np.linalg.norm(vel), np.linalg.norm(candidates, axis=1).max())
+            travel = horizon * max(np.linalg.norm(vel), np.linalg.norm(candidates, axis=1).max())
             relevant = np.linalg.norm(centers, axis=1) <= (
-                travel + HORIZON*np.linalg.norm(speeds, axis=1) + radii + HORIZON)
+                travel + horizon*np.linalg.norm(speeds, axis=1) + radii + horizon)
             centers, speeds, radii = centers[relevant], speeds[relevant], radii[relevant]
         count = len(candidates)
         trial_vel = np.tile(vel, (count, 1))
         trial_pos = np.zeros((count, 3))
         clearance = np.full(count, np.inf)
         risk = np.zeros(count)
+        delta_v = np.zeros(count)
         # Acceleration-limited rollout; segment checks prevent tunnelling between steps.
-        for step in range(HORIZON):
+        for step in range(horizon):
             accel = VELOCITY_GAIN*(candidates-trial_vel)
             # Roll out the goal candidate with the same braking guidance used
             # during real flight, so it does not predict flying through arrival.
@@ -269,6 +291,7 @@ class QualificationPlanner:
             guided_velocity = np.asarray(target_vel)+guided_speed*remaining/max(length, 1e-9)
             accel[0] = VELOCITY_GAIN*(guided_velocity-trial_vel[0])
             accel *= np.minimum(1.0, MAX_ACCEL/np.maximum(np.linalg.norm(accel, axis=1), 1e-12))[:, None]
+            delta_v += np.linalg.norm(accel, axis=1)
             next_pos = trial_pos + trial_vel + 0.5*accel
             if len(centers):
                 start = centers[None, :, :] + step*speeds[None, :, :] - trial_pos[:, None, :]
@@ -282,9 +305,9 @@ class QualificationPlanner:
                 risk += np.maximum(0.0, -gap).sum(axis=1)/(1.0+0.1*step)
             trial_pos = next_pos
             trial_vel += accel
-        cost = (np.linalg.norm(trial_pos-error-HORIZON*np.asarray(target_vel), axis=1)
-                + 0.5*np.linalg.norm(candidates-self.previous_velocity, axis=1)
-                + 0.1*np.linalg.norm(candidates-np.asarray(target_vel), axis=1)**2)
+        cost = (np.linalg.norm(trial_pos-error-horizon*np.asarray(target_vel), axis=1)
+                + 1.5*np.linalg.norm(candidates-self.previous_velocity, axis=1)
+                + 1.5*delta_v)
         safe = clearance > 0.0
         if safe.any():
             cost[~safe] = np.inf
@@ -297,6 +320,7 @@ class QualificationPlanner:
             best = int(np.argmin(risk + 0.01*cost))
             mode = 'ESCAPE'
         self.previous_velocity = candidates[best].copy()
+        self.last_delta_v = float(delta_v[best])
         return (limit_vector(VELOCITY_GAIN*(candidates[best]-vel), MAX_ACCEL),
                 mode, float(clearance[best]))
 
@@ -371,9 +395,11 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile=FAST12 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
-                f'damage={damage:.1f}J fuel={fuel:.2f}kg', 'IgnitionController', st.Severity.Info)
+                f'damage={damage:.1f}J fuel={fuel:.2f}kg '
+                f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
+                f'cmdAccel={np.linalg.norm(accel_world):.3f}m/s2', 'IgnitionController', st.Severity.Info)
             last_log = now
 finally:
     try:

@@ -1,0 +1,73 @@
+{
+  "baseline_ref": "74f9f06f07fc47e412ac7d2e8cf52fb332f59cfb",
+  "current_sha256": "eb3af2b0017155e54d1b0a70bcc9b096e8c3f4f8bdcf4e7aab724117e96902d6",
+  "limitations": "Synthetic translation only; no actual allocator, hulls, or attitude fuel.",
+  "cases": [
+    {
+      "baseline": {
+        "seed": 0,
+        "thrust_delivery": 0.9,
+        "arrived": true,
+        "time_s": 172.0,
+        "min_physical_gap_m": null,
+        "peak_speed_m_s": 10.0,
+        "translation_delta_v_m_s": 19.16,
+        "plan_p95_ms": 1.93
+      },
+      "current": {
+        "seed": 0,
+        "thrust_delivery": 0.9,
+        "arrived": true,
+        "time_s": 164.0,
+        "min_physical_gap_m": null,
+        "peak_speed_m_s": 12.0,
+        "translation_delta_v_m_s": 22.75,
+        "plan_p95_ms": 3.39
+      }
+    },
+    {
+      "baseline": {
+        "seed": 7,
+        "thrust_delivery": 0.9,
+        "arrived": true,
+        "time_s": 182.0,
+        "min_physical_gap_m": 22.91,
+        "peak_speed_m_s": 10.0,
+        "translation_delta_v_m_s": 32.71,
+        "plan_p95_ms": 8.63
+      },
+      "current": {
+        "seed": 7,
+        "thrust_delivery": 0.9,
+        "arrived": true,
+        "time_s": 165.5,
+        "min_physical_gap_m": 35.58,
+        "peak_speed_m_s": 12.0,
+        "translation_delta_v_m_s": 27.09,
+        "plan_p95_ms": 17.23
+      }
+    },
+    {
+      "baseline": {
+        "seed": 19,
+        "thrust_delivery": 0.65,
+        "arrived": true,
+        "time_s": 183.5,
+        "min_physical_gap_m": 27.28,
+        "peak_speed_m_s": 10.0,
+        "translation_delta_v_m_s": 24.06,
+        "plan_p95_ms": 7.72
+      },
+      "current": {
+        "seed": 19,
+        "thrust_delivery": 0.65,
+        "arrived": true,
+        "time_s": 174.5,
+        "min_physical_gap_m": 31.12,
+        "peak_speed_m_s": 11.95,
+        "translation_delta_v_m_s": 27.05,
+        "plan_p95_ms": 11.85
+      }
+    }
+  ]
+}

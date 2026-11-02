@@ -30,7 +30,7 @@ class AdapterTests(unittest.TestCase):
             return SimpleNamespace(loc_WRT_ExprIn=lambda f: np.array(position),
                                    vel_WRT_ExprIn=lambda f: np.zeros(3))
         shuttle.getLocVelAcc.return_value = state([0., 0., 0.])
-        target.getLocVelAcc.return_value = state([300., 0., 0.])
+        target.getLocVelAcc.return_value = state([1305.8, 0., 0.])
         shuttle.GetParam.side_effect = lambda kind, key: .5 if key[-1] == 'MaxAccel_m_s2' else .05
         shuttle.GetParamArray.return_value = radar
         shuttle.SetParam.side_effect = lambda kind, key, value: commands.append((key[-1], np.array(value)))
@@ -58,10 +58,10 @@ class AdapterTests(unittest.TestCase):
         commands = self.run_adapter([report])
         linear = [v for name, v in commands if name == 'CommandedAccel']
         self.assertGreater(len(linear), 20)
-        np.testing.assert_allclose(linear[0], [0., -.25, 0.])
+        np.testing.assert_allclose(linear[0], [0., -.30, 0.])
         for _, value in commands:
             self.assertTrue(np.isfinite(value).all())
-            self.assertLessEqual(np.linalg.norm(value), .250001)
+            self.assertLessEqual(np.linalg.norm(value), .300001)
         np.testing.assert_allclose(linear[-1], np.zeros(3))
 
     def test_empty_radar_holds_position(self):

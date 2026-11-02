@@ -18,6 +18,21 @@ Planner = namespace['QualificationPlanner']
 
 
 class PlannerTests(unittest.TestCase):
+    def test_high_speed_lookahead_covers_nominal_stop(self):
+        planner = Planner()
+        planner.command(0., np.zeros(3), np.array([12., 0., 0.]),
+                        np.array([1305.8, 0., 0.]), np.zeros(3), [])
+        self.assertGreaterEqual(planner.last_horizon, 12./namespace['MAX_ACCEL']+8.)
+
+    def test_retained_command_cannot_bypass_terminal_braking(self):
+        planner = Planner()
+        planner.previous_velocity = np.array([12., 0., 0.])
+        accel, _, _ = planner.command(0., np.zeros(3), np.array([8., 0., 0.]),
+                                     np.array([60., 0., 0.]), np.zeros(3), [])
+        cap = np.sqrt(2.*namespace['BRAKE_ACCEL']*15.)
+        self.assertLessEqual(np.linalg.norm(planner.previous_velocity), cap+1e-6)
+        self.assertLess(accel[0], 0.)
+
     def test_faster_cruise_and_post_arrival_hold(self):
         planner = Planner()
         loc, vel = np.zeros(3), np.zeros(3)
@@ -36,7 +51,7 @@ class PlannerTests(unittest.TestCase):
                 arrived = True
             if arrived:
                 closest = min(closest, distance)
-        self.assertGreater(peak, 9.)
+        self.assertGreater(peak, 11.)
         self.assertTrue(arrived)
         self.assertGreater(closest, 40.)
         self.assertAlmostEqual(np.linalg.norm(target-loc), 45., delta=.5)
@@ -49,7 +64,7 @@ class PlannerTests(unittest.TestCase):
         target = np.array([300., 0., 0.])
         for tick in range(1200):
             accel, _, _ = planner.command(tick*.25, loc, vel, target, np.zeros(3), [])
-            self.assertLessEqual(np.linalg.norm(accel), .250001)
+            self.assertLessEqual(np.linalg.norm(accel), namespace['MAX_ACCEL']+1e-6)
             loc += .25*vel + .5*.25**2*accel
             vel += .25*accel
             if np.linalg.norm(target-loc) < 48:
