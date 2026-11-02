@@ -65,112 +65,237 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 #########################################################
 
 
-import copy
-from PIL import Image
+# Qualification baseline. All navigation vectors below use the Phobos frame.
+# Tuning values require validation with the official simulator/jet allocator.
+MAX_SPEED = 6.0
+MAX_ACCEL = 0.25
+BRAKE_ACCEL = 0.12
+VELOCITY_GAIN = 0.6
+HORIZON = 30
+PLAN_PERIOD = 0.5
 
-###############################
-# Get initial simulation time #
-###############################
 
-t0_sim: st.timestamp = st.SimGlobals.GetSimEntity().GetParam(st.VarType.timestamp, ["Time", "StartDateTAI"])
-t0: datetime.datetime = t0_sim.as_datetime()
+def limit_vector(vector, maximum):
+    vector = np.asarray(vector, dtype=float)
+    magnitude = np.linalg.norm(vector)
+    return vector * min(1.0, maximum / max(magnitude, 1e-12))
 
-##################
-# Start the loop #
-##################
 
-iteration = 0
-imageNumber = 0
-exit_flag: bool = False
-while not exit_flag:
+class QualificationPlanner:
+    def __init__(self):
+        self.history = []
+        self.report_cache = {}
+        self.track_counter = 0
+        self.previous_velocity = np.zeros(3)
+        # Deterministic sphere samples plus an explicit goal candidate.
+        k = np.arange(48)
+        z = 1.0 - 2.0 * (k + 0.5) / len(k)
+        angle = k * np.pi * (3.0 - np.sqrt(5.0))
+        self.directions = np.column_stack((np.sqrt(1-z*z)*np.cos(angle),
+                                          np.sqrt(1-z*z)*np.sin(angle), z))
 
-    ################################
-    # Wait between loop iterations #
-    ################################
-    
-    time.sleep(1.0 / this.GetParam(st.VarType.double, "LoopFreqHz"))
+    def obstacles(self, now, loc, vel, radar):
+        self.history.append((now, loc.copy(), vel.copy()))
+        self.history = [h for h in self.history if now-h[0] < 60.0]
+        times = np.array([h[0] for h in self.history])
+        positions = np.array([h[1] for h in self.history])
+        velocities = np.array([h[2] for h in self.history])
+        centers, speeds, radii = [], [], []
+        new_cache = {}
+        # Reserve identities for reports that have not changed. Radar sorting is
+        # unstable, so list indices must never be used as debris identities.
+        used = set()
+        valid = []
+        for report in radar:
+            report = np.asarray(report, dtype=float)
+            if report.shape != (3, 3) or not np.isfinite(report).all():
+                continue
+            valid.append(report)
+            cached = self.report_cache.get(tuple(report.ravel()))
+            if cached is not None:
+                used.add(cached['id'])
+        old_tracks = list(self.report_cache.values())
+        old_stamps = np.array([track['stamp'] for track in old_tracks])
+        old_positions = np.array([track['pos'] for track in old_tracks]).reshape(-1, 3)
+        old_speeds = np.array([track['vel'] for track in old_tracks]).reshape(-1, 3)
+        old_diameters = np.array([track['diameter'] for track in old_tracks])
+        old_ids = np.array([track['id'] for track in old_tracks])
+        available = np.array([identity not in used for identity in old_ids], dtype=bool)
+        for report in sorted(valid, key=lambda r: r[2, 0]):
+            measured = report[0]
+            distance = np.linalg.norm(measured)
+            if distance < 1e-6:
+                continue
+            stamp = float(report[2, 0])
+            age = max(0.0, now-stamp)
+            old_loc = np.array([np.interp(stamp, times, positions[:, i]) for i in range(3)])
+            old_vel = np.array([np.interp(stamp, times, velocities[:, i]) for i in range(3)])
+            direction = measured / distance
+            radial_speed = report[1, 1] + old_vel.dot(direction)
+            key = tuple(report.ravel())
+            track = self.report_cache.get(key)
+            if track is None:
+                absolute = measured + old_loc
+                matches = []
+                dt = stamp-old_stamps
+                residuals = np.linalg.norm(absolute-old_positions-dt[:, None]*old_speeds, axis=1)
+                eligible = (available & (dt >= 0.4) & (dt <= 8.0)
+                            & (np.abs(report[1, 2]-old_diameters)
+                               <= np.maximum(3.0, 0.25*np.abs(old_diameters)))
+                            & (residuals < 8.0+2.0*dt))
+                for index in np.flatnonzero(eligible):
+                    matches.append((residuals[index], old_tracks[index]))
+                matches.sort(key=lambda m: m[0])
+                speed = radial_speed*direction
+                identity = self.track_counter
+                self.track_counter += 1
+                # Ambiguous associations retain the radial-only estimate. A false
+                # track is worse than explicitly admitting missing transverse speed.
+                if matches and (len(matches) == 1 or matches[1][0] > matches[0][0]+4.0):
+                    old = matches[0][1]
+                    dt = stamp-old['stamp']
+                    measured_speed = (absolute-old['pos'])/dt
+                    filtered = 0.7*old['vel'] + 0.3*limit_vector(measured_speed, 4.0)
+                    speed = filtered + (radial_speed-filtered.dot(direction))*direction
+                    identity = old['id']
+                    available[old_ids == identity] = False
+                track = dict(id=identity, stamp=stamp, pos=absolute,
+                             vel=speed, diameter=report[1, 2])
+            used.add(track['id'])
+            new_cache[key] = track
+            speed = track['vel']
+            center = track['pos'] - loc + speed*age
+            # Missing pre-start history and clock skew enlarge uncertainty.
+            missing_history = max(0.0, times[0]-stamp)
+            radius = (0.575 * max(0.0, report[1, 2]) + 3.0 + 8.0
+                      + 1.0*age + np.linalg.norm(old_vel)*missing_history)
+            centers.append(center)
+            speeds.append(speed)
+            radii.append(radius)
+        self.report_cache = new_cache
+        return (np.asarray(centers).reshape(-1, 3),
+                np.asarray(speeds).reshape(-1, 3), np.asarray(radii))
 
-    ###################################
-    # Get elapsed time from sim start #
-    ###################################
-
-    t_now: datetime.datetime = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
-    t_from_start: float = (t_now - t0).total_seconds()
-
-    #####################################
-    # Example for getting vehicle state #
-    #####################################
-
-    locVelAcc = shuttle.getLocVelAcc()
-    loc = locVelAcc.loc_WRT_ExprIn(phobosFrame)
-    vel = locVelAcc.vel_WRT_ExprIn(phobosFrame)
-    rot = shuttle.getRotation().Quat_WRT(phobosFrame)
-    angvel = shuttle.getAngVelocity().WRT_ExprIn(phobosFrame)
-
-    #####################################################
-    # Example for getting additional vehicle properties #
-    #####################################################
-
-    mass = shuttle.getMass()
-    inertiaBodyFrame = shuttle.getInertiaTensor(shuttleFrame)
-    damage: float = shuttle.GetParam(st.VarType.double, ["Stats", "Damage"])
-    fuelUsed: float = shuttle.GetParam(st.VarType.double, ["Stats", "FuelUsed"])
-
-    ##################################################################
-    # Example for rotating the top camera 30 deg left and 10 deg up, #
-    # and the bottom camera 20 deg right and 15 deg down.            #
-    ##################################################################
-
-    if iteration % 20 == 0:
-        PanTiltCamera(topCamera, 30.0, -10.0)
-        PanTiltCamera(bottomCamera, -20.0, 15.0)
-
-    ####################################################################################
-    # Example for obtaining an image from the top camera with FOV = 60 deg and EV = 12 #
-    ####################################################################################
-
-    if iteration % 20 == 0:  # Don't hot-loop the image captures
-        cameraParams = st.CaptureImageProperties()
-        cameraParams.nonphys_EV = 10.0
-        cameraParams.FOV = 60.0
-        cameraParams.ResolutionX = 512
-        cameraParams.ResolutionY = 512
-        image = st.camera.CaptureImageBlocking(topCamera, cameraParams)
-
-        if image is not None:
-            imageR = np.asarray(image.as_RGB8().PixelsR).reshape((cameraParams.ResolutionX, cameraParams.ResolutionY))
-            imageG = np.asarray(image.as_RGB8().PixelsG).reshape((cameraParams.ResolutionX, cameraParams.ResolutionY))
-            imageB = np.asarray(image.as_RGB8().PixelsB).reshape((cameraParams.ResolutionX, cameraParams.ResolutionY))
-            imageRGB = Image.fromarray(np.dstack((imageR, imageG, imageB)).astype(np.uint8))
-
-            imageNumber += 1
+    def command(self, now, loc, vel, target_loc, target_vel, radar):
+        loc, vel = np.asarray(loc, dtype=float), np.asarray(vel, dtype=float)
+        error = np.asarray(target_loc, dtype=float)-loc
+        distance = np.linalg.norm(error)
+        direction = error / max(distance, 1e-9)
+        # Aim inside the official 50 m success sphere, with low arrival speed.
+        speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*max(distance-20.0, 0.0)))
+        desired = np.asarray(target_vel) + speed*direction
+        centers, speeds, radii = self.obstacles(now, loc, vel, radar)
+        candidates = [desired, np.asarray(target_vel), self.previous_velocity]
+        for fraction in (1.0, 0.5):
+            candidates.extend(np.asarray(target_vel) + fraction*speed*self.directions)
+        candidates = np.asarray(candidates)
+        # Conservative reachability filter avoids spending rollout time on distant
+        # objects; includes current speed so an overspeed shuttle stays protected.
+        if len(centers):
+            travel = HORIZON * max(np.linalg.norm(vel), np.linalg.norm(candidates, axis=1).max())
+            relevant = np.linalg.norm(centers, axis=1) <= (
+                travel + HORIZON*np.linalg.norm(speeds, axis=1) + radii + HORIZON)
+            centers, speeds, radii = centers[relevant], speeds[relevant], radii[relevant]
+        count = len(candidates)
+        trial_vel = np.tile(vel, (count, 1))
+        trial_pos = np.zeros((count, 3))
+        clearance = np.full(count, np.inf)
+        risk = np.zeros(count)
+        # Acceleration-limited rollout; segment checks prevent tunnelling between steps.
+        for step in range(HORIZON):
+            accel = VELOCITY_GAIN*(candidates-trial_vel)
+            accel *= np.minimum(1.0, MAX_ACCEL/np.maximum(np.linalg.norm(accel, axis=1), 1e-12))[:, None]
+            next_pos = trial_pos + trial_vel + 0.5*accel
+            if len(centers):
+                start = centers[None, :, :] + step*speeds[None, :, :] - trial_pos[:, None, :]
+                end = centers[None, :, :] + (step+1)*speeds[None, :, :] - next_pos[:, None, :]
+                delta = end-start
+                fraction = np.clip(-np.sum(start*delta, axis=2)/np.maximum(np.sum(delta*delta, axis=2), 1e-12), 0, 1)
+                gap = np.linalg.norm(start+fraction[:, :, None]*delta, axis=2)-radii[None, :]-1.0*(step+1)
+                clearance = np.minimum(clearance, gap.min(axis=1))
+                # Accumulated penetration distinguishes escape directions even
+                # when all candidates share the same initially negative clearance.
+                risk += np.maximum(0.0, -gap).sum(axis=1)/(1.0+0.1*step)
+            trial_pos = next_pos
+            trial_vel += accel
+        cost = (np.linalg.norm(trial_pos-error-HORIZON*np.asarray(target_vel), axis=1)
+                + 0.5*np.linalg.norm(candidates-self.previous_velocity, axis=1)
+                + 0.1*np.linalg.norm(candidates-np.asarray(target_vel), axis=1)**2)
+        safe = clearance > 0.0
+        if safe.any():
+            cost[~safe] = np.inf
+            best = int(np.argmin(cost))
+            mode = 'GUIDE' if best == 0 else 'AVOID'
         else:
-            st.OnScreenLogMessage("Failed to capture camera image :(", "CameraNoCapture", st.Severity.Info)
+            # No guaranteed safe rollout: choose greatest predicted clearance.
+            best = int(np.argmin(risk + 0.01*cost))
+            mode = 'ESCAPE'
+        self.previous_velocity = candidates[best].copy()
+        return (limit_vector(VELOCITY_GAIN*(candidates[best]-vel), MAX_ACCEL),
+                mode, float(clearance[best]))
 
-    ###################################################################################
-    # Example for getting the positions, closest points, range rates, and diameters   #
-    # of the nearest 4 pieces of debris and printing the distance to the closest one. #
-    ###################################################################################
 
-    debrisInfo = GetNearestDebrisLocations(4)
-    if len(debrisInfo) > 0:
-        closestDebris = debrisInfo[0]
-        closestDebris_loc = closestDebris[0, :]
-        closestDebris_closestPoint = closestDebris[1, 0]
-        closestDebris_rangeRate = closestDebris[1, 1]
-        closestDebris_diameter = closestDebris[1, 2]
-        st.OnScreenLogMessage(f"Nearest debris: {np.linalg.norm(closestDebris_loc):.1f} m", "UserAPIPrintout", st.Severity.Info)
-
-    ##################################
-    # YOUR CONTROLLER CODE GOES HERE #
-    ##################################
-
-    linearAcceleration_m_s2 = np.zeros(3)
-    angularAcceleration_rad_s2 = np.zeros(3)
-
-    # Send acceleration and angular acceleration commands
-    SetCommand(linearAcceleration_m_s2, angularAcceleration_rad_s2)
-
-    iteration += 1
-
-st.leave_sim()
+planner = QualificationPlanner()
+# Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
+# Controller and radar start concurrently; their small startup skew is covered by margins.
+radar_epoch = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
+last_plan = -np.inf
+last_log = -np.inf
+accel_world = np.zeros(3)
+mode, clearance = 'START', np.inf
+linear_limit = min(MAX_ACCEL, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAccel_m_s2']))
+angular_limit = min(0.02, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAngAccel_rad_s2']))
+try:
+    while True:
+        time.sleep(1.0 / this.GetParam(st.VarType.double, 'LoopFreqHz'))
+        now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
+        if now < last_plan:
+            planner = QualificationPlanner()
+            last_plan = last_log = -np.inf
+        state = shuttle.getLocVelAcc()
+        loc = np.asarray(state.loc_WRT_ExprIn(phobosFrame))
+        vel = np.asarray(state.vel_WRT_ExprIn(phobosFrame))
+        target_state = target.getLocVelAcc()
+        target_loc = np.asarray(target_state.loc_WRT_ExprIn(phobosFrame))
+        target_vel = np.asarray(target_state.vel_WRT_ExprIn(phobosFrame))
+        if not all(np.isfinite(v).all() for v in (loc, vel, target_loc, target_vel)):
+            SetCommand(np.zeros(3), np.zeros(3))
+            last_plan = -np.inf
+            continue
+        if now-last_plan >= PLAN_PERIOD:
+            # Read the entire radar list; stale sorting can hide an approaching object.
+            radar = GetNearestDebrisLocations(10000)
+            radar = [np.asarray(report, dtype=float) for report in radar]
+            radar = [report for report in radar if report.shape == (3, 3)
+                     and np.isfinite(report).all() and np.linalg.norm(report[0]) > 1e-6
+                     and -5.0 <= now-report[2, 0] <= 10.0]
+            if len(radar) == 0:
+                planner.previous_velocity = target_vel.copy()
+                mode, clearance = 'WAIT_RADAR', float('nan')
+            else:
+                accel_world, mode, clearance = planner.command(
+                    now, loc, vel, target_loc, target_vel, radar)
+            last_plan = now
+        # The planner runs at 2 Hz; the velocity servo runs every control tick.
+        # Reusing a fixed acceleration for the whole planning period can overshoot.
+        accel_world = limit_vector(VELOCITY_GAIN*(planner.previous_velocity-vel), linear_limit)
+        accel_body = st.frames.FramedVector(accel_world, phobosFrame).ExprIn(shuttleFrame)
+        omega_body = np.asarray(shuttle.getAngVelocity().WRT(phobosFrame).ExprIn(shuttleFrame))
+        # Hold angular rate near zero. Translation works in any attitude.
+        angular_accel = limit_vector(-0.8*omega_body, angular_limit)
+        if not np.isfinite(angular_accel).all():
+            angular_accel = np.zeros(3)
+        SetCommand(accel_body, angular_accel)
+        if now-last_log >= 5.0:
+            damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
+            fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
+            st.OnScreenLogMessage(
+                f'IGNITION {mode} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
+                f'damage={damage:.1f}J fuel={fuel:.2f}kg', 'IgnitionController', st.Severity.Info)
+            last_log = now
+finally:
+    try:
+        SetCommand(np.zeros(3), np.zeros(3))
+    finally:
+        st.leave_sim()
