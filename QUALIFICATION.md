@@ -3,17 +3,31 @@
 `Controller.py` is self-contained and keeps the original protected connection and
 helper section. No STU4-Sim files or simulator configuration have been edited.
 
-The controller uses target-relative velocity guidance (6 m/s cruise), slows near
+The controller uses target-relative velocity guidance (10 m/s cruise cap), slows near
 the destination, and chooses among 99 candidate velocities with acceleration-limited
 30-second rollouts. It checks swept segments against inflated radar spheres,
 including a 3 m shuttle radius, measurement/diameter margins, and increasing drift
 uncertainty. Planning runs at most twice per simulation second. Commands are
-transformed from the Phobos frame into the shuttle frame; angular-rate damping
-does not require pointing the shuttle at the destination. Status logs appear every
+transformed from the Phobos frame into the shuttle frame. Attitude guidance turns
+body +X (front) toward actual travel and body +Z (top) toward local outward/up.
+At low speed it follows the planned travel direction, then retains heading while
+holding. Rate and angular-acceleration limits make turns gradual. It recovers from
+an upside-down attitude and handles vertical-flight singularities. Translation
+remains independent during turns so attitude alignment cannot delay avoidance.
+Status logs appear every
 five simulation seconds. Blocking camera captures have been removed. A velocity
 servo refreshes thrust every control tick between planning updates. Commands respect
 the configured actuator limits. Missing, invalid, or more than 10-second-old radar
 causes braking toward target velocity (`WAIT_RADAR`) rather than blind navigation.
+
+Terminal guidance locks an approach-side waypoint 45 m from the rescue ship centre
+inside the official 50 m success sphere. Its rollout includes braking toward that
+waypoint. `HOLD` indicates it is within 3 m of the waypoint with relative speed below
+0.5 m/s; this is controller telemetry, not the official success alert. It continues
+active position guidance after arrival instead of flying toward the ship centre.
+The ship's full hull geometry is not supplied to the planner, so the offset still
+needs visual verification in the simulator. A 10 m/s cap does not imply constant
+10 m/s flight: acceleration, braking and obstacle avoidance reduce speed as needed.
 
 Radar timestamps are referenced to Radar.py startup. The controller approximates
 that epoch with its own startup clock and reconstructs shuttle motion from history.
@@ -37,13 +51,17 @@ With Python and NumPy installed:
 python -m unittest discover -s tests -v
 ```
 
-Fourteen tests cover clear-route arrival, complete static-obstacle avoidance,
+Eighteen tests cover clear-route arrival, complete static-obstacle avoidance,
 immediate obstacle response, stale measurement correction, transverse tracking,
 radar reordering, repeated reports, escape from inflated overlap, fast incoming
 debris, and preservation of the protected boilerplate. Three fixed-seed crossing
 scenarios include 2 m position noise, noisy range rate/diameter, 1.5-second radar
 updates, moving obstacles, a small gravity disturbance, and 10% thrust under-delivery.
-Each reaches the 45 m arrival threshold without physical-sphere contact.
+Each enters a 48 m arrival threshold without physical-sphere contact. Additional
+tests integrate attitude dynamics through a 90-degree turn and a 180-degree
+upside-down recovery, check stationary/vertical guidance, and run a 1 km route
+through arrival and prolonged holding with 10% thrust under-delivery. That route
+exceeds 9 m/s, stays outside 40 m after arrival, and settles near the 45 m waypoint.
 
 Planner tests extract pure code using AST. Adapter tests execute the actual
 controller against a mock Space Teams API and check a rotated body frame, command
@@ -60,7 +78,9 @@ is not qualification proof.
 2. Launch the official `STU4-Sim/Sims/COMPETITION_SIM.simconf` in Space Teams PRO.
    Confirm the `IGNITION` status log appears and no Python/allocator errors occur.
 3. Check distance falls, body-frame thrust responds correctly at different
-   orientations, angular rates settle, and radar clearance behaves plausibly.
+   orientations, the front faces travel, the top stays upright relative to Phobos,
+   angular rates settle, and radar clearance behaves plausibly. Confirm `HOLD`
+   occurs near 45 m after the official success alert, without touching the ship.
    Check planning latency with the actual simulator running.
 4. Run the official environment repeatedly. Record the simulator's success/failure,
    score, elapsed time, damage, fuel, and any sustained `ESCAPE`/stalled behavior.

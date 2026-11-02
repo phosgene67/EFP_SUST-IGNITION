@@ -37,6 +37,7 @@ class AdapterTests(unittest.TestCase):
         shuttle.getAngVelocity.return_value.WRT.return_value.ExprIn.return_value = np.zeros(3)
         # A rotated shuttle: world +X maps to body -Y.
         transform = np.array([[0., 1., 0.], [-1., 0., 0.], [0., 0., 1.]])
+        shuttle.getRotation.return_value.DCM_WRT.return_value = transform
         st.frames.FramedVector.side_effect = lambda v, f: SimpleNamespace(ExprIn=lambda b: transform@v)
         epoch = datetime.datetime(2026, 1, 1)
         st.SimGlobals.SimClock.GetTimeNow.side_effect = lambda: SimpleNamespace(
@@ -65,13 +66,15 @@ class AdapterTests(unittest.TestCase):
 
     def test_empty_radar_holds_position(self):
         commands = self.run_adapter([])
-        for _, value in commands:
-            np.testing.assert_allclose(value, np.zeros(3))
+        for name, value in commands:
+            if name == 'CommandedAccel':
+                np.testing.assert_allclose(value, np.zeros(3))
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])
-        for _, value in commands:
-            np.testing.assert_allclose(value, np.zeros(3))
+        for name, value in commands:
+            if name == 'CommandedAccel':
+                np.testing.assert_allclose(value, np.zeros(3))
 
 
 if __name__ == '__main__':

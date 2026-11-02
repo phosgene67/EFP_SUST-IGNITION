@@ -67,12 +67,13 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 
 # Qualification baseline. All navigation vectors below use the Phobos frame.
 # Tuning values require validation with the official simulator/jet allocator.
-MAX_SPEED = 6.0
+MAX_SPEED = 10.0
 MAX_ACCEL = 0.25
 BRAKE_ACCEL = 0.12
 VELOCITY_GAIN = 0.6
 HORIZON = 30
 PLAN_PERIOD = 0.5
+HOLD_RADIUS = 45.0
 
 
 def limit_vector(vector, maximum):
@@ -81,11 +82,58 @@ def limit_vector(vector, maximum):
     return vector * min(1.0, maximum / max(magnitude, 1e-12))
 
 
+def attitude_command(world_to_body, forward_world, up_world, omega_body, maximum):
+    """Point body +X along travel, keep body +Z upright; return body angular accel.
+
+    DCM_WRT is the passive Phobos-to-body transform. The relative active rotation
+    below therefore expresses the required physical turn in current body axes.
+    """
+    current = np.asarray(world_to_body, dtype=float)
+    forward = np.asarray(forward_world, dtype=float)
+    up = np.asarray(up_world, dtype=float)
+    omega = np.asarray(omega_body, dtype=float)
+    if (current.shape != (3, 3) or not all(np.isfinite(v).all() for v in
+                                         (current, forward, up, omega))):
+        return np.zeros(3)
+    if np.linalg.norm(forward) < 1e-6:
+        forward = current[0].copy()
+    forward = forward / np.linalg.norm(forward)
+    up = up - forward.dot(up)*forward
+    if np.linalg.norm(up) < 1e-6:
+        # Keep the existing roll during a near-vertical climb where no unique
+        # horizon exists. If that too is parallel, pick a well-conditioned axis.
+        up = current[2] - forward.dot(current[2])*forward
+        if np.linalg.norm(up) < 1e-6:
+            axis = np.eye(3)[np.argmin(np.abs(forward))]
+            up = axis - forward.dot(axis)*forward
+    up /= np.linalg.norm(up)
+    right = np.cross(up, forward)
+    desired = np.vstack((forward, right, up))
+    relative = current @ desired.T
+    angle = np.arccos(np.clip((np.trace(relative)-1.0)*0.5, -1.0, 1.0))
+    skew = np.array([relative[2, 1]-relative[1, 2],
+                     relative[0, 2]-relative[2, 0], relative[1, 0]-relative[0, 1]])
+    if angle < 1e-6:
+        rotation = 0.5*skew
+    elif np.pi-angle < 1e-4:
+        # A cross-product-only attitude error vanishes when exactly upside down.
+        _, vectors = np.linalg.eigh((relative+relative.T)*0.5)
+        axis = vectors[:, -1]
+        if np.linalg.norm(skew) > 1e-8 and axis.dot(skew) < 0.0:
+            axis = -axis
+        rotation = angle*axis
+    else:
+        rotation = angle*skew/(2.0*np.sin(angle))
+    desired_rate = limit_vector(0.4*rotation, 0.2)
+    return limit_vector(desired_rate-omega, maximum)
+
+
 class QualificationPlanner:
     def __init__(self):
         self.history = []
         self.report_cache = {}
         self.track_counter = 0
+        self.approach_direction = None
         self.previous_velocity = np.zeros(3)
         # Deterministic sphere samples plus an explicit goal candidate.
         k = np.arange(48)
@@ -180,9 +228,18 @@ class QualificationPlanner:
         loc, vel = np.asarray(loc, dtype=float), np.asarray(vel, dtype=float)
         error = np.asarray(target_loc, dtype=float)-loc
         distance = np.linalg.norm(error)
-        direction = error / max(distance, 1e-9)
-        # Aim inside the official 50 m success sphere, with low arrival speed.
-        speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*max(distance-20.0, 0.0)))
+        # Enter the official 50 m success sphere and hold off the ship centre.
+        # Lock the approach side for the terminal segment instead of chasing a
+        # changing radial offset, which could command motion through the ship.
+        approach = -error / max(distance, 1e-9)
+        if distance > 1e-6 and distance <= 200.0 and self.approach_direction is None:
+            self.approach_direction = approach.copy()
+        if self.approach_direction is not None:
+            approach = self.approach_direction
+        error = error + HOLD_RADIUS*approach
+        goal_distance = np.linalg.norm(error)
+        direction = error / max(goal_distance, 1e-9)
+        speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*goal_distance), 0.4*goal_distance)
         desired = np.asarray(target_vel) + speed*direction
         centers, speeds, radii = self.obstacles(now, loc, vel, radar)
         candidates = [desired, np.asarray(target_vel), self.previous_velocity]
@@ -204,6 +261,13 @@ class QualificationPlanner:
         # Acceleration-limited rollout; segment checks prevent tunnelling between steps.
         for step in range(HORIZON):
             accel = VELOCITY_GAIN*(candidates-trial_vel)
+            # Roll out the goal candidate with the same braking guidance used
+            # during real flight, so it does not predict flying through arrival.
+            remaining = error+step*np.asarray(target_vel)-trial_pos[0]
+            length = np.linalg.norm(remaining)
+            guided_speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*length), 0.4*length)
+            guided_velocity = np.asarray(target_vel)+guided_speed*remaining/max(length, 1e-9)
+            accel[0] = VELOCITY_GAIN*(guided_velocity-trial_vel[0])
             accel *= np.minimum(1.0, MAX_ACCEL/np.maximum(np.linalg.norm(accel, axis=1), 1e-12))[:, None]
             next_pos = trial_pos + trial_vel + 0.5*accel
             if len(centers):
@@ -226,8 +290,10 @@ class QualificationPlanner:
             cost[~safe] = np.inf
             best = int(np.argmin(cost))
             mode = 'GUIDE' if best == 0 else 'AVOID'
+            if goal_distance < 3.0 and np.linalg.norm(vel-target_vel) < 0.5:
+                mode = 'HOLD'
         else:
-            # No guaranteed safe rollout: choose greatest predicted clearance.
+            # No safe rollout: minimize accumulated predicted penetration.
             best = int(np.argmin(risk + 0.01*cost))
             mode = 'ESCAPE'
         self.previous_velocity = candidates[best].copy()
@@ -236,6 +302,7 @@ class QualificationPlanner:
 
 
 planner = QualificationPlanner()
+heading_world = None
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
 radar_epoch = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
@@ -251,6 +318,7 @@ try:
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
         if now < last_plan:
             planner = QualificationPlanner()
+            heading_world = None
             last_plan = last_log = -np.inf
         state = shuttle.getLocVelAcc()
         loc = np.asarray(state.loc_WRT_ExprIn(phobosFrame))
@@ -281,8 +349,21 @@ try:
         accel_world = limit_vector(VELOCITY_GAIN*(planner.previous_velocity-vel), linear_limit)
         accel_body = st.frames.FramedVector(accel_world, phobosFrame).ExprIn(shuttleFrame)
         omega_body = np.asarray(shuttle.getAngVelocity().WRT(phobosFrame).ExprIn(shuttleFrame))
-        # Hold angular rate near zero. Translation works in any attitude.
-        angular_accel = limit_vector(-0.8*omega_body, angular_limit)
+        # Face the actual direction of travel, not the braking thrust vector.
+        # At low speed use the planned direction, retaining heading when holding.
+        travel_world = vel-target_vel
+        if np.linalg.norm(travel_world) < 1.0:
+            travel_world = planner.previous_velocity-target_vel
+        if np.linalg.norm(travel_world) >= 0.2:
+            heading_world = travel_world.copy()
+        body_dcm = np.asarray(shuttle.getRotation().DCM_WRT(phobosFrame))
+        if heading_world is None:
+            heading_world = body_dcm[0].copy()
+        # Phobos-centred position defines the local outward/up direction.
+        up_world = loc/max(np.linalg.norm(loc), 1e-9)
+        if np.linalg.norm(up_world) < 1e-6:
+            up_world = np.array([0.0, 0.0, 1.0])
+        angular_accel = attitude_command(body_dcm, heading_world, up_world, omega_body, angular_limit)
         if not np.isfinite(angular_accel).all():
             angular_accel = np.zeros(3)
         SetCommand(accel_body, angular_accel)
