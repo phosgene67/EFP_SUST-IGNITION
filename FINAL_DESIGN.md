@@ -1,8 +1,8 @@
 # Final-round radar and camera controller
 
-> **Historical design:** the active source is now **FINAL_NAV_500** for
-> `FINAL_SUBMISSION.simconf`. [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) describes
-> its global corridor, short local forecast and station approach. This document's
+> **Historical design:** the active source is now **CHUNK_NAV_12** for
+> `FINAL_SUBMISSION.simconf`. [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) describes
+> the guarded launch, rolling predicted trajectories and station approach. This document's
 > cruise policies and benchmark numbers describe earlier controller versions.
 > Deploy `camera_viewer.py` alongside `Controller.py` for the OpenCV interface.
 

@@ -26,6 +26,7 @@ class Allocator:
         self.matrix = np.vstack((forces.T/3388.7,
                                  np.linalg.solve(self.inertia, np.cross(jets[:, :3], forces).T)))
         self.cache = {}
+        self.retries = 0
 
     def apply(self, accel, angular):
         command = np.r_[accel, angular]
@@ -36,7 +37,11 @@ class Allocator:
             result = linprog(np.ones(len(self.thrust)), A_eq=self.matrix, b_eq=command,
                              bounds=(0, None), method='highs')
             if not result.success:
-                raise RuntimeError('infeasible allocator request: '+result.message)
+                self.retries += 1
+                result = linprog(np.ones(len(self.thrust)), A_eq=self.matrix, b_eq=command,
+                                 bounds=(0, None), method='highs-ds', options={'presolve': False})
+            if not result.success:
+                raise RuntimeError('allocator solve failed: '+result.message)
             on = np.maximum(result.x, 0.)
             # Official remap normalizes the largest on-time to min(dt, max_on).
             # Therefore small continuous requests need not yield small thrust.
@@ -132,7 +137,7 @@ def run_case(namespace, allocator, seed, final, max_time):
             kwargs = {}
             if final:
                 policy.observe(now, vel, fuel)
-                cruise = (namespace['MAX_SPEED'] if 'FinalNavigator' in namespace else
+                cruise = (namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']) if 'FinalNavigator' in namespace else
                           policy.choose(max(0., np.linalg.norm(target-loc)-45.), np.linalg.norm(vel), now, fuel,
                                         maneuvering=mode == 'ESCAPE' or clearance < 25.))
                 kwargs = dict(camera=vision, cruise_speed=cruise)

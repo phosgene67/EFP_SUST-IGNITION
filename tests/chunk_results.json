@@ -1,0 +1,29 @@
+{
+  "controller_sha256": "d91295e9e30db3e9fe895ced6bcae5c2bbc6432e9cf0b3ee6284821afd040356",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 100,
+  "scene_variant": "final-scene",
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+  "result": {
+    "arrived": true,
+    "time_s": 405.9,
+    "fuel_kg": 225.22,
+    "distance_m": 49.31,
+    "peak_speed_m_s": 8.88,
+    "arrival_speed_m_s": 0.2787295117623037,
+    "min_debris_gap_m": 22.44,
+    "min_proxy_hull_gap_m": 18.09,
+    "collision": false,
+    "post_arrival_test_s": 30.0,
+    "final_speed_m_s": 0.008,
+    "phase": "HOLD",
+    "images": 872,
+    "plan_p95_ms": 63.8,
+    "angular_active_fraction": 0.794,
+    "linear_active_fraction": 0.845,
+    "nose_error_p95_deg": 59.93,
+    "allocator_retries": 0,
+    "zero_damage_score_estimate": -220.73
+  }
+}

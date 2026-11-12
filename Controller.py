@@ -79,7 +79,9 @@ HORIZON = 40
 MAX_LOOKAHEAD = 220
 PLAN_PERIOD = 0.5
 HOLD_RADIUS = 49.0
-SHIP_BRAKE_ACCEL = 0.065
+SHIP_BRAKE_ACCEL = 0.075
+CHUNK_CRUISE_SPEED = 12.0
+LAUNCH_HEIGHT = 3.5
 CAMERA_WIDTH = 96
 CAMERA_HEIGHT = 64
 CAMERA_FOV = 80.0
@@ -523,10 +525,14 @@ def attitude_command(world_to_body, forward_world, up_world, omega_body, maximum
         rotation = angle*axis
     else:
         rotation = angle*skew/(2.0*np.sin(angle))
-    desired_rate = limit_vector(0.4*rotation, 0.2)
+    # The real jet allocator can deliver much less torque while translating.
+    # Limit turn rate by a conservative angular stopping distance, not merely
+    # by the requested angular acceleration. This avoids repeated overshoots.
+    turn_rate = min(.075, np.sqrt(2.*.002*angle), .35*angle)
+    desired_rate = rotation/max(angle, 1e-9)*turn_rate
     if angle < np.deg2rad(2.) and np.linalg.norm(omega) < .006:
         return np.zeros(3)
-    return limit_vector(desired_rate-omega, maximum)
+    return limit_vector(1.5*(desired_rate-omega), maximum)
 
 
 class FlightAttitude:
@@ -722,6 +728,337 @@ class CorridorPlanner:
         return self.points[0] if self.points else np.asarray(goal)
 
 
+def travel_time(distance, speed, cruise):
+    """Nominal arrival time; a forecast, continuously corrected by new sensors."""
+    distance = np.maximum(np.asarray(distance, float), 0.)
+    cruise = max(float(cruise), .5)
+    speed = float(np.clip(speed, .1, cruise))
+    accel = .11
+    accelerating = max(0., (cruise*cruise-speed*speed)/(2.*accel))
+    return np.where(distance <= accelerating,
+                    (np.sqrt(speed*speed+2.*accel*distance)-speed)/accel,
+                    (cruise-speed)/accel+(distance-accelerating)/cruise)
+
+
+def path_lookahead(origin, points, distance, position=None):
+    """Look through segment boundaries without stopping at each waypoint."""
+    path = [np.asarray(origin)]+[np.asarray(point) for point in points]
+    if len(path) < 2:
+        return np.asarray(origin).copy()
+    index, fraction = 0, 0.
+    if position is not None:
+        nearest = np.inf
+        for k, (a, b) in enumerate(zip(path, path[1:])):
+            delta = b-a
+            along = float(np.clip((position-a)@delta/max(delta@delta, 1e-9), 0., 1.))
+            gap = np.linalg.norm(position-a-along*delta)
+            if gap < nearest:
+                nearest, index, fraction = gap, k, along
+    cursor = path[index]+fraction*(path[index+1]-path[index])
+    for endpoint in path[index+1:]:
+        length = np.linalg.norm(endpoint-cursor)
+        if length >= distance:
+            return cursor+(endpoint-cursor)*distance/max(length, 1e-9)
+        distance -= length
+        cursor = endpoint
+    return path[-1].copy()
+
+
+class RollingChunks:
+    """Keep one committed route chunk and one predicted successor, never a full mission route."""
+    def __init__(self):
+        self.points, self.pending = [], []
+        self.goal = None
+        self.last_check = self.last_plan = -np.inf
+        self.last_prefetch = -np.inf
+        self.anchor = None
+        self.planned_exit = np.zeros(3)
+        self.active_exit = self.pending_exit = None
+        self.schedule = np.empty(0)
+        self.pending_schedule = np.empty(0)
+        self.planned_times = np.empty(0)
+        self.anchor_time = 0.
+        self.chunk_id = self.replans = 0
+        self.error = ''
+        self.reason = 'initial'
+        self.clearance = np.inf
+        self.buffer_m = 0.
+        self.speed_cap = CHUNK_CRUISE_SPEED
+
+    def invalidate(self, reason):
+        self.points, self.pending = [], []
+        self.last_plan = -np.inf
+        self.last_prefetch = -np.inf
+        self.active_exit = self.pending_exit = None
+        self.schedule = self.pending_schedule = np.empty(0)
+        self.reason = reason
+
+    @staticmethod
+    def length(location, points):
+        return sum(np.linalg.norm(b-a) for a, b in zip([location]+list(points), points))
+
+    @staticmethod
+    def forecast(location, points, speed, cruise, centers, velocities, radii, times=None):
+        """Swept, time-indexed moving-sphere checks along an entire chunk."""
+        if not len(centers):
+            return np.inf
+        centers, velocities, radii = np.asarray(centers), np.asarray(velocities), np.asarray(radii)
+        walked, gap, cursor = 0., np.inf, np.asarray(location)
+        previous_time = 0.
+        for index, endpoint in enumerate(points):
+            delta = endpoint-cursor
+            length = np.linalg.norm(delta)
+            steps = max(1, int(np.ceil(length/20.)))
+            for k in range(steps):
+                a, b = cursor+k/steps*delta-location, cursor+(k+1)/steps*delta-location
+                if times is None:
+                    t0, t1 = travel_time(np.array([walked+k/steps*length, walked+(k+1)/steps*length]), speed, cruise)
+                else:
+                    t0 = previous_time+(times[index]-previous_time)*k/steps
+                    t1 = previous_time+(times[index]-previous_time)*(k+1)/steps
+                start, end = centers+t0*velocities-a, centers+t1*velocities-b
+                change = end-start
+                fraction = np.clip(-np.sum(start*change, axis=1)/np.maximum(np.sum(change*change, axis=1), 1e-9), 0., 1.)
+                gaps = (np.linalg.norm(start+fraction[:, None]*change, axis=1)-radii-min(10., .12*t1)
+                        -.11*(t1-t0)**2/8.)
+                # Leaving an inflated initial margin is permitted only while
+                # moving away. The independent local guard still checks it.
+                escaping = ((np.linalg.norm(start, axis=1) < radii)
+                            & (np.sum(start*change, axis=1) >= 0.))
+                gaps[escaping] = np.inf
+                gap = min(gap, float(gaps.min()))
+            walked += length
+            if times is not None:
+                previous_time = float(times[index])
+            cursor = np.asarray(endpoint)
+        return gap
+
+    def plan_chunk(self, now, location, velocity, goal, centers, velocities, radii, cruise):
+        distance = np.linalg.norm(goal-location)
+        if distance < 1.:
+            self.planned_exit = np.asarray(velocity).copy()
+            self.planned_times = np.array([1.])
+            return [np.asarray(goal).copy()]
+        heading = (goal-location)/distance
+        speed = np.linalg.norm(velocity)
+        axis = np.eye(3)[np.argmin(np.abs(heading))]
+        side = np.cross(heading, axis)
+        side /= np.linalg.norm(side)
+        up = np.cross(heading, side)
+        horizon = float(np.clip(320./max(speed, 5.), 32., 60.))
+        horizon = min(horizon, max(12., .75*distance/max(speed, 1.)))
+        if len(centers):
+            reach = speed*horizon+.5*.11*horizon*horizon
+            relevant = np.linalg.norm(centers, axis=1) <= reach+horizon*np.linalg.norm(velocities, axis=1)+radii+12.
+            centers, velocities, radii = centers[relevant], velocities[relevant], radii[relevant]
+        # Beam search in position AND velocity. Each edge is integrated with a
+        # finite acceleration; no instantaneous turns at geometric waypoints.
+        branch = 13
+        positions, motion = np.zeros((1, 3)), np.asarray(velocity)[None].copy()
+        histories = np.empty((1, 0, 3))
+        efforts, margins = np.zeros(1), np.full(1, np.inf)
+        elapsed = 0.
+        for stage in range(4):
+            relative = goal-location-positions
+            bearings = relative/np.maximum(np.linalg.norm(relative, axis=1), 1e-9)[:, None]
+            requested = min(cruise, np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-10., 0.)))
+            choices = [requested*bearings, motion.copy(), np.zeros_like(motion)]
+            for tilt in (25., 55.):
+                for offset in (side, -side, up, -up):
+                    d = np.cos(np.deg2rad(tilt))*bearings+np.sin(np.deg2rad(tilt))*offset
+                    choices.append(requested*d/np.maximum(np.linalg.norm(d, axis=1), 1e-9)[:, None])
+            choices += [requested*motion/np.maximum(np.linalg.norm(motion, axis=1), 1e-9)[:, None],
+                        .5*requested*bearings]
+            commands = np.stack(choices, axis=1).reshape(-1, 3)
+            positions = np.repeat(positions, branch, axis=0)
+            motion = np.repeat(motion, branch, axis=0)
+            histories = np.repeat(histories, branch, axis=0)
+            efforts, margins = np.repeat(efforts, branch), np.repeat(margins, branch)
+            valid = np.ones(len(positions), dtype=bool)
+            steps = 8
+            dt = horizon/(4.*steps)
+            for _ in range(steps):
+                remaining = np.linalg.norm(goal-location-positions, axis=1)
+                stop_cap = np.minimum(cruise, np.sqrt(2.*SHIP_BRAKE_ACCEL*np.maximum(remaining-5., 0.)))
+                bounded = commands*np.minimum(1., stop_cap/np.maximum(np.linalg.norm(commands, axis=1), 1e-9))[:, None]
+                acceleration = .5*(bounded-motion)
+                acceleration *= np.minimum(1., .11/np.maximum(np.linalg.norm(acceleration, axis=1), 1e-9))[:, None]
+                end = positions+dt*motion+.5*dt*dt*acceleration
+                if len(centers):
+                    start_gap = centers[None]+elapsed*velocities[None]-positions[:, None]
+                    end_gap = centers[None]+(elapsed+dt)*velocities[None]-end[:, None]
+                    change = end_gap-start_gap
+                    fraction = np.clip(-np.sum(start_gap*change, axis=2)/np.maximum(np.sum(change*change, axis=2), 1e-9), 0., 1.)
+                    gaps = (np.linalg.norm(start_gap+fraction[:, :, None]*change, axis=2)-radii[None]
+                            -min(10., .12*(elapsed+dt))-.11*dt*dt/8.)
+                    escaping = ((np.linalg.norm(start_gap, axis=2) < radii[None])
+                                & (np.sum(start_gap*change, axis=2) >= 0.))
+                    gaps[escaping] = np.inf
+                    margins = np.minimum(margins, gaps.min(axis=1))
+                    valid &= gaps.min(axis=1) > 2.
+                positions, motion = end, motion+dt*acceleration
+                efforts += dt*np.linalg.norm(acceleration, axis=1)
+                histories = np.concatenate((histories, positions[:, None]), axis=1)
+                elapsed += dt
+            # elapsed applies to the whole beam, not each candidate.
+            error = goal-location-positions
+            ranges = np.linalg.norm(error, axis=1)
+            toward = np.sum(motion*error, axis=1)/np.maximum(ranges, 1e-9)
+            score = ranges-8.*toward+1.5*efforts+8.*np.maximum(0., 12.-margins)
+            score[~valid] = np.inf
+            selected = []
+            for candidate in np.argsort(score):
+                if not np.isfinite(score[candidate]):
+                    break
+                # Keep genuinely different trajectories, not eight nearly
+                # identical fast prefixes which all hit the same later hazard.
+                if all(np.linalg.norm(positions[candidate]-positions[old]) > 4.
+                       or np.linalg.norm(motion[candidate]-motion[old]) > .5 for old in selected):
+                    selected.append(int(candidate))
+                if len(selected) == 8:
+                    break
+            order = np.asarray(selected, dtype=int)
+            if not len(order):
+                break
+            positions, motion, histories = positions[order], motion[order], histories[order]
+            efforts, margins = efforts[order], margins[order]
+            if stage == 3:
+                # Retain enough curve samples for smooth pursuit. Validation
+                # and later replanning still use actual, newly received sensors.
+                proposed = [location+p for p in histories[0][3::4]]
+                times = np.arange(4, 33, 4)*dt
+                if self.forecast(location, proposed, speed, cruise, centers, velocities, radii, times) > 0.:
+                    self.planned_exit = motion[0].copy()
+                    self.planned_times = times
+                    self.error = ''
+                    return proposed
+        self.error = 'no verified chunk'
+        return []
+
+    def waypoint(self, now, location, velocity, goal, centers, velocities, radii, cruise):
+        changed = self.goal is not None and np.linalg.norm(goal-self.goal) > 30.
+        if changed:
+            self.invalidate('destination moved')
+        self.goal = np.asarray(goal).copy()
+        speed = np.linalg.norm(velocity)
+        progress_time = self.anchor_time
+        if self.points and self.anchor is not None:
+            path = [self.anchor]+self.points
+            nearest, index, along = np.inf, 0, 0.
+            for k, (a, b) in enumerate(zip(path, path[1:])):
+                delta = b-a
+                fraction = np.clip((location-a)@delta/max(delta@delta, 1e-9), 0., 1.)
+                gap = np.linalg.norm(location-a-fraction*delta)
+                if gap < nearest:
+                    nearest, index, along = gap, k, float(fraction)
+            if len(self.schedule) == len(self.points):
+                start_time = self.anchor_time if index == 0 else self.schedule[index-1]
+                progress_time = start_time+along*(self.schedule[index]-start_time)
+            if index:
+                self.anchor = self.points[index-1].copy()
+                self.points = self.points[index:]
+                if len(self.schedule):
+                    self.anchor_time = float(self.schedule[index-1])
+                    self.schedule = self.schedule[index:]
+            if nearest > 25.:
+                self.invalidate('left predicted curve')
+        # Prune only passed points. Lookahead blends the next leg before this
+        # happens; proximity alone must not cut through a protected corner.
+        while len(self.points) > 1 and np.linalg.norm(self.points[0]-location) < 2.:
+            self.anchor = self.points.pop(0)
+            if len(self.schedule):
+                self.anchor_time = float(self.schedule[0])
+                self.schedule = self.schedule[1:]
+                progress_time = max(progress_time, self.anchor_time)
+        times = np.maximum(self.schedule-progress_time, .1) if len(self.schedule) == len(self.points) else None
+        if self.points and now-self.last_check >= 1.:
+            self.clearance = self.forecast(location, self.points, speed, cruise, centers, velocities, radii, times)
+            if self.clearance < 0.:
+                self.invalidate('predicted crossing')
+            elif self.pending and self.forecast(location, self.points+self.pending, speed, cruise, centers, velocities, radii,
+                    np.r_[times, np.maximum(self.pending_schedule-progress_time, .1)] if times is not None and len(self.pending_schedule) else None) < 0.:
+                self.pending = []
+                self.pending_schedule = np.empty(0)
+                self.reason = 'successor crossing'
+            self.last_check = now
+        if not self.points and now-self.last_plan >= 1.:
+            self.points = self.plan_chunk(now, location, velocity, goal, centers, velocities, radii, cruise)
+            self.last_plan = now
+            self.replans += 1
+            if self.points:
+                self.anchor = location.copy()
+                self.active_exit = self.planned_exit.copy()
+                self.schedule = now+self.planned_times
+                self.anchor_time = progress_time = now
+                self.chunk_id += 1
+        remaining = self.length(location, self.points)
+        stopping = speed*speed/(2.*SHIP_BRAKE_ACCEL)
+        buffered = self.length(location, self.points+self.pending)
+        need_successor = (not self.pending and remaining < max(240., stopping+120.))
+        need_reserve = bool(self.pending) and len(self.pending) < 16 and buffered < stopping+200.
+        endpoint = (self.pending or self.points)[-1] if self.points else location
+        if (self.points and (need_successor or need_reserve) and now-self.last_prefetch >= 2.
+                and np.linalg.norm(goal-endpoint) > 25.):
+            eta = float(travel_time(remaining, speed, cruise))
+            queued_schedule = self.pending_schedule if len(self.pending_schedule) else self.schedule
+            if len(queued_schedule):
+                eta = max(.1, float(queued_schedule[-1]-progress_time))
+            next_speed = min(cruise, np.sqrt(speed*speed+2.*.11*remaining))
+            next_heading = goal-endpoint
+            next_velocity = next_speed*next_heading/max(np.linalg.norm(next_heading), 1e-9)
+            exit_velocity = self.pending_exit if self.pending else self.active_exit
+            if exit_velocity is not None:
+                next_velocity = exit_velocity.copy()
+            shifted = centers+eta*velocities-(endpoint-location)
+            successor = self.plan_chunk(now+eta, endpoint, next_velocity, goal, shifted, velocities, radii, cruise)
+            if successor:
+                self.pending += successor
+                self.pending_exit = self.planned_exit.copy()
+                start_time = queued_schedule[-1] if len(queued_schedule) else now+eta
+                self.pending_schedule = np.r_[self.pending_schedule, start_time+self.planned_times]
+            self.last_prefetch = now
+        lookahead = float(np.clip(40.+8.*speed, 45., 130.))
+        if self.pending and remaining < max(120., lookahead*1.3):
+            proposed = self.points+self.pending
+            combined_times = np.r_[self.schedule, self.pending_schedule]-progress_time
+            if self.forecast(location, proposed, speed, cruise, centers, velocities, radii,
+                             np.maximum(combined_times, .1) if len(combined_times) == len(proposed) else None) > 0.:
+                self.points = proposed
+                self.schedule = np.r_[self.schedule, self.pending_schedule]
+                self.active_exit = self.pending_exit
+                self.chunk_id += 1
+                self.reason = 'successor ready'
+            self.pending = []
+            self.pending_schedule = np.empty(0)
+        self.buffer_m = self.length(location, self.points+self.pending)
+        self.speed_cap = min(cruise, np.sqrt(2.*SHIP_BRAKE_ACCEL*max(self.buffer_m-30., 0.))) if self.points else 2.
+        if not self.points:
+            return location+min(80., np.linalg.norm(goal-location))*(goal-location)/max(np.linalg.norm(goal-location), 1e-9)
+        return path_lookahead(location, self.points, lookahead)
+
+
+class GuardedLaunch:
+    def __init__(self, enabled=True):
+        self.enabled, self.done = enabled, not enabled
+        self.origin = self.up = None
+        self.height = 0.
+
+    def goal(self, location, destination):
+        if self.done or np.linalg.norm(destination-location) < 250.:
+            self.done = True
+            return None
+        if self.origin is None:
+            self.origin = location.copy()
+            self.up = location/max(np.linalg.norm(location), 1e-9)
+            if np.linalg.norm(self.up) < .5:
+                self.up = np.array([0., 0., 1.])
+        self.height = float((location-self.origin)@self.up)
+        if self.height >= LAUNCH_HEIGHT:
+            self.done = True
+            return None
+        return location+max(1., LAUNCH_HEIGHT+1.-self.height)*self.up
+
+
 class TerminalApproach:
     """Brake outside the ship, then enter the scoring sphere slowly on a clear side."""
     def __init__(self):
@@ -860,6 +1197,7 @@ class QualificationPlanner:
                     matches.append((residuals[index], old_tracks[index]))
                 matches.sort(key=lambda m: m[0])
                 speed = radial_speed*direction
+                samples = [(stamp, absolute.copy())]
                 identity = self.track_counter
                 self.track_counter += 1
                 # Ambiguous associations retain the radial-only estimate. A false
@@ -867,13 +1205,22 @@ class QualificationPlanner:
                 if matches and (len(matches) == 1 or matches[1][0] > matches[0][0]+4.0):
                     old = matches[0][1]
                     dt = stamp-old['stamp']
-                    measured_speed = (absolute-old['pos'])/dt
-                    filtered = 0.7*old['vel'] + 0.3*limit_vector(measured_speed, 4.0)
+                    samples = [(t, p) for t, p in old.get('samples', [(old['stamp'], old['pos'])])
+                               if stamp-t <= 30.]+[(stamp, absolute.copy())]
+                    samples = samples[-8:]
+                    sample_times = np.array([t for t, _ in samples])
+                    sample_positions = np.array([p for _, p in samples])
+                    centered_times = sample_times-sample_times.mean()
+                    # Fit velocity over several radar sweeps. Differencing only
+                    # two noisy positions made distant chunk predictions jump.
+                    measured_speed = (centered_times[:, None]*sample_positions).sum(axis=0)/max(centered_times@centered_times, 1e-9)
+                    gain = .75 if sample_times[-1]-sample_times[0] >= 6. else .3
+                    filtered = (1.-gain)*old['vel']+gain*limit_vector(measured_speed, 4.)
                     speed = filtered + (radial_speed-filtered.dot(direction))*direction
                     identity = old['id']
                     available[old_ids == identity] = False
                 track = dict(id=identity, stamp=stamp, pos=absolute,
-                             vel=speed, diameter=report[1, 2])
+                             vel=speed, diameter=report[1, 2], samples=samples)
             used.add(track['id'])
             new_cache[key] = track
             speed = track['vel']
@@ -1014,17 +1361,24 @@ class QualificationPlanner:
 
 
 class FinalNavigator(QualificationPlanner):
-    """500-object final scenario: global corridor + short local control + ship guard.
+    """Guarded launch, rolling predicted chunks, local feedback and ship guard.
 
     Only the base class's radar tracker is reused. Its long inflated velocity
     forecasts are retained as historical code but are not the active planner.
     """
-    def __init__(self):
+    def __init__(self, launch=True):
         super().__init__()
-        self.corridor = CorridorPlanner()
+        self.corridor = RollingChunks()
+        self.launch = GuardedLaunch(launch)
         self.terminal = TerminalApproach()
         self.stopping_distance = 0.
         self.last_phase = 'START'
+        self.last_damage = 0.
+
+    def observe_damage(self, damage):
+        if np.isfinite(damage) and damage > self.last_damage+.1:
+            self.corridor.invalidate('damage feedback')
+        self.last_damage = max(self.last_damage, float(damage))
 
     def command(self, now, loc, vel, target_loc, target_vel, radar,
                 camera=None, cruise_speed=None, maneuver_accel=None, fuel_weight=1.5):
@@ -1045,16 +1399,31 @@ class FinalNavigator(QualificationPlanner):
             depth_ready = station_observed
             if not depth_ready:
                 goal, phase, phase_cap = target_loc+100.*self.terminal.side, 'WAIT_SHIP_CAMERA', 0.
+        launch_goal = self.launch.goal(loc, target_loc)
+        if launch_goal is not None:
+            goal, phase, phase_cap = launch_goal, 'LAUNCH', .9
         self.last_phase = phase
-        if phase == 'CRUISE' or (phase == 'BRAKE_SHIP' and distance > 180.):
-            waypoint = self.corridor.waypoint(now, loc, goal, radar_centers, radar_radii)
+        cruise = CHUNK_CRUISE_SPEED if cruise_speed is None else float(np.clip(cruise_speed, 0., MAX_SPEED))
+        use_chunks = phase == 'CRUISE' or (phase == 'BRAKE_SHIP' and distance > 115.)
+        if use_chunks:
+            waypoint = self.corridor.waypoint(now, loc, vel, goal, centers, speeds, radii, min(cruise, phase_cap))
+            if (phase == 'BRAKE_SHIP' and self.corridor.points
+                    and self.corridor.length(loc, self.corridor.points) < 35.
+                    and np.linalg.norm(goal-self.corridor.points[-1]) < 35.):
+                # A short final curve can end just outside the standoff. Hand
+                # the remaining metres to terminal guidance instead of waiting
+                # forever for a successor which is intentionally not generated.
+                waypoint, use_chunks = goal, False
         else:
             waypoint = goal
         route = waypoint-loc
         length = np.linalg.norm(route)
         direction = route/max(length, 1e-9)
-        cruise = MAX_SPEED if cruise_speed is None else float(np.clip(cruise_speed, 0., MAX_SPEED))
         cap = min(cruise, phase_cap)
+        if phase == 'CRUISE':
+            cap = min(cap, self.corridor.speed_cap)
+            if len(centers) and np.any(np.linalg.norm(centers, axis=1) < radii):
+                cap = min(cruise, max(cap, 2.))
         if phase != 'CRUISE':
             cap = min(cap, np.sqrt(2.*SHIP_BRAKE_ACCEL*length), .35*length)
         elif np.linalg.norm(relative_velocity) > 2. and length > 1.:
@@ -1078,6 +1447,10 @@ class FinalNavigator(QualificationPlanner):
                     candidates.append(target_vel+cap*heading)
         candidates.extend(target_vel+cap*self.directions)
         candidates = np.asarray(candidates)
+        if phase == 'LAUNCH':
+            # A blocked takeoff may slide sideways or wait, but must not choose
+            # an escape thrust back down into the starting terrain.
+            candidates = candidates[((candidates-target_vel)@self.launch.up) >= -1e-9]
         horizon = 15 if phase == 'CRUISE' else 6
         if phase == 'CRUISE' and len(centers):
             ranges = np.linalg.norm(centers, axis=1)
@@ -1100,6 +1473,12 @@ class FinalNavigator(QualificationPlanner):
         clearance, risk, effort = np.full(len(candidates), np.inf), np.zeros(len(candidates)), np.zeros(len(candidates))
         for step in range(horizon):
             accel = VELOCITY_GAIN*(candidates-velocities)
+            if use_chunks and self.corridor.points:
+                trial_location = loc+positions[0]
+                aim = path_lookahead(loc, self.corridor.points, max(45., 8.*np.linalg.norm(velocities[0])), trial_location)
+                bearing = aim-trial_location
+                guided = target_vel+cap*bearing/max(np.linalg.norm(bearing), 1e-9)
+                accel[0] = VELOCITY_GAIN*(guided-velocities[0])
             accel *= np.minimum(1., predictive_accel/np.maximum(np.linalg.norm(accel, axis=1), 1e-9))[:, None]
             end_position = positions+velocities+.5*accel
             effort += np.linalg.norm(accel, axis=1)
@@ -1112,18 +1491,22 @@ class FinalNavigator(QualificationPlanner):
                 clearance = np.minimum(clearance, gap.min(axis=1))
                 risk += np.maximum(-gap, 0.).sum(axis=1)/(1.+.1*step)
             positions, velocities = end_position, velocities+accel
-        hint_distance = np.linalg.norm(positions-route, axis=1)
+        progress_goal = self.corridor.points[-1]-loc if use_chunks and self.corridor.points else route
+        hint_distance = np.linalg.norm(positions-progress_goal, axis=1)
         cost = hint_distance+.6*np.linalg.norm(candidates-self.previous_velocity, axis=1)+.3*effort
         safe = clearance > 0.
         if safe.any():
             cost[~safe] = np.inf
-            best = int(np.argmin(cost))
+            # Retain the committed chunk when safe; use local alternatives for
+            # hazards, not tiny progress differences that cause steering churn.
+            best = 0 if use_chunks and safe[0] else int(np.argmin(cost))
             mode = ('GUIDE' if best == 0 else 'AVOID') if phase == 'CRUISE' else phase
         else:
             best = int(np.argmin(risk+.01*cost))
             mode = 'ESCAPE' if phase == 'CRUISE' else phase
         selected = candidates[best].copy()
-        if not safe.any() and phase != 'CRUISE':
+        ship_guard = phase not in ('CRUISE', 'LAUNCH', 'BRAKE_SHIP') or distance < 100.
+        if not safe.any() and ship_guard:
             selected = target_vel.copy()
             if distance < 90.:
                 selected += .4*(loc-target_loc)/max(distance, 1e-9)
@@ -1132,7 +1515,7 @@ class FinalNavigator(QualificationPlanner):
         # The terminal guard is applied AFTER local selection. It cannot be
         # overridden by an ESCAPE choice driving toward the station at speed.
         outward = (loc-target_loc)/max(distance, 1e-9)
-        if phase != 'CRUISE':
+        if phase not in ('CRUISE', 'LAUNCH'):
             if phase in ('BRAKE_SHIP', 'WAIT_SHIP_CAMERA', 'SURVEY_SHIP'):
                 inward_limit = min(phase_cap, np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-100., 0.)))
             else:
@@ -1219,9 +1602,10 @@ try:
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             score_policy.observe(now, vel, fuel)
+            planner.observe_damage(damage)
             # The final scenario needs decisive motion through the corridor.
             # TerminalApproach and collision checks impose the actual safe speed.
-            cruise = MAX_SPEED
+            cruise = CHUNK_CRUISE_SPEED
             if len(radar) == 0:
                 # Depth only observes a short local range; it cannot justify a
                 # 25 m/s approach into unobserved space if radar is unavailable.
@@ -1253,7 +1637,7 @@ try:
             angular_accel = np.zeros(3)
         SetCommand(accel_body, angular_accel)
         if preview is not None:
-            preview.update(running=True, profile='FINAL_NAV_500', now=now, mode=mode,
+            preview.update(running=True, profile='CHUNK_NAV_12', now=now, mode=mode,
                 speed=float(np.linalg.norm(vel-target_vel)), cruise=cruise,
                 distance=float(np.linalg.norm(target_loc-loc)), fuel=fuel, damage=damage,
                 images=camera_manager.received, rejected=perception.rejected,
@@ -1264,11 +1648,13 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile=FINAL_NAV_500 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile=CHUNK_NAV_12 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
                 f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
                 f'stopDistance={planner.stopping_distance:.1f}m routeNodes={len(planner.corridor.points)} '
+                f'chunk={planner.corridor.chunk_id} nextReady={bool(planner.corridor.pending)} '
+                f'buffer={planner.corridor.buffer_m:.1f}m replans={planner.corridor.replans} launchHeight={planner.launch.height:.1f}m '
                 f'cmdAccel={np.linalg.norm(accel_world):.3f}m/s2 cruise={cruise:.1f}m/s '
                 f'images={camera_manager.received} rejected={perception.rejected} '
                 f'rgbMatches={perception.rgb_associations} depthMatches={perception.depth_associations} '

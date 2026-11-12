@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **FINAL_NAV_500** for `FINAL_SUBMISSION.simconf`.
-See [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) for current navigation and validation.
+The active flight profile is **CHUNK_NAV_12** for `FINAL_SUBMISSION.simconf`.
+See [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) for current navigation and validation.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -110,20 +110,20 @@ To suppress automatic GUI startup, set `EFP_CAMERA_GUI=0` in the environment of 
 process launching the controller. Setting it only in an unrelated terminal does
 not change an already-running Space Teams process.
 
-## The requested 25 m/s profile
+## Current 12 m/s cruise request
 
-The current source identifies itself as **FINAL_NAV_500**. `MAX_SPEED` is 25 m/s;
-runtime requests that ceiling and the corridor/local/terminal planners determine
-the actual desired velocity. With radar unavailable, runtime caps cruise to about 6.57 m/s so
+The current source identifies itself as **CHUNK_NAV_12**. Runtime requests 12 m/s,
+with a hard ceiling of 25 m/s. Rolling chunks, local collision checks and terminal
+braking determine actual desired velocity. With radar unavailable, runtime caps cruise to about 6.57 m/s so
 the depth camera's 220 m range is not used to justify a high-speed blind approach.
 
-The station guard uses 0.065 m/s², making the stopping distance from 25 m/s
-about **4808 m**, before reaction/standoff allowance. A roughly 1306 m mission
+The station guard uses 0.075 m/s², making the stopping distance from 25 m/s
+about **4167 m**, before reaction/standoff allowance. A roughly 1306 m mission
 cannot sustain 25 m/s and stop at the 49 m waypoint under that model.
 Available thruster acceleration and route geometry
 also limit achievable speed. Increasing the cap does not strengthen the jets.
 
-The active planner combines a persistent radar corridor with a 15 s local forecast
+The active planner combines rolling predicted trajectory chunks with a 15 s local forecast
 (up to 30 s for incoming hazards), and a separate station stopping guard. It does
 not inflate all 500 objects over the previous 220 s forecast. Near the ship it
 brakes toward a 100 m standoff, then selects a clear approach toward 49 m.

@@ -1,5 +1,10 @@
 # FINAL_NAV_500 controller
 
+> Historical version. The active controller is now **CHUNK_NAV_12**. See
+> [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) for the guarded launch and rolling
+> predicted trajectories. All source hashes and benchmark numbers below refer
+> to the earlier controller, not the current implementation.
+
 Use this version with **FINAL_SUBMISSION.simconf**. The protected connection and
 camera/command helper prefix in `Controller.py` is unchanged. The installed
 official STU4-Sim is read for verification and testing, never edited.

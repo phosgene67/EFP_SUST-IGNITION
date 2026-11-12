@@ -139,7 +139,7 @@ def run(namespace, allocator, scene, max_time, seed):
             start = time.perf_counter()
             radar = sorted(reports.copy(), key=lambda item: np.linalg.norm(item[0]))
             _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), radar,
-                                                camera=camera, cruise_speed=namespace['MAX_SPEED'])
+                                                camera=camera, cruise_speed=namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']))
             timings.append(time.perf_counter()-start)
         urgent = planner.urgent or np.linalg.norm(target-loc) < 80.
         linear = namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'], urgent=urgent)
@@ -179,7 +179,10 @@ def run(namespace, allocator, scene, max_time, seed):
         if arrived and now+.1 >= arrival_time+30.:
             break
         if tick % 500 == 0:
-            print(f't={now:.0f} phase={mode} d={distance:.0f} speed={np.linalg.norm(vel):.1f} fuel={fuel:.1f}', flush=True)
+            route = planner.corridor if hasattr(planner, 'corridor') else None
+            print(f't={now:.0f} phase={mode} d={distance:.0f} speed={np.linalg.norm(vel):.1f} fuel={fuel:.1f} '
+                  f'chunks={getattr(route, "chunk_id", 0)} replans={getattr(route, "replans", 0)} '
+                  f'buffer={getattr(route, "buffer_m", 0.):.0f} nose={getattr(attitude, "nose_error_deg", 0.):.0f}', flush=True)
     collision = nearest < 0. or hull_gap < 0.
     return dict(arrived=arrived, time_s=round(arrival_time if arrived else now+.1, 2),
                 fuel_kg=round(arrival_fuel if arrived else fuel, 2),
@@ -191,6 +194,7 @@ def run(namespace, allocator, scene, max_time, seed):
                 angular_active_fraction=round(angular_active/(tick+1), 3),
                 linear_active_fraction=round(linear_active/(tick+1), 3),
                 nose_error_p95_deg=round(float(np.percentile(nose_errors, 95)), 2) if nose_errors else None,
+                allocator_retries=allocator.retries,
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not collision else None))
 
@@ -203,14 +207,22 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=100)
     parser.add_argument('--output', default='tests/final_submission_results.json')
     parser.add_argument('--baseline-ref')
+    parser.add_argument('--clear-corridor', action='store_true',
+                        help='Diagnostic only: move debris aside in memory; never edits the official scenario')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     source = ((root/'Controller.py').read_text() if not args.baseline_ref else
               subprocess.check_output(['git', 'show', args.baseline_ref+':Controller.py'], cwd=root, text=True))
     scene = load_scene(args.sim_config)
+    if args.clear_corridor:
+        direction = scene['target']-scene['loc']
+        axis = np.eye(3)[np.argmin(np.abs(direction))]
+        side = np.cross(direction, axis)
+        scene['positions'] += 5000.*side/np.linalg.norm(side)
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
+                  scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
