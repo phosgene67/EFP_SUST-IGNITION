@@ -6,20 +6,23 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-`Controller.py` contains our final-round candidate: radar tracking,
-asynchronous RGB/depth perception from both cameras, local trajectory planning,
-adaptive cruise selection, and coasting/attitude control.
+`Controller.py` contains our **FINAL_NAV_500** candidate for
+`FINAL_SUBMISSION.simconf`: radar tracking, a persistent 3-D route around debris,
+short local collision forecasts, asynchronous RGB/depth from both cameras,
+station braking and a camera-assisted approach to the 49 m scoring boundary.
+See [Final submission controller](FINAL_SUBMISSION.md) for the current design,
+validation evidence and deployment checks.
 
 **Live camera GUI:** copy **both `Controller.py` and `camera_viewer.py`** into the
 installed local `STU4-Solution` folder. The OpenCV window opens automatically during
 the next simulation run, showing top/bottom RGB and depth, detection boxes, and
 flight statistics. Press Q in the viewer to close it while flight continues.
-See [Camera interface and FUSION25 setup](CAMERA_GUI.md) for preview commands and
+See [Camera interface setup](CAMERA_GUI.md) for preview commands and
 troubleshooting. The requested 25 m/s cap remains subject to braking and avoidance;
-the offline comparison did not show a score improvement.
+it is not the speed the installed jets can maintain throughout this short flight.
 
-See [Final system design and validation](FINAL_DESIGN.md) for implementation details,
-offline results, and required live camera calibration. The earlier
+See [Earlier fusion design](FINAL_DESIGN.md) for sensor implementation details,
+historical offline results, and required live camera calibration. The earlier
 [qualification guide](QUALIFICATION.md) preserves the FAST12 development record.
 
 Run the offline tests with Python and NumPy:

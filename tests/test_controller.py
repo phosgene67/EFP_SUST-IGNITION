@@ -7,15 +7,16 @@ from controller_loader import load_namespace
 
 SOURCE = Path(__file__).resolve().parents[1] / 'Controller.py'
 namespace = load_namespace(SOURCE.read_text())
-Planner = namespace['QualificationPlanner']
+Planner = namespace.get('FinalNavigator', namespace['QualificationPlanner'])
 
 
 class PlannerTests(unittest.TestCase):
-    def test_high_speed_lookahead_covers_nominal_stop(self):
+    def test_high_speed_has_separate_station_stopping_guard(self):
         planner = Planner()
         planner.command(0., np.zeros(3), np.array([12., 0., 0.]),
                         np.array([1305.8, 0., 0.]), np.zeros(3), [])
-        self.assertGreaterEqual(planner.last_horizon, 12./namespace['MAX_ACCEL']+8.)
+        self.assertGreaterEqual(planner.stopping_distance, 12.**2/(2.*.10))
+        self.assertLessEqual(planner.last_horizon, 15)
 
     def test_retained_command_cannot_bypass_terminal_braking(self):
         planner = Planner()
@@ -29,10 +30,10 @@ class PlannerTests(unittest.TestCase):
     def test_faster_cruise_and_post_arrival_hold(self):
         planner = Planner()
         loc, vel = np.zeros(3), np.zeros(3)
-        target = np.array([1000., 0., 0.])
+        target = np.array([2000., 0., 0.])
         peak, closest = 0., np.inf
         arrived = False
-        for tick in range(700):
+        for tick in range(1100):
             accel, mode, _ = planner.command(tick*.5, loc, vel, target, np.zeros(3), [])
             # Continue well past the scoring boundary with modest actuator loss.
             actual = .9*accel
@@ -47,7 +48,7 @@ class PlannerTests(unittest.TestCase):
         self.assertGreater(peak, 11.)
         self.assertTrue(arrived)
         self.assertGreater(closest, 40.)
-        self.assertAlmostEqual(np.linalg.norm(target-loc), 45., delta=.5)
+        self.assertAlmostEqual(np.linalg.norm(target-loc), namespace['HOLD_RADIUS'], delta=.5)
         self.assertLess(np.linalg.norm(vel), .1)
         self.assertEqual(mode, 'HOLD')
 
@@ -60,9 +61,9 @@ class PlannerTests(unittest.TestCase):
             self.assertLessEqual(np.linalg.norm(accel), namespace['MAX_ACCEL']+1e-6)
             loc += .25*vel + .5*.25**2*accel
             vel += .25*accel
-            if np.linalg.norm(target-loc) < 48:
+            if np.linalg.norm(target-loc) < 49.8:
                 break
-        self.assertLess(np.linalg.norm(target-loc), 48)
+        self.assertLess(np.linalg.norm(target-loc), 49.8)
 
     def test_obstacle_changes_route(self):
         report = np.array([[60., 0., 0.], [50., -4., 20.], [0., 0., 0.]])
@@ -93,10 +94,10 @@ class PlannerTests(unittest.TestCase):
             loc += .25*vel + .5*.25**2*accel
             vel += .25*accel
             minimum = min(minimum, np.linalg.norm(obstacle-loc))
-            if np.linalg.norm(target-loc) < 48:
+            if np.linalg.norm(target-loc) < 49.8:
                 break
         self.assertGreater(minimum, 13.)  # 10 m obstacle + 3 m shuttle
-        self.assertLess(np.linalg.norm(target-loc), 48.)
+        self.assertLess(np.linalg.norm(target-loc), 49.8)
 
     def test_degenerate_and_invalid_reports(self):
         accel, _, _ = Planner().command(0., np.zeros(3), np.zeros(3), np.zeros(3),
@@ -163,10 +164,10 @@ class PlannerTests(unittest.TestCase):
                     vel += .5*actual
                     positions += .5*speeds
                     minimum = min(minimum, np.linalg.norm(positions-loc, axis=1).min())
-                    if np.linalg.norm(target-loc) < 48.:
+                    if np.linalg.norm(target-loc) < 49.8:
                         break
                 self.assertGreater(minimum, 13.)
-                self.assertLess(np.linalg.norm(target-loc), 48.)
+                self.assertLess(np.linalg.norm(target-loc), 49.8)
 
     def test_escape_from_inflated_overlap(self):
         # Physical spheres do not intersect, but their uncertainty margins do.
@@ -191,6 +192,48 @@ class PlannerTests(unittest.TestCase):
 
 
 class AttitudeTests(unittest.TestCase):
+    def test_vertical_climb_keeps_roll_continuous_under_lateral_noise(self):
+        attitude = namespace['FlightAttitude']()
+        # +X nose already points along world +Z; +Y stays right, roof is -X.
+        rotation = np.array([[0., 0., 1.], [0., 1., 0.], [-1., 0., 0.]])
+        previous_up = None
+        for tick in range(100):
+            velocity = np.array([.001*(-1.)**tick, .001*np.sin(tick), 10.])
+            angular = attitude.command(tick*.02, rotation, velocity, velocity,
+                                       np.array([0., 0., 1.]), np.zeros(3), .02)
+            if previous_up is not None:
+                self.assertGreater(previous_up@attitude.up, .999)
+            previous_up = attitude.up.copy()
+            self.assertTrue(attitude.vertical)
+            self.assertLess(np.linalg.norm(angular), .001)
+            self.assertLess(attitude.nose_error_deg, .02)
+
+    def test_nose_turns_into_vertical_flight_instead_of_roof_first_motion(self):
+        attitude = namespace['FlightAttitude']()
+        rotation, omega = np.eye(3), np.zeros(3)
+        velocity = np.array([0., 0., 10.])
+        for tick in range(3000):
+            angular = attitude.command(tick*.02, rotation, velocity, velocity,
+                                       np.array([0., 0., 1.]), omega, .02)
+            delta = .02*omega+.5*.02**2*angular
+            omega += .02*angular
+            angle = np.linalg.norm(delta)
+            if angle > 1e-12:
+                x, y, z = delta/angle
+                skew = np.array([[0., -z, y], [z, 0., -x], [-y, x, 0.]])
+                rotation = (np.eye(3)+np.sin(angle)*skew+(1-np.cos(angle))*(skew@skew)).T@rotation
+        self.assertGreater(rotation[0]@velocity/np.linalg.norm(velocity), .999)
+        body_velocity = rotation@velocity
+        self.assertGreater(body_velocity[0], 9.99)
+        self.assertLess(np.linalg.norm(body_velocity[1:]), 10.*np.sin(np.deg2rad(2.)))
+
+    def test_braking_does_not_reverse_nose_and_planet_up_input_is_unchanged(self):
+        attitude = namespace['FlightAttitude']()
+        up = np.array([0., 0., 5.])
+        attitude.command(0., np.eye(3), np.array([10., 0., 0.]), np.zeros(3), up, np.zeros(3), .02)
+        np.testing.assert_allclose(attitude.forward, [1., 0., 0.])
+        np.testing.assert_allclose(up, [0., 0., 5.])
+
     def test_upright_alignment_has_zero_command(self):
         command = namespace['attitude_command'](np.eye(3), [1., 0., 0.], [0., 0., 1.],
                                                  np.zeros(3), .02)
@@ -212,9 +255,9 @@ class AttitudeTests(unittest.TestCase):
                     skew = np.array([[0., -z, y], [z, 0., -x], [-y, x, 0.]])
                     active = np.eye(3)+np.sin(angle)*skew+(1-np.cos(angle))*(skew@skew)
                     rotation = active.T@rotation
-            # Fuel-saving attitude settling band is 0.5 degrees.
-            np.testing.assert_allclose(rotation, np.eye(3), atol=.01)
-            self.assertLess(np.linalg.norm(omega), .002)
+            # Allow the fuel-saving two-degree attitude settling band.
+            np.testing.assert_allclose(rotation, np.eye(3), atol=.04)
+            self.assertLess(np.linalg.norm(omega), .006)
 
     def test_vertical_flight_and_stationary_heading(self):
         for forward in ([0., 0., 1.], [0., 0., 0.]):

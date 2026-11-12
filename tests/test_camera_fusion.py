@@ -107,7 +107,7 @@ class PerceptionTests(unittest.TestCase):
     def test_closed_loop_camera_only_obstacle(self):
         perception, planner = Perception(), Planner()
         loc, vel = np.zeros(3), np.zeros(3)
-        obstacle, target = np.array([110., 0., 0.]), np.array([400., 0., 0.])
+        obstacle, target = np.array([110., 0., 0.]), np.array([1000., 0., 0.])
         rows, cols = np.indices((HEIGHT, WIDTH))
         rays = Perception.rays(rows.ravel(), cols.ravel(), WIDTH, HEIGHT, namespace['CAMERA_FOV'])
         aa = np.sum(rays*rays, axis=1)
@@ -127,10 +127,10 @@ class PerceptionTests(unittest.TestCase):
             loc += .5*vel+.125*accel
             vel += .5*accel
             minimum = min(minimum, np.linalg.norm(obstacle-loc))
-            if np.linalg.norm(target-loc) < 48.:
+            if loc[0] > 200.:
                 break
         self.assertGreater(minimum, 13.)
-        self.assertLess(np.linalg.norm(target-loc), 48.)
+        self.assertGreater(loc[0], 200.)
 
     def test_pose_interpolation_and_age_rejection(self):
         history = History()

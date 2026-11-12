@@ -158,6 +158,11 @@ def render_dashboard(frames, metadata):
     text(tag+'  |  '+str(status.get('profile', 'waiting for controller')), 920, 36, cyan, .53)
     text(f"Mode {status.get('mode', '--')}     t {number('now')} s     Speed {number('speed', 2)} m/s"
          f"     Requested cruise {number('cruise')} m/s     Target {number('distance')} m", 24, 70)
+    if status.get('nose_error') is not None:
+        error = float(status['nose_error'])
+        moving = float(status.get('speed') or 0.) >= .5
+        phase = 'NOSE FIRST' if moving and error < 10. else 'ALIGNING' if error >= 10. else 'HEADING HOLD'
+        text(f'{phase}  {error:.1f} deg', 1050, 70, (80, 225, 140) if error < 10. else (80, 170, 255), .47)
     text(f"Fuel {number('fuel', 2)} kg     Damage {number('damage')} J     Accepted frames {status.get('images', 0)}"
          f"     Rejected {status.get('rejected', 0)}     Radar matches: RGB {status.get('rgb_matches', 0)}"
          f" / depth {status.get('depth_matches', 0)}", 24, 99, muted)
@@ -236,7 +241,8 @@ def demo_snapshot():
         info[key] = dict(stamp=42., accepted=True, boxes=boxes)
     metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='FUSION25',
         running=True, now=42.25, mode='AVOID', speed=14.2, cruise=25., distance=680., fuel=28.4,
-        damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2))
+        damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=2.3,
+        body_velocity=[14.19, .1, .2]))
     return frames, metadata
 
 

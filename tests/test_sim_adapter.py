@@ -69,10 +69,13 @@ class AdapterTests(unittest.TestCase):
         commands = self.run_adapter([report])
         linear = [v for name, v in commands if name == 'CommandedAccel']
         self.assertGreater(len(linear), 20)
-        np.testing.assert_allclose(linear[0], [0., -.30, 0.])
+        # The radar fixture lies on the direct route, so A* may request a small
+        # lateral detour. World-forward thrust must still map chiefly to body -Y.
+        self.assertLess(linear[0][1], -.25)
+        self.assertAlmostEqual(np.linalg.norm(linear[0]), .50, places=5)
         for _, value in commands:
             self.assertTrue(np.isfinite(value).all())
-            self.assertLessEqual(np.linalg.norm(value), .300001)
+            self.assertLessEqual(np.linalg.norm(value), .500001)
         np.testing.assert_allclose(linear[-1], np.zeros(3))
 
     def test_empty_radar_holds_position(self):

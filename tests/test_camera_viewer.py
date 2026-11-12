@@ -91,11 +91,12 @@ class FastProfileTests(unittest.TestCase):
             self.assertGreaterEqual(selected, 18.)
         self.assertGreater(policy.choose(5000., 15., 30., 0., maneuvering=True), selected)
 
-    def test_twenty_five_m_s_has_full_braking_lookahead(self):
+    def test_twenty_five_m_s_has_explicit_stopping_distance(self):
         planner = Planner()
         acceleration, _, _ = planner.command(0., np.zeros(3), np.array([25., 0., 0.]),
                                              np.array([20000., 0., 0.]), np.zeros(3), [])
-        self.assertGreaterEqual(planner.last_horizon, 25./namespace['BRAKE_ACCEL']+8.)
+        self.assertGreaterEqual(planner.stopping_distance, 25.**2/(2.*.10))
+        self.assertLessEqual(planner.last_horizon, 15)
         self.assertTrue(np.isfinite(acceleration).all())
 
 

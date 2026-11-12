@@ -78,7 +78,7 @@ def render(namespace, location, rotation, name, objects, yaw, pitch):
 
 
 def run_case(namespace, allocator, seed, final, max_time):
-    planner = namespace['QualificationPlanner']()
+    planner = namespace.get('FinalNavigator', namespace['QualificationPlanner'])()
     rng = np.random.default_rng(seed)
     loc, vel, omega = np.zeros(3), np.zeros(3), np.zeros(3)
     rotation = np.diag([1., -1., -1.])  # Include initial upside-down recovery cost.
@@ -92,6 +92,7 @@ def run_case(namespace, allocator, seed, final, max_time):
     if final:
         policy, vision, history = namespace['ScorePolicy'](), namespace['CameraPerception'](), namespace['PoseHistory']()
     heading = np.array([1., 0., 0.])
+    attitude = namespace['FlightAttitude']() if final and 'FlightAttitude' in namespace else None
     fuel, minimum, peak = 0., np.inf, 0.
     reports, durations = [], []
     pending = []
@@ -131,20 +132,26 @@ def run_case(namespace, allocator, seed, final, max_time):
             kwargs = {}
             if final:
                 policy.observe(now, vel, fuel)
-                cruise = policy.choose(max(0., np.linalg.norm(target-loc)-45.), np.linalg.norm(vel), now, fuel,
-                                       maneuvering=mode == 'ESCAPE' or clearance < 25.)
+                cruise = (namespace['MAX_SPEED'] if 'FinalNavigator' in namespace else
+                          policy.choose(max(0., np.linalg.norm(target-loc)-45.), np.linalg.norm(vel), now, fuel,
+                                        maneuvering=mode == 'ESCAPE' or clearance < 25.))
                 kwargs = dict(camera=vision, cruise_speed=cruise)
             _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), reports, **kwargs)
             durations.append(time.perf_counter()-start)
         if final:
-            linear = namespace['velocity_command'](planner.previous_velocity, vel, .3,
+            linear = namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'],
                         urgent=planner.urgent or np.linalg.norm(target-loc) < 80.)
         else:
             linear = namespace['limit_vector'](.6*(planner.previous_velocity-vel), .3)
         travel = vel if np.linalg.norm(vel) >= 1. else planner.previous_velocity
         if np.linalg.norm(travel) > .2:
             heading = travel.copy()
-        angular = namespace['attitude_command'](rotation, heading, np.array([0., 0., 1.]), omega, .02)
+        if attitude is not None:
+            budget = namespace.get('attitude_budget', lambda linear, maximum: maximum)(linear, .02)
+            angular = attitude.command(now, rotation, vel, planner.previous_velocity,
+                                       np.array([0., 0., 1.]), omega, budget)
+        else:
+            angular = namespace['attitude_command'](rotation, heading, np.array([0., 0., 1.]), omega, .02)
         actual_body, actual_angular, rate = allocator.apply(rotation@linear, angular)
         acceleration = rotation.T@actual_body+np.array([0., 0., -.003])
         loc += .1*vel+.005*acceleration

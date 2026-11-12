@@ -1,0 +1,21 @@
+{
+  "controller_sha256": "3d8bf2c1713e0f29fe3a5063c835466e0709a01560f6ef44b0fd2b5536be4ce0",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 100,
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine. Historical runner stopped at first arrival; no post-arrival diagnostics were collected. No score estimate is valid for this failed arrival.",
+  "result": {
+    "arrived": false,
+    "time_s": 500.0,
+    "fuel_kg": 306.97,
+    "distance_m": 133.76,
+    "peak_speed_m_s": 8.7,
+    "arrival_speed_m_s": null,
+    "min_debris_gap_m": 21.68,
+    "min_proxy_hull_gap_m": 39.92,
+    "phase": "AVOID",
+    "images": 1000,
+    "plan_p95_ms": 841.76,
+    "zero_damage_score_estimate": null
+  }
+}

@@ -1,4 +1,8 @@
-# Camera interface and FUSION25 profile
+# Camera interface
+
+The active flight profile is **FINAL_NAV_500** for `FINAL_SUBMISSION.simconf`.
+See [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) for current navigation and validation.
+The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
 
@@ -27,6 +31,7 @@ This screenshot is a **synthetic demonstration**, not a live mission result.
 | STALE | A panel's last frame is over two simulation seconds old. |
 | REJECTED FOR NAVIGATION | The image arrived but could not be associated with a valid recent pose/time. It is displayed without a detection overlay to aid diagnosis. |
 | Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, and radar associations. |
+| NOSE FIRST / ALIGNING | Angle between body +X (the nose) and the selected travel direction. Below 10° during motion displays NOSE FIRST. |
 | Camera status | Capture error information, if present. |
 
 These boxes come from the actual perception code. They are generic contrast/depth
@@ -107,31 +112,60 @@ not change an already-running Space Teams process.
 
 ## The requested 25 m/s profile
 
-The current source identifies itself as **FUSION25**. `MAX_SPEED` is 25 m/s and
-`MIN_CRUISE_SPEED` is 18 m/s, so the previous economy policy cannot silently select
-an 8 m/s cruise. Actual desired velocity is still reduced for the terminal approach
-and avoidance. With radar unavailable, the runtime caps cruise to about 6.57 m/s so
+The current source identifies itself as **FINAL_NAV_500**. `MAX_SPEED` is 25 m/s;
+runtime requests that ceiling and the corridor/local/terminal planners determine
+the actual desired velocity. With radar unavailable, runtime caps cruise to about 6.57 m/s so
 the depth camera's 220 m range is not used to justify a high-speed blind approach.
 
-Stopping from 25 m/s at the retained conservative 0.12 m/s² braking value takes
-about **2604 m**. A roughly 1306 m mission cannot sustain 25 m/s and stop at the
-45 m waypoint under that model. Available thruster acceleration and route geometry
+The station guard uses 0.065 m/s², making the stopping distance from 25 m/s
+about **4808 m**, before reaction/standoff allowance. A roughly 1306 m mission
+cannot sustain 25 m/s and stop at the 49 m waypoint under that model.
+Available thruster acceleration and route geometry
 also limit achievable speed. Increasing the cap does not strengthen the jets.
 
-The planner now covers conservative braking time plus reaction time, up to 220 s.
-It uses one-second steps for the first 40 s, then two-second steps, with swept
-segment checks and an acceleration-curvature margin. This longer lookahead can
-reduce speed in clutter by rejecting more future trajectories.
+The active planner combines a persistent radar corridor with a 15 s local forecast
+(up to 30 s for incoming hazards), and a separate station stopping guard. It does
+not inflate all 500 objects over the previous 220 s forecast. Near the ship it
+brakes toward a 100 m standoff, then selects a clear approach toward 49 m.
 
-### Validation and tradeoff
+## Nose-first flight and the steep climb
 
-All **46 tests** pass, including transport shutdown/races, all four streams,
+The selected behavior is to point the nose along the actual flight path, including
+a steep climb. The official initial positions give a direct route approximately
+**85.7° above the local horizon**. A nose-up exterior appearance is therefore
+expected on that route; keeping the body level would be a different orientation
+choice. The controller does not rotate the nose toward braking thrust.
+
+`FlightAttitude` now maintains a continuous roll reference near vertical flight.
+Planet-up is nearly parallel to the nose during the climb, so projecting it into a
+roll reference amplified small lateral velocity changes in the previous version.
+The new controller transports the preceding reference through vertical flight,
+uses 20°/30° hysteresis around the vertical cone, and gradually recovers the normal
+horizon reference as the flight path levels out. It follows measured relative
+velocity above 0.5 m/s and the planned direction during low-speed startup.
+
+The GUI shows `NOSE FIRST` below 10° alignment error during motion, or `ALIGNING`
+while turning. Logs include `attitude=NOSE_FOLLOW`, `noseError=...deg` and
+`travelBody=[X,Y,Z]m/s`. Positive X with small Y/Z means actual forward flight;
+a large Z component means the rover is still moving through its roof/bottom while
+turning. A turn takes time because torque/rate limits remain active. If `noseError`
+stays large after the initial turn, preserve those lines with the recording to
+diagnose actual actuator behavior. The controller does not alter the pilot's
+free-look camera or the official simulation configuration.
+
+### Historical FUSION25 validation and tradeoff
+
+The earlier profile passed **49 tests**, including transport shutdown/races, all four streams,
 OpenCV rendering, actual detection overlays, camera-only fallback, and a 25 m/s
-state's full braking lookahead. The dashboard was rendered to PNG and visually
-checked. Native live-window startup still needs the next simulator run.
+state's braking lookahead. The dashboard was rendered to PNG and visually
+checked. New attitude tests integrate a turn into a vertical flight path, verify
+that measured motion becomes body +X, check roll continuity under small lateral
+noise, and ensure braking does not reverse the nose. Live attitude/window behavior
+still needs the next simulator run.
 
 The offline 38-jet comparison against the prior fusion controller is saved in
-`tests/fusion25_benchmark_results.json`:
+`tests/fusion25_benchmark_results.json` (recorded before the NOSE_FOLLOW roll update;
+its source hash identifies that earlier snapshot):
 
 | Case | Prior fusion time / fuel | FUSION25 time / fuel | Prior estimated score | FUSION25 estimated score |
 | --- | --- | --- | ---: | ---: |
