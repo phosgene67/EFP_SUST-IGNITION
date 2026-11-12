@@ -12,10 +12,17 @@ class StopSimulation(Exception):
 
 
 class AdapterTests(unittest.TestCase):
-    def run_adapter(self, radar):
+    def run_adapter(self, radar, camera_feed=False):
         commands = []
         now = [0.]
         st = mock.MagicMock()
+        camera_api = None
+        if camera_feed:
+            from test_camera_fusion import CameraAPI
+            camera_api = CameraAPI()
+            st.camera = camera_api
+            st.OutputMode = camera_api.OutputMode
+            st.CaptureImageProperties = camera_api.CaptureImageProperties
         frame = object()
         shuttle = mock.MagicMock()
         target = mock.MagicMock()
@@ -44,6 +51,8 @@ class AdapterTests(unittest.TestCase):
             as_datetime=lambda: epoch+datetime.timedelta(seconds=now[0]))
         def tick(seconds):
             now[0] += .05
+            if camera_api is not None:
+                camera_api.now = now[0]
             if now[0] > 2.:
                 raise StopSimulation()
         with mock.patch.dict('sys.modules', {'spaceteams': st}), mock.patch('time.sleep', tick):
@@ -75,6 +84,12 @@ class AdapterTests(unittest.TestCase):
         for name, value in commands:
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
+
+    def test_actual_runtime_processes_async_camera_when_radar_missing(self):
+        commands = self.run_adapter([], camera_feed=True)
+        linear = [v for name, v in commands if name == 'CommandedAccel']
+        self.assertTrue(any(np.linalg.norm(v) > .01 for v in linear[:-1]))
+        np.testing.assert_allclose(linear[-1], np.zeros(3))
 
 
 if __name__ == '__main__':

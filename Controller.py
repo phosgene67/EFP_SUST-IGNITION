@@ -65,8 +65,11 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 #########################################################
 
 
-# Qualification baseline. All navigation vectors below use the Phobos frame.
+# Final-round candidate. All navigation vectors below use the Phobos frame.
 # Tuning values require validation with the official simulator/jet allocator.
+from collections import deque
+from threading import Lock
+
 MAX_SPEED = 12.0
 MAX_ACCEL = 0.30
 BRAKE_ACCEL = 0.12
@@ -74,12 +77,353 @@ VELOCITY_GAIN = 0.6
 HORIZON = 40
 PLAN_PERIOD = 0.5
 HOLD_RADIUS = 45.0
+CAMERA_WIDTH = 96
+CAMERA_HEIGHT = 64
+CAMERA_FOV = 80.0
+CAMERA_PERIOD = 0.25
+CAMERA_MAX_AGE = 2.0
+CAMERA_MAX_RANGE = 220.0
 
 
 def limit_vector(vector, maximum):
     vector = np.asarray(vector, dtype=float)
     magnitude = np.linalg.norm(vector)
     return vector * min(1.0, maximum / max(magnitude, 1e-12))
+
+
+class PoseHistory:
+    """Own-vehicle poses only; no hidden obstacle state is accessed."""
+    def __init__(self):
+        self.samples = deque(maxlen=900)
+
+    def add(self, now, location, rotation):
+        if self.samples and now < self.samples[-1][0]:
+            self.samples.clear()
+        self.samples.append((float(now), np.asarray(location).copy(), np.asarray(rotation).copy()))
+
+    def sample(self, stamp):
+        if not self.samples:
+            return None
+        times = np.array([row[0] for row in self.samples])
+        index = int(np.argmin(np.abs(times-stamp)))
+        # A capture without a nearby known pose cannot safely become occupancy.
+        if abs(times[index]-stamp) > 0.15:
+            return None
+        position = np.array([np.interp(stamp, times, [row[1][axis] for row in self.samples])
+                             for axis in range(3)])
+        return position, self.samples[index][2]
+
+
+def camera_rotation(yaw_deg, pitch_deg):
+    yaw, pitch = np.deg2rad([yaw_deg, pitch_deg])
+    cy, sy, cp, sp = np.cos(yaw), np.sin(yaw), np.cos(pitch), np.sin(pitch)
+    return np.array([[cp*cy, cp*sy, -sp], [-sy, cy, 0.], [sp*cy, sp*sy, cp]])
+
+
+def connected_regions(values, valid, relative_jump=0.12):
+    """Four-connected depth/brightness regions; bounded by the small image size."""
+    height, width = valid.shape
+    visited = np.zeros_like(valid, dtype=bool)
+    regions = []
+    for row, col in zip(*np.nonzero(valid)):
+        if visited[row, col]:
+            continue
+        visited[row, col] = True
+        stack, region = [(row, col)], []
+        while stack:
+            y, x = stack.pop()
+            region.append((y, x))
+            for yy, xx in ((y-1, x), (y+1, x), (y, x-1), (y, x+1)):
+                if 0 <= yy < height and 0 <= xx < width and valid[yy, xx] and not visited[yy, xx]:
+                    if abs(values[yy, xx]-values[y, x]) <= max(2., relative_jump*values[y, x]):
+                        visited[yy, xx] = True
+                        stack.append((yy, xx))
+        if len(region) >= 2:
+            regions.append(np.asarray(region))
+    return regions
+
+
+class CameraPerception:
+    """Metric occupied volumes from depth; RGB supplies bearing-only detections."""
+    def __init__(self):
+        self.occupied = {}
+        self.visual = {}
+        self.frames = 0
+        self.rejected = 0
+        self.rgb_associations = 0
+        self.depth_associations = 0
+        self.last_uncertainty = np.empty(0)
+
+    @staticmethod
+    def rays(rows, cols, width, height, fov):
+        focal = height/(2.*np.tan(np.deg2rad(fov)*0.5))
+        # Linear scene depth is camera-forward X, not distance along each ray.
+        return np.column_stack((np.ones(len(rows)), (cols+0.5-width/2.)/focal,
+                                -(rows+0.5-height/2.)/focal))
+
+    def ingest(self, name, mode, pixels, stamp, now, pose, yaw, pitch):
+        if pose is None or not np.isfinite(stamp) or not -0.15 <= now-stamp <= CAMERA_MAX_AGE:
+            self.rejected += 1
+            return False
+        location, body_rotation = pose
+        camera_to_world = body_rotation.T @ camera_rotation(yaw, pitch).T
+        offset = np.array([1.27, 0., .9]) if name == 'top' else np.array([1.675, 0., -1.025])
+        origin = location + body_rotation.T @ offset
+        if mode == 'rgb':
+            rgb = np.asarray(pixels, dtype=float)
+            if rgb.shape != (CAMERA_HEIGHT, CAMERA_WIDTH, 3) or not np.isfinite(rgb).all():
+                self.rejected += 1
+                return False
+            gray = rgb.mean(axis=2)
+            # Contrast against black space. Dark surfaces remain visible to depth.
+            mask = gray > max(10., float(np.percentile(gray, 30))+12.)
+            detections = []
+            for region in connected_regions(gray, mask, relative_jump=1.):
+                if len(region) < 3:
+                    continue
+                y, x = region.mean(axis=0)
+                ray = self.rays(np.array([y]), np.array([x]), CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FOV)[0]
+                bearing = camera_to_world @ (ray/np.linalg.norm(ray))
+                spread = np.deg2rad(CAMERA_FOV)*np.sqrt(len(region))/CAMERA_HEIGHT
+                detections.append((origin, bearing, spread))
+            self.visual[name] = (stamp, detections[:48])
+        else:
+            depth = np.asarray(pixels, dtype=float)
+            if depth.shape != (CAMERA_HEIGHT, CAMERA_WIDTH):
+                self.rejected += 1
+                return False
+            depth = depth*0.01  # OutputMode.Depth_cm returns centimetres.
+            valid = np.isfinite(depth) & (depth > 4.) & (depth < CAMERA_MAX_RANGE)
+            volumes = []
+            for region in connected_regions(depth, valid):
+                # Tile broad surfaces instead of enclosing a whole terrain plane
+                # in a huge sphere that could incorrectly contain the rover.
+                tile_ids = ((region[:, 0]//12)*8 + region[:, 1]//12
+                            if np.ptp(region[:, 0]) >= 12 or np.ptp(region[:, 1]) >= 12
+                            else np.zeros(len(region), dtype=int))
+                for tile in np.unique(tile_ids):
+                    pixels_in_tile = region[tile_ids == tile]
+                    rows, cols = pixels_in_tile[:, 0], pixels_in_tile[:, 1]
+                    rays = self.rays(rows, cols, CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FOV)
+                    points = rays*depth[rows, cols, None]
+                    lower, upper = points.min(axis=0), points.max(axis=0)
+                    center = .5*(lower+upper)
+                    # Radius encloses surfaces, pixels, pose error and rover.
+                    radius = .5*np.linalg.norm(upper-lower)+3.+3.+np.linalg.norm(center)*.02
+                    volumes.append((origin+camera_to_world@center, radius))
+            # Keep the closest regions; broad foreground terrain remains occupied.
+            volumes.sort(key=lambda item: np.linalg.norm(item[0]-origin)-item[1])
+            previous = self.occupied.get(name)
+            if volumes or previous is None or stamp-previous[0] > CAMERA_MAX_AGE:
+                self.occupied[name] = (stamp, volumes[:96])
+        self.frames += 1
+        return True
+
+    def obstacles(self, now, location, radar_centers, radar_speeds, radar_radii):
+        centers, speeds, radii = [], [], []
+        self.rgb_associations = 0
+        self.depth_associations = 0
+        uncertainty = []
+        absolute_radar = np.asarray(radar_centers).reshape(-1, 3)+location
+        # RGB detections become metric only through a radar association. They may
+        # strengthen an occupied bound, but never create a made-up monocular range.
+        for stamp, detections in self.visual.values():
+            if not 0. <= now-stamp <= CAMERA_MAX_AGE:
+                continue
+            for origin, bearing, spread in detections:
+                rays = absolute_radar-origin
+                ranges = np.linalg.norm(rays, axis=1)
+                angles = np.arccos(np.clip((rays@bearing)/np.maximum(ranges, 1e-9), -1., 1.))
+                matched = np.flatnonzero(angles < np.minimum(.2, .04+spread*.5))
+                if len(matched):
+                    index = int(matched[np.argmin(ranges[matched])])
+                    self.rgb_associations += 1
+                    centers.append(radar_centers[index])
+                    speeds.append(radar_speeds[index])
+                    radii.append(radar_radii[index]+1.)
+                    uncertainty.append(1.)
+        for stamp, volumes in self.occupied.values():
+            age = now-stamp
+            if not 0. <= age <= CAMERA_MAX_AGE:
+                continue
+            for absolute, radius in volumes:
+                relative = absolute-location
+                velocity = np.zeros(3)
+                rate = 2.
+                if len(radar_centers):
+                    separation = np.linalg.norm(radar_centers-relative, axis=1)
+                    matches = np.flatnonzero(separation < radar_radii+radius)
+                    if len(matches):
+                        index = int(matches[np.argmin(separation[matches])])
+                        velocity = radar_speeds[index]
+                        self.depth_associations += 1
+                        rate = 1.
+                        if separation[index]+radius+2.*age <= radar_radii[index]:
+                            continue  # This entire volume is already covered.
+                centers.append(relative+age*velocity)
+                speeds.append(velocity)
+                radii.append(radius+2.*age)
+                uncertainty.append(rate)
+        self.last_uncertainty = np.asarray(uncertainty)
+        return (np.asarray(centers).reshape(-1, 3), np.asarray(speeds).reshape(-1, 3),
+                np.asarray(radii))
+
+
+class CameraManager:
+    """Bounded asynchronous capture. The steering thread never waits for images."""
+    def __init__(self, api, cameras, pan, epoch):
+        self.api, self.cameras, self.pan, self.epoch = api, cameras, pan, epoch
+        self.queue = deque(maxlen=8)
+        self.lock = Lock()
+        self.pending = {}
+        self.failures = dict(top=0, bottom=0)
+        self.sequence = dict(top=0, bottom=0)
+        self.next_capture = -np.inf
+        self.token = 30000
+        self.generation = 0
+        self.received = 0
+        self.error = ''
+        self.turn = 0
+
+    def reset(self):
+        with self.lock:
+            self.generation += 1
+            self.queue.clear()
+            # Retain outstanding requests until completion/timeout, so resets
+            # cannot multiply subscriptions. Old-generation images are ignored.
+        for request in self.pending.values():
+            request['sent'] = -np.inf
+        self.next_capture = -np.inf
+
+    def tick(self, now, travel_body):
+        for name, item in list(self.pending.items()):
+            if now-item['sent'] > 3.:
+                self.failures[name] += 1
+                del self.pending[name]
+                self.error = name+': capture timeout'
+        if now < self.next_capture:
+            return
+        names = ('top', 'bottom')
+        name = names[self.turn % 2]
+        self.turn += 1
+        if name in self.pending or self.failures[name] >= 3:
+            self.next_capture = now+CAMERA_PERIOD
+            return
+        direction = np.asarray(travel_body)
+        yaw = float(np.clip(np.rad2deg(np.arctan2(direction[1], direction[0])), -89., 89.))
+        pitch = float(np.rad2deg(np.arctan2(-direction[2], max(np.linalg.norm(direction[:2]), 1e-9))))
+        pitch = float(np.clip(pitch, -50., 0.) if name == 'top' else np.clip(pitch, 0., 50.))
+        mode = 'rgb' if self.sequence[name] % 3 == 2 else 'depth'
+        self.sequence[name] += 1
+        self.token += 1
+        token, generation = self.token, self.generation
+        context = dict(token=token, generation=generation, name=name, mode=mode,
+                       yaw=yaw, pitch=pitch, sent=now)
+        self.pending[name] = context
+
+        def received(image):
+            with self.lock:
+                if generation == self.generation:
+                    self.queue.append((context, image))
+        try:
+            self.pan(self.cameras[name], yaw, pitch)
+            properties = self.api.CaptureImageProperties()
+            properties.ResolutionX, properties.ResolutionY = CAMERA_WIDTH, CAMERA_HEIGHT
+            properties.FOV, properties.nonphys_EV = CAMERA_FOV, 10.
+            properties.output_mode = (self.api.OutputMode.Depth_cm if mode == 'depth'
+                                      else self.api.OutputMode.RGB_LDR_sRGB)
+            properties.CaptureID = token
+            # Subscribe before publishing: the caller's CaptureID is preserved.
+            self.api.camera.OnImageReceived(token, received)
+            self.api.camera.CaptureImage(self.cameras[name], properties)
+        except Exception as exc:
+            self.failures[name] += 1
+            self.pending.pop(name, None)
+            self.error = type(exc).__name__+': '+str(exc)[:100]
+        self.next_capture = now+CAMERA_PERIOD
+
+    def drain(self, now, history, perception):
+        with self.lock:
+            images = list(self.queue)
+            self.queue.clear()
+        for context, image in images:
+            name = context['name']
+            active = self.pending.get(name)
+            if active is None or active['token'] != context['token']:
+                continue
+            self.pending.pop(name, None)
+            try:
+                stamp = (image.get_timestamp().as_datetime()-self.epoch).total_seconds()
+                props = image.properties
+                if props.ResolutionX != CAMERA_WIDTH or props.ResolutionY != CAMERA_HEIGHT:
+                    raise ValueError('unexpected camera resolution')
+                if abs(float(props.FOV)-CAMERA_FOV) > .1:
+                    raise ValueError('unexpected camera field of view')
+                if context['mode'] == 'depth':
+                    pixels = np.asarray(image.as_f32().Pixels).reshape(CAMERA_HEIGHT, CAMERA_WIDTH)
+                else:
+                    rgb = image.as_RGB8()
+                    pixels = np.stack([np.asarray(channel).reshape(CAMERA_HEIGHT, CAMERA_WIDTH)
+                                       for channel in (rgb.PixelsR, rgb.PixelsG, rgb.PixelsB)], axis=2)
+                accepted = perception.ingest(name, context['mode'], pixels, stamp, now,
+                                             history.sample(stamp), context['yaw'], context['pitch'])
+                if accepted:
+                    self.received += 1
+                else:
+                    self.error = name+': rejected stale/unposed image'
+            except Exception as exc:
+                self.failures[name] += 1
+                self.error = type(exc).__name__+': '+str(exc)[:100]
+
+
+class ScorePolicy:
+    """Bounded time/fuel tradeoff estimates, calibrated from own-vehicle telemetry."""
+    def __init__(self):
+        self.fuel_per_dv = 6.0
+        self.acceleration = .14
+        self.previous = None
+        self.speed = MAX_SPEED
+        self.estimated_score = 0.
+
+    def observe(self, now, velocity, fuel):
+        velocity = np.asarray(velocity)
+        if self.previous is not None:
+            old_time, old_velocity, old_fuel = self.previous
+            dt = now-old_time
+            dv = np.linalg.norm(velocity-old_velocity)
+            spent = fuel-old_fuel
+            if .3 <= dt <= 2. and dv > .05 and spent > .01:
+                self.fuel_per_dv = .95*self.fuel_per_dv+.05*np.clip(spent/dv, 4.4, 18.)
+                self.acceleration = .95*self.acceleration+.05*np.clip(dv/dt, .06, .30)
+        self.previous = now, velocity.copy(), float(fuel)
+
+    def choose(self, distance, relative_speed, elapsed, fuel, maneuvering=False):
+        choices = np.arange(8., MAX_SPEED+.1, 1.)
+        accel = max(.06, min(.20, self.acceleration))
+        durations = distance/choices + np.abs(choices-relative_speed)/(2.*accel) + choices/(2.*BRAKE_ACCEL)
+        # Useful translation impulse, terminal braking, and a bounded allowance
+        # for correcting gravity. Historical fuel is included in the score.
+        delta_v = np.abs(choices-relative_speed)+choices+.006*durations
+        projected = 100.*(120./np.maximum(elapsed+durations, 1.)
+                          -(fuel+self.fuel_per_dv*delta_v)/75.+.5)
+        best = int(np.argmax(projected))
+        requested = float(choices[best])
+        # The simple score forecast omits time/fuel spent dodging moving debris.
+        # In a constrained passage retain maneuver progress instead of slowing
+        # based on a free-space fuel estimate that has not modelled that passage.
+        if maneuvering:
+            requested = MAX_SPEED
+        # Keep speed decisions stable; route changes should respond to obstacles.
+        self.speed += float(np.clip(requested-self.speed, -.5, .5))
+        self.estimated_score = float(projected[best])
+        return self.speed
+
+
+def velocity_command(desired, measured, maximum, urgent=False):
+    error = np.asarray(desired)-np.asarray(measured)
+    if not urgent and np.linalg.norm(error) < .12:
+        return np.zeros(3)  # Coast rather than firing jets for tiny corrections.
+    return limit_vector(VELOCITY_GAIN*error, maximum)
 
 
 def attitude_command(world_to_body, forward_world, up_world, omega_body, maximum):
@@ -125,6 +469,8 @@ def attitude_command(world_to_body, forward_world, up_world, omega_body, maximum
     else:
         rotation = angle*skew/(2.0*np.sin(angle))
     desired_rate = limit_vector(0.4*rotation, 0.2)
+    if angle < np.deg2rad(.5) and np.linalg.norm(omega) < .003:
+        return np.zeros(3)
     return limit_vector(desired_rate-omega, maximum)
 
 
@@ -137,6 +483,7 @@ class QualificationPlanner:
         self.previous_velocity = np.zeros(3)
         self.last_horizon = HORIZON
         self.last_delta_v = 0.0
+        self.urgent = False
         # Deterministic sphere samples plus an explicit goal candidate.
         k = np.arange(48)
         z = 1.0 - 2.0 * (k + 0.5) / len(k)
@@ -226,7 +573,8 @@ class QualificationPlanner:
         return (np.asarray(centers).reshape(-1, 3),
                 np.asarray(speeds).reshape(-1, 3), np.asarray(radii))
 
-    def command(self, now, loc, vel, target_loc, target_vel, radar):
+    def command(self, now, loc, vel, target_loc, target_vel, radar,
+                camera=None, cruise_speed=None, maneuver_accel=None, fuel_weight=1.5):
         loc, vel = np.asarray(loc, dtype=float), np.asarray(vel, dtype=float)
         error = np.asarray(target_loc, dtype=float)-loc
         distance = np.linalg.norm(error)
@@ -241,9 +589,24 @@ class QualificationPlanner:
         error = error + HOLD_RADIUS*approach
         goal_distance = np.linalg.norm(error)
         direction = error / max(goal_distance, 1e-9)
-        speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*goal_distance), 0.4*goal_distance)
+        cruise = MAX_SPEED if cruise_speed is None else float(np.clip(cruise_speed, 0., MAX_SPEED))
+        predictive_accel = MAX_ACCEL if maneuver_accel is None else float(np.clip(maneuver_accel, .08, MAX_ACCEL))
+        speed = min(cruise, np.sqrt(2*BRAKE_ACCEL*goal_distance), 0.4*goal_distance)
         desired = np.asarray(target_vel) + speed*direction
         centers, speeds, radii = self.obstacles(now, loc, vel, radar)
+        uncertainty_rates = np.ones(len(centers))
+        if camera is not None:
+            camera_centers, camera_speeds, camera_radii = camera.obstacles(now, loc, centers, speeds, radii)
+            centers = np.vstack((centers, camera_centers))
+            speeds = np.vstack((speeds, camera_speeds))
+            radii = np.concatenate((radii, camera_radii))
+            uncertainty_rates = np.concatenate((uncertainty_rates, camera.last_uncertainty))
+        self.urgent = False
+        if len(centers):
+            ranges = np.linalg.norm(centers, axis=1)
+            gaps = ranges-radii
+            closing = np.sum((vel-speeds)*centers, axis=1)/np.maximum(ranges, 1e-9)
+            self.urgent = bool(np.any((gaps < 3.) | ((closing > 0.) & (gaps < 3.*closing))))
         # Retained/coasting commands must obey the current terminal speed limit,
         # rather than carrying an old high-speed command into the holding area.
         previous = np.asarray(target_vel)+limit_vector(self.previous_velocity-target_vel, speed)
@@ -265,15 +628,16 @@ class QualificationPlanner:
         candidates = np.asarray(candidates)
         # Cover the nominal full-stop time plus reaction time at higher speeds.
         # Retain a bounded horizon so uncertainty/CPU cost cannot grow unbounded.
-        horizon = int(np.clip(np.ceil(np.linalg.norm(vel-target_vel)/MAX_ACCEL)+8, HORIZON, 65))
+        horizon = int(np.clip(np.ceil(np.linalg.norm(vel-target_vel)/predictive_accel)+8, HORIZON, 75))
         self.last_horizon = horizon
         # Conservative reachability filter avoids spending rollout time on distant
         # objects; includes current speed so an overspeed shuttle stays protected.
         if len(centers):
             travel = horizon * max(np.linalg.norm(vel), np.linalg.norm(candidates, axis=1).max())
             relevant = np.linalg.norm(centers, axis=1) <= (
-                travel + horizon*np.linalg.norm(speeds, axis=1) + radii + horizon)
+                travel + horizon*np.linalg.norm(speeds, axis=1) + radii + horizon*uncertainty_rates)
             centers, speeds, radii = centers[relevant], speeds[relevant], radii[relevant]
+            uncertainty_rates = uncertainty_rates[relevant]
         count = len(candidates)
         trial_vel = np.tile(vel, (count, 1))
         trial_pos = np.zeros((count, 3))
@@ -287,10 +651,10 @@ class QualificationPlanner:
             # during real flight, so it does not predict flying through arrival.
             remaining = error+step*np.asarray(target_vel)-trial_pos[0]
             length = np.linalg.norm(remaining)
-            guided_speed = min(MAX_SPEED, np.sqrt(2*BRAKE_ACCEL*length), 0.4*length)
+            guided_speed = min(cruise, np.sqrt(2*BRAKE_ACCEL*length), 0.4*length)
             guided_velocity = np.asarray(target_vel)+guided_speed*remaining/max(length, 1e-9)
             accel[0] = VELOCITY_GAIN*(guided_velocity-trial_vel[0])
-            accel *= np.minimum(1.0, MAX_ACCEL/np.maximum(np.linalg.norm(accel, axis=1), 1e-12))[:, None]
+            accel *= np.minimum(1.0, predictive_accel/np.maximum(np.linalg.norm(accel, axis=1), 1e-12))[:, None]
             delta_v += np.linalg.norm(accel, axis=1)
             next_pos = trial_pos + trial_vel + 0.5*accel
             if len(centers):
@@ -298,7 +662,8 @@ class QualificationPlanner:
                 end = centers[None, :, :] + (step+1)*speeds[None, :, :] - next_pos[:, None, :]
                 delta = end-start
                 fraction = np.clip(-np.sum(start*delta, axis=2)/np.maximum(np.sum(delta*delta, axis=2), 1e-12), 0, 1)
-                gap = np.linalg.norm(start+fraction[:, :, None]*delta, axis=2)-radii[None, :]-1.0*(step+1)
+                gap = (np.linalg.norm(start+fraction[:, :, None]*delta, axis=2)-radii[None, :]
+                       -uncertainty_rates[None, :]*(step+1))
                 clearance = np.minimum(clearance, gap.min(axis=1))
                 # Accumulated penetration distinguishes escape directions even
                 # when all candidates share the same initially negative clearance.
@@ -307,7 +672,7 @@ class QualificationPlanner:
             trial_vel += accel
         cost = (np.linalg.norm(trial_pos-error-horizon*np.asarray(target_vel), axis=1)
                 + 1.5*np.linalg.norm(candidates-self.previous_velocity, axis=1)
-                + 1.5*delta_v)
+                + float(np.clip(fuel_weight, 1.5, 30.))*delta_v)
         safe = clearance > 0.0
         if safe.any():
             cost[~safe] = np.inf
@@ -321,7 +686,8 @@ class QualificationPlanner:
             mode = 'ESCAPE'
         self.previous_velocity = candidates[best].copy()
         self.last_delta_v = float(delta_v[best])
-        return (limit_vector(VELOCITY_GAIN*(candidates[best]-vel), MAX_ACCEL),
+        return (velocity_command(candidates[best], vel, MAX_ACCEL,
+                                 urgent=self.urgent or distance < 80.),
                 mode, float(clearance[best]))
 
 
@@ -330,6 +696,10 @@ heading_world = None
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
 radar_epoch = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
+pose_history = PoseHistory()
+perception = CameraPerception()
+camera_manager = CameraManager(st, dict(top=topCamera, bottom=bottomCamera), PanTiltCamera, radar_epoch)
+score_policy = ScorePolicy()
 last_plan = -np.inf
 last_log = -np.inf
 accel_world = np.zeros(3)
@@ -342,6 +712,10 @@ try:
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
         if now < last_plan:
             planner = QualificationPlanner()
+            pose_history = PoseHistory()
+            perception = CameraPerception()
+            score_policy = ScorePolicy()
+            camera_manager.reset()
             heading_world = None
             last_plan = last_log = -np.inf
         state = shuttle.getLocVelAcc()
@@ -354,6 +728,16 @@ try:
             SetCommand(np.zeros(3), np.zeros(3))
             last_plan = -np.inf
             continue
+        body_dcm = np.asarray(shuttle.getRotation().DCM_WRT(phobosFrame))
+        if body_dcm.shape != (3, 3) or not np.isfinite(body_dcm).all():
+            SetCommand(np.zeros(3), np.zeros(3))
+            continue
+        pose_history.add(now, loc, body_dcm)
+        camera_manager.drain(now, pose_history, perception)
+        sightline = vel-target_vel
+        if np.linalg.norm(sightline) < 1.:
+            sightline = target_loc-loc
+        camera_manager.tick(now, body_dcm@sightline)
         if now-last_plan >= PLAN_PERIOD:
             # Read the entire radar list; stale sorting can hide an approaching object.
             radar = GetNearestDebrisLocations(10000)
@@ -361,16 +745,25 @@ try:
             radar = [report for report in radar if report.shape == (3, 3)
                      and np.isfinite(report).all() and np.linalg.norm(report[0]) > 1e-6
                      and -5.0 <= now-report[2, 0] <= 10.0]
-            if len(radar) == 0:
+            fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
+            score_policy.observe(now, vel, fuel)
+            cruise = score_policy.choose(max(0., np.linalg.norm(target_loc-loc)-HOLD_RADIUS),
+                                         np.linalg.norm(vel-target_vel), now, fuel,
+                                         maneuvering=mode == 'ESCAPE' or clearance < 25.)
+            fresh_depth = any(0. <= now-stamp <= CAMERA_MAX_AGE and len(regions)
+                              for stamp, regions in perception.occupied.values())
+            if len(radar) == 0 and not fresh_depth:
                 planner.previous_velocity = target_vel.copy()
                 mode, clearance = 'WAIT_RADAR', float('nan')
             else:
                 accel_world, mode, clearance = planner.command(
-                    now, loc, vel, target_loc, target_vel, radar)
+                    now, loc, vel, target_loc, target_vel, radar, camera=perception,
+                    cruise_speed=cruise)
             last_plan = now
         # The planner runs at 2 Hz; the velocity servo runs every control tick.
         # Reusing a fixed acceleration for the whole planning period can overshoot.
-        accel_world = limit_vector(VELOCITY_GAIN*(planner.previous_velocity-vel), linear_limit)
+        accel_world = velocity_command(planner.previous_velocity, vel, linear_limit,
+                                       urgent=planner.urgent or np.linalg.norm(target_loc-loc) < 80.)
         accel_body = st.frames.FramedVector(accel_world, phobosFrame).ExprIn(shuttleFrame)
         omega_body = np.asarray(shuttle.getAngVelocity().WRT(phobosFrame).ExprIn(shuttleFrame))
         # Face the actual direction of travel, not the braking thrust vector.
@@ -380,7 +773,6 @@ try:
             travel_world = planner.previous_velocity-target_vel
         if np.linalg.norm(travel_world) >= 0.2:
             heading_world = travel_world.copy()
-        body_dcm = np.asarray(shuttle.getRotation().DCM_WRT(phobosFrame))
         if heading_world is None:
             heading_world = body_dcm[0].copy()
         # Phobos-centred position defines the local outward/up direction.
@@ -395,11 +787,15 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile=FAST12 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile=FINAL_FUSION t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
                 f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
-                f'cmdAccel={np.linalg.norm(accel_world):.3f}m/s2', 'IgnitionController', st.Severity.Info)
+                f'cmdAccel={np.linalg.norm(accel_world):.3f}m/s2 cruise={score_policy.speed:.1f}m/s '
+                f'images={camera_manager.received} rejected={perception.rejected} '
+                f'rgbMatches={perception.rgb_associations} depthMatches={perception.depth_associations} '
+                f'cameraFault={camera_manager.error or "none"}',
+                'IgnitionController', st.Severity.Info)
             last_log = now
 finally:
     try:

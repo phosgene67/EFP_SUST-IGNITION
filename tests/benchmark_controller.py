@@ -11,18 +11,11 @@ from pathlib import Path
 import subprocess
 import time
 import numpy as np
+from controller_loader import load_namespace
 
 
 def load_planner(source):
-    tree = ast.parse(source)
-    nodes = [n for n in tree.body if
-             (isinstance(n, (ast.FunctionDef, ast.ClassDef)) and
-              n.name in ('limit_vector', 'QualificationPlanner')) or
-             (isinstance(n, ast.Assign) and all(isinstance(t, ast.Name) and t.id.isupper()
-                                              for t in n.targets))]
-    namespace = {'np': np}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), '<planner>', 'exec'), namespace)
-    return namespace['QualificationPlanner']
+    return load_namespace(source)['QualificationPlanner']
 
 
 def run_case(planner_type, seed, delivery):
