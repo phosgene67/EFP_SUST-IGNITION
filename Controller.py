@@ -1036,12 +1036,13 @@ class FinalNavigator(QualificationPlanner):
             cc, cv, cr = camera.obstacles(now, loc, centers, speeds, radii)
             centers, speeds = np.vstack((centers, cc)), np.vstack((speeds, cv))
             radii = np.r_[radii, cr]
+        station_observed = camera is not None and camera.observes(now, target_loc)
         goal, phase, phase_cap = self.terminal.goal(now, loc, vel, target_loc, target_vel, centers, radii)
         distance = np.linalg.norm(target_loc-loc)
         relative_velocity = vel-target_vel
         self.stopping_distance = float(np.linalg.norm(relative_velocity)**2/(2.*SHIP_BRAKE_ACCEL))
         if camera is not None and phase in ('FINAL_CREEP', 'SURVEY_SHIP'):
-            depth_ready = camera.observes(now, target_loc)
+            depth_ready = station_observed
             if not depth_ready:
                 goal, phase, phase_cap = target_loc+100.*self.terminal.side, 'WAIT_SHIP_CAMERA', 0.
         self.last_phase = phase

@@ -48,16 +48,18 @@ a separate radial limit approaching 49 m. Near-station forecasts use 6 seconds.
 The station speed guard runs **after** local candidate selection, so an avoidance
 choice cannot override it. If no terminal trajectory is safe, the controller
 stops or retreats instead of charging through the ship. Fresh depth must cover
-the station bearing; otherwise `WAIT_SHIP_CAMERA` holds the approach. These are
+the station bearing; otherwise `WAIT_SHIP_CAMERA` holds the approach and turns
+the stopped rover toward the ship so its limited gimbals can reacquire it. These are
 collision precautions, not proof that unseen hull geometry is safe.
 
 ## Tests and evidence
 
-The unit/integration suite passes **55 tests**. It covers delayed/noisy moving
+The unit/integration suite passes **56 tests**. It covers delayed/noisy moving
 radar reports, identity changes after sorting, camera-only obstacles, API errors,
 actual runtime frame conversions and command limits, GUI transport/rendering,
 nose/roll behavior, global corridor clearance, station braking, an alternate
-arrival side, and stale or misdirected station depth.
+arrival side, stale or misdirected station depth, and body turning to recover
+camera coverage while holding position.
 
 ```powershell
 python -B -m unittest discover -s tests -v
@@ -77,6 +79,22 @@ The previous committed controller (`11d4759`) failed to arrive within 500 s in
 the same seed-100 offline setup, ending about 134 m from the ship after using
 306.97 kg fuel. That historical result was recorded before the harness added
 post-arrival diagnostics; it is not an official simulation score.
+
+Current 500-object model results are saved in
+`tests/final_submission_results.json` and
+`tests/final_submission_seed101_results.json`:
+
+| Noise seed | Arrival time | Fuel at arrival | Peak speed | Speed entering 50 m | Modeled contact | Hold after arrival |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| 100 | 363.5 s | 202.28 kg | 9.09 m/s | 0.27 m/s | None | 30 s |
+| 101 | 382.5 s | 211.74 kg | 9.30 m/s | 0.32 m/s | None | 30 s |
+
+These results establish safe arrival in this limited model, **not a proven live
+speed or score improvement**. End-to-end average progress is only about 3.3–3.5 m/s
+because braking, scanning and the obstructed ship approach take substantial time.
+The model's zero-damage score estimates remain negative (-186.69 and -200.95);
+fuel consumption and terminal duration still need optimization using real runs.
+Do not present these estimates as competition scores or as evidence of optimality.
 
 Reproduce the current test with NumPy/SciPy (available in the installed simulator
 Python), replacing paths as needed:

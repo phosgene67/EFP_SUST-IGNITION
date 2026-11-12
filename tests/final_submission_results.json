@@ -1,5 +1,5 @@
 {
-  "controller_sha256": "43eead2a15f90b5de9bd982d1cd43b39be043400e8bb8fb03bc5d3a8b02c48e2",
+  "controller_sha256": "52ee42d724ccff5bde99199fbe4300ef7c3facab0bdd074b186f2acbcd418aca",
   "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
   "debris_count": 500,
   "seed": 100,
@@ -18,7 +18,7 @@
     "final_speed_m_s": 0.011,
     "phase": "HOLD",
     "images": 787,
-    "plan_p95_ms": 53.37,
+    "plan_p95_ms": 112.72,
     "angular_active_fraction": 0.765,
     "linear_active_fraction": 0.784,
     "nose_error_p95_deg": 94.81,
