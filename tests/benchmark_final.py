@@ -171,6 +171,8 @@ def run_case(namespace, allocator, seed, final, max_time):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline-ref', required=True)
+    parser.add_argument('--baseline-fusion', action='store_true',
+                        help='Run the baseline RGB/depth + score policy, when that commit supports it')
     parser.add_argument('--jet-config', required=True)
     parser.add_argument('--seeds', type=int, nargs='+', default=[0, 7, 19])
     parser.add_argument('--max-time', type=float, default=400.)
@@ -180,10 +182,11 @@ if __name__ == '__main__':
     old = subprocess.check_output(['git', 'show', args.baseline_ref+':Controller.py'], cwd=root, text=True)
     source = (root/'Controller.py').read_text()
     report = dict(baseline_ref=args.baseline_ref, current_sha256=hashlib.sha256(source.encode()).hexdigest(),
+                  baseline_fusion=args.baseline_fusion,
                   model='38-jet LP + on-time normalization; synthetic sphere/RGB/depth world; not the official simulator',
                   cases=[])
     for seed in args.seeds:
-        row = dict(baseline=run_case(load_namespace(old), Allocator(args.jet_config), seed, False, args.max_time),
+        row = dict(baseline=run_case(load_namespace(old), Allocator(args.jet_config), seed, args.baseline_fusion, args.max_time),
                    final=run_case(load_namespace(source), Allocator(args.jet_config), seed, True, args.max_time))
         report['cases'].append(row)
         print(json.dumps(row), flush=True)

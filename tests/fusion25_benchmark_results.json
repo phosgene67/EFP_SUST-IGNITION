@@ -1,0 +1,86 @@
+{
+  "baseline_ref": "090e96b60b81e2717d9ba62c99f244d0cae40447",
+  "current_sha256": "3d8bf2c1713e0f29fe3a5063c835466e0709a01560f6ef44b0fd2b5536be4ce0",
+  "baseline_fusion": true,
+  "model": "38-jet LP + on-time normalization; synthetic sphere/RGB/depth world; not the official simulator",
+  "cases": [
+    {
+      "baseline": {
+        "seed": 0,
+        "arrived": true,
+        "time_s": 208.7,
+        "fuel_kg": 60.58,
+        "min_sphere_clearance_m": null,
+        "collisions": false,
+        "peak_speed_m_s": 7.98,
+        "zero_damage_score_estimate": 26.72,
+        "camera_frames": 417,
+        "plan_p95_ms": 4.95
+      },
+      "final": {
+        "seed": 0,
+        "arrived": true,
+        "time_s": 194.1,
+        "fuel_kg": 89.36,
+        "min_sphere_clearance_m": null,
+        "collisions": false,
+        "peak_speed_m_s": 10.98,
+        "zero_damage_score_estimate": -7.33,
+        "camera_frames": 388,
+        "plan_p95_ms": 6.8
+      }
+    },
+    {
+      "baseline": {
+        "seed": 7,
+        "arrived": true,
+        "time_s": 191.3,
+        "fuel_kg": 95.04,
+        "min_sphere_clearance_m": 38.89,
+        "collisions": false,
+        "peak_speed_m_s": 10.61,
+        "zero_damage_score_estimate": -14.0,
+        "camera_frames": 382,
+        "plan_p95_ms": 21.56
+      },
+      "final": {
+        "seed": 7,
+        "arrived": true,
+        "time_s": 199.8,
+        "fuel_kg": 98.18,
+        "min_sphere_clearance_m": 47.22,
+        "collisions": false,
+        "peak_speed_m_s": 9.32,
+        "zero_damage_score_estimate": -20.84,
+        "camera_frames": 399,
+        "plan_p95_ms": 28.33
+      }
+    },
+    {
+      "baseline": {
+        "seed": 19,
+        "arrived": true,
+        "time_s": 199.6,
+        "fuel_kg": 100.75,
+        "min_sphere_clearance_m": 39.49,
+        "collisions": false,
+        "peak_speed_m_s": 9.54,
+        "zero_damage_score_estimate": -24.21,
+        "camera_frames": 399,
+        "plan_p95_ms": 17.11
+      },
+      "final": {
+        "seed": 19,
+        "arrived": true,
+        "time_s": 215.3,
+        "fuel_kg": 110.38,
+        "min_sphere_clearance_m": 41.18,
+        "collisions": false,
+        "peak_speed_m_s": 8.45,
+        "zero_damage_score_estimate": -41.44,
+        "camera_frames": 430,
+        "plan_p95_ms": 25.51
+      }
+    }
+  ]
+}

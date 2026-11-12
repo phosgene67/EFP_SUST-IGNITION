@@ -1,5 +1,11 @@
 # Final-round radar and camera controller
 
+> **Current update:** the active source now uses the experimental FUSION25 profile
+> and launches an OpenCV camera viewer. Deploy `camera_viewer.py` alongside
+> `Controller.py` to see it. [CAMERA_GUI.md](CAMERA_GUI.md) documents the interface,
+> 25 m/s braking limits, 46-test validation, and the newer benchmark. The results
+> and 8–12 m/s policy described below are the previous fusion baseline.
+
 ## Objective and scope
 
 Maximize the official score by reaching the safe region with low damage, useful

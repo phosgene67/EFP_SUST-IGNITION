@@ -55,9 +55,11 @@ class AdapterTests(unittest.TestCase):
                 camera_api.now = now[0]
             if now[0] > 2.:
                 raise StopSimulation()
-        with mock.patch.dict('sys.modules', {'spaceteams': st}), mock.patch('time.sleep', tick):
+        with mock.patch.dict('sys.modules', {'spaceteams': st}), mock.patch('time.sleep', tick), \
+                mock.patch.dict('os.environ', {'EFP_CAMERA_GUI': '0'}):
+            self.runtime = {'__file__': str(SOURCE)}
             with self.assertRaises(StopSimulation):
-                exec(compile(SOURCE.read_text(), str(SOURCE), 'exec'), {})
+                exec(compile(SOURCE.read_text(), str(SOURCE), 'exec'), self.runtime)
         st.connect_to_sim.assert_called_once()
         st.leave_sim.assert_called_once()
         return commands
@@ -90,6 +92,8 @@ class AdapterTests(unittest.TestCase):
         linear = [v for name, v in commands if name == 'CommandedAccel']
         self.assertTrue(any(np.linalg.norm(v) > .01 for v in linear[:-1]))
         np.testing.assert_allclose(linear[-1], np.zeros(3))
+        # The high-speed profile must not outrun the only remaining sensor.
+        self.assertLessEqual(self.runtime['cruise'], np.sqrt(2.*.12*(220.-40.))+1e-6)
 
 
 if __name__ == '__main__':
