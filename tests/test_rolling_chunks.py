@@ -69,6 +69,36 @@ class ChunkTests(unittest.TestCase):
         self.assertFalse(planner.corridor.points)
         self.assertEqual(planner.corridor.reason, 'damage feedback')
 
+    def test_prefers_open_space_over_clear_but_crowded_straight_tube(self):
+        centers = np.array([[x, y, z] for x in (150., 230., 310., 390., 470.)
+                            for y, z in ((30., 0.), (-30., 0.), (0., 30.), (0., -30.))])
+        radii = np.full(len(centers), 8.)
+        aim = self.chunks.choose_lane(np.zeros(3), np.array([3., 0., 0.]), np.array([2000., 0., 0.]),
+                                     centers, np.zeros_like(centers), radii, 9.)
+        self.assertGreater(self.chunks.lane_turn, 10.)
+        lengths = np.arange(200., 601., 50.)
+        def average_gap(direction):
+            points = lengths[:, None]*direction
+            return (np.linalg.norm(points[:, None]-centers[None], axis=2)-radii[None]).min(axis=1).mean()
+        self.assertGreater(average_gap(aim/np.linalg.norm(aim)), average_gap(np.array([1., 0., 0.]))+25.)
+
+    def test_successor_is_ready_before_current_buffer_requires_braking(self):
+        self.chunks.points = [np.array([450., 0., 0.])]
+        self.chunks.anchor = np.zeros(3)
+        self.chunks.active_exit = np.array([6., 0., 0.])
+        self.chunks.waypoint(0., np.zeros(3), np.array([6., 0., 0.]), np.array([5000., 0., 0.]),
+                             self.empty, self.empty, np.empty(0), 9.)
+        self.assertTrue(self.chunks.pending)
+        self.assertGreater(self.chunks.speed_cap, 8.)
+
+    def test_successor_is_committed_two_hundred_metres_before_boundary(self):
+        self.chunks.points = [np.array([400., 0., 0.])]
+        self.chunks.pending = [np.array([900., 0., 0.])]
+        self.chunks.anchor = np.zeros(3)
+        self.chunks.waypoint(0., np.array([200., 0., 0.]), np.array([6., 0., 0.]), np.array([5000., 0., 0.]),
+                             self.empty, self.empty, np.empty(0), 9.)
+        self.assertEqual(self.chunks.points[-1][0], 900.)
+
     def test_forecast_uses_supplied_arrival_times(self):
         args = (np.zeros(3), [np.array([320., 0., 0.])], 10., 12.,
                 np.array([[100., 60., 0.]]), np.array([[0., -6., 0.]]), np.array([10.]))

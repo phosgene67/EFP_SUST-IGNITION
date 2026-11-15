@@ -110,6 +110,7 @@ def run(namespace, allocator, scene, max_time, seed):
     arrival_time = arrival_fuel = None
     crossing_speed = None
     angular_active, linear_active, nose_errors = 0, 0, []
+    first_five, cruise_after_five = None, []
     for tick in range(int(max_time*10)):
         now = tick*.1
         history.add(now, loc, rotation)
@@ -172,6 +173,10 @@ def run(namespace, allocator, scene, max_time, seed):
         normalized = scene['station_rotation']@(loc-target)/np.array([23., 23., 58.])
         hull_gap = min(hull_gap, float((np.linalg.norm(normalized)-1.)*23.))
         peak = max(peak, np.linalg.norm(vel))
+        if first_five is None and np.linalg.norm(vel) >= 5.:
+            first_five = now+.1
+        if first_five is not None and getattr(planner, 'last_phase', None) == 'CRUISE':
+            cruise_after_five.append(float(np.linalg.norm(vel)))
         distance = np.linalg.norm(target-loc)
         if distance <= 50. and not arrived:
             crossing_speed, arrived = float(np.linalg.norm(vel)), True
@@ -195,6 +200,9 @@ def run(namespace, allocator, scene, max_time, seed):
                 linear_active_fraction=round(linear_active/(tick+1), 3),
                 nose_error_p95_deg=round(float(np.percentile(nose_errors, 95)), 2) if nose_errors else None,
                 allocator_retries=allocator.retries,
+                first_5m_s_time=round(first_five, 1) if first_five is not None else None,
+                cruise_mean_after_5m_s=round(float(np.mean(cruise_after_five)), 2) if cruise_after_five else None,
+                cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not collision else None))
 

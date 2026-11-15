@@ -4,6 +4,26 @@ from test_controller import namespace, Planner
 
 
 class FinalNavigationTests(unittest.TestCase):
+    def test_arrival_latches_goal_and_does_not_retreat_from_new_hull_margin(self):
+        planner = Planner()
+        location = np.array([49.4, 0., 0.])
+        planner.command(0., location, np.zeros(3), np.zeros(3), np.zeros(3), [])
+        self.assertIsNotNone(planner.arrival_time)
+        offset = planner.hold_offset.copy()
+        camera = namespace['CameraPerception']()
+        camera.occupied['top'] = (1., [(location.copy(), 100.)])
+        planner.command(1., location, np.zeros(3), np.zeros(3), np.zeros(3), [], camera=camera)
+        np.testing.assert_allclose(planner.hold_offset, offset)
+        np.testing.assert_allclose(planner.previous_velocity, np.zeros(3))
+
+    def test_arrival_not_claimed_outside_zone_and_recovers_drift_after_entry(self):
+        planner = Planner()
+        planner.command(0., np.array([50.1, 0., 0.]), np.zeros(3), np.zeros(3), np.zeros(3), [])
+        self.assertIsNone(planner.arrival_time)
+        planner.command(1., np.array([49.4, 0., 0.]), np.zeros(3), np.zeros(3), np.zeros(3), [])
+        planner.command(2., np.array([52., 0., 0.]), np.zeros(3), np.zeros(3), np.zeros(3), [])
+        self.assertLess(planner.previous_velocity[0], 0.)
+
     def test_global_route_bypasses_wall_and_all_segments_are_clear(self):
         corridor = namespace['CorridorPlanner']()
         centers = np.array([[200., y, z] for y in (-40., 0., 40.) for z in (-40., 0., 40.)])

@@ -80,7 +80,7 @@ MAX_LOOKAHEAD = 220
 PLAN_PERIOD = 0.5
 HOLD_RADIUS = 49.0
 SHIP_BRAKE_ACCEL = 0.075
-CHUNK_CRUISE_SPEED = 12.0
+CHUNK_CRUISE_SPEED = 9.0
 LAUNCH_HEIGHT = 3.5
 CAMERA_WIDTH = 96
 CAMERA_HEIGHT = 64
@@ -784,6 +784,8 @@ class RollingChunks:
         self.clearance = np.inf
         self.buffer_m = 0.
         self.speed_cap = CHUNK_CRUISE_SPEED
+        self.lane_turn = 0.
+        self.lane_density = 0.
 
     def invalidate(self, reason):
         self.points, self.pending = [], []
@@ -833,6 +835,43 @@ class RollingChunks:
             cursor = np.asarray(endpoint)
         return gap
 
+    def choose_lane(self, location, velocity, goal, centers, velocities, radii, cruise):
+        """Compare broad future corridors, including space outside the direct line.
+
+        This is a soft route preference. Beam and local swept checks remain the
+        hard constraints; an attractive distant sector is not certified free.
+        """
+        offset = goal-location
+        distance = np.linalg.norm(offset)
+        self.lane_turn = self.lane_density = 0.
+        if distance < 350. or not len(centers):
+            return goal
+        forward = offset/distance
+        axis = np.eye(3)[np.argmin(np.abs(forward))]
+        side = np.cross(forward, axis)
+        side /= np.linalg.norm(side)
+        up = np.cross(forward, side)
+        headings = [forward]
+        headings += [np.cos(tilt)*forward+np.sin(tilt)*(np.cos(angle)*side+np.sin(angle)*up)
+                     for tilt in np.deg2rad([15., 30., 45.]) for angle in np.arange(8)*np.pi/4.]
+        headings = np.asarray(headings)
+        length = min(650., distance)
+        samples = np.linspace(70., length, 12)
+        times = travel_time(samples, np.linalg.norm(velocity), cruise)
+        predicted = centers[:, None]+times[None, :, None]*velocities[:, None]
+        relative = predicted[None]-headings[:, None, None]*samples[None, None, :, None]
+        gaps = np.linalg.norm(relative, axis=3)-radii[None, :, None]-np.minimum(10., .12*times)[None, None]
+        density = np.mean(np.sum((np.maximum(0., 75.-gaps)/75.)**2, axis=1), axis=1)
+        endpoints = location+length*headings
+        speed = np.linalg.norm(velocity)
+        momentum = velocity/max(speed, 1e-9) if speed > 1. else forward
+        score = (np.linalg.norm(goal-endpoints, axis=1)+220.*density
+                 +80.*max(speed, 2.)*(1.-headings@momentum))
+        best = int(np.argmin(score))
+        self.lane_turn = float(np.rad2deg(np.arccos(np.clip(headings[best]@forward, -1., 1.))))
+        self.lane_density = float(density[best])
+        return endpoints[best]
+
     def plan_chunk(self, now, location, velocity, goal, centers, velocities, radii, cruise):
         distance = np.linalg.norm(goal-location)
         if distance < 1.:
@@ -845,6 +884,7 @@ class RollingChunks:
         side = np.cross(heading, axis)
         side /= np.linalg.norm(side)
         up = np.cross(heading, side)
+        lane_goal = self.choose_lane(location, velocity, goal, centers, velocities, radii, cruise)
         horizon = float(np.clip(320./max(speed, 5.), 32., 60.))
         horizon = min(horizon, max(12., .75*distance/max(speed, 1.)))
         if len(centers):
@@ -856,10 +896,10 @@ class RollingChunks:
         branch = 13
         positions, motion = np.zeros((1, 3)), np.asarray(velocity)[None].copy()
         histories = np.empty((1, 0, 3))
-        efforts, margins = np.zeros(1), np.full(1, np.inf)
+        efforts, exposure, margins = np.zeros(1), np.zeros(1), np.full(1, np.inf)
         elapsed = 0.
         for stage in range(4):
-            relative = goal-location-positions
+            relative = lane_goal-location-positions
             bearings = relative/np.maximum(np.linalg.norm(relative, axis=1), 1e-9)[:, None]
             requested = min(cruise, np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-10., 0.)))
             choices = [requested*bearings, motion.copy(), np.zeros_like(motion)]
@@ -874,6 +914,7 @@ class RollingChunks:
             motion = np.repeat(motion, branch, axis=0)
             histories = np.repeat(histories, branch, axis=0)
             efforts, margins = np.repeat(efforts, branch), np.repeat(margins, branch)
+            exposure = np.repeat(exposure, branch)
             valid = np.ones(len(positions), dtype=bool)
             steps = 8
             dt = horizon/(4.*steps)
@@ -894,6 +935,7 @@ class RollingChunks:
                     escaping = ((np.linalg.norm(start_gap, axis=2) < radii[None])
                                 & (np.sum(start_gap*change, axis=2) >= 0.))
                     gaps[escaping] = np.inf
+                    exposure += dt*np.sum((np.maximum(0., 50.-gaps)/50.)**2, axis=1)
                     margins = np.minimum(margins, gaps.min(axis=1))
                     valid &= gaps.min(axis=1) > 2.
                 positions, motion = end, motion+dt*acceleration
@@ -901,10 +943,11 @@ class RollingChunks:
                 histories = np.concatenate((histories, positions[:, None]), axis=1)
                 elapsed += dt
             # elapsed applies to the whole beam, not each candidate.
-            error = goal-location-positions
+            error = lane_goal-location-positions
             ranges = np.linalg.norm(error, axis=1)
             toward = np.sum(motion*error, axis=1)/np.maximum(ranges, 1e-9)
-            score = ranges-8.*toward+1.5*efforts+8.*np.maximum(0., 12.-margins)
+            score = (ranges+.25*np.linalg.norm(goal-location-positions, axis=1)-8.*toward
+                     +1.5*efforts+3.*exposure+2.*np.maximum(0., 40.-margins))
             score[~valid] = np.inf
             selected = []
             for candidate in np.argsort(score):
@@ -922,6 +965,7 @@ class RollingChunks:
                 break
             positions, motion, histories = positions[order], motion[order], histories[order]
             efforts, margins = efforts[order], margins[order]
+            exposure = exposure[order]
             if stage == 3:
                 # Retain enough curve samples for smooth pursuit. Validation
                 # and later replanning still use actual, newly received sensors.
@@ -994,8 +1038,8 @@ class RollingChunks:
         remaining = self.length(location, self.points)
         stopping = speed*speed/(2.*SHIP_BRAKE_ACCEL)
         buffered = self.length(location, self.points+self.pending)
-        need_successor = (not self.pending and remaining < max(240., stopping+120.))
-        need_reserve = bool(self.pending) and len(self.pending) < 16 and buffered < stopping+200.
+        need_successor = (not self.pending and remaining < max(350., stopping+250.))
+        need_reserve = bool(self.pending) and len(self.pending) < 16 and buffered < stopping+350.
         endpoint = (self.pending or self.points)[-1] if self.points else location
         if (self.points and (need_successor or need_reserve) and now-self.last_prefetch >= 2.
                 and np.linalg.norm(goal-endpoint) > 25.):
@@ -1018,7 +1062,7 @@ class RollingChunks:
                 self.pending_schedule = np.r_[self.pending_schedule, start_time+self.planned_times]
             self.last_prefetch = now
         lookahead = float(np.clip(40.+8.*speed, 45., 130.))
-        if self.pending and remaining < max(120., lookahead*1.3):
+        if self.pending and remaining < max(220., lookahead*2.):
             proposed = self.points+self.pending
             combined_times = np.r_[self.schedule, self.pending_schedule]-progress_time
             if self.forecast(location, proposed, speed, cruise, centers, velocities, radii,
@@ -1374,6 +1418,8 @@ class FinalNavigator(QualificationPlanner):
         self.stopping_distance = 0.
         self.last_phase = 'START'
         self.last_damage = 0.
+        self.arrival_time = None
+        self.hold_offset = None
 
     def observe_damage(self, damage):
         if np.isfinite(damage) and damage > self.last_damage+.1:
@@ -1402,6 +1448,13 @@ class FinalNavigator(QualificationPlanner):
         launch_goal = self.launch.goal(loc, target_loc)
         if launch_goal is not None:
             goal, phase, phase_cap = launch_goal, 'LAUNCH', .9
+        if self.arrival_time is None and distance < 49.5 and np.linalg.norm(relative_velocity) < 1.:
+            self.arrival_time = float(now)
+            hold = self.terminal.inner_goal if self.terminal.inner_goal is not None else loc
+            self.hold_offset = np.asarray(hold).copy()-target_loc
+        if self.arrival_time is not None:
+            goal = target_loc+self.hold_offset
+            phase, phase_cap = 'HOLD', min(.5, .25*np.linalg.norm(goal-loc))
         self.last_phase = phase
         cruise = CHUNK_CRUISE_SPEED if cruise_speed is None else float(np.clip(cruise_speed, 0., MAX_SPEED))
         use_chunks = phase == 'CRUISE' or (phase == 'BRAKE_SHIP' and distance > 115.)
@@ -1508,9 +1561,10 @@ class FinalNavigator(QualificationPlanner):
         ship_guard = phase not in ('CRUISE', 'LAUNCH', 'BRAKE_SHIP') or distance < 100.
         if not safe.any() and ship_guard:
             selected = target_vel.copy()
-            if distance < 90.:
+            if distance < 90. and self.arrival_time is None:
                 selected += .4*(loc-target_loc)/max(distance, 1e-9)
-            self.terminal.inner_goal = None
+            if self.arrival_time is None:
+                self.terminal.inner_goal = None
             mode = 'SHIP_BLOCKED'
         # The terminal guard is applied AFTER local selection. It cannot be
         # overridden by an ESCAPE choice driving toward the station at speed.
@@ -1556,6 +1610,7 @@ last_log = -np.inf
 accel_world = np.zeros(3)
 mode, clearance = 'START', np.inf
 damage, fuel = 0., 0.
+arrival_announced = False
 linear_limit = min(MAX_ACCEL, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAccel_m_s2']))
 angular_limit = min(0.02, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAngAccel_rad_s2']))
 try:
@@ -1572,6 +1627,7 @@ try:
                 preview.reset()
             flight_attitude = FlightAttitude()
             last_plan = last_log = -np.inf
+            arrival_announced = False
         state = shuttle.getLocVelAcc()
         loc = np.asarray(state.loc_WRT_ExprIn(phobosFrame))
         vel = np.asarray(state.vel_WRT_ExprIn(phobosFrame))
@@ -1620,6 +1676,10 @@ try:
                     now, loc, vel, target_loc, target_vel, radar, camera=perception,
                     cruise_speed=cruise)
             last_plan = now
+        if planner.arrival_time is not None and not arrival_announced:
+            st.OnScreenAlert('Arrival zone reached; holding position. Official result is in the Scoring log.',
+                             'ArrivalZone', st.Severity.Info)
+            arrival_announced = True
         # The planner runs at 2 Hz; the velocity servo runs every control tick.
         # Reusing a fixed acceleration for the whole planning period can overshoot.
         accel_world = velocity_command(planner.previous_velocity, vel, linear_limit,
@@ -1637,24 +1697,26 @@ try:
             angular_accel = np.zeros(3)
         SetCommand(accel_body, angular_accel)
         if preview is not None:
-            preview.update(running=True, profile='CHUNK_NAV_12', now=now, mode=mode,
+            preview.update(running=True, profile='OPEN_LANE_9', now=now, mode=mode,
                 speed=float(np.linalg.norm(vel-target_vel)), cruise=cruise,
                 distance=float(np.linalg.norm(target_loc-loc)), fuel=fuel, damage=damage,
                 images=camera_manager.received, rejected=perception.rejected,
                 rgb_matches=perception.rgb_associations, depth_matches=perception.depth_associations,
                 camera_fault=camera_manager.error, nose_error=flight_attitude.nose_error_deg,
-                body_velocity=flight_attitude.body_velocity.tolist(), vertical_climb=flight_attitude.vertical)
+                body_velocity=flight_attitude.body_velocity.tolist(), vertical_climb=flight_attitude.vertical,
+                arrival_zone=planner.arrival_time is not None, arrival_time=planner.arrival_time)
         if now-last_log >= 5.0:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile=CHUNK_NAV_12 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile=OPEN_LANE_9 t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
                 f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
                 f'stopDistance={planner.stopping_distance:.1f}m routeNodes={len(planner.corridor.points)} '
-                f'chunk={planner.corridor.chunk_id} nextReady={bool(planner.corridor.pending)} '
+                f'chunk={planner.corridor.chunk_id} nextReady={bool(planner.corridor.pending) or len(planner.corridor.points) > 8} '
                 f'buffer={planner.corridor.buffer_m:.1f}m replans={planner.corridor.replans} launchHeight={planner.launch.height:.1f}m '
+                f'laneTurn={planner.corridor.lane_turn:.0f}deg arrivalZone={planner.arrival_time is not None} '
                 f'cmdAccel={np.linalg.norm(accel_world):.3f}m/s2 cruise={cruise:.1f}m/s '
                 f'images={camera_manager.received} rejected={perception.rejected} '
                 f'rgbMatches={perception.rgb_associations} depthMatches={perception.depth_associations} '

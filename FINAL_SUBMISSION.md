@@ -1,7 +1,7 @@
 # FINAL_NAV_500 controller
 
-> Historical version. The active controller is now **CHUNK_NAV_12**. See
-> [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) for the guarded launch and rolling
+> Historical version. The active controller is now **OPEN_LANE_9**. See
+> [OPEN_LANE_9.md](OPEN_LANE_9.md) for the guarded launch and rolling
 > predicted trajectories. All source hashes and benchmark numbers below refer
 > to the earlier controller, not the current implementation.
 

@@ -6,20 +6,19 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-`Controller.py` contains our **CHUNK_NAV_12** candidate for
-`FINAL_SUBMISSION.simconf`: a guarded 3.5 m launch, filtered debris-motion
-prediction, acceleration-limited rolling route chunks, continuous radar/camera
-feedback and a camera-assisted approach to the 49 m scoring boundary.
-See [Rolling chunk navigation](CHUNK_NAVIGATION.md) for the current algorithm,
-validation and deployment. [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) records
-the previous standoff controller.
+`Controller.py` contains our **OPEN_LANE_9** candidate for
+`FINAL_SUBMISSION.simconf`: wider-space route selection, predicted motion chunks
+with early pass-through handoffs, continuous radar/camera feedback, and a latched
+hold near the scoring boundary. See [Open-lane controller](OPEN_LANE_9.md) for
+the current changes, tests, measured model speeds and deployment.
+[CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) records the earlier chunk design.
 
 **Live camera GUI:** copy **both `Controller.py` and `camera_viewer.py`** into the
 installed local `STU4-Solution` folder. The OpenCV window opens automatically during
 the next simulation run, showing top/bottom RGB and depth, detection boxes, and
 flight statistics. Press Q in the viewer to close it while flight continues.
 See [Camera interface setup](CAMERA_GUI.md) for preview commands and
-troubleshooting. Cruise requests 12 m/s; achievable speed depends on the installed
+troubleshooting. Cruise requests 9 m/s; achievable speed depends on the installed
 jets, clear stopping distance, route geometry and terminal approach.
 
 See [Earlier fusion design](FINAL_DESIGN.md) for sensor implementation details,

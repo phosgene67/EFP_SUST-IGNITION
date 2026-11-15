@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **CHUNK_NAV_12** for `FINAL_SUBMISSION.simconf`.
-See [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) for current navigation and validation.
+The active flight profile is **OPEN_LANE_9** for `FINAL_SUBMISSION.simconf`.
+See [OPEN_LANE_9.md](OPEN_LANE_9.md) for current navigation and validation.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -33,6 +33,7 @@ This screenshot is a **synthetic demonstration**, not a live mission result.
 | Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, and radar associations. |
 | NOSE FIRST / ALIGNING | Angle between body +X (the nose) and the selected travel direction. Below 10° during motion displays NOSE FIRST. |
 | Camera status | Capture error information, if present. |
+| ARRIVAL ZONE REACHED banner | Persistent controller observation of arrival and hold; consult the official Scoring log for the congratulations and score. |
 
 These boxes come from the actual perception code. They are generic contrast/depth
 regions, not a trained classifier assigning labels such as "meteoroid" or "ship".
@@ -110,9 +111,9 @@ To suppress automatic GUI startup, set `EFP_CAMERA_GUI=0` in the environment of 
 process launching the controller. Setting it only in an unrelated terminal does
 not change an already-running Space Teams process.
 
-## Current 12 m/s cruise request
+## Current 9 m/s cruise request
 
-The current source identifies itself as **CHUNK_NAV_12**. Runtime requests 12 m/s,
+The current source identifies itself as **OPEN_LANE_9**. Runtime requests 9 m/s,
 with a hard ceiling of 25 m/s. Rolling chunks, local collision checks and terminal
 braking determine actual desired velocity. With radar unavailable, runtime caps cruise to about 6.57 m/s so
 the depth camera's 220 m range is not used to justify a high-speed blind approach.

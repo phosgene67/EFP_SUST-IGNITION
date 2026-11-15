@@ -11,6 +11,22 @@ from test_camera_fusion import CameraAPI, History, Perception, Manager
 
 
 class PublisherTests(unittest.TestCase):
+    def test_transient_windows_replace_lock_is_retried(self):
+        with tempfile.TemporaryDirectory() as directory:
+            temporary, destination = Path(directory)/'frame.tmp', Path(directory)/'frame.npz'
+            temporary.write_bytes(b'new frame')
+            original = viewer.os.replace
+            calls = []
+            def transient(source, target):
+                calls.append(1)
+                if len(calls) == 1:
+                    raise PermissionError('Windows reader temporarily holds the snapshot')
+                return original(source, target)
+            with mock.patch.object(viewer.os, 'replace', side_effect=transient):
+                viewer.replace_snapshot(temporary, destination)
+            self.assertEqual(destination.read_bytes(), b'new frame')
+            self.assertEqual(len(calls), 2)
+
     def test_all_four_streams_and_metadata_survive_atomic_transport(self):
         with tempfile.TemporaryDirectory() as directory:
             publisher = viewer.PreviewPublisher(launch=False, directory=directory)
@@ -61,6 +77,13 @@ class PublisherTests(unittest.TestCase):
 
 @unittest.skipUnless(importlib.util.find_spec('cv2'), 'OpenCV renderer tests use the simulator Python environment')
 class RendererTests(unittest.TestCase):
+    def test_arrival_banner_remains_visible_in_later_frames(self):
+        frames, metadata = viewer.demo_snapshot()
+        before = viewer.render_dashboard(frames, metadata)
+        metadata['status']['arrival_zone'] = True
+        metadata['status']['now'] = 300.
+        after = viewer.render_dashboard(frames, metadata)
+        self.assertGreater(np.count_nonzero(before[887:915] != after[887:915]), 100.)
     def test_dashboard_dimensions_colors_and_real_region_annotations(self):
         frames, metadata = viewer.demo_snapshot()
         canvas = viewer.render_dashboard(frames, metadata)

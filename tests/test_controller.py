@@ -48,7 +48,7 @@ class PlannerTests(unittest.TestCase):
                 arrived = True
             if arrived:
                 closest = min(closest, distance)
-        self.assertGreater(peak, 10.5)
+        self.assertGreater(peak, 8.5)  # Requested cruise is now 9 m/s.
         self.assertTrue(arrived)
         self.assertGreater(closest, 40.)
         self.assertAlmostEqual(np.linalg.norm(target-loc), namespace['HOLD_RADIUS'], delta=.65)

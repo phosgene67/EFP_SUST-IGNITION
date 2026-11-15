@@ -28,6 +28,18 @@ def json_safe(value):
     return value
 
 
+def replace_snapshot(temporary, destination):
+    """Bounded retry for a Windows reader/antivirus briefly holding the file."""
+    for attempt in range(4):
+        try:
+            os.replace(temporary, destination)
+            return
+        except PermissionError:
+            if attempt == 3:
+                raise
+            time.sleep(.005)
+
+
 class PreviewPublisher:
     """Latest-only, bounded disk transport written on a background thread."""
     def __init__(self, viewer_script=None, launch=True, directory=None):
@@ -101,7 +113,9 @@ class PreviewPublisher:
                     temporary = self.directory/'latest.tmp'
                     with open(temporary, 'wb') as output:
                         np.savez_compressed(output, **arrays)
-                    os.replace(temporary, self.source)
+                    replace_snapshot(temporary, self.source)
+                    if self.error.startswith('Snapshot write failed:'):
+                        self.error = ''
                 except Exception as exc:
                     self.error = 'Snapshot write failed: '+str(exc)
             if self.stopping.is_set() and not self.changed.is_set():
@@ -120,7 +134,11 @@ class PreviewPublisher:
 
 
 def read_snapshot(source):
-    with np.load(source, allow_pickle=False) as data:
+    # Windows denies replacing a file while another process has it open without
+    # delete sharing. Copy bytes and close immediately, before NPZ decompression.
+    import io
+    payload = Path(source).read_bytes()
+    with np.load(io.BytesIO(payload), allow_pickle=False) as data:
         metadata = json.loads(str(data['metadata'].item()))
         frames = {key: data[key].copy() for key in ('top_rgb', 'top_depth', 'bottom_rgb', 'bottom_depth')
                   if key in data}
@@ -213,7 +231,11 @@ def render_dashboard(frames, metadata):
         if not info.get('accepted', True):
             text('REJECTED FOR NAVIGATION: stale frame or missing pose', x+12, y+345, (80, 100, 255), .43)
     text('Depth: warmer = nearer, cooler = farther; black = no usable depth. Scale 0-220 m.', 24, 877, muted, .5)
-    text('Boxes show actual image regions. RGB boxes have no metric range; depth labels are surface depth.', 24, 903, muted, .5)
+    if status.get('arrival_zone'):
+        text('ARRIVAL ZONE REACHED - HOLDING POSITION. Official congratulations / score: Scoring log.',
+             24, 903, (80, 225, 140), .55)
+    else:
+        text('Boxes show actual image regions. RGB boxes have no metric range; depth labels are surface depth.', 24, 903, muted, .5)
     fault = status.get('camera_fault') or 'none'
     text('Camera status: '+str(fault)[:138], 24, 928, (120, 170, 255) if fault != 'none' else muted, .48)
     text('Q / Esc: close viewer only', 1100, 928, cyan, .44)
@@ -239,10 +261,10 @@ def demo_snapshot():
                 rect = [rect[0], height-1-rect[3], rect[2], height-1-rect[1]]
             boxes.append(dict(xyxy=rect, range_m=distance if key.endswith('depth') else None))
         info[key] = dict(stamp=42., accepted=True, boxes=boxes)
-    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='FUSION25',
-        running=True, now=42.25, mode='AVOID', speed=14.2, cruise=25., distance=680., fuel=28.4,
+    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='OPEN_LANE_9',
+        running=True, now=42.25, mode='AVOID', speed=8.8, cruise=9., distance=680., fuel=28.4,
         damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=2.3,
-        body_velocity=[14.19, .1, .2]))
+        body_velocity=[8.79, .1, .2]))
     return frames, metadata
 
 
