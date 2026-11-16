@@ -28,7 +28,7 @@ class PerceptionTests(unittest.TestCase):
         self.assertTrue(perception.ingest('top', 'depth', depth_patch(100.), 0., 0.,
                                          (np.zeros(3), np.eye(3)), 0., 0.))
         centers, _, _ = perception.obstacles(0., np.zeros(3), *empty_radar())
-        np.testing.assert_allclose(centers[0], [101.27, 0., .9], atol=.01)
+        np.testing.assert_allclose(centers.mean(axis=0), [101.27, 0., .9], atol=.01)
         # Right-hand image pixels must project toward camera +Y; upper pixels +Z.
         rays = perception.rays(np.array([0.]), np.array([WIDTH-1.]), WIDTH, HEIGHT, 80.)
         self.assertGreater(rays[0, 1], 1.)
@@ -42,7 +42,18 @@ class PerceptionTests(unittest.TestCase):
         centers, _, _ = perception.obstacles(0., np.zeros(3), *empty_radar())
         expected = (np.array([10., 20., 30.]) + rotation.T@np.array([1.675, 0., -1.025])
                     + rotation.T@namespace['camera_rotation'](30., 20.).T@np.array([60., 0., 0.]))
-        np.testing.assert_allclose(centers[0], expected, atol=.01)
+        np.testing.assert_allclose(centers.mean(axis=0), expected, atol=.01)
+
+    def test_fine_depth_tiles_retain_all_pixel_surface_and_rover_pose_margins(self):
+        perception = Perception()
+        pixels = depth_patch(100.)
+        perception.ingest('top', 'depth', pixels, 0., 0., (np.zeros(3), np.eye(3)), 0., 0.)
+        centers, _, radii = perception.obstacles(0., np.zeros(3), *empty_radar())
+        rows, cols = np.nonzero(pixels)
+        surfaces = np.array([1.27, 0., .9])+100.*perception.rays(rows, cols, WIDTH, HEIGHT, 80.)
+        gaps = np.linalg.norm(surfaces[:, None]-centers[None], axis=2)-(radii[None]-6.)
+        self.assertTrue((gaps.min(axis=1) <= 0.).all())
+        self.assertGreater(len(centers), 1)
 
     def test_invalid_depth_sky_and_missing_pose(self):
         perception = Perception()

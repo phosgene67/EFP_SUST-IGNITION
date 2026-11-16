@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **OPEN_LANE_9** for `FINAL_SUBMISSION.simconf`.
-See [OPEN_LANE_9.md](OPEN_LANE_9.md) for current navigation and validation.
+The active flight profile is **SCORE_ECO** for `FINAL_SUBMISSION.simconf`.
+See [SCORE_ECO.md](SCORE_ECO.md) for current navigation and validation.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -16,7 +16,7 @@ The installed STPro v0.55.0 Python environment has OpenCV 5.0.0 with WIN32UI sup
 The installed camera bindings confirm RGB/depth output modes, capture timestamps,
 row-major pixel storage, and depth in centimetres. No changes to STU4-Sim are needed.
 
-![Synthetic demonstration of the camera interface](docs/camera_interface_demo.png)
+![Synthetic demonstration of the camera interface](docs/score_eco_interface_demo.png)
 
 This screenshot is a **synthetic demonstration**, not a live mission result.
 
@@ -30,10 +30,10 @@ This screenshot is a **synthetic demonstration**, not a live mission result.
 | Frame timestamp / age | Each panel's own capture time. RGB and depth are separate captures and need not be synchronized. |
 | STALE | A panel's last frame is over two simulation seconds old. |
 | REJECTED FOR NAVIGATION | The image arrived but could not be associated with a valid recent pose/time. It is displayed without a detection overlay to aid diagnosis. |
-| Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, and radar associations. |
+| Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, radar associations, and an explicitly unofficial projected score. |
 | NOSE FIRST / ALIGNING | Angle between body +X (the nose) and the selected travel direction. Below 10° during motion displays NOSE FIRST. |
 | Camera status | Capture error information, if present. |
-| ARRIVAL ZONE REACHED banner | Persistent controller observation of arrival and hold; consult the official Scoring log for the congratulations and score. |
+| ARRIVAL ZONE REACHED banner | Persistent controller observation of entry, followed by braking/parking; consult the official Scoring log for the congratulations and score. |
 
 These boxes come from the actual perception code. They are generic contrast/depth
 regions, not a trained classifier assigning labels such as "meteoroid" or "ship".

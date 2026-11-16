@@ -184,6 +184,8 @@ def render_dashboard(frames, metadata):
     text(f"Fuel {number('fuel', 2)} kg     Damage {number('damage')} J     Accepted frames {status.get('images', 0)}"
          f"     Rejected {status.get('rejected', 0)}     Radar matches: RGB {status.get('rgb_matches', 0)}"
          f" / depth {status.get('depth_matches', 0)}", 24, 99, muted)
+    if status.get('projected_score') is not None:
+        text('Estimated score '+number('projected_score')+' (unofficial)', 1040, 99, muted, .42)
     frame_info = metadata.get('frames', {})
     for index, key in enumerate(('top_rgb', 'top_depth', 'bottom_rgb', 'bottom_depth')):
         x = 24+(index % 2)*668
@@ -232,7 +234,7 @@ def render_dashboard(frames, metadata):
             text('REJECTED FOR NAVIGATION: stale frame or missing pose', x+12, y+345, (80, 100, 255), .43)
     text('Depth: warmer = nearer, cooler = farther; black = no usable depth. Scale 0-220 m.', 24, 877, muted, .5)
     if status.get('arrival_zone'):
-        text('ARRIVAL ZONE REACHED - HOLDING POSITION. Official congratulations / score: Scoring log.',
+        text('ARRIVAL ZONE REACHED - '+str(status.get('arrival_action', 'HOLDING POSITION'))+'. Official result: Scoring log.',
              24, 903, (80, 225, 140), .55)
     else:
         text('Boxes show actual image regions. RGB boxes have no metric range; depth labels are surface depth.', 24, 903, muted, .5)
@@ -261,10 +263,10 @@ def demo_snapshot():
                 rect = [rect[0], height-1-rect[3], rect[2], height-1-rect[1]]
             boxes.append(dict(xyxy=rect, range_m=distance if key.endswith('depth') else None))
         info[key] = dict(stamp=42., accepted=True, boxes=boxes)
-    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='OPEN_LANE_9',
+    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='SCORE_ECO',
         running=True, now=42.25, mode='AVOID', speed=8.8, cruise=9., distance=680., fuel=28.4,
         damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=2.3,
-        body_velocity=[8.79, .1, .2]))
+        body_velocity=[8.79, .1, .2], projected_score=35.))
     return frames, metadata
 
 

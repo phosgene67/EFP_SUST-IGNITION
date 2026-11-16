@@ -82,10 +82,11 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
+    dt = 1./control_hz
     rng = np.random.default_rng(seed)
-    planner = namespace.get('FinalNavigator', namespace['QualificationPlanner'])()
-    attitude = namespace.get('FlightAttitude', lambda: None)()
+    planner = namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner']))()
+    attitude = namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None))()
     camera, history = namespace['CameraPerception'](), namespace['PoseHistory']()
     loc, vel, omega = scene['loc'].copy(), np.zeros(3), np.zeros(3)
     rotation, target = scene['rotation'].copy(), scene['target']
@@ -111,16 +112,19 @@ def run(namespace, allocator, scene, max_time, seed):
     crossing_speed = None
     angular_active, linear_active, nose_errors = 0, 0, []
     first_five, cruise_after_five = None, []
-    for tick in range(int(max_time*10)):
-        now = tick*.1
+    coast_ticks = 0
+    next_capture = next_plan = next_report = radar_credit = 0.
+    capture_index = 0
+    for tick in range(int(max_time*control_hz)):
+        now = tick*dt
         history.add(now, loc, rotation)
         for item in pending[:]:
             due, name, kind, pixels, stamp, yaw, pitch = item
             if now >= due:
                 camera.ingest(name, kind, pixels, stamp, now, history.sample(stamp), yaw, pitch)
                 pending.remove(item)
-        if tick % 5 == 0:
-            name = 'top' if tick % 10 == 0 else 'bottom'
+        if now+1e-8 >= next_capture:
+            name = 'top' if capture_index % 2 == 0 else 'bottom'
             travel = target-loc if np.linalg.norm(target-loc) < 300. or np.linalg.norm(vel) < 1. else vel
             body = rotation@travel
             yaw = float(np.clip(np.rad2deg(np.arctan2(body[1], body[0])), -89., 89.))
@@ -128,24 +132,38 @@ def run(namespace, allocator, scene, max_time, seed):
             pitch = float(np.clip(angle, -50., 0.) if name == 'top' else np.clip(angle, 0., 50.))
             depth = render_scene(namespace, loc, rotation, name, objects, diameters/2., target,
                                  scene['station_rotation'], yaw, pitch)
-            kind = 'rgb' if tick % 15 == 0 else 'depth'
+            kind = 'rgb' if (capture_index//2) % 3 == 2 else 'depth'
             pixels = (np.repeat(np.where(np.isfinite(depth), 150., 0.)[:, :, None], 3, axis=2)
                       if kind == 'rgb' else depth)
             pending.append((now+.3, name, kind, pixels, now, yaw, pitch))
+            capture_index += 1
+            next_capture += .25
         # Radar cycles one object per 1/120 s: 500 objects take ~4.17 s.
-        for _ in range(min(12, count)):
+        radar_credit += 120.*dt
+        measurements = int(radar_credit+1e-8)
+        radar_credit -= measurements
+        for _ in range(min(measurements, count)):
             measure(radar_index, now)
             radar_index = (radar_index+1) % count
-        if tick % 5 == 0:
+        if now+1e-8 >= next_plan:
             start = time.perf_counter()
             radar = sorted(reports.copy(), key=lambda item: np.linalg.norm(item[0]))
+            if hasattr(planner, 'policy'):
+                planner.policy.observe(now, vel, fuel,
+                    thrusting=(np.linalg.norm(linear) > .08 and attitude.nose_error_deg < 10. and np.linalg.norm(angular) < .003) if tick else False,
+                    gravity=-711000.*loc/max(np.linalg.norm(loc)**3, 1.))
+                planner.nose_error = attitude.nose_error_deg
             _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), radar,
-                                                camera=camera, cruise_speed=namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']))
+                                                camera=camera, cruise_speed=10. if hasattr(planner, 'policy') else namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']))
             timings.append(time.perf_counter()-start)
+            next_plan += .5
         urgent = planner.urgent or np.linalg.norm(target-loc) < 80.
-        linear = namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'], urgent=urgent)
+        linear = (planner.linear_command(vel, namespace['MAX_ACCEL']) if hasattr(planner, 'linear_command') else
+                  namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'], urgent=urgent))
         up = loc/max(np.linalg.norm(loc), 1e-9)
         if attitude is not None:
+            if hasattr(attitude, 'aligning'):
+                attitude.aligning = planner.aligning
             budget = namespace.get('attitude_budget', lambda linear, maximum: maximum)(linear, .02)
             reference = namespace.get('attitude_reference', lambda mode, velocity, desired, ship: desired)
             hint = reference(mode, vel, planner.previous_velocity, target-loc)
@@ -156,50 +174,65 @@ def run(namespace, allocator, scene, max_time, seed):
                 heading = travel.copy()
             angular = namespace['attitude_command'](rotation, heading, up, omega, .02)
         actual, angular_actual, fuel_rate = allocator.apply(rotation@linear, angular)
+        coast_ticks += bool(getattr(planner, 'coasting', False))
         angular_active += np.linalg.norm(angular) > 1e-9
         linear_active += np.linalg.norm(linear) > 1e-9
         if attitude is not None:
             nose_errors.append(attitude.nose_error_deg)
         gravity = -711000.*loc/max(np.linalg.norm(loc)**3, 1.)
         acceleration = rotation.T@actual+gravity
-        loc += .1*vel+.005*acceleration
-        vel += .1*acceleration
-        rotation = rotate(rotation, .1*omega+.005*angular_actual)
-        omega += .1*angular_actual
-        fuel += .1*fuel_rate
-        objects += .1*rock_velocities
-        rock_velocities += -.1*711000.*objects/np.maximum(np.linalg.norm(objects, axis=1)**3, 1.)[:, None]
+        loc += dt*vel+.5*dt*dt*acceleration
+        vel += dt*acceleration
+        rotation = rotate(rotation, dt*omega+.5*dt*dt*angular_actual)
+        omega += dt*angular_actual
+        fuel += dt*fuel_rate
+        objects += dt*rock_velocities
+        rock_velocities += -dt*711000.*objects/np.maximum(np.linalg.norm(objects, axis=1)**3, 1.)[:, None]
         nearest = min(nearest, float((np.linalg.norm(objects-loc, axis=1)-diameters/2.-3.).min()))
         normalized = scene['station_rotation']@(loc-target)/np.array([23., 23., 58.])
         hull_gap = min(hull_gap, float((np.linalg.norm(normalized)-1.)*23.))
         peak = max(peak, np.linalg.norm(vel))
         if first_five is None and np.linalg.norm(vel) >= 5.:
-            first_five = now+.1
+            first_five = now+dt
         if first_five is not None and getattr(planner, 'last_phase', None) == 'CRUISE':
             cruise_after_five.append(float(np.linalg.norm(vel)))
         distance = np.linalg.norm(target-loc)
         if distance <= 50. and not arrived:
             crossing_speed, arrived = float(np.linalg.norm(vel)), True
-            arrival_time, arrival_fuel = now+.1, fuel
-        if arrived and now+.1 >= arrival_time+30.:
+            arrival_time, arrival_fuel = now+dt, fuel
+        post_duration = 90. if hasattr(planner, 'policy') else 30.
+        if arrived and (now+dt >= arrival_time+post_duration or
+                        (now+dt >= arrival_time+30. and np.linalg.norm(vel) < .05)):
             break
-        if tick % 500 == 0:
+        if now+1e-8 >= next_report:
+            next_report += 10. if distance < 300. else 50.
             route = planner.corridor if hasattr(planner, 'corridor') else None
             print(f't={now:.0f} phase={mode} d={distance:.0f} speed={np.linalg.norm(vel):.1f} fuel={fuel:.1f} '
                   f'chunks={getattr(route, "chunk_id", 0)} replans={getattr(route, "replans", 0)} '
                   f'buffer={getattr(route, "buffer_m", 0.):.0f} nose={getattr(attitude, "nose_error_deg", 0.):.0f}', flush=True)
+            if hasattr(planner, 'policy'):
+                print(f'  economy peak={planner.policy.speed:.2f} burn={planner.policy.burn_seconds:.1f}s '
+                      f'forecast={planner.policy.estimated_score:.1f} kgDV={planner.policy.fuel_per_dv:.1f} '
+                      f'coast={planner.coasting} fallback={planner.terminal.fallback is not None} '
+                      f'captureGap={planner.terminal.best_gap:.1f}', flush=True)
+                when, miss = namespace['ballistic_pass'](loc, vel, target, np.zeros(3))
+                print(f'  pass={when:.1f}s miss={miss:.2f}m coastGap={planner.coast_clearance:.1f} '
+                      f'dV={np.linalg.norm(planner.previous_velocity-vel):.3f} '
+                      f'camera={camera.observes(now, target)}', flush=True)
     collision = nearest < 0. or hull_gap < 0.
-    return dict(arrived=arrived, time_s=round(arrival_time if arrived else now+.1, 2),
+    return dict(arrived=arrived, time_s=round(arrival_time if arrived else now+dt, 2),
                 fuel_kg=round(arrival_fuel if arrived else fuel, 2),
                 distance_m=round(float(np.linalg.norm(target-loc)), 2), peak_speed_m_s=round(float(peak), 2),
                 arrival_speed_m_s=crossing_speed, min_debris_gap_m=round(nearest, 2), min_proxy_hull_gap_m=round(hull_gap, 2),
-                collision=collision, post_arrival_test_s=round(now+.1-arrival_time, 1) if arrived else 0.,
+                collision=collision, post_arrival_test_s=round(now+dt-arrival_time, 1) if arrived else 0.,
                 final_speed_m_s=round(float(np.linalg.norm(vel)), 3),
                 phase=mode, images=camera.frames, plan_p95_ms=round(float(np.percentile(timings, 95))*1000., 2),
                 angular_active_fraction=round(angular_active/(tick+1), 3),
                 linear_active_fraction=round(linear_active/(tick+1), 3),
                 nose_error_p95_deg=round(float(np.percentile(nose_errors, 95)), 2) if nose_errors else None,
                 allocator_retries=allocator.retries,
+                coasting_fraction=round(coast_ticks/(tick+1), 3),
+                terminal_fallback=bool(getattr(getattr(planner, 'terminal', None), 'fallback', None)),
                 first_5m_s_time=round(first_five, 1) if first_five is not None else None,
                 cruise_mean_after_5m_s=round(float(np.mean(cruise_after_five)), 2) if cruise_after_five else None,
                 cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
@@ -215,9 +248,12 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=100)
     parser.add_argument('--output', default='tests/final_submission_results.json')
     parser.add_argument('--baseline-ref')
+    parser.add_argument('--control-hz', type=float, default=60., help='Flight servo rate; native controller is 60 Hz')
     parser.add_argument('--clear-corridor', action='store_true',
                         help='Diagnostic only: move debris aside in memory; never edits the official scenario')
     args = parser.parse_args()
+    if not 1. <= args.control_hz <= 120.:
+        parser.error('--control-hz must be between 1 and 120')
     root = Path(__file__).resolve().parents[1]
     source = ((root/'Controller.py').read_text() if not args.baseline_ref else
               subprocess.check_output(['git', 'show', args.baseline_ref+':Controller.py'], cwd=root, text=True))
@@ -230,8 +266,9 @@ if __name__ == '__main__':
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=2,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
-                  result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed))
+                  result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

@@ -1,8 +1,8 @@
 # Rolling chunk controller: CHUNK_NAV_12
 
-> Historical version. The active source now uses **OPEN_LANE_9** with wider
-> corridor preference, earlier successor handoffs and a latched arrival hold.
-> See [OPEN_LANE_9.md](OPEN_LANE_9.md) for current validation and deployment.
+> Historical version. The active source now uses **SCORE_ECO** with score-based
+> burn/coast selection, overlapping chunks and a guarded arrival pass.
+> See [SCORE_ECO.md](SCORE_ECO.md) for current validation and deployment.
 
 This implements the proposed short launch followed by predicted, overlapping
 route chunks in `Controller.py`. Run **FINAL_SUBMISSION.simconf**. The protected

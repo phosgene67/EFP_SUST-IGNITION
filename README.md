@@ -6,11 +6,13 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-`Controller.py` contains our **OPEN_LANE_9** candidate for
-`FINAL_SUBMISSION.simconf`: wider-space route selection, predicted motion chunks
-with early pass-through handoffs, continuous radar/camera feedback, and a latched
-hold near the scoring boundary. See [Open-lane controller](OPEN_LANE_9.md) for
-the current changes, tests, measured model speeds and deployment.
+`Controller.py` contains our **SCORE_ECO** candidate for
+`FINAL_SUBMISSION.simconf`: score-based speed and path selection, predicted motion
+chunks, pulsed burns and coasting, radar/RGB/depth feedback, and a guarded pass
+into the safe area followed by braking. See [Score-based controller](SCORE_ECO.md)
+for the formula, time/fuel/damage budgets, algorithm and validation limits.
+The 50–75 point target is not an established live result.
+[OPEN_LANE_9.md](OPEN_LANE_9.md) records the preceding controller.
 [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) records the earlier chunk design.
 
 **Live camera GUI:** copy **both `Controller.py` and `camera_viewer.py`** into the
@@ -18,8 +20,8 @@ installed local `STU4-Solution` folder. The OpenCV window opens automatically du
 the next simulation run, showing top/bottom RGB and depth, detection boxes, and
 flight statistics. Press Q in the viewer to close it while flight continues.
 See [Camera interface setup](CAMERA_GUI.md) for preview commands and
-troubleshooting. Cruise requests 9 m/s; achievable speed depends on the installed
-jets, clear stopping distance, route geometry and terminal approach.
+troubleshooting. The economy policy evaluates speeds up to 10 m/s; its selected
+speed depends on projected score, measured jet performance and observed clearance.
 
 See [Earlier fusion design](FINAL_DESIGN.md) for sensor implementation details,
 historical offline results, and required live camera calibration. The earlier

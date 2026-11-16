@@ -1,6 +1,9 @@
 # OPEN_LANE_9: wider routes, continuous handoffs and arrival hold
 
-Use this controller with **FINAL_SUBMISSION.simconf**. Deploy both
+> Historical version. The active candidate is now **SCORE_ECO**; see
+> [SCORE_ECO.md](SCORE_ECO.md) for current behavior and validation.
+
+This preceding controller used **FINAL_SUBMISSION.simconf**. Deploy both
 `Controller.py` and `camera_viewer.py` and check for `profile=OPEN_LANE_9`.
 The protected connection prefix and the official STU4-Sim remain unchanged.
 
