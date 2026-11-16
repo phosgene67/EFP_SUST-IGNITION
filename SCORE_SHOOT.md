@@ -1,5 +1,8 @@
 # Finite-burn controller: SCORE_SHOOT
 
+Historical version. The active profile is now `SCORE_MOMENTUM`; see
+[SCORE_MOMENTUM.md](SCORE_MOMENTUM.md) for current behavior and measurements.
+
 The active classes are `ShootingNavigator` and `FreeAttitude` in `Controller.py`.
 This is a testable candidate, not a verified competition result. The +50/+70 score
 targets have not yet been demonstrated by this implementation. Do not confuse

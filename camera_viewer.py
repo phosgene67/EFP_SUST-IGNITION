@@ -235,6 +235,9 @@ def render_dashboard(frames, metadata):
             text('REJECTED FOR NAVIGATION: stale frame or missing pose', x+12, y+345, (80, 100, 255), .43)
     text('Depth: warmer = nearer, cooler = farther; black = no usable depth. Scale 0-400 m.', 24, 877, muted, .5)
     if status.get('arrival_zone'):
+        if status.get('scored_fuel') is not None:
+            text(f"Entry fuel {status['scored_fuel']:.2f} kg (score frozen)",
+                 840, 877, muted, .45)
         text('ARRIVAL ZONE REACHED - '+str(status.get('arrival_action', 'HOLDING POSITION'))+'. Official result: Scoring log.',
              24, 903, (80, 225, 140), .55)
     else:
@@ -264,7 +267,7 @@ def demo_snapshot():
                 rect = [rect[0], height-1-rect[3], rect[2], height-1-rect[1]]
             boxes.append(dict(xyxy=rect, range_m=distance if key.endswith('depth') else None))
         info[key] = dict(stamp=42., accepted=True, boxes=boxes)
-    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='SCORE_SHOOT',
+    metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='SCORE_MOMENTUM',
         running=True, now=42.25, mode='AVOID', speed=8.8, cruise=9., distance=680., fuel=28.4,
         damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=96.8,
         body_velocity=[-1., 8.7, .2], projected_score=35., nose_first=False))

@@ -89,8 +89,9 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0.):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None):
     dt = 1./control_hz
+    drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
     attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
@@ -135,6 +136,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     for tick in range(int(max_time*control_hz)):
         now = tick*dt
         planner.control_time = now
+        if hasattr(planner, 'observe_motion'):
+            planner.observe_motion(now, loc, vel, bool(tick and
+                (np.linalg.norm(linear) > 1e-9 or np.linalg.norm(angular) > 1e-9)))
+            planner.observe_arrival(now, loc, vel, target, np.zeros(3))
         history.add(now, loc, rotation)
         for item in pending[:]:
             due, name, kind, pixels, stamp, yaw, pitch = item
@@ -170,7 +175,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             if hasattr(planner, 'policy'):
                 planner.policy.observe(now, vel, fuel,
                     thrusting=(np.linalg.norm(linear) > .08 and (getattr(attitude, 'free_attitude', False) or attitude_mode == 'off' or attitude.nose_error_deg < 10.) and np.linalg.norm(angular) < .003) if tick else False,
-                    gravity=-711000.*loc/max(np.linalg.norm(loc)**3, 1.))
+                    gravity=(planner.gravity_at(loc) if hasattr(planner, 'gravity_at')
+                             else -711000.*loc/max(np.linalg.norm(loc)**3, 1.)))
                 planner.nose_error = attitude.nose_error_deg
                 if attitude_mode == 'off':
                     planner.aligned_once = True
@@ -227,7 +233,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         linear_active += np.linalg.norm(linear) > 1e-9
         if attitude is not None:
             nose_errors.append(attitude.nose_error_deg)
-        gravity = -711000.*loc/max(np.linalg.norm(loc)**3, 1.)
+        gravity = -711000.*loc/max(np.linalg.norm(loc)**3, 1.)+drift_bias
         acceleration = rotation.T@actual+gravity
         loc += dt*vel+.5*dt*dt*acceleration
         vel += dt*acceleration
@@ -238,6 +244,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             ground_gap = min(ground_gap, float((loc-ground[0])@ground[1]))
         objects += dt*rock_velocities
         rock_velocities += -dt*711000.*objects/np.maximum(np.linalg.norm(objects, axis=1)**3, 1.)[:, None]
+        rock_velocities += dt*drift_bias
         nearest = min(nearest, float((np.linalg.norm(objects-loc, axis=1)-diameters/2.-3.).min()))
         normalized = scene['station_rotation']@(loc-target)/np.array([23., 23., 58.])
         hull_gap = min(hull_gap, float((np.linalg.norm(normalized)-1.)*23.))
@@ -278,6 +285,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 collision=collision, post_arrival_test_s=round(now+dt-arrival_time, 1) if arrived else 0.,
                 min_ground_centre_height_m=round(ground_gap, 2) if ground is not None else None,
                 final_speed_m_s=round(float(np.linalg.norm(vel)), 3),
+                learned_coast_drift_m_s2=(planner.dynamics.residual.tolist() if hasattr(planner, 'dynamics') else None),
                 phase=mode, images=camera.frames, plan_p95_ms=round(float(np.percentile(timings, 95))*1000., 2),
                 angular_active_fraction=round(angular_active/(tick+1), 3),
                 linear_active_fraction=round(linear_active/(tick+1), 3),
@@ -313,6 +321,8 @@ if __name__ == '__main__':
     parser.add_argument('--fuel-audit', action='store_true')
     parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
     parser.add_argument('--ground-plane', type=float, default=0., help='Diagnostic only: synthetic plane this far below initial centre, metres')
+    parser.add_argument('--drift-bias', type=float, nargs=3, default=[0., 0., 0.],
+                        help='Unmodeled shared acceleration in m/s^2; stress test, not native calibration')
     parser.add_argument('--control-hz', type=float, default=60., help='Flight servo rate; native controller is 60 Hz')
     parser.add_argument('--clear-corridor', action='store_true',
                         help='Diagnostic only: move debris aside in memory; never edits the official scenario')
@@ -331,12 +341,13 @@ if __name__ == '__main__':
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=3,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=4,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
                   axis_thrust=args.axis_thrust, ground_plane_m=args.ground_plane,
+                  drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane))
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

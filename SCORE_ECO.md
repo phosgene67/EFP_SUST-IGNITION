@@ -1,7 +1,7 @@
 # Score-based controller candidate
 
 Historical design: the active controller is now `ShootingNavigator`, profile
-`SCORE_SHOOT`. See [SCORE_SHOOT.md](SCORE_SHOOT.md) for current results and limits.
+`SCORE_MOMENTUM`. See [SCORE_MOMENTUM.md](SCORE_MOMENTUM.md) for current results and limits.
 
 This version ran `EconomyNavigator` and `FreeAttitude`, logged as
 `profile=SCORE_ECO`, for `FINAL_SUBMISSION.simconf`. Copy it together with

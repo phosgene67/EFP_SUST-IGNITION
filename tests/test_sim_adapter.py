@@ -12,7 +12,7 @@ class StopSimulation(Exception):
 
 
 class AdapterTests(unittest.TestCase):
-    def run_adapter(self, radar, camera_feed=False):
+    def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None):
         commands = []
         now = [0.]
         st = mock.MagicMock()
@@ -37,7 +37,9 @@ class AdapterTests(unittest.TestCase):
             return SimpleNamespace(loc_WRT_ExprIn=lambda f: np.array(position),
                                    vel_WRT_ExprIn=lambda f: np.zeros(3))
         shuttle.getLocVelAcc.return_value = state([8000., 0., 0.])
-        target.getLocVelAcc.return_value = state([9305.8, 0., 0.])
+        target.getLocVelAcc.return_value = state([9305.8, 0., 0.] if target_position is None else target_position)
+        if scoring_distance is not None:
+            shuttle.getLocation.return_value.WRT_ExprIn.return_value = np.array([scoring_distance, 0., 0.])
         shuttle.GetParam.side_effect = lambda kind, key: .5 if key[-1] == 'MaxAccel_m_s2' else .05
         shuttle.GetParamArray.return_value = radar
         shuttle.SetParam.side_effect = lambda kind, key, value: commands.append((key[-1], np.array(value)))
@@ -83,6 +85,12 @@ class AdapterTests(unittest.TestCase):
         for name, value in commands:
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
+
+    def test_arrival_uses_official_distance_between_planning_ticks(self):
+        self.run_adapter([], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        self.assertIsNotNone(self.runtime['planner'].arrival_time)
+        self.assertTrue(self.runtime['planner'].terminal.entered)
+        self.assertTrue(self.runtime['fuel_ledger'].frozen)
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])

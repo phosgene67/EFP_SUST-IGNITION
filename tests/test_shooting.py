@@ -137,6 +137,67 @@ class ShootingTests(unittest.TestCase):
         self.assertLess(planner.radar_forecast_rates[0], .4)
         self.assertGreater(radii[0], 4.+3.+4.)
 
+    def test_coast_model_learns_drift_but_never_from_a_powered_burn(self):
+        model = namespace['CoastDynamics']()
+        location = np.array([9000., 0., 0.])
+        nominal = -711000.*location/np.linalg.norm(location)**3
+        bias = np.array([.001, -.002, .001])
+        for stamp in np.arange(0., 25., .1):
+            model.observe(stamp, location, stamp*(nominal+bias), False)
+        np.testing.assert_allclose(model.residual, bias, atol=2e-5)
+        old = model.residual.copy()
+        for stamp in np.arange(25., 30., .1):
+            model.observe(stamp, location, stamp*np.array([.1, 0., 0.]), True)
+        np.testing.assert_array_equal(model.residual, old)
+
+    def test_unmodeled_contact_does_not_corrupt_coast_learning(self):
+        model = namespace['CoastDynamics']()
+        model.observe(0., np.array([9000., 0., 0.]), np.zeros(3), False)
+        model.observe(2., np.array([9000., 0., 0.]), np.array([1., 0., 0.]), False, 5000.)
+        np.testing.assert_array_equal(model.residual, np.zeros(3))
+        self.assertEqual(model.samples, [])
+
+    def test_fast_arrival_detection_does_not_wait_for_a_plan(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.shooting_active = True
+        loc, target = np.array([9000., 0., 0.]), np.array([9049.9, 0., 0.])
+        self.assertTrue(planner.observe_arrival(10.1, loc, np.array([5., 0., 0.]), target, np.zeros(3)))
+        self.assertEqual(planner.arrival_time, 10.1)
+        self.assertTrue(planner.terminal.entered)
+        self.assertFalse(planner.shooting_active)
+        self.assertFalse(planner.observe_arrival(10.2, loc, np.zeros(3), target, np.zeros(3)))
+
+    def test_damage_failure_has_priority_over_arrival(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.observe_damage(209201.)
+        self.assertFalse(planner.observe_arrival(10., np.zeros(3), np.zeros(3), np.zeros(3), np.zeros(3)))
+        self.assertIsNone(planner.arrival_time)
+
+    def test_official_distance_can_capture_entry_despite_actor_origin_offset(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        location, target = np.array([9000., 0., 0.]), np.array([9050.1, 0., 0.])
+        self.assertTrue(planner.observe_arrival(10., location, np.array([5., 0., 0.]),
+                                               target, np.zeros(3), 49.9))
+        self.assertTrue(planner.terminal.entered)
+        self.assertTrue(np.isfinite(planner.terminal.exit_goal).all())
+
+    def test_launch_transfers_to_flight_without_stopping_at_clearance_height(self):
+        planner = namespace['ShootingNavigator']()
+        start = np.array([9000., 0., 0.])
+        target = np.array([10300., 0., 0.])
+        self.assertIsNotNone(planner.launch.goal(start, target))
+        self.assertIsNone(planner.launch.goal(start+np.array([2.6, 0., 0.]), target))
+        self.assertTrue(planner.launch.done)
+
+    def test_clear_successful_ballistic_pass_uses_no_thrust(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        location, velocity = np.array([9000., 0., 0.]), np.array([7., .3, 0.])
+        planner.policy.previous = (100., velocity.copy(), 50.)
+        command, mode, _ = planner.command(100., location, velocity, np.array([10000., 0., 0.]),
+                                            np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+
 
 if __name__ == '__main__':
     unittest.main()

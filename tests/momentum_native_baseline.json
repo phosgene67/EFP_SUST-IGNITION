@@ -1,0 +1,3164 @@
+{
+  "note": "Native evidence only; controller source hashes are not present in the logs. The +7.0 run crosses the success sphere between planner samples, then collides after official scoring froze.",
+  "runs": [
+    {
+      "run_directory": "261116_074433_FINAL_SUBMISSION__45b",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 7.0; congratulations!",
+        "Sim elapsed time   = 329.44 s",
+        "Total fuel used    = 59.54 kg",
+        "Total damage taken = 0.0 J",
+        "Distance to ship   = 49.92 m"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.8,
+          "speed": 0.04,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planDV": 0.51,
+          "projectedScore": 56.5,
+          "burnRemaining": 56.0,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            -0.04,
+            -0.01,
+            -0.0
+          ],
+          "fuel_ledger": ""
+        },
+        {
+          "t": 5.8,
+          "speed": 0.2,
+          "fuel": 1.58,
+          "distance": 1305.6,
+          "planDV": 0.51,
+          "projectedScore": 46.0,
+          "burnRemaining": 56.5,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            0.02,
+            0.07,
+            0.18
+          ],
+          "fuel_ledger": "LAUNCH:1.43"
+        },
+        {
+          "t": 10.8,
+          "speed": 0.61,
+          "fuel": 3.66,
+          "distance": 1303.6,
+          "planDV": 0.51,
+          "projectedScore": 47.7,
+          "burnRemaining": 66.3,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            0.03,
+            0.08,
+            0.61
+          ],
+          "fuel_ledger": "LAUNCH:3.56"
+        },
+        {
+          "t": 15.8,
+          "speed": 0.93,
+          "fuel": 5.8,
+          "distance": 1299.6,
+          "planDV": 7.06,
+          "projectedScore": 48.1,
+          "burnRemaining": 73.7,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.08,
+            0.08,
+            0.92
+          ],
+          "fuel_ledger": "LAUNCH:4.40,PHASE_TRANSITION:0.71,CRUISE/IMPULSE_BURN:0.48"
+        },
+        {
+          "t": 20.8,
+          "speed": 1.11,
+          "fuel": 7.88,
+          "distance": 1294.4,
+          "planDV": 6.43,
+          "projectedScore": 47.9,
+          "burnRemaining": 66.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.17,
+            -0.07,
+            1.09
+          ],
+          "fuel_ledger": "LAUNCH:4.40,CRUISE/IMPULSE_BURN:2.59,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 25.9,
+          "speed": 1.36,
+          "fuel": 10.08,
+          "distance": 1288.1,
+          "planDV": 6.08,
+          "projectedScore": 45.3,
+          "burnRemaining": 64.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.25,
+            -0.03,
+            1.34
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:4.84,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 30.9,
+          "speed": 1.5,
+          "fuel": 12.2,
+          "distance": 1280.8,
+          "planDV": 5.63,
+          "projectedScore": 38.9,
+          "burnRemaining": 59.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.47,
+            -0.13,
+            1.42
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:6.97,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 36.1,
+          "speed": 1.48,
+          "fuel": 14.82,
+          "distance": 1273.3,
+          "planDV": 6.72,
+          "projectedScore": 7.9,
+          "burnRemaining": 69.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.37,
+            -0.27,
+            1.41
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:9.54,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 41.3,
+          "speed": 1.53,
+          "fuel": 17.37,
+          "distance": 1265.9,
+          "planDV": 5.0,
+          "projectedScore": 27.9,
+          "burnRemaining": 53.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.36,
+            -0.36,
+            1.44
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:12.13,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 46.3,
+          "speed": 1.54,
+          "fuel": 20.17,
+          "distance": 1258.5,
+          "planDV": 6.66,
+          "projectedScore": -14.9,
+          "burnRemaining": 70.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.07,
+            -0.54,
+            1.44
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:14.85,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 51.4,
+          "speed": 1.64,
+          "fuel": 22.57,
+          "distance": 1251.2,
+          "planDV": 6.5,
+          "projectedScore": -1.9,
+          "burnRemaining": 65.9,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.06,
+            -0.88,
+            1.38
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:17.27,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 56.5,
+          "speed": 1.36,
+          "fuel": 25.74,
+          "distance": 1244.3,
+          "planDV": 6.07,
+          "projectedScore": 17.4,
+          "burnRemaining": 65.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.18,
+            -0.31,
+            1.31
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:20.51,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 61.6,
+          "speed": 1.43,
+          "fuel": 27.87,
+          "distance": 1237.6,
+          "planDV": 5.6,
+          "projectedScore": 19.6,
+          "burnRemaining": 59.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.17,
+            -0.3,
+            1.38
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:22.64,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 66.7,
+          "speed": 1.85,
+          "fuel": 29.99,
+          "distance": 1229.3,
+          "planDV": 5.12,
+          "projectedScore": 19.4,
+          "burnRemaining": 54.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.16,
+            -0.3,
+            1.82
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:24.75,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 71.8,
+          "speed": 2.27,
+          "fuel": 32.08,
+          "distance": 1218.9,
+          "planDV": 4.65,
+          "projectedScore": 19.0,
+          "burnRemaining": 49.7,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.15,
+            -0.29,
+            2.24
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:26.85,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 76.9,
+          "speed": 2.69,
+          "fuel": 34.2,
+          "distance": 1206.3,
+          "planDV": 3.69,
+          "projectedScore": 18.1,
+          "burnRemaining": 39.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.14,
+            -0.28,
+            2.68
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:28.96,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 82.0,
+          "speed": 3.12,
+          "fuel": 36.33,
+          "distance": 1191.4,
+          "planDV": 3.75,
+          "projectedScore": 19.3,
+          "burnRemaining": 40.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.13,
+            -0.27,
+            3.11
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:31.11,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 87.2,
+          "speed": 3.55,
+          "fuel": 38.45,
+          "distance": 1174.3,
+          "planDV": 3.26,
+          "projectedScore": 19.5,
+          "burnRemaining": 34.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            -0.26,
+            3.54
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:33.22,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 92.2,
+          "speed": 3.97,
+          "fuel": 40.54,
+          "distance": 1155.3,
+          "planDV": 2.79,
+          "projectedScore": 19.4,
+          "burnRemaining": 29.7,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.11,
+            -0.25,
+            3.96
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:35.32,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 97.3,
+          "speed": 4.4,
+          "fuel": 42.63,
+          "distance": 1134.1,
+          "planDV": 2.3,
+          "projectedScore": 19.0,
+          "burnRemaining": 24.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.1,
+            -0.25,
+            4.39
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:37.43,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 102.4,
+          "speed": 4.83,
+          "fuel": 44.74,
+          "distance": 1110.6,
+          "planDV": 1.82,
+          "projectedScore": 18.7,
+          "burnRemaining": 19.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.09,
+            -0.24,
+            4.82
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:39.55,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 107.4,
+          "speed": 5.25,
+          "fuel": 46.84,
+          "distance": 1085.0,
+          "planDV": 1.34,
+          "projectedScore": 18.4,
+          "burnRemaining": 14.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.08,
+            -0.23,
+            5.25
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:41.65,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 112.5,
+          "speed": 5.65,
+          "fuel": 48.96,
+          "distance": 1057.1,
+          "planDV": 0.92,
+          "projectedScore": 19.1,
+          "burnRemaining": 9.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.11,
+            -0.22,
+            5.64
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:43.76,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 117.7,
+          "speed": 6.0,
+          "fuel": 51.12,
+          "distance": 1027.5,
+          "planDV": 0.06,
+          "projectedScore": 18.9,
+          "burnRemaining": 0.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            -0.24,
+            5.99
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.71"
+        },
+        {
+          "t": 122.7,
+          "speed": 5.98,
+          "fuel": 51.24,
+          "distance": 997.1,
+          "planDV": 0.0,
+          "projectedScore": 18.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.11,
+            -0.23,
+            5.97
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 127.8,
+          "speed": 5.92,
+          "fuel": 51.24,
+          "distance": 966.8,
+          "planDV": 0.0,
+          "projectedScore": 18.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.1,
+            -0.22,
+            5.91
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 132.9,
+          "speed": 5.86,
+          "fuel": 51.24,
+          "distance": 936.9,
+          "planDV": 0.0,
+          "projectedScore": 18.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.09,
+            -0.21,
+            5.86
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 138.0,
+          "speed": 5.8,
+          "fuel": 51.24,
+          "distance": 907.4,
+          "planDV": 0.0,
+          "projectedScore": 18.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.08,
+            -0.21,
+            5.8
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 143.1,
+          "speed": 5.75,
+          "fuel": 51.24,
+          "distance": 877.7,
+          "planDV": 0.0,
+          "projectedScore": 17.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.07,
+            -0.2,
+            5.74
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 148.2,
+          "speed": 5.69,
+          "fuel": 51.24,
+          "distance": 848.8,
+          "planDV": 0.0,
+          "projectedScore": 17.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.06,
+            -0.19,
+            5.69
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.93,LAUNCH:4.40,PHASE_TRANSITION:0.92"
+        },
+        {
+          "t": 153.3,
+          "speed": 5.65,
+          "fuel": 51.86,
+          "distance": 820.0,
+          "planDV": 0.0,
+          "projectedScore": 17.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.1,
+            -0.1,
+            5.65
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 158.4,
+          "speed": 5.6,
+          "fuel": 51.86,
+          "distance": 791.2,
+          "planDV": 0.0,
+          "projectedScore": 17.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.09,
+            -0.1,
+            5.6
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 163.5,
+          "speed": 5.54,
+          "fuel": 51.86,
+          "distance": 762.9,
+          "planDV": 0.0,
+          "projectedScore": 17.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.08,
+            -0.09,
+            5.54
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 168.6,
+          "speed": 5.48,
+          "fuel": 51.86,
+          "distance": 734.6,
+          "planDV": 0.0,
+          "projectedScore": 17.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.07,
+            -0.08,
+            5.48
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 173.8,
+          "speed": 5.43,
+          "fuel": 51.86,
+          "distance": 706.8,
+          "planDV": 0.0,
+          "projectedScore": 16.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.06,
+            -0.07,
+            5.43
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 178.9,
+          "speed": 5.37,
+          "fuel": 51.86,
+          "distance": 679.4,
+          "planDV": 0.0,
+          "projectedScore": 16.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.05,
+            -0.06,
+            5.37
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.36,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 183.9,
+          "speed": 5.32,
+          "fuel": 52.47,
+          "distance": 652.3,
+          "planDV": 0.08,
+          "projectedScore": 16.9,
+          "burnRemaining": 0.9,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.08,
+            -0.16,
+            5.32
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.87,LAUNCH:4.40,PHASE_TRANSITION:1.11"
+        },
+        {
+          "t": 189.0,
+          "speed": 5.31,
+          "fuel": 52.71,
+          "distance": 625.3,
+          "planDV": 0.0,
+          "projectedScore": 16.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.08,
+            -0.15,
+            5.31
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 194.2,
+          "speed": 5.26,
+          "fuel": 52.71,
+          "distance": 598.2,
+          "planDV": 0.0,
+          "projectedScore": 16.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.08,
+            -0.14,
+            5.26
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 199.2,
+          "speed": 5.21,
+          "fuel": 52.71,
+          "distance": 571.8,
+          "planDV": 0.0,
+          "projectedScore": 14.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.07,
+            -0.13,
+            5.2
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 204.3,
+          "speed": 5.15,
+          "fuel": 52.71,
+          "distance": 545.6,
+          "planDV": 0.0,
+          "projectedScore": 15.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.06,
+            -0.12,
+            5.15
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 209.4,
+          "speed": 5.1,
+          "fuel": 52.71,
+          "distance": 519.6,
+          "planDV": 0.0,
+          "projectedScore": 15.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.05,
+            -0.11,
+            5.1
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 214.6,
+          "speed": 5.05,
+          "fuel": 52.71,
+          "distance": 493.7,
+          "planDV": 0.0,
+          "projectedScore": 14.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.04,
+            -0.11,
+            5.04
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.09,LAUNCH:4.40,PHASE_TRANSITION:1.22"
+        },
+        {
+          "t": 219.7,
+          "speed": 5.03,
+          "fuel": 53.36,
+          "distance": 468.2,
+          "planDV": 0.0,
+          "projectedScore": 15.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.11,
+            -0.13,
+            5.03
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.65,LAUNCH:4.40,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 224.7,
+          "speed": 4.98,
+          "fuel": 53.36,
+          "distance": 442.9,
+          "planDV": 0.0,
+          "projectedScore": 15.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.1,
+            -0.12,
+            4.98
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:47.65,LAUNCH:4.40,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 229.8,
+          "speed": 4.57,
+          "fuel": 54.91,
+          "distance": 418.4,
+          "planDV": 0.09,
+          "projectedScore": 12.2,
+          "burnRemaining": 0.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.09,
+            -0.11,
+            4.57
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.09,LAUNCH:4.40,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 234.9,
+          "speed": 4.45,
+          "fuel": 55.49,
+          "distance": 395.9,
+          "planDV": 0.19,
+          "projectedScore": 11.0,
+          "burnRemaining": 1.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.08,
+            -0.04,
+            4.45
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.51,LAUNCH:4.40,PHASE_TRANSITION:1.46"
+        },
+        {
+          "t": 239.9,
+          "speed": 4.43,
+          "fuel": 58.12,
+          "distance": 373.8,
+          "planDV": 0.11,
+          "projectedScore": 8.0,
+          "burnRemaining": 1.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.31,
+            0.35,
+            4.4
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.19,LAUNCH:4.40,PHASE_TRANSITION:1.46"
+        },
+        {
+          "t": 245.0,
+          "speed": 4.38,
+          "fuel": 58.55,
+          "distance": 351.7,
+          "planDV": 0.0,
+          "projectedScore": 7.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.41,
+            0.36,
+            4.35
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.67,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 250.1,
+          "speed": 4.33,
+          "fuel": 58.55,
+          "distance": 329.7,
+          "planDV": 0.0,
+          "projectedScore": 7.5,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.4,
+            0.36,
+            4.3
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.67,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 255.2,
+          "speed": 4.28,
+          "fuel": 58.55,
+          "distance": 307.9,
+          "planDV": 0.0,
+          "projectedScore": 7.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            0.37,
+            4.25
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.67,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 260.3,
+          "speed": 4.23,
+          "fuel": 58.55,
+          "distance": 286.4,
+          "planDV": 0.0,
+          "projectedScore": 7.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.38,
+            0.38,
+            4.2
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.67,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 265.4,
+          "speed": 4.18,
+          "fuel": 58.55,
+          "distance": 265.4,
+          "planDV": 0.0,
+          "projectedScore": 8.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.38,
+            0.39,
+            4.15
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.67,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 270.5,
+          "speed": 4.13,
+          "fuel": 58.92,
+          "distance": 244.5,
+          "planDV": 0.03,
+          "projectedScore": 5.4,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.38,
+            0.33,
+            4.1
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.82,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 275.6,
+          "speed": 4.08,
+          "fuel": 58.92,
+          "distance": 224.1,
+          "planDV": 0.04,
+          "projectedScore": 5.4,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.38,
+            0.34,
+            4.05
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.82,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 280.7,
+          "speed": 4.03,
+          "fuel": 58.92,
+          "distance": 204.1,
+          "planDV": 0.04,
+          "projectedScore": 5.4,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.37,
+            0.35,
+            4.0
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:1.82,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 285.8,
+          "speed": 3.99,
+          "fuel": 59.25,
+          "distance": 184.2,
+          "planDV": 0.03,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.39,
+            0.32,
+            3.96
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 290.9,
+          "speed": 3.94,
+          "fuel": 59.25,
+          "distance": 164.8,
+          "planDV": 0.02,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.39,
+            0.32,
+            3.91
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 296.0,
+          "speed": 3.89,
+          "fuel": 59.25,
+          "distance": 145.8,
+          "planDV": 0.03,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.38,
+            0.33,
+            3.86
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 301.1,
+          "speed": 3.84,
+          "fuel": 59.25,
+          "distance": 127.3,
+          "planDV": 0.04,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.37,
+            0.34,
+            3.81
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 306.2,
+          "speed": 3.79,
+          "fuel": 59.25,
+          "distance": 109.5,
+          "planDV": 0.05,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            0.35,
+            3.76
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 311.3,
+          "speed": 3.74,
+          "fuel": 59.25,
+          "distance": 92.7,
+          "planDV": 0.07,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            0.36,
+            3.71
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 316.3,
+          "speed": 3.69,
+          "fuel": 59.25,
+          "distance": 77.3,
+          "planDV": 0.11,
+          "projectedScore": 4.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.35,
+            0.36,
+            3.66
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 321.5,
+          "speed": 3.65,
+          "fuel": 59.25,
+          "distance": 63.8,
+          "planDV": 0.17,
+          "projectedScore": 4.8,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.34,
+            0.37,
+            3.61
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.02,COURSE_TRIM:0.22,COAST:0.13,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 326.5,
+          "speed": 3.6,
+          "fuel": 59.54,
+          "distance": 53.8,
+          "planDV": 0.23,
+          "projectedScore": 4.4,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            0.34,
+            3.56
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.18,COAST:0.26,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 331.6,
+          "speed": 2.66,
+          "fuel": 60.6,
+          "distance": 53.7,
+          "planDV": 0.51,
+          "projectedScore": -17.9,
+          "burnRemaining": 0.0,
+          "phase": "CAPTURE_PASS",
+          "body_velocity": [
+            0.91,
+            1.28,
+            -2.14
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,PHASE_TRANSITION:2.18,CAPTURE_PASS:0.92,COAST:0.26,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 336.7,
+          "speed": 2.3,
+          "fuel": 64.02,
+          "distance": 59.7,
+          "planDV": 0.51,
+          "projectedScore": -23.6,
+          "burnRemaining": 0.0,
+          "phase": "CAPTURE_PASS",
+          "body_velocity": [
+            1.36,
+            1.31,
+            1.31
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:52.39,LAUNCH:4.40,CAPTURE_PASS:4.36,PHASE_TRANSITION:2.18,COAST:0.26,COURSE_TRIM:0.22,CRUISE/IMPULSE_COAST:0.09"
+        }
+      ]
+    },
+    {
+      "run_directory": "261116_073848_FINAL_SUBMISSION__ba6",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 1.7; congratulations!",
+        "Sim elapsed time   = 300.68 s",
+        "Total damage taken = 0.0 J",
+        "Distance to ship   = 49.95 m",
+        "Total fuel used    = 66.19 kg"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.3,
+          "speed": 0.07,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planDV": 0.51,
+          "projectedScore": 57.0,
+          "burnRemaining": 55.8,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            -0.07,
+            -0.02,
+            0.0
+          ],
+          "fuel_ledger": ""
+        },
+        {
+          "t": 5.3,
+          "speed": 0.18,
+          "fuel": 1.77,
+          "distance": 1305.7,
+          "planDV": 0.51,
+          "projectedScore": 44.0,
+          "burnRemaining": 54.9,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            0.01,
+            0.13,
+            0.13
+          ],
+          "fuel_ledger": "LAUNCH:1.62"
+        },
+        {
+          "t": 10.3,
+          "speed": 0.56,
+          "fuel": 3.83,
+          "distance": 1304.1,
+          "planDV": 0.51,
+          "projectedScore": 45.6,
+          "burnRemaining": 65.2,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            0.01,
+            0.13,
+            0.55
+          ],
+          "fuel_ledger": "LAUNCH:3.73"
+        },
+        {
+          "t": 15.4,
+          "speed": 0.87,
+          "fuel": 6.03,
+          "distance": 1300.3,
+          "planDV": 6.9,
+          "projectedScore": 46.9,
+          "burnRemaining": 72.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            0.14,
+            0.85
+          ],
+          "fuel_ledger": "LAUNCH:4.78,CRUISE/IMPULSE_BURN:0.69,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 20.6,
+          "speed": 1.0,
+          "fuel": 8.16,
+          "distance": 1295.8,
+          "planDV": 6.42,
+          "projectedScore": 45.6,
+          "burnRemaining": 67.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.22,
+            -0.05,
+            0.97
+          ],
+          "fuel_ledger": "LAUNCH:4.78,CRUISE/IMPULSE_BURN:2.83,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 25.8,
+          "speed": 1.43,
+          "fuel": 10.32,
+          "distance": 1289.6,
+          "planDV": 5.93,
+          "projectedScore": 46.4,
+          "burnRemaining": 61.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.21,
+            -0.04,
+            1.41
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:4.92,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 30.9,
+          "speed": 1.84,
+          "fuel": 12.43,
+          "distance": 1281.2,
+          "planDV": 5.45,
+          "projectedScore": 46.1,
+          "burnRemaining": 57.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.21,
+            -0.03,
+            1.83
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:7.07,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 36.0,
+          "speed": 2.27,
+          "fuel": 14.54,
+          "distance": 1270.7,
+          "planDV": 4.97,
+          "projectedScore": 45.8,
+          "burnRemaining": 53.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.2,
+            -0.02,
+            2.26
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:9.19,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 41.1,
+          "speed": 2.7,
+          "fuel": 16.66,
+          "distance": 1258.0,
+          "planDV": 4.48,
+          "projectedScore": 45.6,
+          "burnRemaining": 47.7,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.19,
+            -0.01,
+            2.69
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:11.30,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 46.2,
+          "speed": 3.05,
+          "fuel": 18.8,
+          "distance": 1242.9,
+          "planDV": 4.1,
+          "projectedScore": 45.7,
+          "burnRemaining": 42.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.22,
+            -0.06,
+            3.04
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:13.42,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 51.3,
+          "speed": 3.48,
+          "fuel": 20.9,
+          "distance": 1226.3,
+          "planDV": 3.61,
+          "projectedScore": 45.4,
+          "burnRemaining": 38.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.22,
+            -0.05,
+            3.48
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:15.54,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 56.4,
+          "speed": 3.91,
+          "fuel": 23.02,
+          "distance": 1207.4,
+          "planDV": 3.14,
+          "projectedScore": 44.8,
+          "burnRemaining": 34.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.21,
+            -0.04,
+            3.9
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:17.64,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 61.7,
+          "speed": 4.17,
+          "fuel": 25.39,
+          "distance": 1185.7,
+          "planDV": 3.05,
+          "projectedScore": 38.7,
+          "burnRemaining": 32.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.11,
+            -0.18,
+            4.16
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:20.00,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 66.8,
+          "speed": 4.38,
+          "fuel": 27.64,
+          "distance": 1164.0,
+          "planDV": 2.69,
+          "projectedScore": 40.5,
+          "burnRemaining": 28.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.14,
+            -0.2,
+            4.38
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:22.26,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 72.0,
+          "speed": 4.82,
+          "fuel": 29.76,
+          "distance": 1140.3,
+          "planDV": 2.21,
+          "projectedScore": 41.1,
+          "burnRemaining": 23.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.13,
+            -0.19,
+            4.81
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:24.38,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 77.1,
+          "speed": 5.24,
+          "fuel": 31.89,
+          "distance": 1114.6,
+          "planDV": 1.73,
+          "projectedScore": 42.6,
+          "burnRemaining": 18.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            -0.18,
+            5.24
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:26.49,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 82.1,
+          "speed": 5.67,
+          "fuel": 33.97,
+          "distance": 1087.1,
+          "planDV": 1.25,
+          "projectedScore": 42.3,
+          "burnRemaining": 13.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.11,
+            -0.17,
+            5.66
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:28.63,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 87.2,
+          "speed": 6.09,
+          "fuel": 36.1,
+          "distance": 1057.0,
+          "planDV": 0.1,
+          "projectedScore": 42.4,
+          "burnRemaining": 1.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.1,
+            -0.16,
+            6.09
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:30.74,LAUNCH:4.78,PHASE_TRANSITION:0.46"
+        },
+        {
+          "t": 92.3,
+          "speed": 6.11,
+          "fuel": 36.35,
+          "distance": 1026.0,
+          "planDV": 0.0,
+          "projectedScore": 39.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.09,
+            -0.16,
+            6.1
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:30.94,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 97.3,
+          "speed": 5.78,
+          "fuel": 39.11,
+          "distance": 996.6,
+          "planDV": 1.51,
+          "projectedScore": 13.7,
+          "burnRemaining": 12.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.25,
+            -0.13,
+            5.77
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:33.55,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 102.4,
+          "speed": 5.77,
+          "fuel": 42.62,
+          "distance": 967.5,
+          "planDV": 1.44,
+          "projectedScore": 2.8,
+          "burnRemaining": 12.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.74,
+            0.23,
+            5.71
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:37.08,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 107.5,
+          "speed": 5.7,
+          "fuel": 45.16,
+          "distance": 939.2,
+          "planDV": 1.53,
+          "projectedScore": 20.2,
+          "burnRemaining": 16.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.46,
+            0.55,
+            5.66
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:39.66,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 112.6,
+          "speed": 5.63,
+          "fuel": 47.29,
+          "distance": 910.9,
+          "planDV": 1.07,
+          "projectedScore": 20.8,
+          "burnRemaining": 11.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.02,
+            0.56,
+            5.6
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:41.78,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 117.7,
+          "speed": 5.55,
+          "fuel": 49.42,
+          "distance": 882.7,
+          "planDV": 0.59,
+          "projectedScore": 20.6,
+          "burnRemaining": 6.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.19,
+            0.25,
+            5.54
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:43.90,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 122.8,
+          "speed": 5.6,
+          "fuel": 51.55,
+          "distance": 854.5,
+          "planDV": 0.1,
+          "projectedScore": 20.0,
+          "burnRemaining": 1.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.19,
+            -0.12,
+            5.6
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.04,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 127.9,
+          "speed": 5.6,
+          "fuel": 53.69,
+          "distance": 825.9,
+          "planDV": 0.41,
+          "projectedScore": 11.6,
+          "burnRemaining": 4.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.49,
+            -0.21,
+            5.57
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:48.18,LAUNCH:4.78,PHASE_TRANSITION:0.63"
+        },
+        {
+          "t": 133.0,
+          "speed": 5.57,
+          "fuel": 55.27,
+          "distance": 797.3,
+          "planDV": 0.0,
+          "projectedScore": 15.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.66,
+            -0.4,
+            5.51
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 138.1,
+          "speed": 5.51,
+          "fuel": 55.27,
+          "distance": 769.2,
+          "planDV": 0.0,
+          "projectedScore": 15.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.65,
+            -0.39,
+            5.46
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 143.2,
+          "speed": 5.45,
+          "fuel": 55.27,
+          "distance": 741.4,
+          "planDV": 0.0,
+          "projectedScore": 15.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.64,
+            -0.39,
+            5.4
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 148.3,
+          "speed": 5.4,
+          "fuel": 55.27,
+          "distance": 713.8,
+          "planDV": 0.0,
+          "projectedScore": 15.5,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.63,
+            -0.38,
+            5.35
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 153.4,
+          "speed": 5.34,
+          "fuel": 55.27,
+          "distance": 686.4,
+          "planDV": 0.0,
+          "projectedScore": 15.2,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.62,
+            -0.37,
+            5.29
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 158.5,
+          "speed": 5.29,
+          "fuel": 55.27,
+          "distance": 659.3,
+          "planDV": 0.0,
+          "projectedScore": 14.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.61,
+            -0.37,
+            5.24
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 163.6,
+          "speed": 5.23,
+          "fuel": 55.27,
+          "distance": 632.6,
+          "planDV": 0.0,
+          "projectedScore": 14.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.61,
+            -0.36,
+            5.18
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.68,LAUNCH:4.78,PHASE_TRANSITION:0.81"
+        },
+        {
+          "t": 168.7,
+          "speed": 5.21,
+          "fuel": 55.97,
+          "distance": 606.0,
+          "planDV": 0.0,
+          "projectedScore": 15.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.68,
+            -0.41,
+            5.15
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 173.7,
+          "speed": 5.16,
+          "fuel": 55.97,
+          "distance": 579.7,
+          "planDV": 0.0,
+          "projectedScore": 15.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.67,
+            -0.41,
+            5.1
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 178.8,
+          "speed": 5.1,
+          "fuel": 55.97,
+          "distance": 553.6,
+          "planDV": 0.0,
+          "projectedScore": 14.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.66,
+            -0.4,
+            5.04
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 184.0,
+          "speed": 5.05,
+          "fuel": 55.97,
+          "distance": 527.6,
+          "planDV": 0.0,
+          "projectedScore": 14.5,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.65,
+            -0.39,
+            4.99
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 189.0,
+          "speed": 4.99,
+          "fuel": 55.97,
+          "distance": 502.3,
+          "planDV": 0.0,
+          "projectedScore": 14.2,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.64,
+            -0.39,
+            4.94
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 194.1,
+          "speed": 4.94,
+          "fuel": 55.97,
+          "distance": 477.1,
+          "planDV": 0.0,
+          "projectedScore": 13.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.63,
+            -0.38,
+            4.88
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 199.2,
+          "speed": 4.89,
+          "fuel": 55.97,
+          "distance": 452.4,
+          "planDV": 0.0,
+          "projectedScore": 13.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.62,
+            -0.37,
+            4.83
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.21,LAUNCH:4.78,PHASE_TRANSITION:0.97"
+        },
+        {
+          "t": 204.2,
+          "speed": 4.9,
+          "fuel": 56.84,
+          "distance": 427.4,
+          "planDV": 0.3,
+          "projectedScore": 12.7,
+          "burnRemaining": 2.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.71,
+            -0.42,
+            4.84
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.99,LAUNCH:4.78,PHASE_TRANSITION:1.06"
+        },
+        {
+          "t": 209.3,
+          "speed": 4.85,
+          "fuel": 59.33,
+          "distance": 402.8,
+          "planDV": 0.0,
+          "projectedScore": 10.6,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.41,
+            -0.71,
+            4.78
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.37,LAUNCH:4.78,PHASE_TRANSITION:1.18"
+        },
+        {
+          "t": 214.4,
+          "speed": 4.8,
+          "fuel": 59.33,
+          "distance": 378.4,
+          "planDV": 0.0,
+          "projectedScore": 10.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.4,
+            -0.7,
+            4.73
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.37,LAUNCH:4.78,PHASE_TRANSITION:1.18"
+        },
+        {
+          "t": 219.5,
+          "speed": 4.75,
+          "fuel": 59.33,
+          "distance": 354.2,
+          "planDV": 0.0,
+          "projectedScore": 10.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            -0.7,
+            4.68
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.37,LAUNCH:4.78,PHASE_TRANSITION:1.18"
+        },
+        {
+          "t": 224.6,
+          "speed": 4.69,
+          "fuel": 59.33,
+          "distance": 330.4,
+          "planDV": 0.0,
+          "projectedScore": 9.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.38,
+            -0.69,
+            4.63
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.37,LAUNCH:4.78,PHASE_TRANSITION:1.18"
+        },
+        {
+          "t": 229.7,
+          "speed": 4.64,
+          "fuel": 59.33,
+          "distance": 306.8,
+          "planDV": 0.0,
+          "projectedScore": 9.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.37,
+            -0.68,
+            4.58
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.37,LAUNCH:4.78,PHASE_TRANSITION:1.18"
+        },
+        {
+          "t": 234.8,
+          "speed": 4.62,
+          "fuel": 60.02,
+          "distance": 283.4,
+          "planDV": 0.0,
+          "projectedScore": 9.8,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.46,
+            -0.71,
+            4.55
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 239.8,
+          "speed": 4.57,
+          "fuel": 60.02,
+          "distance": 260.5,
+          "planDV": 0.0,
+          "projectedScore": 10.3,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.45,
+            -0.7,
+            4.5
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 244.9,
+          "speed": 4.52,
+          "fuel": 60.02,
+          "distance": 237.7,
+          "planDV": 0.32,
+          "projectedScore": 8.0,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.44,
+            -0.69,
+            4.45
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 250.0,
+          "speed": 4.47,
+          "fuel": 60.02,
+          "distance": 215.2,
+          "planDV": 0.34,
+          "projectedScore": 8.0,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.43,
+            -0.69,
+            4.39
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 255.2,
+          "speed": 4.06,
+          "fuel": 61.96,
+          "distance": 193.6,
+          "planDV": 0.51,
+          "projectedScore": 5.0,
+          "burnRemaining": 0.0,
+          "phase": "WAIT_SHIP_CAMERA",
+          "body_velocity": [
+            -0.39,
+            -0.62,
+            3.99
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:1.86,PHASE_TRANSITION:1.31"
+        },
+        {
+          "t": 260.2,
+          "speed": 3.85,
+          "fuel": 62.79,
+          "distance": 174.4,
+          "planDV": 0.36,
+          "projectedScore": 3.5,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            -0.59,
+            3.79
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:1.57,COAST:0.09"
+        },
+        {
+          "t": 265.3,
+          "speed": 3.8,
+          "fuel": 63.35,
+          "distance": 155.6,
+          "planDV": 0.32,
+          "projectedScore": 2.8,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.27,
+            -0.62,
+            3.74
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:1.86,COURSE_TRIM:0.17,COAST:0.09"
+        },
+        {
+          "t": 270.4,
+          "speed": 3.74,
+          "fuel": 63.65,
+          "distance": 137.1,
+          "planDV": 0.27,
+          "projectedScore": 2.3,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.21,
+            -0.64,
+            3.68
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:2.06,COAST:0.29,COURSE_TRIM:0.17"
+        },
+        {
+          "t": 275.5,
+          "speed": 3.69,
+          "fuel": 63.94,
+          "distance": 119.3,
+          "planDV": 0.26,
+          "projectedScore": 1.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.16,
+            -0.65,
+            3.63
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:2.24,COAST:0.40,COURSE_TRIM:0.17"
+        },
+        {
+          "t": 280.6,
+          "speed": 3.64,
+          "fuel": 63.94,
+          "distance": 102.2,
+          "planDV": 0.29,
+          "projectedScore": 1.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.15,
+            -0.64,
+            3.58
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:2.24,COAST:0.40,COURSE_TRIM:0.17"
+        },
+        {
+          "t": 285.7,
+          "speed": 3.59,
+          "fuel": 64.2,
+          "distance": 85.9,
+          "planDV": 0.29,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.1,
+            -0.65,
+            3.53
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:2.40,COAST:0.50,COURSE_TRIM:0.17"
+        },
+        {
+          "t": 290.8,
+          "speed": 3.54,
+          "fuel": 64.2,
+          "distance": 71.0,
+          "planDV": 0.35,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.09,
+            -0.64,
+            3.48
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,WAIT_SHIP_CAMERA:2.42,PHASE_TRANSITION:2.40,COAST:0.50,COURSE_TRIM:0.17"
+        },
+        {
+          "t": 295.9,
+          "speed": 3.49,
+          "fuel": 65.08,
+          "distance": 58.1,
+          "planDV": 0.29,
+          "projectedScore": 0.4,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            0.01,
+            -0.73,
+            3.41
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:2.86,WAIT_SHIP_CAMERA:2.42,COAST:0.72,COURSE_TRIM:0.37"
+        },
+        {
+          "t": 301.0,
+          "speed": 3.43,
+          "fuel": 66.25,
+          "distance": 49.2,
+          "planDV": 0.02,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.12,
+            -0.86,
+            3.32
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        },
+        {
+          "t": 306.1,
+          "speed": 3.42,
+          "fuel": 66.51,
+          "distance": 45.9,
+          "planDV": 0.05,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.11,
+            -0.84,
+            3.31
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        },
+        {
+          "t": 311.2,
+          "speed": 3.02,
+          "fuel": 68.41,
+          "distance": 48.6,
+          "planDV": 0.05,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.11,
+            -0.74,
+            2.92
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        },
+        {
+          "t": 316.3,
+          "speed": 2.63,
+          "fuel": 70.35,
+          "distance": 55.1,
+          "planDV": 0.05,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.1,
+            -0.65,
+            2.55
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        },
+        {
+          "t": 321.4,
+          "speed": 2.24,
+          "fuel": 72.19,
+          "distance": 62.7,
+          "planDV": 0.04,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.08,
+            -0.55,
+            2.17
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        },
+        {
+          "t": 326.5,
+          "speed": 1.85,
+          "fuel": 74.04,
+          "distance": 70.3,
+          "planDV": 0.04,
+          "projectedScore": 1.6,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            0.07,
+            -0.45,
+            1.79
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:53.93,LAUNCH:4.78,PHASE_TRANSITION:3.52,WAIT_SHIP_CAMERA:2.42,COAST:0.95,COURSE_TRIM:0.56,ARRIVAL_TRANSITION:0.08"
+        }
+      ]
+    },
+    {
+      "run_directory": "261116_073207_FINAL_SUBMISSION__a13",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 7.0; congratulations!",
+        "Sim elapsed time   = 300.68 s",
+        "Total damage taken = 0.0 J",
+        "Total fuel used    = 62.16 kg",
+        "Distance to ship   = 49.91 m"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.5,
+          "speed": 0.02,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planDV": 0.51,
+          "projectedScore": 56.5,
+          "burnRemaining": 56.1,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            -0.02,
+            -0.01,
+            0.0
+          ],
+          "fuel_ledger": ""
+        },
+        {
+          "t": 5.5,
+          "speed": 0.15,
+          "fuel": 1.58,
+          "distance": 1305.7,
+          "planDV": 0.51,
+          "projectedScore": 46.9,
+          "burnRemaining": 53.2,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            -0.03,
+            0.06,
+            0.13
+          ],
+          "fuel_ledger": "LAUNCH:1.42"
+        },
+        {
+          "t": 10.5,
+          "speed": 0.57,
+          "fuel": 3.66,
+          "distance": 1303.9,
+          "planDV": 0.51,
+          "projectedScore": 48.0,
+          "burnRemaining": 63.3,
+          "phase": "LAUNCH",
+          "body_velocity": [
+            -0.02,
+            0.07,
+            0.57
+          ],
+          "fuel_ledger": "LAUNCH:3.52"
+        },
+        {
+          "t": 15.5,
+          "speed": 0.78,
+          "fuel": 5.8,
+          "distance": 1301.1,
+          "planDV": 7.13,
+          "projectedScore": 47.1,
+          "burnRemaining": 74.3,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.02,
+            -0.07,
+            0.78
+          ],
+          "fuel_ledger": "LAUNCH:4.58,CRUISE/IMPULSE_BURN:0.69,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 20.6,
+          "speed": 1.0,
+          "fuel": 7.9,
+          "distance": 1297.5,
+          "planDV": 6.68,
+          "projectedScore": 46.5,
+          "burnRemaining": 71.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.17,
+            -0.09,
+            0.98
+          ],
+          "fuel_ledger": "LAUNCH:4.58,CRUISE/IMPULSE_BURN:2.80,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 25.7,
+          "speed": 1.41,
+          "fuel": 10.03,
+          "distance": 1291.3,
+          "planDV": 6.21,
+          "projectedScore": 46.6,
+          "burnRemaining": 65.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.16,
+            -0.08,
+            1.4
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:4.90,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 30.9,
+          "speed": 1.84,
+          "fuel": 12.17,
+          "distance": 1282.9,
+          "planDV": 5.72,
+          "projectedScore": 46.3,
+          "burnRemaining": 60.7,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.15,
+            -0.07,
+            1.83
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:7.05,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 36.0,
+          "speed": 2.23,
+          "fuel": 14.3,
+          "distance": 1273.4,
+          "planDV": 5.28,
+          "projectedScore": 45.7,
+          "burnRemaining": 55.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.14,
+            -0.06,
+            2.22
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:9.17,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 41.3,
+          "speed": 2.67,
+          "fuel": 16.47,
+          "distance": 1260.5,
+          "planDV": 4.78,
+          "projectedScore": 45.6,
+          "burnRemaining": 49.8,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.13,
+            -0.05,
+            2.67
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:11.33,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 46.3,
+          "speed": 3.12,
+          "fuel": 18.6,
+          "distance": 1245.7,
+          "planDV": 4.29,
+          "projectedScore": 45.4,
+          "burnRemaining": 44.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            -0.05,
+            3.12
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:13.44,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 51.4,
+          "speed": 3.55,
+          "fuel": 20.68,
+          "distance": 1228.7,
+          "planDV": 3.8,
+          "projectedScore": 45.2,
+          "burnRemaining": 39.9,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.12,
+            -0.04,
+            3.55
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:15.55,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 56.5,
+          "speed": 3.97,
+          "fuel": 22.8,
+          "distance": 1209.6,
+          "planDV": 3.32,
+          "projectedScore": 44.9,
+          "burnRemaining": 35.5,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.11,
+            -0.03,
+            3.97
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:17.65,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 61.6,
+          "speed": 4.25,
+          "fuel": 24.89,
+          "distance": 1188.6,
+          "planDV": 3.06,
+          "projectedScore": 44.5,
+          "burnRemaining": 32.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.18,
+            -0.1,
+            4.24
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:19.79,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 66.7,
+          "speed": 4.69,
+          "fuel": 27.01,
+          "distance": 1165.8,
+          "planDV": 2.56,
+          "projectedScore": 45.0,
+          "burnRemaining": 26.9,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.17,
+            -0.09,
+            4.69
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:21.89,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 71.9,
+          "speed": 5.12,
+          "fuel": 29.13,
+          "distance": 1140.6,
+          "planDV": 2.08,
+          "projectedScore": 44.7,
+          "burnRemaining": 22.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.16,
+            -0.08,
+            5.12
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:24.01,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 76.9,
+          "speed": 5.55,
+          "fuel": 31.22,
+          "distance": 1113.8,
+          "planDV": 1.59,
+          "projectedScore": 44.4,
+          "burnRemaining": 16.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.16,
+            -0.07,
+            5.55
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:26.12,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 82.0,
+          "speed": 5.89,
+          "fuel": 33.37,
+          "distance": 1084.2,
+          "planDV": 1.17,
+          "projectedScore": 42.9,
+          "burnRemaining": 12.0,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.19,
+            -0.12,
+            5.89
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:28.26,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 87.1,
+          "speed": 6.07,
+          "fuel": 35.7,
+          "distance": 1053.3,
+          "planDV": 1.01,
+          "projectedScore": 26.4,
+          "burnRemaining": 8.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.18,
+            -0.03,
+            6.07
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:30.55,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 92.2,
+          "speed": 5.41,
+          "fuel": 38.25,
+          "distance": 1024.4,
+          "planDV": 0.85,
+          "projectedScore": -11.7,
+          "burnRemaining": 7.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.18,
+            -0.02,
+            5.4
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:33.11,LAUNCH:4.58,PHASE_TRANSITION:0.43"
+        },
+        {
+          "t": 97.3,
+          "speed": 4.91,
+          "fuel": 40.06,
+          "distance": 998.6,
+          "planDV": 1.57,
+          "projectedScore": 21.5,
+          "burnRemaining": 14.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.17,
+            -0.01,
+            4.91
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:34.90,LAUNCH:4.58,PHASE_TRANSITION:0.57"
+        },
+        {
+          "t": 102.9,
+          "speed": 5.0,
+          "fuel": 44.59,
+          "distance": 971.0,
+          "planDV": 1.38,
+          "projectedScore": 12.7,
+          "burnRemaining": 3.7,
+          "phase": "AVOID",
+          "body_velocity": [
+            0.57,
+            -0.13,
+            4.97
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:36.64,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:0.94"
+        },
+        {
+          "t": 108.0,
+          "speed": 4.95,
+          "fuel": 46.65,
+          "distance": 946.2,
+          "planDV": 1.07,
+          "projectedScore": 20.4,
+          "burnRemaining": 11.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            0.14,
+            -0.18,
+            4.94
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:38.37,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.27"
+        },
+        {
+          "t": 113.0,
+          "speed": 5.09,
+          "fuel": 48.73,
+          "distance": 921.4,
+          "planDV": 0.59,
+          "projectedScore": 20.4,
+          "burnRemaining": 6.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.14,
+            -0.18,
+            5.09
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:40.50,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.27"
+        },
+        {
+          "t": 118.0,
+          "speed": 5.52,
+          "fuel": 50.83,
+          "distance": 894.6,
+          "planDV": 0.11,
+          "projectedScore": 20.5,
+          "burnRemaining": 1.2,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.13,
+            -0.17,
+            5.52
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:42.61,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.27"
+        },
+        {
+          "t": 123.1,
+          "speed": 5.54,
+          "fuel": 51.13,
+          "distance": 866.3,
+          "planDV": 0.0,
+          "projectedScore": 20.5,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.12,
+            -0.16,
+            5.54
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:42.83,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.48"
+        },
+        {
+          "t": 128.2,
+          "speed": 5.48,
+          "fuel": 51.13,
+          "distance": 838.2,
+          "planDV": 0.0,
+          "projectedScore": 19.2,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.12,
+            -0.15,
+            5.48
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:42.83,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.48"
+        },
+        {
+          "t": 133.2,
+          "speed": 5.43,
+          "fuel": 52.79,
+          "distance": 811.0,
+          "planDV": 0.3,
+          "projectedScore": 16.5,
+          "burnRemaining": 3.1,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.338,
+            0.00346,
+            5.42
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:44.41,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.48"
+        },
+        {
+          "t": 138.3,
+          "speed": 5.43,
+          "fuel": 53.66,
+          "distance": 783.3,
+          "planDV": 0.0,
+          "projectedScore": 17.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.48,
+            0.01,
+            5.41
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.26,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.59"
+        },
+        {
+          "t": 143.5,
+          "speed": 5.38,
+          "fuel": 53.66,
+          "distance": 755.7,
+          "planDV": 0.0,
+          "projectedScore": 16.9,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.47,
+            0.02,
+            5.36
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:45.26,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.59"
+        },
+        {
+          "t": 148.5,
+          "speed": 5.33,
+          "fuel": 54.7,
+          "distance": 728.6,
+          "planDV": 0.52,
+          "projectedScore": 7.8,
+          "burnRemaining": 5.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.46,
+            -0.21,
+            5.3
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:46.22,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.59"
+        },
+        {
+          "t": 153.7,
+          "speed": 5.3,
+          "fuel": 56.94,
+          "distance": 701.3,
+          "planDV": 0.14,
+          "projectedScore": 10.1,
+          "burnRemaining": 1.4,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.46,
+            -0.61,
+            5.25
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:48.46,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.59"
+        },
+        {
+          "t": 158.8,
+          "speed": 5.26,
+          "fuel": 58.32,
+          "distance": 674.5,
+          "planDV": 0.0,
+          "projectedScore": 11.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            -0.57,
+            5.21
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 163.9,
+          "speed": 5.2,
+          "fuel": 58.32,
+          "distance": 647.8,
+          "planDV": 0.0,
+          "projectedScore": 11.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            -0.56,
+            5.16
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 168.9,
+          "speed": 5.15,
+          "fuel": 58.32,
+          "distance": 621.6,
+          "planDV": 0.0,
+          "projectedScore": 10.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.38,
+            -0.56,
+            5.1
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 174.0,
+          "speed": 5.09,
+          "fuel": 58.32,
+          "distance": 595.6,
+          "planDV": 0.0,
+          "projectedScore": 10.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.37,
+            -0.55,
+            5.05
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 179.1,
+          "speed": 5.04,
+          "fuel": 58.32,
+          "distance": 569.9,
+          "planDV": 0.0,
+          "projectedScore": 10.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.36,
+            -0.54,
+            5.0
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 184.2,
+          "speed": 4.98,
+          "fuel": 58.32,
+          "distance": 544.5,
+          "planDV": 0.0,
+          "projectedScore": 9.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.35,
+            -0.53,
+            4.94
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:49.72,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.78"
+        },
+        {
+          "t": 189.3,
+          "speed": 4.98,
+          "fuel": 59.03,
+          "distance": 519.0,
+          "planDV": 0.0,
+          "projectedScore": 10.3,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.4,
+            -0.58,
+            4.92
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.30,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 194.4,
+          "speed": 4.92,
+          "fuel": 59.03,
+          "distance": 494.1,
+          "planDV": 0.0,
+          "projectedScore": 10.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            -0.57,
+            4.87
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.30,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 199.5,
+          "speed": 4.87,
+          "fuel": 59.03,
+          "distance": 469.1,
+          "planDV": 0.0,
+          "projectedScore": 9.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.38,
+            -0.57,
+            4.82
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.30,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 204.6,
+          "speed": 4.81,
+          "fuel": 59.03,
+          "distance": 444.7,
+          "planDV": 0.0,
+          "projectedScore": 9.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.37,
+            -0.56,
+            4.77
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.30,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 209.6,
+          "speed": 4.76,
+          "fuel": 59.03,
+          "distance": 420.5,
+          "planDV": 0.0,
+          "projectedScore": 9.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.36,
+            -0.55,
+            4.71
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.30,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 214.7,
+          "speed": 4.71,
+          "fuel": 59.23,
+          "distance": 396.5,
+          "planDV": 0.16,
+          "projectedScore": 9.6,
+          "burnRemaining": 1.6,
+          "phase": "IMPULSE_BURN",
+          "body_velocity": [
+            -0.39,
+            -0.54,
+            4.66
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.43,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:1.91"
+        },
+        {
+          "t": 219.8,
+          "speed": 4.71,
+          "fuel": 59.74,
+          "distance": 372.6,
+          "planDV": 0.0,
+          "projectedScore": 9.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.41,
+            -0.6,
+            4.65
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 224.9,
+          "speed": 4.66,
+          "fuel": 59.74,
+          "distance": 348.9,
+          "planDV": 0.0,
+          "projectedScore": 9.1,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.4,
+            -0.59,
+            4.6
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 230.0,
+          "speed": 4.6,
+          "fuel": 59.74,
+          "distance": 325.5,
+          "planDV": 0.0,
+          "projectedScore": 8.7,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.39,
+            -0.58,
+            4.55
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 235.1,
+          "speed": 4.55,
+          "fuel": 59.74,
+          "distance": 302.3,
+          "planDV": 0.0,
+          "projectedScore": 8.4,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.38,
+            -0.57,
+            4.5
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 240.2,
+          "speed": 4.5,
+          "fuel": 59.74,
+          "distance": 279.7,
+          "planDV": 0.0,
+          "projectedScore": 8.0,
+          "burnRemaining": 0.0,
+          "phase": "IMPULSE_COAST",
+          "body_velocity": [
+            -0.37,
+            -0.57,
+            4.45
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 245.2,
+          "speed": 4.45,
+          "fuel": 59.74,
+          "distance": 257.3,
+          "planDV": 0.13,
+          "projectedScore": 7.5,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            -0.56,
+            4.4
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 250.3,
+          "speed": 4.4,
+          "fuel": 59.74,
+          "distance": 235.2,
+          "planDV": 0.14,
+          "projectedScore": 7.5,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.35,
+            -0.55,
+            4.35
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,CRUISE/AVOID:2.23,PHASE_TRANSITION:2.07"
+        },
+        {
+          "t": 255.4,
+          "speed": 4.35,
+          "fuel": 60.04,
+          "distance": 213.4,
+          "planDV": 0.11,
+          "projectedScore": 7.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.38,
+            -0.56,
+            4.29
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.26,CRUISE/AVOID:2.23,COAST:0.10"
+        },
+        {
+          "t": 260.5,
+          "speed": 4.29,
+          "fuel": 60.04,
+          "distance": 191.9,
+          "planDV": 0.13,
+          "projectedScore": 7.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.37,
+            -0.56,
+            4.24
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.26,CRUISE/AVOID:2.23,COAST:0.10"
+        },
+        {
+          "t": 265.6,
+          "speed": 4.24,
+          "fuel": 60.04,
+          "distance": 170.8,
+          "planDV": 0.15,
+          "projectedScore": 7.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            -0.55,
+            4.19
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.26,CRUISE/AVOID:2.23,COAST:0.10"
+        },
+        {
+          "t": 270.7,
+          "speed": 4.19,
+          "fuel": 60.04,
+          "distance": 150.2,
+          "planDV": 0.17,
+          "projectedScore": 7.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.35,
+            -0.54,
+            4.14
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.26,CRUISE/AVOID:2.23,COAST:0.10"
+        },
+        {
+          "t": 275.8,
+          "speed": 4.14,
+          "fuel": 60.04,
+          "distance": 130.1,
+          "planDV": 0.21,
+          "projectedScore": 7.1,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.34,
+            -0.53,
+            4.09
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.26,CRUISE/AVOID:2.23,COAST:0.10"
+        },
+        {
+          "t": 280.9,
+          "speed": 4.09,
+          "fuel": 60.36,
+          "distance": 110.6,
+          "planDV": 0.19,
+          "projectedScore": 6.6,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.37,
+            -0.55,
+            4.04
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.47,CRUISE/AVOID:2.23,COAST:0.21"
+        },
+        {
+          "t": 286.0,
+          "speed": 4.04,
+          "fuel": 60.36,
+          "distance": 92.0,
+          "planDV": 0.23,
+          "projectedScore": 6.7,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.36,
+            -0.54,
+            3.99
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.47,CRUISE/AVOID:2.23,COAST:0.21"
+        },
+        {
+          "t": 291.0,
+          "speed": 3.99,
+          "fuel": 60.36,
+          "distance": 74.8,
+          "planDV": 0.3,
+          "projectedScore": 6.7,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.35,
+            -0.53,
+            3.94
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.47,CRUISE/AVOID:2.23,COAST:0.21"
+        },
+        {
+          "t": 296.2,
+          "speed": 3.94,
+          "fuel": 61.07,
+          "distance": 59.6,
+          "planDV": 0.32,
+          "projectedScore": 5.9,
+          "burnRemaining": 0.0,
+          "phase": "COAST",
+          "body_velocity": [
+            -0.41,
+            -0.59,
+            3.87
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:2.90,CRUISE/AVOID:2.23,COAST:0.35"
+        },
+        {
+          "t": 301.3,
+          "speed": 3.88,
+          "fuel": 62.18,
+          "distance": 49.2,
+          "planDV": 0.02,
+          "projectedScore": 7.0,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            -0.51,
+            -0.71,
+            3.78
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:3.48,CRUISE/AVOID:2.23,COAST:0.63,COURSE_TRIM:0.26,ARRIVAL_TRANSITION:0.14"
+        },
+        {
+          "t": 306.3,
+          "speed": 3.82,
+          "fuel": 62.97,
+          "distance": 45.8,
+          "planDV": 0.06,
+          "projectedScore": 7.0,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            -0.49,
+            -0.68,
+            3.73
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:3.48,CRUISE/AVOID:2.23,COAST:0.63,COURSE_TRIM:0.26,ARRIVAL_TRANSITION:0.14"
+        },
+        {
+          "t": 311.4,
+          "speed": 3.43,
+          "fuel": 64.88,
+          "distance": 49.8,
+          "planDV": 0.05,
+          "projectedScore": 7.0,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            -0.44,
+            -0.61,
+            3.34
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:3.48,CRUISE/AVOID:2.23,COAST:0.63,COURSE_TRIM:0.26,ARRIVAL_TRANSITION:0.14"
+        },
+        {
+          "t": 316.4,
+          "speed": 3.05,
+          "fuel": 66.62,
+          "distance": 58.3,
+          "planDV": 0.05,
+          "projectedScore": 7.0,
+          "burnRemaining": 0.0,
+          "phase": "POST_ENTRY_BRAKE",
+          "body_velocity": [
+            -0.39,
+            -0.54,
+            2.98
+          ],
+          "fuel_ledger": "CRUISE/IMPULSE_BURN:50.86,LAUNCH:4.58,PHASE_TRANSITION:3.48,CRUISE/AVOID:2.23,COAST:0.63,COURSE_TRIM:0.26,ARRIVAL_TRANSITION:0.14"
+        }
+      ]
+    }
+  ]
+}

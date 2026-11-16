@@ -1,7 +1,9 @@
 # Camera interface
 
-The active flight profile is **SCORE_SHOOT** for `FINAL_SUBMISSION.simconf`.
-See [SCORE_SHOOT.md](SCORE_SHOOT.md) for current navigation and validation.
+The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
+See [SCORE_MOMENTUM.md](SCORE_MOMENTUM.md) for current navigation and validation.
+After entry, the footer shows **Entry fuel** separately from the current total,
+which continues increasing during post-arrival braking.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -113,10 +115,10 @@ not change an already-running Space Teams process.
 
 ## Current speed and depth display
 
-`SCORE_SHOOT` selects finite burns and coasting using the score formula, with a
+`SCORE_MOMENTUM` selects finite burns and coasting using the score formula, with a
 10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
 at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
-four current modeled runs peaked at 6.26--6.78 m/s.
+four current modeled runs peaked at 6.38--6.87 m/s.
 
 The depth display and processing limit are 400 m. This is a software limit,
 not a guarantee of usable real depth at that distance. The radar-loss speed

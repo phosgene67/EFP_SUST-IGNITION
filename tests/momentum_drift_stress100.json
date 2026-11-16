@@ -1,0 +1,53 @@
+{
+  "controller_sha256": "2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 100,
+  "control_hz": 60.0,
+  "camera_requests_hz": 4.0,
+  "benchmark_version": 4,
+  "scene_variant": "final-scene",
+  "attitude_mode": "normal",
+  "fuel_audit_enabled": false,
+  "axis_thrust": false,
+  "ground_plane_m": 2.5,
+  "drift_bias_m_s2": [
+    0.001,
+    0.0,
+    0.002
+  ],
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+  "result": {
+    "arrived": true,
+    "time_s": 278.3,
+    "attitude_policy": "FreeAttitude",
+    "fuel_kg": 42.64,
+    "distance_m": 110.58,
+    "peak_speed_m_s": 6.26,
+    "arrival_speed_m_s": 4.015474148646476,
+    "min_debris_gap_m": 12.99,
+    "min_proxy_hull_gap_m": 19.74,
+    "collision": false,
+    "post_arrival_test_s": 55.3,
+    "min_ground_centre_height_m": 2.5,
+    "final_speed_m_s": 0.048,
+    "learned_coast_drift_m_s2": [
+      0.0010000017447247675,
+      -5.731608820049586e-10,
+      0.0020000531994452545
+    ],
+    "phase": "HOLD",
+    "images": 1334,
+    "plan_p95_ms": 180.49,
+    "angular_active_fraction": 0.0,
+    "linear_active_fraction": 0.405,
+    "nose_error_p95_deg": 96.9,
+    "allocator_retries": 0,
+    "coasting_fraction": 0.534,
+    "terminal_fallback": false,
+    "first_5m_s_time": 74.2,
+    "cruise_mean_after_5m_s": 5.59,
+    "cruise_min_after_5m_s": 4.93,
+    "zero_damage_score_estimate": 36.26
+  }
+}
