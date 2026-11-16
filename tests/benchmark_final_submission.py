@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from collections import defaultdict
 import numpy as np
 from benchmark_final import Allocator, rotate
 from controller_loader import load_namespace
@@ -82,11 +83,14 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False):
     dt = 1./control_hz
     rng = np.random.default_rng(seed)
     planner = namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner']))()
-    attitude = namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None))()
+    attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
+    attitude = (attitude_type or namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None)))()
+    if hasattr(planner, 'nose_first') and attitude_mode in ('nose-first', 'nose-only', 'burn-only'):
+        planner.nose_first, planner.aligned_once = True, False
     camera, history = namespace['CameraPerception'](), namespace['PoseHistory']()
     loc, vel, omega = scene['loc'].copy(), np.zeros(3), np.zeros(3)
     rotation, target = scene['rotation'].copy(), scene['target']
@@ -115,6 +119,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
     coast_ticks = 0
     next_capture = next_plan = next_report = radar_credit = 0.
     capture_index = 0
+    fuel_segments, fuel_regimes = defaultdict(lambda: dict(time_s=0., fuel_kg=0.)), defaultdict(lambda: dict(time_s=0., fuel_kg=0.))
+    audit_allocator = Allocator.__new__(Allocator)
+    audit_allocator.__dict__ = dict(allocator.__dict__, cache={}, retries=0)
+    shadow = dict(translation_only_kg=0., attitude_only_kg=0.)
+    post_fuel = 0.
     for tick in range(int(max_time*control_hz)):
         now = tick*dt
         history.add(now, loc, rotation)
@@ -150,9 +159,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
             radar = sorted(reports.copy(), key=lambda item: np.linalg.norm(item[0]))
             if hasattr(planner, 'policy'):
                 planner.policy.observe(now, vel, fuel,
-                    thrusting=(np.linalg.norm(linear) > .08 and attitude.nose_error_deg < 10. and np.linalg.norm(angular) < .003) if tick else False,
+                    thrusting=(np.linalg.norm(linear) > .08 and (getattr(attitude, 'free_attitude', False) or attitude_mode == 'off' or attitude.nose_error_deg < 10.) and np.linalg.norm(angular) < .003) if tick else False,
                     gravity=-711000.*loc/max(np.linalg.norm(loc)**3, 1.))
                 planner.nose_error = attitude.nose_error_deg
+                if attitude_mode == 'off':
+                    planner.aligned_once = True
             _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), radar,
                                                 camera=camera, cruise_speed=10. if hasattr(planner, 'policy') else namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']))
             timings.append(time.perf_counter()-start)
@@ -167,13 +178,37 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
             budget = namespace.get('attitude_budget', lambda linear, maximum: maximum)(linear, .02)
             reference = namespace.get('attitude_reference', lambda mode, velocity, desired, ship: desired)
             hint = reference(mode, vel, planner.previous_velocity, target-loc)
-            angular = attitude.command(now, rotation, vel, hint, up, omega, budget)
+            angular = attitude.command(now, rotation, vel, hint,
+                                       rotation[2] if attitude_mode == 'nose-only' else up, omega, budget)
+            if attitude_mode == 'off':
+                angular = np.zeros(3)
+            elif attitude_mode == 'burn-only' and not planner.aligning and np.linalg.norm(linear) < .08 and np.linalg.norm(target-loc) > 300. and np.linalg.norm(omega) < .01:
+                angular = np.zeros(3)
         else:
             travel = vel if np.linalg.norm(vel) >= 1. else planner.previous_velocity
             if np.linalg.norm(travel) > .2:
                 heading = travel.copy()
             angular = namespace['attitude_command'](rotation, heading, up, omega, .02)
         actual, angular_actual, fuel_rate = allocator.apply(rotation@linear, angular)
+        if fuel_audit:
+            if arrived:
+                post_fuel += dt*fuel_rate
+            else:
+                phase = getattr(planner, 'last_phase', mode)
+                # Disjoint, additive measured buckets. The same fuel is never
+                # charged to both a rotation bucket and a translation bucket.
+                segment = ('ALIGN_FOR_BURN' if getattr(planner, 'aligning', False) else
+                           'CRUISE/'+mode if phase == 'CRUISE' else phase)
+                rotation_on, translation_on = np.linalg.norm(angular) > 1e-9, np.linalg.norm(linear) > 1e-9
+                regime = ('combined' if rotation_on and translation_on else
+                          'attitude_only' if rotation_on else 'translation_only' if translation_on else 'no_command')
+                for bucket in (fuel_segments[segment], fuel_regimes[regime]):
+                    bucket['time_s'] += dt
+                    bucket['fuel_kg'] += dt*fuel_rate
+                # These are single-tick counterfactual allocator costs, NOT
+                # alternative flight trajectories or additive fuel attribution.
+                shadow['translation_only_kg'] += dt*audit_allocator.apply(rotation@linear, np.zeros(3))[2]
+                shadow['attitude_only_kg'] += dt*audit_allocator.apply(np.zeros(3), angular)[2]
         coast_ticks += bool(getattr(planner, 'coasting', False))
         angular_active += np.linalg.norm(angular) > 1e-9
         linear_active += np.linalg.norm(linear) > 1e-9
@@ -220,7 +255,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
                       f'dV={np.linalg.norm(planner.previous_velocity-vel):.3f} '
                       f'camera={camera.observes(now, target)}', flush=True)
     collision = nearest < 0. or hull_gap < 0.
-    return dict(arrived=arrived, time_s=round(arrival_time if arrived else now+dt, 2),
+    result = dict(arrived=arrived, time_s=round(arrival_time if arrived else now+dt, 2),
+                attitude_policy=type(attitude).__name__,
                 fuel_kg=round(arrival_fuel if arrived else fuel, 2),
                 distance_m=round(float(np.linalg.norm(target-loc)), 2), peak_speed_m_s=round(float(peak), 2),
                 arrival_speed_m_s=crossing_speed, min_debris_gap_m=round(nearest, 2), min_proxy_hull_gap_m=round(hull_gap, 2),
@@ -238,6 +274,14 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60.):
                 cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not collision else None))
+    if fuel_audit:
+        result['fuel_audit'] = dict(
+            segments={key: {k: round(v, 4) for k, v in value.items()} for key, value in fuel_segments.items()},
+            command_regimes={key: {k: round(v, 4) for k, v in value.items()} for key, value in fuel_regimes.items()},
+            counterfactual_same_tick_costs={key: round(value, 4) for key, value in shadow.items()},
+            post_arrival_fuel_kg=round(post_fuel, 4),
+            note='Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects.')
+    return result
 
 
 if __name__ == '__main__':
@@ -248,6 +292,9 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=100)
     parser.add_argument('--output', default='tests/final_submission_results.json')
     parser.add_argument('--baseline-ref')
+    parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
+                        help='Offline ablation only; does not change the live controller')
+    parser.add_argument('--fuel-audit', action='store_true')
     parser.add_argument('--control-hz', type=float, default=60., help='Flight servo rate; native controller is 60 Hz')
     parser.add_argument('--clear-corridor', action='store_true',
                         help='Diagnostic only: move debris aside in memory; never edits the official scenario')
@@ -268,7 +315,9 @@ if __name__ == '__main__':
                   debris_count=len(scene['positions']), seed=args.seed,
                   control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=2,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
+                  attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
-                  result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz))
+                  result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz,
+                             args.attitude_mode, args.fuel_audit))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

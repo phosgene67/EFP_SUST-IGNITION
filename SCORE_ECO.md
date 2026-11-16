@@ -1,9 +1,13 @@
 # Score-based controller candidate
 
-`Controller.py` now runs `EconomyNavigator` and `EconomyAttitude`, logged as
+`Controller.py` now runs `EconomyNavigator` and `FreeAttitude`, logged as
 `profile=SCORE_ECO`, for `FINAL_SUBMISSION.simconf`. Copy it together with
 `camera_viewer.py` to the installed `STU4-Solution` folder. The connection helpers,
 `BasicController.py`, `UserAPI.py`, and official STU4-Sim are unchanged.
+
+Forced nose pointing and horizon leveling are now off by default. See
+[FUEL_AUDIT.md](FUEL_AUDIT.md) for the current paired score results and fuel
+breakdown. The earlier nose-first measurements below are preserved as history.
 
 ## The actual score and useful tradeoffs
 
@@ -59,9 +63,9 @@ relative velocity, so a planned impact is not treated as a known small penalty.
 
 ## How the executable algorithm works
 
-1. **Launch and align.** Climb 3.5 m with sensor feedback, then align the nose
-   along actual flight before the main burn. Roll stays continuous during the
-   steep climb. There is no enforced minimum speed during launch or hazards.
+1. **Launch.** Climb 3.5 m with sensor feedback and then follow the world-space
+   route. There is no nose-alignment pause or horizon-leveling burn. Minimal
+   spin damping remains. There is no enforced minimum speed during launch or hazards.
 2. **Choose a burn/coast schedule.** `EconomyPolicy` evaluates peak speeds up to
    10 m/s using remaining distance, gravity, current speed, elapsed time, measured
    fuel and damage. It selects the highest projected arrival score. Telemetry
@@ -101,8 +105,9 @@ relative velocity, so a planned impact is not treated as a known small penalty.
 
 ## Code and tests
 
-The delivered source passes **92 automated tests**. Final offline results use
-the same controller hash in all three current artifacts. The baseline is Git
+The source now passes **97 automated tests**; the new fuel accounting and attitude
+checks are described in [FUEL_AUDIT.md](FUEL_AUDIT.md). The following historical
+offline results describe the preceding nose-first score controller. The baseline is Git
 commit `a15a4c6`, rerun with the same version-2 harness, 60 Hz servo and four
 camera requests/s:
 
@@ -121,7 +126,7 @@ diagnostic fell below 50. Remaining losses include launch/orientation overhead,
 debris avoidance and corrections near the ship. This is a tested development
 candidate, not a claim that the requested score target has been solved.
 
-Raw results: [seed 100](tests/score_eco_results.json),
+Historical raw results: [seed 100](tests/score_eco_results.json),
 [seed 101](tests/score_eco_seed101_results.json),
 [clear-corridor diagnostic](tests/score_eco_clear_results.json), and
 [matched baseline](tests/score_eco_baseline_results.json).

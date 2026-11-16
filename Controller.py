@@ -466,6 +466,37 @@ def velocity_command(desired, measured, maximum, urgent=False):
     return limit_vector(VELOCITY_GAIN*error, maximum)
 
 
+class FuelLedger:
+    """Sampled native fuel accounting; phase changes have their own bucket."""
+    def __init__(self):
+        self.previous = None
+        self.by_phase = {}
+        self.frozen = False
+
+    def observe(self, now, fuel, phase, arrived=False):
+        if not np.isfinite(now) or not np.isfinite(fuel) or fuel < 0.:
+            return
+        if self.previous is not None and (now < self.previous[0] or fuel < self.previous[1]-.01):
+            self.__init__()
+        if self.frozen:
+            return
+        if self.previous is None:
+            label, spent = 'BEFORE_FIRST_SAMPLE', fuel
+        else:
+            _, old_fuel, old_phase = self.previous
+            label = old_phase if old_phase == phase else 'PHASE_TRANSITION'
+            spent = max(0., fuel-old_fuel)
+        if arrived:
+            label = 'ARRIVAL_TRANSITION'
+        self.by_phase[label] = self.by_phase.get(label, 0.)+spent
+        self.previous = float(now), float(fuel), str(phase)
+        self.frozen = bool(arrived)
+
+    def summary(self):
+        return ','.join(f'{phase}:{fuel:.2f}' for phase, fuel in
+                        sorted(self.by_phase.items(), key=lambda item: -item[1]) if fuel > .005)
+
+
 def mission_score(elapsed, fuel, damage=0.):
     return 100.*(.5+120./max(float(elapsed), .1)-max(float(fuel), 0.)/75.
                  -2.*max(float(damage), 0.)/209200.)
@@ -1832,7 +1863,7 @@ class FinalNavigator(QualificationPlanner):
 
 
 class EconomyNavigator(FinalNavigator):
-    def __init__(self, launch=True):
+    def __init__(self, launch=True, nose_first=False):
         super().__init__(launch)
         self.terminal = CaptureApproach()
         self.policy, self.servo = EconomyPolicy(), EconomyServo()
@@ -1841,7 +1872,8 @@ class EconomyNavigator(FinalNavigator):
         self.corridor.economy = True
         self.launch.speed = 3.
         self.nose_error = 180.
-        self.aligned_once = self.aligning = False
+        self.nose_first = bool(nose_first)
+        self.aligned_once, self.aligning = not self.nose_first, False
         self.failed = False
 
     def observe_damage(self, damage):
@@ -1960,8 +1992,35 @@ class EconomyAttitude(FlightAttitude):
         return command if self.adjusting else np.zeros(3)
 
 
-planner = EconomyNavigator()
-flight_attitude = EconomyAttitude()
+class FreeAttitude(FlightAttitude):
+    """No nose pointing or horizon leveling; damp an actual unwanted spin only."""
+    free_attitude = True
+
+    def __init__(self):
+        super().__init__()
+        self.aligning = self.damping = False
+
+    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):
+        rotation, velocity, omega = map(lambda value: np.asarray(value, float), (rotation, velocity, omega))
+        if rotation.shape != (3, 3) or not all(np.isfinite(value).all() for value in (rotation, velocity, omega)):
+            return np.zeros(3)
+        self.body_velocity = rotation@velocity
+        travel = velocity if np.linalg.norm(velocity) >= .2 else np.asarray(desired_velocity)
+        self.forward = travel/max(np.linalg.norm(travel), 1e-9) if np.linalg.norm(travel) > 1e-9 else rotation[0].copy()
+        self.up = rotation[2].copy()
+        self.nose_error_deg = float(np.rad2deg(np.arccos(np.clip(rotation[0]@self.forward, -1., 1.))))
+        self.vertical = abs(self.forward@np.asarray(planet_up)/max(np.linalg.norm(planet_up), 1e-9)) > .94
+        rate = np.linalg.norm(omega)
+        if rate > .01:
+            self.damping = True
+        elif rate < .002:
+            self.damping = False
+        return limit_vector(-.8*omega, maximum) if self.damping else np.zeros(3)
+
+
+nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
+planner = EconomyNavigator(nose_first=nose_first_enabled)
+flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
 radar_epoch = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
@@ -1978,6 +2037,7 @@ if os.environ.get('EFP_CAMERA_GUI', '1') != '0':
         st.OnScreenLogMessage('Camera GUI unavailable: '+preview_error, 'CameraGUI', st.Severity.Info)
 camera_manager = CameraManager(st, dict(top=topCamera, bottom=bottomCamera), PanTiltCamera, radar_epoch, preview)
 score_policy = planner.policy
+fuel_ledger = FuelLedger()
 last_plan = -np.inf
 last_log = -np.inf
 accel_world = np.zeros(3)
@@ -1992,14 +2052,15 @@ try:
         time.sleep(1.0 / this.GetParam(st.VarType.double, 'LoopFreqHz'))
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
         if now < last_plan:
-            planner = EconomyNavigator()
+            planner = EconomyNavigator(nose_first=nose_first_enabled)
             pose_history = PoseHistory()
             perception = CameraPerception()
             score_policy = planner.policy
+            fuel_ledger = FuelLedger()
             camera_manager.reset()
             if preview is not None:
                 preview.reset()
-            flight_attitude = EconomyAttitude()
+            flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
             last_plan = last_log = -np.inf
             arrival_announced = False
         state = shuttle.getLocVelAcc()
@@ -2032,7 +2093,7 @@ try:
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             score_policy.observe(now, vel, fuel,
-                thrusting=np.linalg.norm(accel_world) > .08 and flight_attitude.nose_error_deg < 10. and np.linalg.norm(angular_accel) < .003,
+                thrusting=np.linalg.norm(accel_world) > .08 and (not nose_first_enabled or flight_attitude.nose_error_deg < 10.) and np.linalg.norm(angular_accel) < .003,
                 gravity=-711000.*loc/max(np.linalg.norm(loc)**3, 1.))
             planner.nose_error = flight_attitude.nose_error_deg
             planner.observe_damage(damage)
@@ -2055,6 +2116,8 @@ try:
                     now, loc, vel, target_loc, target_vel, radar, camera=perception,
                     cruise_speed=cruise)
                 cruise = min(cruise, planner.policy.speed)
+            fuel_phase = (planner.last_phase+'/'+mode if planner.last_phase == 'CRUISE' else mode)
+            fuel_ledger.observe(now, fuel, fuel_phase, arrived=planner.arrival_time is not None)
             last_plan = now
         if planner.arrival_time is not None and not arrival_announced:
             st.OnScreenAlert('Arrival zone reached; post-arrival safety control active. Official result is in the Scoring log.',
@@ -2085,6 +2148,7 @@ try:
                 images=camera_manager.received, rejected=perception.rejected,
                 rgb_matches=perception.rgb_associations, depth_matches=perception.depth_associations,
                 camera_fault=camera_manager.error, nose_error=flight_attitude.nose_error_deg,
+                nose_first=nose_first_enabled,
                 body_velocity=flight_attitude.body_velocity.tolist(), vertical_climb=flight_attitude.vertical,
                 arrival_zone=planner.arrival_time is not None, arrival_time=planner.arrival_time,
                 arrival_action=('PARKED AFTER ENTRY' if planner.terminal.entered and planner.last_phase == 'HOLD'
@@ -2096,7 +2160,9 @@ try:
             st.OnScreenLogMessage(
                 f'IGNITION {mode} profile=SCORE_ECO t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
+                f'noseFirst={nose_first_enabled} '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
+                f'fuelPhaseKg=[{fuel_ledger.summary()}] '
                 f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
                 f'stopDistance={planner.stopping_distance:.1f}m routeNodes={len(planner.corridor.points)} '
                 f'chunk={planner.corridor.chunk_id} nextReady={bool(planner.corridor.pending) or len(planner.corridor.points) > 8} '

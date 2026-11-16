@@ -6,6 +6,56 @@ from test_controller import namespace
 
 
 class EconomyTests(unittest.TestCase):
+    def test_free_attitude_does_not_spend_fuel_on_nose_or_upside_down_view(self):
+        attitude = namespace['FreeAttitude']()
+        for rotation in (np.eye(3), np.diag([1., -1., -1.])):
+            command = attitude.command(0., rotation, np.array([0., 5., 0.]), np.array([5., 0., 0.]),
+                                       np.array([0., 0., 1.]), np.zeros(3), .02)
+            np.testing.assert_allclose(command, np.zeros(3))
+            self.assertAlmostEqual(attitude.nose_error_deg, 90.)
+
+    def test_free_attitude_damps_spin_with_hysteresis_and_command_limit(self):
+        attitude = namespace['FreeAttitude']()
+        def command(rate):
+            return attitude.command(0., np.eye(3), np.array([5., 0., 0.]), np.zeros(3),
+                                    np.array([0., 0., 1.]), np.array([0., 0., rate]), .02)
+        np.testing.assert_allclose(command(.005), np.zeros(3))
+        self.assertLess(command(.2)[2], 0.)
+        self.assertLessEqual(np.linalg.norm(command(.2)), .020001)
+        self.assertLess(command(.005)[2], 0.)
+        np.testing.assert_allclose(command(.001), np.zeros(3))
+
+    def test_default_navigation_has_no_nose_alignment_wait(self):
+        planner = namespace['EconomyNavigator'](launch=False)
+        self.assertTrue(planner.aligned_once)
+        self.assertFalse(planner.nose_first)
+        planner.command(1., np.array([9000., 0., 0.]), np.array([1., 0., 0.]),
+                        np.array([10000., 0., 0.]), np.zeros(3), [])
+        self.assertFalse(planner.aligning)
+        self.assertNotEqual(planner.last_mode, 'ALIGN_FOR_BURN')
+
+    def test_fuel_ledger_reports_measured_deltas_without_phase_double_counting(self):
+        ledger = namespace['FuelLedger']()
+        ledger.observe(0., 0., 'LAUNCH')
+        ledger.observe(1., 2., 'LAUNCH')
+        ledger.observe(2., 5., 'GUIDE')
+        ledger.observe(3., 7., 'GUIDE')
+        self.assertEqual(ledger.by_phase['LAUNCH'], 2.)
+        self.assertEqual(ledger.by_phase['PHASE_TRANSITION'], 3.)
+        self.assertEqual(ledger.by_phase['GUIDE'], 2.)
+        self.assertEqual(sum(ledger.by_phase.values()), 7.)
+
+    def test_fuel_ledger_freezes_at_arrival_and_resets_for_new_run(self):
+        ledger = namespace['FuelLedger']()
+        ledger.observe(0., 0., 'LAUNCH')
+        ledger.observe(2., 5., 'CAPTURE_PASS', arrived=True)
+        ledger.observe(3., 20., 'POST_ENTRY_BRAKE', arrived=True)
+        self.assertEqual(sum(ledger.by_phase.values()), 5.)
+        self.assertEqual(ledger.by_phase['ARRIVAL_TRANSITION'], 5.)
+        ledger.observe(0., 0., 'LAUNCH')
+        ledger.observe(1., 3., 'LAUNCH')
+        self.assertEqual(sum(ledger.by_phase.values()), 3.)
+
     def test_official_example_and_score_budgets(self):
         score = namespace['mission_score']
         self.assertAlmostEqual(score(96., 67.5, .05*209200.), 75.)

@@ -12,6 +12,10 @@ chunks, pulsed burns and coasting, radar/RGB/depth feedback, and a guarded pass
 into the safe area followed by braking. See [Score-based controller](SCORE_ECO.md)
 for the formula, time/fuel/damage budgets, algorithm and validation limits.
 The 50–75 point target is not an established live result.
+Forced nose pointing and horizon leveling are now disabled by default following
+matched fuel/score comparisons. The GUI shows **FREE ATTITUDE**. See
+[Fuel audit and orientation comparison](FUEL_AUDIT.md) for the fuel breakdown,
+all paired results, native fuel logging and the optional comparison setting.
 [OPEN_LANE_9.md](OPEN_LANE_9.md) records the preceding controller.
 [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) records the earlier chunk design.
 

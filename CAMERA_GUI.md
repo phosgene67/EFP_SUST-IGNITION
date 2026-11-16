@@ -31,7 +31,7 @@ This screenshot is a **synthetic demonstration**, not a live mission result.
 | STALE | A panel's last frame is over two simulation seconds old. |
 | REJECTED FOR NAVIGATION | The image arrived but could not be associated with a valid recent pose/time. It is displayed without a detection overlay to aid diagnosis. |
 | Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, radar associations, and an explicitly unofficial projected score. |
-| NOSE FIRST / ALIGNING | Angle between body +X (the nose) and the selected travel direction. Below 10° during motion displays NOSE FIRST. |
+| FREE ATTITUDE / NOSE FIRST / ALIGNING | Default is FREE ATTITUDE: no fuel is spent forcing the nose along velocity or leveling the horizon. The displayed angle is informational. The old optional nose-first mode retains its alignment labels. |
 | Camera status | Capture error information, if present. |
 | ARRIVAL ZONE REACHED banner | Persistent controller observation of entry, followed by braking/parking; consult the official Scoring log for the congratulations and score. |
 

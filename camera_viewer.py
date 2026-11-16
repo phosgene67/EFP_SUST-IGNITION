@@ -179,8 +179,9 @@ def render_dashboard(frames, metadata):
     if status.get('nose_error') is not None:
         error = float(status['nose_error'])
         moving = float(status.get('speed') or 0.) >= .5
-        phase = 'NOSE FIRST' if moving and error < 10. else 'ALIGNING' if error >= 10. else 'HEADING HOLD'
-        text(f'{phase}  {error:.1f} deg', 1050, 70, (80, 225, 140) if error < 10. else (80, 170, 255), .47)
+        free = status.get('nose_first') is False
+        phase = 'FREE ATTITUDE' if free else 'NOSE FIRST' if moving and error < 10. else 'ALIGNING' if error >= 10. else 'HEADING HOLD'
+        text(f'{phase}  {error:.1f} deg', 1050, 70, cyan if free else (80, 225, 140) if error < 10. else (80, 170, 255), .47)
     text(f"Fuel {number('fuel', 2)} kg     Damage {number('damage')} J     Accepted frames {status.get('images', 0)}"
          f"     Rejected {status.get('rejected', 0)}     Radar matches: RGB {status.get('rgb_matches', 0)}"
          f" / depth {status.get('depth_matches', 0)}", 24, 99, muted)
@@ -265,8 +266,8 @@ def demo_snapshot():
         info[key] = dict(stamp=42., accepted=True, boxes=boxes)
     metadata = dict(frames=info, written_wall=time.time(), status=dict(demo=True, profile='SCORE_ECO',
         running=True, now=42.25, mode='AVOID', speed=8.8, cruise=9., distance=680., fuel=28.4,
-        damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=2.3,
-        body_velocity=[8.79, .1, .2], projected_score=35.))
+        damage=0., images=123, rejected=0, rgb_matches=2, depth_matches=2, nose_error=96.8,
+        body_velocity=[-1., 8.7, .2], projected_score=35., nose_first=False))
     return frames, metadata
 
 
