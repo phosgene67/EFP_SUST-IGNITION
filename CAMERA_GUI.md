@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **SCORE_ECO** for `FINAL_SUBMISSION.simconf`.
-See [SCORE_ECO.md](SCORE_ECO.md) for current navigation and validation.
+The active flight profile is **SCORE_SHOOT** for `FINAL_SUBMISSION.simconf`.
+See [SCORE_SHOOT.md](SCORE_SHOOT.md) for current navigation and validation.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -111,27 +111,25 @@ To suppress automatic GUI startup, set `EFP_CAMERA_GUI=0` in the environment of 
 process launching the controller. Setting it only in an unrelated terminal does
 not change an already-running Space Teams process.
 
-## Current 9 m/s cruise request
+## Current speed and depth display
 
-The current source identifies itself as **OPEN_LANE_9**. Runtime requests 9 m/s,
-with a hard ceiling of 25 m/s. Rolling chunks, local collision checks and terminal
-braking determine actual desired velocity. With radar unavailable, runtime caps cruise to about 6.57 m/s so
-the depth camera's 220 m range is not used to justify a high-speed blind approach.
+`SCORE_SHOOT` selects finite burns and coasting using the score formula, with a
+10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
+at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
+four current modeled runs peaked at 6.26--6.78 m/s.
 
-The station guard uses 0.075 m/s², making the stopping distance from 25 m/s
-about **4167 m**, before reaction/standoff allowance. A roughly 1306 m mission
-cannot sustain 25 m/s and stop at the 49 m waypoint under that model.
-Available thruster acceleration and route geometry
-also limit achievable speed. Increasing the cap does not strengthen the jets.
+The depth display and processing limit are 400 m. This is a software limit,
+not a guarantee of usable real depth at that distance. The radar-loss speed
+guard still uses its conservative 220 m envelope. A camera-verified tangent
+pass enters the safe area before braking; observation and slow-approach
+fallbacks remain available when the pass cannot be established.
 
-The active planner combines rolling predicted trajectory chunks with a 15 s local forecast
-(up to 30 s for incoming hazards), and a separate station stopping guard. It does
-not inflate all 500 objects over the previous 220 s forecast. Near the ship it
-brakes toward a 100 m standoff, then selects a clear approach toward 49 m.
+## Historical nose-first flight and the steep climb
 
-## Nose-first flight and the steep climb
+This section records the earlier default. The current default is `FREE ATTITUDE`;
+`EFP_NOSE_FIRST=1` enables the older comparison mode.
 
-The selected behavior is to point the nose along the actual flight path, including
+The earlier selected behavior was to point the nose along the actual flight path, including
 a steep climb. The official initial positions give a direct route approximately
 **85.7° above the local horizon**. A nose-up exterior appearance is therefore
 expected on that route; keeping the body level would be a different orientation

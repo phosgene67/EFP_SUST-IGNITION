@@ -1,5 +1,9 @@
 # Fuel audit and removal of forced nose control
 
+The tables below preserve the preceding controller comparison. The current
+finite-burn implementation and its separate validation are documented in
+[SCORE_SHOOT.md](SCORE_SHOOT.md). Forced nose control remains off by default.
+
 Forced nose pointing and planet-relative horizon leveling are now **off by
 default**. The controller still transforms world acceleration into body-frame
 thruster commands. It does not need to face its nose along the velocity to move

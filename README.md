@@ -6,16 +6,18 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-`Controller.py` contains our **SCORE_ECO** candidate for
-`FINAL_SUBMISSION.simconf`: score-based speed and path selection, predicted motion
-chunks, pulsed burns and coasting, radar/RGB/depth feedback, and a guarded pass
-into the safe area followed by braking. See [Score-based controller](SCORE_ECO.md)
-for the formula, time/fuel/damage budgets, algorithm and validation limits.
-The 50–75 point target is not an established live result.
+`Controller.py` contains our **SCORE_SHOOT** candidate for
+`FINAL_SUBMISSION.simconf`: finite body-axis burns selected using the score formula,
+coasting, gravity-aware moving-debris tracking, continuous radar/RGB/depth feedback,
+and a guarded pass into the safe area followed by braking.
+See [Finite-burn controller](SCORE_SHOOT.md) for the current architecture, fuel
+measurements, score budgets and validation results. The +50/+70 targets remain
+unverified in the native simulator.
 Forced nose pointing and horizon leveling are now disabled by default following
 matched fuel/score comparisons. The GUI shows **FREE ATTITUDE**. See
 [Fuel audit and orientation comparison](FUEL_AUDIT.md) for the fuel breakdown,
 all paired results, native fuel logging and the optional comparison setting.
+[SCORE_ECO.md](SCORE_ECO.md) records the preceding economy controller.
 [OPEN_LANE_9.md](OPEN_LANE_9.md) records the preceding controller.
 [CHUNK_NAVIGATION.md](CHUNK_NAVIGATION.md) records the earlier chunk design.
 

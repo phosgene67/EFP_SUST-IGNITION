@@ -1,6 +1,9 @@
 # Score-based controller candidate
 
-`Controller.py` now runs `EconomyNavigator` and `FreeAttitude`, logged as
+Historical design: the active controller is now `ShootingNavigator`, profile
+`SCORE_SHOOT`. See [SCORE_SHOOT.md](SCORE_SHOOT.md) for current results and limits.
+
+This version ran `EconomyNavigator` and `FreeAttitude`, logged as
 `profile=SCORE_ECO`, for `FINAL_SUBMISSION.simconf`. Copy it together with
 `camera_viewer.py` to the installed `STU4-Solution` folder. The connection helpers,
 `BasicController.py`, `UserAPI.py`, and official STU4-Sim are unchanged.

@@ -48,7 +48,7 @@ def load_scene(path):
                 diameters=np.array([rock['RadarDiameter_m'] for rock in rocks]))
 
 
-def render_scene(namespace, location, rotation, name, objects, radii, target, station_rotation, yaw, pitch):
+def render_scene(namespace, location, rotation, name, objects, radii, target, station_rotation, yaw, pitch, ground=None):
     height, width = namespace['CAMERA_HEIGHT'], namespace['CAMERA_WIDTH']
     rows, cols = np.indices((height, width))
     rays = namespace['CameraPerception'].rays(rows.ravel(), cols.ravel(), width, height, namespace['CAMERA_FOV'])
@@ -58,7 +58,7 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     relative = (objects-origin)@camera_rotation.T
     tan_y = np.tan(np.deg2rad(namespace['CAMERA_FOV'])/2.)
     tan_x = tan_y*width/height
-    visible = np.flatnonzero((relative[:, 0]+radii > 0.) & (relative[:, 0]-radii < 230.)
+    visible = np.flatnonzero((relative[:, 0]+radii > 0.) & (relative[:, 0]-radii < namespace['CAMERA_MAX_RANGE']+10.)
         & (np.abs(relative[:, 1]) < relative[:, 0]*tan_x+radii)
         & (np.abs(relative[:, 2]) < relative[:, 0]*tan_y+radii))
     visible = visible[np.argsort(np.linalg.norm(relative[visible], axis=1))[:96]]
@@ -80,13 +80,19 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     disc = bb*bb-aa_hull*(local_origin@local_origin-1.)
     roots = (-bb-np.sqrt(np.maximum(disc, 0.)))/np.maximum(aa_hull, 1e-12)
     depth = np.minimum(depth, np.where((disc >= 0.) & (roots > 0.), roots, np.inf))
+    if ground is not None:
+        plane, normal = ground
+        world_rays = rays@camera_rotation
+        denominator = world_rays@normal
+        distance = (plane-origin)@normal/np.where(np.abs(denominator) > 1e-9, denominator, np.nan)
+        depth = np.minimum(depth, np.where(distance > 0., distance, np.inf))
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0.):
     dt = 1./control_hz
     rng = np.random.default_rng(seed)
-    planner = namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner']))()
+    planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
     attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
     attitude = (attitude_type or namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None)))()
     if hasattr(planner, 'nose_first') and attitude_mode in ('nose-first', 'nose-only', 'burn-only'):
@@ -110,7 +116,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         measure(index, 0.)
     pending, timings = [], []
     mode, clearance, fuel = 'START', np.inf, 0.
-    peak, nearest, hull_gap = 0., np.inf, np.inf
+    peak, nearest, hull_gap, ground_gap = 0., np.inf, np.inf, np.inf
     arrived, heading = False, rotation[0].copy()
     arrival_time = arrival_fuel = None
     crossing_speed = None
@@ -119,6 +125,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     coast_ticks = 0
     next_capture = next_plan = next_report = radar_credit = 0.
     capture_index = 0
+    up_start = loc/max(np.linalg.norm(loc), 1e-9)
+    ground = (loc-ground_height*up_start, up_start) if ground_height > 0. else None
     fuel_segments, fuel_regimes = defaultdict(lambda: dict(time_s=0., fuel_kg=0.)), defaultdict(lambda: dict(time_s=0., fuel_kg=0.))
     audit_allocator = Allocator.__new__(Allocator)
     audit_allocator.__dict__ = dict(allocator.__dict__, cache={}, retries=0)
@@ -126,6 +134,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     post_fuel = 0.
     for tick in range(int(max_time*control_hz)):
         now = tick*dt
+        planner.control_time = now
         history.add(now, loc, rotation)
         for item in pending[:]:
             due, name, kind, pixels, stamp, yaw, pitch = item
@@ -140,7 +149,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             angle = np.rad2deg(np.arctan2(-body[2], max(np.linalg.norm(body[:2]), 1e-9)))
             pitch = float(np.clip(angle, -50., 0.) if name == 'top' else np.clip(angle, 0., 50.))
             depth = render_scene(namespace, loc, rotation, name, objects, diameters/2., target,
-                                 scene['station_rotation'], yaw, pitch)
+                                 scene['station_rotation'], yaw, pitch, ground)
             kind = 'rgb' if (capture_index//2) % 3 == 2 else 'depth'
             pixels = (np.repeat(np.where(np.isfinite(depth), 150., 0.)[:, :, None], 3, axis=2)
                       if kind == 'rgb' else depth)
@@ -155,6 +164,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             measure(radar_index, now)
             radar_index = (radar_index+1) % count
         if now+1e-8 >= next_plan:
+            planner.body_rotation = rotation
             start = time.perf_counter()
             radar = sorted(reports.copy(), key=lambda item: np.linalg.norm(item[0]))
             if hasattr(planner, 'policy'):
@@ -169,8 +179,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             timings.append(time.perf_counter()-start)
             next_plan += .5
         urgent = planner.urgent or np.linalg.norm(target-loc) < 80.
+        planner.body_rotation = rotation
         linear = (planner.linear_command(vel, namespace['MAX_ACCEL']) if hasattr(planner, 'linear_command') else
                   namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'], urgent=urgent))
+        if axis_mode:
+            linear = namespace['axis_thrust'](linear, rotation, namespace['MAX_ACCEL'])
         up = loc/max(np.linalg.norm(loc), 1e-9)
         if attitude is not None:
             if hasattr(attitude, 'aligning'):
@@ -221,6 +234,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         rotation = rotate(rotation, dt*omega+.5*dt*dt*angular_actual)
         omega += dt*angular_actual
         fuel += dt*fuel_rate
+        if ground is not None:
+            ground_gap = min(ground_gap, float((loc-ground[0])@ground[1]))
         objects += dt*rock_velocities
         rock_velocities += -dt*711000.*objects/np.maximum(np.linalg.norm(objects, axis=1)**3, 1.)[:, None]
         nearest = min(nearest, float((np.linalg.norm(objects-loc, axis=1)-diameters/2.-3.).min()))
@@ -240,7 +255,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                         (now+dt >= arrival_time+30. and np.linalg.norm(vel) < .05)):
             break
         if now+1e-8 >= next_report:
-            next_report += 10. if distance < 300. else 50.
+            next_report += 5. if now < 20. else 10. if distance < 300. else 50.
             route = planner.corridor if hasattr(planner, 'corridor') else None
             print(f't={now:.0f} phase={mode} d={distance:.0f} speed={np.linalg.norm(vel):.1f} fuel={fuel:.1f} '
                   f'chunks={getattr(route, "chunk_id", 0)} replans={getattr(route, "replans", 0)} '
@@ -254,13 +269,14 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 print(f'  pass={when:.1f}s miss={miss:.2f}m coastGap={planner.coast_clearance:.1f} '
                       f'dV={np.linalg.norm(planner.previous_velocity-vel):.3f} '
                       f'camera={camera.observes(now, target)}', flush=True)
-    collision = nearest < 0. or hull_gap < 0.
+    collision = nearest < 0. or hull_gap < 0. or ground_gap < 0.
     result = dict(arrived=arrived, time_s=round(arrival_time if arrived else now+dt, 2),
                 attitude_policy=type(attitude).__name__,
                 fuel_kg=round(arrival_fuel if arrived else fuel, 2),
                 distance_m=round(float(np.linalg.norm(target-loc)), 2), peak_speed_m_s=round(float(peak), 2),
                 arrival_speed_m_s=crossing_speed, min_debris_gap_m=round(nearest, 2), min_proxy_hull_gap_m=round(hull_gap, 2),
                 collision=collision, post_arrival_test_s=round(now+dt-arrival_time, 1) if arrived else 0.,
+                min_ground_centre_height_m=round(ground_gap, 2) if ground is not None else None,
                 final_speed_m_s=round(float(np.linalg.norm(vel)), 3),
                 phase=mode, images=camera.frames, plan_p95_ms=round(float(np.percentile(timings, 95))*1000., 2),
                 angular_active_fraction=round(angular_active/(tick+1), 3),
@@ -295,6 +311,8 @@ if __name__ == '__main__':
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
     parser.add_argument('--fuel-audit', action='store_true')
+    parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
+    parser.add_argument('--ground-plane', type=float, default=0., help='Diagnostic only: synthetic plane this far below initial centre, metres')
     parser.add_argument('--control-hz', type=float, default=60., help='Flight servo rate; native controller is 60 Hz')
     parser.add_argument('--clear-corridor', action='store_true',
                         help='Diagnostic only: move debris aside in memory; never edits the official scenario')
@@ -313,11 +331,12 @@ if __name__ == '__main__':
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=2,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=3,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
+                  axis_thrust=args.axis_thrust, ground_plane_m=args.ground_plane,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit))
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)
