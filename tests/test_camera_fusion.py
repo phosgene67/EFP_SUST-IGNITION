@@ -10,6 +10,40 @@ Manager = namespace['CameraManager']
 HEIGHT, WIDTH = namespace['CAMERA_HEIGHT'], namespace['CAMERA_WIDTH']
 
 
+class ForecastAssociationTests(unittest.TestCase):
+    def test_below_launch_surface_does_not_borrow_a_passing_debris_velocity(self):
+        camera = Perception()
+        camera.occupied['top'] = (0., [(np.array([5., 0., -3.]), 3.)])
+        centers, speeds, radii = np.array([[9., 0., -1.]]), np.array([[1., 0., 0.]]), np.array([6.])
+        _, ordinary_speed, _ = camera.obstacles(0., np.zeros(3), centers, speeds, radii)
+        np.testing.assert_array_equal(ordinary_speed[0], speeds[0])
+        camera.ground_reference = (np.zeros(3), np.array([0., 0., 1.]))
+        bound, stationary, size = camera.obstacles(0., np.zeros(3), centers, speeds, radii)
+        np.testing.assert_array_equal(stationary[0], np.zeros(3))
+        np.testing.assert_array_equal(bound[0], [5., 0., -3.])
+        self.assertEqual(size[0], 3.)
+        np.testing.assert_array_equal(speeds[0], [1., 0., 0.])
+
+    def test_camera_uses_only_a_mature_unique_track_without_removing_geometry(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.radar_track_confidence = np.array([True])
+        planner.radar_forecast_rates = np.array([.3])
+        planner.obstacles = lambda *args: (np.array([[100., 0., 0.]]), np.array([[0., .2, 0.]]), np.array([14.]))
+        camera = SimpleNamespace(
+            last_radar_sources=np.array([0, -1]),
+            observes=lambda *args: False,
+            obstacles=lambda *args: (np.array([[100., 2., 0.], [250., 0., 0.]]),
+                np.array([[0., .2, 0.], [0., 0., 0.]]), np.array([7., 9.])))
+        args = (10., np.array([9000., 0., 0.]), np.zeros(3), np.array([10300., 0., 0.]), np.zeros(3), [], camera)
+        centers, _, radii, rates, _, _ = planner.observe_scene(*args)
+        self.assertEqual(len(centers), 3)
+        np.testing.assert_array_equal(radii, [14., 7., 9.])
+        np.testing.assert_allclose(rates, [.3, .3, .6])
+        planner.radar_track_confidence[0] = False
+        _, _, _, rates, _, _ = planner.observe_scene(*args)
+        np.testing.assert_allclose(rates, [.3, .6, .6])
+
+
 def empty_radar():
     return np.empty((0, 3)), np.empty((0, 3)), np.empty(0)
 

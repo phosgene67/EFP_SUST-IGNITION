@@ -89,8 +89,16 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async'):
     dt = 1./control_hz
+    worker = None
+    if plan_latency > 0.:
+        from planning_doubles import ImmediateExecutor
+        worker_type = namespace.get('PlanningWorker') or load_namespace((Path(__file__).resolve().parents[1]/'Controller.py').read_text())['PlanningWorker']
+        worker = worker_type(ImmediateExecutor())
+    plan_due = -np.inf
+    held_body, held_angular = np.zeros(3), np.zeros(3)
+    linear, angular = np.zeros(3), np.zeros(3)
     drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
@@ -168,7 +176,12 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         for _ in range(min(measurements, count)):
             measure(radar_index, now)
             radar_index = (radar_index+1) % count
-        if now+1e-8 >= next_plan:
+        if worker is not None and worker.busy and now+1e-8 >= plan_due:
+            planner.body_rotation = rotation
+            completed = worker.take(now, planner, camera)
+            if completed is not None:
+                planner, mode, clearance = completed
+        if now+1e-8 >= next_plan and (worker is None or not worker.busy):
             planner.body_rotation = rotation
             start = time.perf_counter()
             radar = sorted(reports.copy(), key=lambda item: np.linalg.norm(item[0]))
@@ -180,10 +193,15 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 planner.nose_error = attitude.nose_error_deg
                 if attitude_mode == 'off':
                     planner.aligned_once = True
-            _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), radar,
-                                                camera=camera, cruise_speed=10. if hasattr(planner, 'policy') else namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED']))
+            cap = 10. if hasattr(planner, 'policy') else namespace.get('CHUNK_CRUISE_SPEED', namespace['MAX_SPEED'])
+            if worker is None:
+                _, mode, clearance = planner.command(now, loc, vel, target, np.zeros(3), radar,
+                                                     camera=camera, cruise_speed=cap)
+            else:
+                worker.submit(now, planner, camera, loc, vel, target, np.zeros(3), radar, cap)
+                plan_due = now+plan_latency
             timings.append(time.perf_counter()-start)
-            next_plan += .5
+            next_plan = now+.5
         urgent = planner.urgent or np.linalg.norm(target-loc) < 80.
         planner.body_rotation = rotation
         linear = (planner.linear_command(vel, namespace['MAX_ACCEL']) if hasattr(planner, 'linear_command') else
@@ -208,7 +226,13 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             if np.linalg.norm(travel) > .2:
                 heading = travel.copy()
             angular = namespace['attitude_command'](rotation, heading, up, omega, .02)
-        actual, angular_actual, fuel_rate = allocator.apply(rotation@linear, angular)
+        body_command = rotation@linear
+        if worker is not None and worker.busy and planning_mode == 'blocking':
+            body_command, angular = held_body, held_angular
+            linear = rotation.T@body_command
+        else:
+            held_body, held_angular = body_command.copy(), angular.copy()
+        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)
         if fuel_audit:
             if arrived:
                 post_fuel += dt*fuel_rate
@@ -319,6 +343,9 @@ if __name__ == '__main__':
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
     parser.add_argument('--fuel-audit', action='store_true')
+    parser.add_argument('--fuel-plan-target', type=float, help='Offline override of the soft fuel target, not a hard fuel cutoff')
+    parser.add_argument('--plan-latency', type=float, default=0., help='Synthetic planning delay in simulation seconds; isolates held-command timing')
+    parser.add_argument('--planning-mode', choices=('async', 'blocking'), default='async')
     parser.add_argument('--allocator-solver', choices=('highs', 'native'), default='highs')
     parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
     parser.add_argument('--ground-plane', type=float, default=0., help='Diagnostic only: synthetic plane this far below initial centre, metres')
@@ -333,6 +360,9 @@ if __name__ == '__main__':
     root = Path(__file__).resolve().parents[1]
     source = ((root/'Controller.py').read_text() if not args.baseline_ref else
               subprocess.check_output(['git', 'show', args.baseline_ref+':Controller.py'], cwd=root, text=True))
+    algorithm = load_namespace(source)
+    if args.fuel_plan_target is not None:
+        algorithm['FUEL_PLAN_TARGET'] = args.fuel_plan_target
     scene = load_scene(args.sim_config)
     if args.clear_corridor:
         direction = scene['target']-scene['loc']
@@ -345,14 +375,16 @@ if __name__ == '__main__':
                   hash_note='controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.',
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=5,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=6,
+                  plan_latency_s=args.plan_latency, planning_mode=args.planning_mode,
+                  fuel_plan_target_override=args.fuel_plan_target,
                   allocator_solver=args.allocator_solver,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
                   axis_thrust=args.axis_thrust, ground_plane_m=args.ground_plane,
                   drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
-                  result=run(load_namespace(source), Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias))
+                  result=run(algorithm, Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

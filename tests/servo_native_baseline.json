@@ -1,0 +1,3069 @@
+{
+  "note": "Observed native SCORE_COAST regressions; aborted runs have no final official score. Timing diagnosis remains a hypothesis until the new native run is measured.",
+  "runs": [
+    {
+      "directory": "261117_191409_FINAL_SUBMISSION__110",
+      "official_alerts": [],
+      "telemetry": [
+        {
+          "t": 0.5,
+          "speed": 0.01,
+          "fuel": 0.0,
+          "planMs": 0.3,
+          "distance": 1305.8,
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.5,
+          "speed": 0.18,
+          "fuel": 1.45,
+          "planMs": 122.3,
+          "distance": 1305.7,
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.28"
+        }
+      ]
+    },
+    {
+      "directory": "261117_191504_FINAL_SUBMISSION__e74",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 19.3; congratulations!",
+        "Total damage taken = 0.0 J",
+        "Total fuel used    = 53.32 kg",
+        "Sim elapsed time   = 297.08 s",
+        "Distance to ship   = 49.96 m"
+      ],
+      "telemetry": [
+        {
+          "t": 0.3,
+          "speed": 0.0,
+          "fuel": 0.0,
+          "planMs": 0.1,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.3,
+          "speed": 0.23,
+          "fuel": 1.38,
+          "planMs": 139.9,
+          "distance": 1305.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.20"
+        },
+        {
+          "t": 10.3,
+          "speed": 0.65,
+          "fuel": 3.45,
+          "planMs": 120.6,
+          "distance": 1303.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.31"
+        },
+        {
+          "t": 15.3,
+          "speed": 0.92,
+          "fuel": 5.65,
+          "planMs": 164.8,
+          "distance": 1299.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.31,CRUISE/IMPULSE_BURN:1.74,PHASE_TRANSITION:0.48"
+        },
+        {
+          "t": 20.3,
+          "speed": 1.35,
+          "fuel": 7.74,
+          "planMs": 185.8,
+          "distance": 1293.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:3.86,LAUNCH:3.31,PHASE_TRANSITION:0.48"
+        },
+        {
+          "t": 25.5,
+          "speed": 1.47,
+          "fuel": 10.01,
+          "planMs": 238.3,
+          "distance": 1286.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:6.10,LAUNCH:3.31,PHASE_TRANSITION:0.48"
+        },
+        {
+          "t": 30.6,
+          "speed": 1.88,
+          "fuel": 12.13,
+          "planMs": 226.4,
+          "distance": 1277.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:8.23,LAUNCH:3.31,PHASE_TRANSITION:0.48"
+        },
+        {
+          "t": 35.7,
+          "speed": 2.16,
+          "fuel": 14.35,
+          "planMs": 212.8,
+          "distance": 1267.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:10.44,LAUNCH:3.31,PHASE_TRANSITION:0.48"
+        },
+        {
+          "t": 41.0,
+          "speed": 2.24,
+          "fuel": 17.59,
+          "planMs": 348.6,
+          "distance": 1255.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:11.97,LAUNCH:3.31,PHASE_TRANSITION:2.03"
+        },
+        {
+          "t": 46.0,
+          "speed": 2.17,
+          "fuel": 20.01,
+          "planMs": 279.3,
+          "distance": 1244.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.54,LAUNCH:3.31,PHASE_TRANSITION:2.03"
+        },
+        {
+          "t": 51.1,
+          "speed": 2.29,
+          "fuel": 22.12,
+          "planMs": 251.5,
+          "distance": 1233.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:16.65,LAUNCH:3.31,PHASE_TRANSITION:2.03"
+        },
+        {
+          "t": 56.2,
+          "speed": 2.3,
+          "fuel": 24.72,
+          "planMs": 222.1,
+          "distance": 1221.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:18.11,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 61.3,
+          "speed": 2.73,
+          "fuel": 26.85,
+          "planMs": 228.9,
+          "distance": 1209.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:20.24,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 66.4,
+          "speed": 3.16,
+          "fuel": 28.94,
+          "planMs": 254.1,
+          "distance": 1193.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:22.35,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 71.6,
+          "speed": 3.16,
+          "fuel": 31.47,
+          "planMs": 312.2,
+          "distance": 1177.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:24.75,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 76.7,
+          "speed": 3.42,
+          "fuel": 33.83,
+          "planMs": 277.8,
+          "distance": 1160.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.22,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 81.7,
+          "speed": 3.84,
+          "fuel": 35.91,
+          "planMs": 253.3,
+          "distance": 1142.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:29.31,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 86.8,
+          "speed": 4.26,
+          "fuel": 38.01,
+          "planMs": 178.0,
+          "distance": 1122.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:31.44,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 91.9,
+          "speed": 4.69,
+          "fuel": 40.12,
+          "planMs": 177.1,
+          "distance": 1099.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:33.55,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 96.9,
+          "speed": 5.12,
+          "fuel": 42.21,
+          "planMs": 141.4,
+          "distance": 1074.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.65,LAUNCH:3.31,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 102.1,
+          "speed": 5.39,
+          "fuel": 44.33,
+          "planMs": 175.7,
+          "distance": 1047.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.32,LAUNCH:3.31,PHASE_TRANSITION:2.97,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 107.2,
+          "speed": 5.73,
+          "fuel": 46.44,
+          "planMs": 165.3,
+          "distance": 1019.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.49,LAUNCH:3.31,PHASE_TRANSITION:2.97,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 112.3,
+          "speed": 6.02,
+          "fuel": 48.34,
+          "planMs": 193.0,
+          "distance": 988.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.95,PHASE_TRANSITION:3.48,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 117.4,
+          "speed": 6.01,
+          "fuel": 48.88,
+          "planMs": 203.2,
+          "distance": 958.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.28,PHASE_TRANSITION:3.69,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 122.5,
+          "speed": 6.02,
+          "fuel": 49.55,
+          "planMs": 185.9,
+          "distance": 927.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.73,PHASE_TRANSITION:3.92,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 127.5,
+          "speed": 5.96,
+          "fuel": 49.79,
+          "planMs": 155.6,
+          "distance": 897.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.73,PHASE_TRANSITION:4.15,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 132.7,
+          "speed": 5.9,
+          "fuel": 50.1,
+          "planMs": 171.5,
+          "distance": 867.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.87,PHASE_TRANSITION:4.32,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 137.7,
+          "speed": 5.91,
+          "fuel": 50.41,
+          "planMs": 161.0,
+          "distance": 837.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.43,LAUNCH:3.31,CRUISE/ESCAPE:0.59"
+        },
+        {
+          "t": 142.8,
+          "speed": 5.88,
+          "fuel": 50.71,
+          "planMs": 160.3,
+          "distance": 807.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.73,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.09"
+        },
+        {
+          "t": 147.9,
+          "speed": 5.87,
+          "fuel": 50.92,
+          "planMs": 151.9,
+          "distance": 777.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.86,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 153.0,
+          "speed": 5.82,
+          "fuel": 50.98,
+          "planMs": 161.4,
+          "distance": 747.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.93,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 158.1,
+          "speed": 5.76,
+          "fuel": 51.03,
+          "planMs": 190.9,
+          "distance": 718.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.98,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 163.2,
+          "speed": 5.71,
+          "fuel": 51.03,
+          "planMs": 217.2,
+          "distance": 688.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.99,PHASE_TRANSITION:4.98,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 168.4,
+          "speed": 5.65,
+          "fuel": 51.34,
+          "planMs": 244.0,
+          "distance": 659.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:42.13,PHASE_TRANSITION:4.98,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 173.6,
+          "speed": 5.57,
+          "fuel": 53.32,
+          "planMs": 326.6,
+          "distance": 630.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 178.6,
+          "speed": 5.52,
+          "fuel": 53.32,
+          "planMs": 216.9,
+          "distance": 602.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 183.6,
+          "speed": 5.46,
+          "fuel": 53.32,
+          "planMs": 219.0,
+          "distance": 575.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 188.7,
+          "speed": 5.41,
+          "fuel": 53.32,
+          "planMs": 157.1,
+          "distance": 548.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 193.8,
+          "speed": 5.35,
+          "fuel": 53.32,
+          "planMs": 184.3,
+          "distance": 520.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 198.9,
+          "speed": 5.3,
+          "fuel": 53.32,
+          "planMs": 196.9,
+          "distance": 493.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 203.9,
+          "speed": 5.25,
+          "fuel": 53.32,
+          "planMs": 173.6,
+          "distance": 466.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 209.0,
+          "speed": 5.19,
+          "fuel": 53.32,
+          "planMs": 162.3,
+          "distance": 440.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 214.1,
+          "speed": 5.14,
+          "fuel": 53.32,
+          "planMs": 158.7,
+          "distance": 414.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 219.2,
+          "speed": 5.09,
+          "fuel": 53.32,
+          "planMs": 149.5,
+          "distance": 388.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 224.3,
+          "speed": 5.04,
+          "fuel": 53.32,
+          "planMs": 146.4,
+          "distance": 362.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 229.4,
+          "speed": 4.98,
+          "fuel": 53.32,
+          "planMs": 145.3,
+          "distance": 337.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 234.5,
+          "speed": 4.93,
+          "fuel": 53.32,
+          "planMs": 150.0,
+          "distance": 312.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 239.6,
+          "speed": 4.88,
+          "fuel": 53.32,
+          "planMs": 141.4,
+          "distance": 287.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 244.7,
+          "speed": 4.83,
+          "fuel": 53.32,
+          "planMs": 179.0,
+          "distance": 263.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 249.7,
+          "speed": 4.78,
+          "fuel": 53.32,
+          "planMs": 110.8,
+          "distance": 239.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 254.8,
+          "speed": 4.73,
+          "fuel": 53.32,
+          "planMs": 133.9,
+          "distance": 215.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 259.9,
+          "speed": 4.68,
+          "fuel": 53.32,
+          "planMs": 138.7,
+          "distance": 192.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 265.0,
+          "speed": 4.63,
+          "fuel": 53.32,
+          "planMs": 133.8,
+          "distance": 169.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 270.1,
+          "speed": 4.58,
+          "fuel": 53.32,
+          "planMs": 136.9,
+          "distance": 146.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 275.3,
+          "speed": 4.52,
+          "fuel": 53.32,
+          "planMs": 171.2,
+          "distance": 124.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 280.4,
+          "speed": 4.47,
+          "fuel": 53.32,
+          "planMs": 167.8,
+          "distance": 103.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 285.4,
+          "speed": 4.43,
+          "fuel": 53.32,
+          "planMs": 172.4,
+          "distance": 84.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 290.5,
+          "speed": 4.38,
+          "fuel": 53.32,
+          "planMs": 155.2,
+          "distance": 66.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 295.6,
+          "speed": 4.33,
+          "fuel": 53.32,
+          "planMs": 148.4,
+          "distance": 53.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        },
+        {
+          "t": 300.7,
+          "speed": 4.29,
+          "fuel": 53.76,
+          "planMs": 188.0,
+          "distance": 46.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:44.16,PHASE_TRANSITION:5.09,LAUNCH:3.31,CRUISE/ESCAPE:0.59,CRUISE/IMPULSE_COAST:0.16"
+        }
+      ]
+    },
+    {
+      "directory": "261117_192019_FINAL_SUBMISSION__ee5",
+      "official_alerts": [],
+      "telemetry": [
+        {
+          "t": 0.2,
+          "speed": 0.0,
+          "fuel": 0.0,
+          "planMs": 0.2,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.2,
+          "speed": 0.33,
+          "fuel": 1.41,
+          "planMs": 104.9,
+          "distance": 1305.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.14"
+        },
+        {
+          "t": 10.2,
+          "speed": 0.56,
+          "fuel": 3.68,
+          "planMs": 176.1,
+          "distance": 1304.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.54"
+        },
+        {
+          "t": 15.3,
+          "speed": 0.92,
+          "fuel": 5.82,
+          "planMs": 222.1,
+          "distance": 1300.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:4.17,CRUISE/IMPULSE_BURN:0.88,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 20.4,
+          "speed": 1.35,
+          "fuel": 7.95,
+          "planMs": 229.9,
+          "distance": 1294.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:4.17,CRUISE/IMPULSE_BURN:2.99,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 25.6,
+          "speed": 1.78,
+          "fuel": 10.08,
+          "planMs": 309.0,
+          "distance": 1286.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:5.10,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 30.8,
+          "speed": 2.21,
+          "fuel": 12.22,
+          "planMs": 297.7,
+          "distance": 1276.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:7.26,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 35.9,
+          "speed": 2.64,
+          "fuel": 14.33,
+          "planMs": 270.8,
+          "distance": 1263.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:9.37,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 40.9,
+          "speed": 2.79,
+          "fuel": 16.62,
+          "planMs": 245.2,
+          "distance": 1250.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:11.62,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 46.0,
+          "speed": 2.8,
+          "fuel": 19.19,
+          "planMs": 246.2,
+          "distance": 1235.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.23,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 51.1,
+          "speed": 2.72,
+          "fuel": 21.42,
+          "planMs": 265.3,
+          "distance": 1222.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:16.36,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 56.2,
+          "speed": 3.07,
+          "fuel": 23.74,
+          "planMs": 239.4,
+          "distance": 1207.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:18.67,LAUNCH:4.17,PHASE_TRANSITION:0.67"
+        },
+        {
+          "t": 61.2,
+          "speed": 3.01,
+          "fuel": 27.2,
+          "planMs": 439.9,
+          "distance": 1192.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "ESCAPE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:21.08,LAUNCH:4.17,PHASE_TRANSITION:1.01,CRUISE/ESCAPE:0.73"
+        },
+        {
+          "t": 66.2,
+          "speed": 2.94,
+          "fuel": 29.14,
+          "planMs": 253.6,
+          "distance": 1177.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:22.80,LAUNCH:4.17,PHASE_TRANSITION:1.26,CRUISE/ESCAPE:0.73"
+        },
+        {
+          "t": 71.2,
+          "speed": 2.98,
+          "fuel": 31.69,
+          "planMs": 272.8,
+          "distance": 1162.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:25.40,LAUNCH:4.17,PHASE_TRANSITION:1.26,CRUISE/ESCAPE:0.73"
+        },
+        {
+          "t": 76.3,
+          "speed": 2.93,
+          "fuel": 34.03,
+          "planMs": 284.3,
+          "distance": 1147.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.74,LAUNCH:4.17,PHASE_TRANSITION:1.26,CRUISE/ESCAPE:0.73"
+        },
+        {
+          "t": 81.6,
+          "speed": 3.18,
+          "fuel": 36.22,
+          "planMs": 456.6,
+          "distance": 1131.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:29.87,LAUNCH:4.17,PHASE_TRANSITION:1.26,CRUISE/ESCAPE:0.73"
+        },
+        {
+          "t": 87.4,
+          "speed": 3.66,
+          "fuel": 38.82,
+          "planMs": 373.4,
+          "distance": 1112.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "ESCAPE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:31.56,LAUNCH:4.17,PHASE_TRANSITION:1.47,CRUISE/ESCAPE:1.42"
+        },
+        {
+          "t": 92.4,
+          "speed": 3.47,
+          "fuel": 41.64,
+          "planMs": 270.6,
+          "distance": 1094.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:32.61,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 97.4,
+          "speed": 3.43,
+          "fuel": 44.41,
+          "planMs": 200.4,
+          "distance": 1077.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.51,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 102.4,
+          "speed": 3.39,
+          "fuel": 46.49,
+          "planMs": 218.4,
+          "distance": 1060.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.63,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 107.5,
+          "speed": 3.81,
+          "fuel": 48.59,
+          "planMs": 215.0,
+          "distance": 1042.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.75,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 112.6,
+          "speed": 4.24,
+          "fuel": 50.68,
+          "planMs": 194.0,
+          "distance": 1021.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.84,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 117.7,
+          "speed": 4.67,
+          "fuel": 52.83,
+          "planMs": 237.2,
+          "distance": 998.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:43.95,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 122.8,
+          "speed": 5.1,
+          "fuel": 54.93,
+          "planMs": 243.2,
+          "distance": 974.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:46.06,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 127.9,
+          "speed": 5.53,
+          "fuel": 57.02,
+          "planMs": 244.4,
+          "distance": 947.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:48.17,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 132.9,
+          "speed": 5.96,
+          "fuel": 59.14,
+          "planMs": 247.7,
+          "distance": 917.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.27,LAUNCH:4.17,PHASE_TRANSITION:2.37,CRUISE/ESCAPE:2.22"
+        },
+        {
+          "t": 138.0,
+          "speed": 6.14,
+          "fuel": 60.58,
+          "planMs": 235.9,
+          "distance": 887.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:51.40,LAUNCH:4.17,PHASE_TRANSITION:2.58,CRUISE/ESCAPE:2.22,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 143.1,
+          "speed": 6.17,
+          "fuel": 61.27,
+          "planMs": 215.4,
+          "distance": 855.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:51.73,LAUNCH:4.17,PHASE_TRANSITION:3.03,CRUISE/ESCAPE:2.22,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 148.2,
+          "speed": 6.12,
+          "fuel": 61.36,
+          "planMs": 223.3,
+          "distance": 824.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:51.73,LAUNCH:4.17,PHASE_TRANSITION:3.10,CRUISE/ESCAPE:2.22,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 153.6,
+          "speed": 6.11,
+          "fuel": 63.36,
+          "planMs": 423.1,
+          "distance": 791.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "ESCAPE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:52.05,LAUNCH:4.17,PHASE_TRANSITION:3.41,CRUISE/ESCAPE:3.37,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 158.7,
+          "speed": 6.09,
+          "fuel": 65.75,
+          "planMs": 253.1,
+          "distance": 760.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:53.14,CRUISE/ESCAPE:4.55,LAUNCH:4.17,PHASE_TRANSITION:3.66,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 163.8,
+          "speed": 5.98,
+          "fuel": 67.24,
+          "planMs": 243.9,
+          "distance": 730.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:54.58,CRUISE/ESCAPE:4.55,LAUNCH:4.17,PHASE_TRANSITION:3.80,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 168.8,
+          "speed": 5.98,
+          "fuel": 67.52,
+          "planMs": 234.6,
+          "distance": 699.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:54.66,CRUISE/ESCAPE:4.55,LAUNCH:4.17,PHASE_TRANSITION:4.01,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 173.9,
+          "speed": 5.91,
+          "fuel": 67.74,
+          "planMs": 186.6,
+          "distance": 669.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:54.66,CRUISE/ESCAPE:4.55,PHASE_TRANSITION:4.24,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 179.0,
+          "speed": 5.83,
+          "fuel": 68.48,
+          "planMs": 195.8,
+          "distance": 639.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:55.12,CRUISE/ESCAPE:4.55,PHASE_TRANSITION:4.40,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 184.0,
+          "speed": 5.66,
+          "fuel": 71.21,
+          "planMs": 190.2,
+          "distance": 611.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:55.35,CRUISE/ESCAPE:6.55,PHASE_TRANSITION:4.90,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 189.1,
+          "speed": 5.75,
+          "fuel": 73.34,
+          "planMs": 193.8,
+          "distance": 582.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:57.49,CRUISE/ESCAPE:6.55,PHASE_TRANSITION:4.90,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 194.2,
+          "speed": 5.8,
+          "fuel": 75.47,
+          "planMs": 225.6,
+          "distance": 552.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:59.62,CRUISE/ESCAPE:6.55,PHASE_TRANSITION:4.90,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 199.2,
+          "speed": 5.75,
+          "fuel": 78.08,
+          "planMs": 222.3,
+          "distance": 523.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:62.21,CRUISE/ESCAPE:6.55,PHASE_TRANSITION:4.90,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 204.5,
+          "speed": 5.61,
+          "fuel": 80.5,
+          "planMs": 216.2,
+          "distance": 494.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:63.45,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.22,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 209.5,
+          "speed": 5.54,
+          "fuel": 81.71,
+          "planMs": 192.9,
+          "distance": 466.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:64.65,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.32,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 214.6,
+          "speed": 5.49,
+          "fuel": 81.71,
+          "planMs": 178.2,
+          "distance": 438.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:64.65,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.32,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 219.7,
+          "speed": 5.44,
+          "fuel": 81.79,
+          "planMs": 196.3,
+          "distance": 410.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:64.65,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.41,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 224.9,
+          "speed": 5.38,
+          "fuel": 81.79,
+          "planMs": 239.6,
+          "distance": 383.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:64.65,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.41,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 229.9,
+          "speed": 5.33,
+          "fuel": 81.79,
+          "planMs": 156.1,
+          "distance": 356.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:64.65,CRUISE/ESCAPE:7.43,PHASE_TRANSITION:5.41,LAUNCH:4.17,CRUISE/IMPULSE_COAST:0.13"
+        }
+      ]
+    },
+    {
+      "directory": "261117_192425_FINAL_SUBMISSION__0be",
+      "official_alerts": [
+        "Sim elapsed time   = 281.86 s",
+        "Successfully escaped Phobos with a score of 13.3; congratulations!",
+        "Total fuel used    = 59.45 kg",
+        "Distance to ship   = 49.99 m",
+        "Total damage taken = 0.0 J"
+      ],
+      "telemetry": [
+        {
+          "t": 0.2,
+          "speed": 0.06,
+          "fuel": 0.0,
+          "planMs": 1.1,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.2,
+          "speed": 0.19,
+          "fuel": 1.58,
+          "planMs": 154.8,
+          "distance": 1305.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.40"
+        },
+        {
+          "t": 10.2,
+          "speed": 0.57,
+          "fuel": 3.67,
+          "planMs": 173.5,
+          "distance": 1304.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.51"
+        },
+        {
+          "t": 15.3,
+          "speed": 0.78,
+          "fuel": 5.84,
+          "planMs": 231.7,
+          "distance": 1300.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.93,CRUISE/IMPULSE_BURN:1.30,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 20.4,
+          "speed": 1.2,
+          "fuel": 7.95,
+          "planMs": 258.3,
+          "distance": 1295.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.93,CRUISE/IMPULSE_BURN:3.40,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 25.6,
+          "speed": 1.5,
+          "fuel": 10.23,
+          "planMs": 351.0,
+          "distance": 1288.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:5.63,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 30.9,
+          "speed": 1.85,
+          "fuel": 12.38,
+          "planMs": 277.0,
+          "distance": 1279.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:7.83,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 35.9,
+          "speed": 2.27,
+          "fuel": 14.47,
+          "planMs": 297.7,
+          "distance": 1269.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:9.92,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 41.0,
+          "speed": 2.69,
+          "fuel": 16.59,
+          "planMs": 277.4,
+          "distance": 1256.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:12.03,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 46.0,
+          "speed": 2.89,
+          "fuel": 18.68,
+          "planMs": 260.5,
+          "distance": 1242.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.13,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 51.2,
+          "speed": 3.31,
+          "fuel": 20.8,
+          "planMs": 295.1,
+          "distance": 1226.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:16.26,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 56.3,
+          "speed": 3.6,
+          "fuel": 23.39,
+          "planMs": 298.7,
+          "distance": 1208.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:18.76,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 61.4,
+          "speed": 4.0,
+          "fuel": 25.49,
+          "planMs": 229.4,
+          "distance": 1189.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:20.97,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 66.5,
+          "speed": 4.24,
+          "fuel": 28.11,
+          "planMs": 238.2,
+          "distance": 1168.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:23.58,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 71.6,
+          "speed": 4.33,
+          "fuel": 30.25,
+          "planMs": 220.7,
+          "distance": 1145.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:25.71,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 76.8,
+          "speed": 4.59,
+          "fuel": 32.4,
+          "planMs": 277.6,
+          "distance": 1123.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.87,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 81.9,
+          "speed": 5.02,
+          "fuel": 34.5,
+          "planMs": 246.1,
+          "distance": 1098.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:29.96,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 87.0,
+          "speed": 5.45,
+          "fuel": 36.63,
+          "planMs": 282.4,
+          "distance": 1071.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:32.08,LAUNCH:3.93,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 92.1,
+          "speed": 5.6,
+          "fuel": 38.78,
+          "planMs": 224.9,
+          "distance": 1043.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:33.91,LAUNCH:3.93,PHASE_TRANSITION:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 97.1,
+          "speed": 5.64,
+          "fuel": 41.06,
+          "planMs": 213.3,
+          "distance": 1015.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:36.19,LAUNCH:3.93,PHASE_TRANSITION:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 102.2,
+          "speed": 6.07,
+          "fuel": 43.18,
+          "planMs": 210.2,
+          "distance": 985.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:38.32,LAUNCH:3.93,PHASE_TRANSITION:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 107.4,
+          "speed": 6.19,
+          "fuel": 44.39,
+          "planMs": 263.4,
+          "distance": 954.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.44,LAUNCH:3.93,PHASE_TRANSITION:0.78,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 112.5,
+          "speed": 6.17,
+          "fuel": 44.84,
+          "planMs": 199.4,
+          "distance": 922.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.65,LAUNCH:3.93,PHASE_TRANSITION:1.04,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 117.5,
+          "speed": 6.07,
+          "fuel": 45.34,
+          "planMs": 168.7,
+          "distance": 891.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.99,LAUNCH:3.93,PHASE_TRANSITION:1.30,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 122.6,
+          "speed": 6.13,
+          "fuel": 46.46,
+          "planMs": 166.5,
+          "distance": 860.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.86,LAUNCH:3.93,PHASE_TRANSITION:1.55,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 127.8,
+          "speed": 6.11,
+          "fuel": 46.73,
+          "planMs": 211.8,
+          "distance": 829.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.09,LAUNCH:3.93,PHASE_TRANSITION:1.59,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 132.9,
+          "speed": 6.04,
+          "fuel": 46.91,
+          "planMs": 210.4,
+          "distance": 798.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.09,LAUNCH:3.93,PHASE_TRANSITION:1.77,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 138.0,
+          "speed": 5.98,
+          "fuel": 47.04,
+          "planMs": 214.2,
+          "distance": 767.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.09,LAUNCH:3.93,PHASE_TRANSITION:1.90,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 143.3,
+          "speed": 5.92,
+          "fuel": 48.9,
+          "planMs": 182.5,
+          "distance": 735.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:41.68,LAUNCH:3.93,PHASE_TRANSITION:3.03,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 148.3,
+          "speed": 5.83,
+          "fuel": 51.7,
+          "planMs": 256.7,
+          "distance": 706.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:43.03,LAUNCH:3.93,PHASE_TRANSITION:3.72,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 153.3,
+          "speed": 5.78,
+          "fuel": 53.79,
+          "planMs": 319.6,
+          "distance": 677.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:45.15,LAUNCH:3.93,PHASE_TRANSITION:3.72,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 158.4,
+          "speed": 5.69,
+          "fuel": 55.96,
+          "planMs": 216.8,
+          "distance": 648.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:47.36,LAUNCH:3.93,PHASE_TRANSITION:3.72,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 163.5,
+          "speed": 5.68,
+          "fuel": 58.09,
+          "planMs": 225.9,
+          "distance": 619.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:49.50,LAUNCH:3.93,PHASE_TRANSITION:3.72,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 168.6,
+          "speed": 5.64,
+          "fuel": 58.74,
+          "planMs": 211.9,
+          "distance": 590.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.14,LAUNCH:3.93,PHASE_TRANSITION:3.83,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 173.7,
+          "speed": 5.58,
+          "fuel": 58.74,
+          "planMs": 216.0,
+          "distance": 562.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.14,LAUNCH:3.93,PHASE_TRANSITION:3.83,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 178.8,
+          "speed": 5.53,
+          "fuel": 58.74,
+          "planMs": 192.7,
+          "distance": 534.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.14,LAUNCH:3.93,PHASE_TRANSITION:3.83,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 183.8,
+          "speed": 5.48,
+          "fuel": 59.09,
+          "planMs": 197.3,
+          "distance": 506.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.26,PHASE_TRANSITION:4.06,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 188.9,
+          "speed": 5.43,
+          "fuel": 59.45,
+          "planMs": 174.9,
+          "distance": 478.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 194.0,
+          "speed": 5.38,
+          "fuel": 59.45,
+          "planMs": 146.9,
+          "distance": 451.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 199.1,
+          "speed": 5.32,
+          "fuel": 59.45,
+          "planMs": 152.9,
+          "distance": 424.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 204.2,
+          "speed": 5.27,
+          "fuel": 59.45,
+          "planMs": 228.2,
+          "distance": 397.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 209.3,
+          "speed": 5.21,
+          "fuel": 59.45,
+          "planMs": 228.0,
+          "distance": 370.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 214.4,
+          "speed": 5.16,
+          "fuel": 59.45,
+          "planMs": 238.3,
+          "distance": 344.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 219.5,
+          "speed": 5.11,
+          "fuel": 59.45,
+          "planMs": 201.9,
+          "distance": 319.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 224.5,
+          "speed": 5.06,
+          "fuel": 59.45,
+          "planMs": 154.9,
+          "distance": 293.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 229.6,
+          "speed": 5.0,
+          "fuel": 59.45,
+          "planMs": 131.2,
+          "distance": 268.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 234.8,
+          "speed": 4.95,
+          "fuel": 59.45,
+          "planMs": 225.4,
+          "distance": 243.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 239.8,
+          "speed": 4.9,
+          "fuel": 59.45,
+          "planMs": 142.4,
+          "distance": 219.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 244.9,
+          "speed": 4.85,
+          "fuel": 59.45,
+          "planMs": 150.0,
+          "distance": 194.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 249.9,
+          "speed": 4.8,
+          "fuel": 59.45,
+          "planMs": 135.3,
+          "distance": 171.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 255.1,
+          "speed": 4.74,
+          "fuel": 59.45,
+          "planMs": 140.0,
+          "distance": 148.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 260.2,
+          "speed": 4.69,
+          "fuel": 59.45,
+          "planMs": 167.0,
+          "distance": 125.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 265.2,
+          "speed": 4.64,
+          "fuel": 59.45,
+          "planMs": 150.2,
+          "distance": 103.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 270.3,
+          "speed": 4.59,
+          "fuel": 59.45,
+          "planMs": 155.7,
+          "distance": 83.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 275.4,
+          "speed": 4.54,
+          "fuel": 59.45,
+          "planMs": 153.4,
+          "distance": 65.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 280.5,
+          "speed": 4.49,
+          "fuel": 59.45,
+          "planMs": 137.2,
+          "distance": 52.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        },
+        {
+          "t": 285.6,
+          "speed": 4.46,
+          "fuel": 60.04,
+          "planMs": 143.3,
+          "distance": 47.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:50.37,PHASE_TRANSITION:4.30,LAUNCH:3.93,CRUISE/AVOID:0.72,CRUISE/IMPULSE_COAST:0.13"
+        }
+      ]
+    },
+    {
+      "directory": "261117_193032_FINAL_SUBMISSION__4dc",
+      "official_alerts": [
+        "Total fuel used    = 49.05 kg",
+        "Distance to ship   = 49.8 m",
+        "Total damage taken = 0.0 J",
+        "Successfully escaped Phobos with a score of 29.9; congratulations!",
+        "Sim elapsed time   = 264.9 s"
+      ],
+      "telemetry": [
+        {
+          "t": 0.7,
+          "speed": 0.05,
+          "fuel": 0.0,
+          "planMs": 0.2,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.7,
+          "speed": 0.16,
+          "fuel": 1.35,
+          "planMs": 118.7,
+          "distance": 1305.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.18"
+        },
+        {
+          "t": 10.7,
+          "speed": 0.57,
+          "fuel": 3.44,
+          "planMs": 119.3,
+          "distance": 1303.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.30"
+        },
+        {
+          "t": 15.7,
+          "speed": 0.74,
+          "fuel": 5.62,
+          "planMs": 203.7,
+          "distance": 1300.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.71,CRUISE/IMPULSE_BURN:1.32,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 20.8,
+          "speed": 1.1,
+          "fuel": 7.77,
+          "planMs": 253.5,
+          "distance": 1295.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.71,CRUISE/IMPULSE_BURN:3.44,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 26.1,
+          "speed": 1.53,
+          "fuel": 9.97,
+          "planMs": 364.4,
+          "distance": 1289.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:5.56,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 31.2,
+          "speed": 1.95,
+          "fuel": 12.05,
+          "planMs": 307.8,
+          "distance": 1280.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:7.70,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 36.3,
+          "speed": 2.38,
+          "fuel": 14.16,
+          "planMs": 302.7,
+          "distance": 1269.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:9.83,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 41.6,
+          "speed": 2.82,
+          "fuel": 16.36,
+          "planMs": 328.5,
+          "distance": 1255.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:12.01,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 46.8,
+          "speed": 3.25,
+          "fuel": 18.53,
+          "planMs": 361.2,
+          "distance": 1239.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.16,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 52.0,
+          "speed": 3.69,
+          "fuel": 20.65,
+          "planMs": 340.5,
+          "distance": 1221.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:16.31,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 57.1,
+          "speed": 4.12,
+          "fuel": 22.79,
+          "planMs": 348.0,
+          "distance": 1201.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:18.42,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 62.3,
+          "speed": 4.08,
+          "fuel": 25.46,
+          "planMs": 393.3,
+          "distance": 1180.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:20.95,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 67.4,
+          "speed": 4.31,
+          "fuel": 27.98,
+          "planMs": 394.2,
+          "distance": 1159.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:23.59,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 72.6,
+          "speed": 4.75,
+          "fuel": 30.14,
+          "planMs": 365.9,
+          "distance": 1135.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:25.75,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 77.8,
+          "speed": 5.18,
+          "fuel": 32.25,
+          "planMs": 338.4,
+          "distance": 1110.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.89,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 83.0,
+          "speed": 5.61,
+          "fuel": 34.43,
+          "planMs": 399.2,
+          "distance": 1082.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:30.03,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 88.0,
+          "speed": 6.04,
+          "fuel": 36.5,
+          "planMs": 248.8,
+          "distance": 1053.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:32.16,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 93.0,
+          "speed": 6.45,
+          "fuel": 38.57,
+          "planMs": 181.8,
+          "distance": 1022.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:34.27,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 98.2,
+          "speed": 6.56,
+          "fuel": 40.73,
+          "planMs": 261.3,
+          "distance": 988.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:36.41,LAUNCH:3.71,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 103.3,
+          "speed": 6.51,
+          "fuel": 41.98,
+          "planMs": 261.0,
+          "distance": 955.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.42,LAUNCH:3.71,PHASE_TRANSITION:0.73,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 108.4,
+          "speed": 6.49,
+          "fuel": 42.42,
+          "planMs": 257.2,
+          "distance": 922.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.62,LAUNCH:3.71,PHASE_TRANSITION:0.97,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 113.4,
+          "speed": 6.45,
+          "fuel": 42.74,
+          "planMs": 199.6,
+          "distance": 889.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.73,LAUNCH:3.71,PHASE_TRANSITION:1.29,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 118.5,
+          "speed": 6.41,
+          "fuel": 42.9,
+          "planMs": 226.2,
+          "distance": 857.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.73,LAUNCH:3.71,PHASE_TRANSITION:1.46,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 123.6,
+          "speed": 6.38,
+          "fuel": 43.18,
+          "planMs": 205.6,
+          "distance": 824.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.84,LAUNCH:3.71,PHASE_TRANSITION:1.52,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 128.6,
+          "speed": 6.33,
+          "fuel": 43.33,
+          "planMs": 192.7,
+          "distance": 792.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.84,LAUNCH:3.71,PHASE_TRANSITION:1.77,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 133.7,
+          "speed": 6.28,
+          "fuel": 43.42,
+          "planMs": 186.4,
+          "distance": 760.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.84,LAUNCH:3.71,PHASE_TRANSITION:1.86,CRUISE/IMPULSE_COAST:0.01"
+        },
+        {
+          "t": 138.8,
+          "speed": 6.22,
+          "fuel": 43.81,
+          "planMs": 198.6,
+          "distance": 728.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.84,LAUNCH:3.71,PHASE_TRANSITION:2.16,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 143.9,
+          "speed": 6.15,
+          "fuel": 45.13,
+          "planMs": 186.3,
+          "distance": 697.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:38.63,LAUNCH:3.71,PHASE_TRANSITION:2.67,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 149.0,
+          "speed": 6.13,
+          "fuel": 46.43,
+          "planMs": 172.6,
+          "distance": 666.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:39.71,LAUNCH:3.71,PHASE_TRANSITION:2.90,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 154.1,
+          "speed": 6.09,
+          "fuel": 47.8,
+          "planMs": 230.5,
+          "distance": 634.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 159.2,
+          "speed": 6.03,
+          "fuel": 47.8,
+          "planMs": 219.5,
+          "distance": 604.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 164.2,
+          "speed": 5.98,
+          "fuel": 47.8,
+          "planMs": 217.0,
+          "distance": 573.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 169.3,
+          "speed": 5.92,
+          "fuel": 47.8,
+          "planMs": 184.7,
+          "distance": 543.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 174.4,
+          "speed": 5.87,
+          "fuel": 47.8,
+          "planMs": 175.3,
+          "distance": 513.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 179.4,
+          "speed": 5.82,
+          "fuel": 47.8,
+          "planMs": 153.5,
+          "distance": 484.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 184.6,
+          "speed": 5.76,
+          "fuel": 47.8,
+          "planMs": 198.4,
+          "distance": 454.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 189.6,
+          "speed": 5.71,
+          "fuel": 47.8,
+          "planMs": 161.7,
+          "distance": 425.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 194.8,
+          "speed": 5.66,
+          "fuel": 47.8,
+          "planMs": 228.4,
+          "distance": 396.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 199.8,
+          "speed": 5.61,
+          "fuel": 47.8,
+          "planMs": 203.8,
+          "distance": 368.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 204.9,
+          "speed": 5.56,
+          "fuel": 47.8,
+          "planMs": 239.4,
+          "distance": 340.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 210.0,
+          "speed": 5.5,
+          "fuel": 47.8,
+          "planMs": 227.8,
+          "distance": 312.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 215.0,
+          "speed": 5.45,
+          "fuel": 47.8,
+          "planMs": 181.5,
+          "distance": 285.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 220.1,
+          "speed": 5.4,
+          "fuel": 47.8,
+          "planMs": 143.1,
+          "distance": 258.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 225.2,
+          "speed": 5.35,
+          "fuel": 47.8,
+          "planMs": 148.7,
+          "distance": 231.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 230.3,
+          "speed": 5.3,
+          "fuel": 47.8,
+          "planMs": 151.3,
+          "distance": 204.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 235.3,
+          "speed": 5.25,
+          "fuel": 47.8,
+          "planMs": 136.1,
+          "distance": 178.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 240.4,
+          "speed": 5.2,
+          "fuel": 47.8,
+          "planMs": 126.3,
+          "distance": 153.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 245.5,
+          "speed": 5.15,
+          "fuel": 47.8,
+          "planMs": 142.1,
+          "distance": 128.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 250.6,
+          "speed": 5.1,
+          "fuel": 47.8,
+          "planMs": 153.1,
+          "distance": 104.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 255.7,
+          "speed": 5.05,
+          "fuel": 47.8,
+          "planMs": 153.1,
+          "distance": 81.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 260.9,
+          "speed": 5.0,
+          "fuel": 47.8,
+          "planMs": 247.4,
+          "distance": 61.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,CRUISE/IMPULSE_COAST:0.11"
+        },
+        {
+          "t": 266.0,
+          "speed": 4.68,
+          "fuel": 49.48,
+          "planMs": 233.8,
+          "distance": 48.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,WAIT_SHIP_CAMERA:1.12,CRUISE/IMPULSE_COAST:0.11,ARRIVAL_TRANSITION:0.10"
+        },
+        {
+          "t": 271.1,
+          "speed": 4.52,
+          "fuel": 50.63,
+          "planMs": 222.9,
+          "distance": 45.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:40.89,LAUNCH:3.71,PHASE_TRANSITION:3.09,WAIT_SHIP_CAMERA:1.12,CRUISE/IMPULSE_COAST:0.11,ARRIVAL_TRANSITION:0.10"
+        }
+      ]
+    },
+    {
+      "directory": "261117_193522_FINAL_SUBMISSION__eae",
+      "official_alerts": [
+        "Total damage taken = 0.0 J",
+        "Total fuel used    = 43.53 kg",
+        "Successfully escaped Phobos with a score of 38.0; congratulations!",
+        "Distance to ship   = 49.83 m",
+        "Sim elapsed time   = 260.57 s"
+      ],
+      "telemetry": [
+        {
+          "t": 0.2,
+          "speed": 0.01,
+          "fuel": 0.0,
+          "planMs": 0.2,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.2,
+          "speed": 0.15,
+          "fuel": 1.08,
+          "planMs": 112.4,
+          "distance": 1305.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:0.94"
+        },
+        {
+          "t": 10.3,
+          "speed": 0.56,
+          "fuel": 3.35,
+          "planMs": 102.8,
+          "distance": 1304.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.29"
+        },
+        {
+          "t": 15.4,
+          "speed": 0.85,
+          "fuel": 5.63,
+          "planMs": 208.7,
+          "distance": 1300.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.72,CRUISE/IMPULSE_BURN:1.33,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 20.5,
+          "speed": 1.27,
+          "fuel": 7.74,
+          "planMs": 229.8,
+          "distance": 1294.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:3.72,CRUISE/IMPULSE_BURN:3.42,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 25.8,
+          "speed": 1.71,
+          "fuel": 9.92,
+          "planMs": 306.2,
+          "distance": 1287.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:5.56,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 30.9,
+          "speed": 2.13,
+          "fuel": 12.02,
+          "planMs": 281.5,
+          "distance": 1277.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:7.68,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 35.9,
+          "speed": 2.56,
+          "fuel": 14.12,
+          "planMs": 268.8,
+          "distance": 1265.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:9.78,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 41.1,
+          "speed": 2.99,
+          "fuel": 16.27,
+          "planMs": 328.2,
+          "distance": 1251.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:11.90,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 46.2,
+          "speed": 3.43,
+          "fuel": 18.39,
+          "planMs": 303.2,
+          "distance": 1234.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.04,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 51.5,
+          "speed": 3.87,
+          "fuel": 20.55,
+          "planMs": 323.4,
+          "distance": 1215.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:16.18,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 56.8,
+          "speed": 4.31,
+          "fuel": 22.75,
+          "planMs": 388.4,
+          "distance": 1193.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:18.36,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 61.9,
+          "speed": 4.75,
+          "fuel": 24.87,
+          "planMs": 366.8,
+          "distance": 1170.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:20.51,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 67.1,
+          "speed": 4.69,
+          "fuel": 27.4,
+          "planMs": 435.9,
+          "distance": 1146.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:22.99,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 72.1,
+          "speed": 4.78,
+          "fuel": 29.49,
+          "planMs": 284.8,
+          "distance": 1122.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:25.13,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 77.2,
+          "speed": 5.21,
+          "fuel": 31.62,
+          "planMs": 248.8,
+          "distance": 1097.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.28,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 82.5,
+          "speed": 5.65,
+          "fuel": 33.8,
+          "planMs": 415.2,
+          "distance": 1068.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:29.39,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 87.6,
+          "speed": 6.07,
+          "fuel": 35.88,
+          "planMs": 324.0,
+          "distance": 1038.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:31.52,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 92.7,
+          "speed": 6.5,
+          "fuel": 37.99,
+          "planMs": 331.9,
+          "distance": 1006.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:33.61,LAUNCH:3.72,PHASE_TRANSITION:0.50"
+        },
+        {
+          "t": 97.7,
+          "speed": 6.61,
+          "fuel": 39.11,
+          "planMs": 301.1,
+          "distance": 973.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:34.60,LAUNCH:3.72,PHASE_TRANSITION:0.65"
+        },
+        {
+          "t": 102.8,
+          "speed": 6.6,
+          "fuel": 39.61,
+          "planMs": 283.0,
+          "distance": 940.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:34.89,LAUNCH:3.72,PHASE_TRANSITION:0.88"
+        },
+        {
+          "t": 108.0,
+          "speed": 6.55,
+          "fuel": 39.84,
+          "planMs": 254.2,
+          "distance": 906.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:34.89,LAUNCH:3.72,PHASE_TRANSITION:1.11,CRUISE/IMPULSE_COAST:0.12"
+        },
+        {
+          "t": 113.0,
+          "speed": 6.56,
+          "fuel": 41.2,
+          "planMs": 237.9,
+          "distance": 873.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.74,LAUNCH:3.72,PHASE_TRANSITION:1.62,CRUISE/IMPULSE_COAST:0.12"
+        },
+        {
+          "t": 118.1,
+          "speed": 6.52,
+          "fuel": 41.32,
+          "planMs": 217.4,
+          "distance": 840.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.74,LAUNCH:3.72,PHASE_TRANSITION:1.71,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 123.1,
+          "speed": 6.47,
+          "fuel": 41.54,
+          "planMs": 195.5,
+          "distance": 807.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.83,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 128.3,
+          "speed": 6.42,
+          "fuel": 41.61,
+          "planMs": 242.1,
+          "distance": 774.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.90,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 133.4,
+          "speed": 6.36,
+          "fuel": 41.61,
+          "planMs": 264.6,
+          "distance": 741.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.90,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 138.4,
+          "speed": 6.31,
+          "fuel": 41.64,
+          "planMs": 219.1,
+          "distance": 709.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 143.5,
+          "speed": 6.25,
+          "fuel": 41.64,
+          "planMs": 218.5,
+          "distance": 678.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 148.7,
+          "speed": 6.19,
+          "fuel": 41.64,
+          "planMs": 290.1,
+          "distance": 646.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 153.7,
+          "speed": 6.14,
+          "fuel": 41.64,
+          "planMs": 253.2,
+          "distance": 614.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 158.8,
+          "speed": 6.09,
+          "fuel": 41.64,
+          "planMs": 256.0,
+          "distance": 583.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 163.9,
+          "speed": 6.03,
+          "fuel": 41.64,
+          "planMs": 230.0,
+          "distance": 553.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.93,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 168.9,
+          "speed": 5.96,
+          "fuel": 41.7,
+          "planMs": 208.5,
+          "distance": 522.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:1.99,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 174.0,
+          "speed": 5.91,
+          "fuel": 41.93,
+          "planMs": 191.2,
+          "distance": 492.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:2.23,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 179.1,
+          "speed": 5.86,
+          "fuel": 42.07,
+          "planMs": 179.9,
+          "distance": 463.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.84,LAUNCH:3.72,PHASE_TRANSITION:2.36,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 184.2,
+          "speed": 5.78,
+          "fuel": 43.07,
+          "planMs": 189.8,
+          "distance": 433.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:36.77,LAUNCH:3.72,PHASE_TRANSITION:2.36,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 189.2,
+          "speed": 5.74,
+          "fuel": 43.53,
+          "planMs": 171.5,
+          "distance": 404.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 194.3,
+          "speed": 5.69,
+          "fuel": 43.53,
+          "planMs": 179.1,
+          "distance": 375.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 199.4,
+          "speed": 5.64,
+          "fuel": 43.53,
+          "planMs": 161.4,
+          "distance": 347.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 204.5,
+          "speed": 5.58,
+          "fuel": 43.53,
+          "planMs": 183.3,
+          "distance": 318.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 209.6,
+          "speed": 5.53,
+          "fuel": 43.53,
+          "planMs": 171.1,
+          "distance": 290.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 214.7,
+          "speed": 5.48,
+          "fuel": 43.53,
+          "planMs": 161.8,
+          "distance": 262.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 219.8,
+          "speed": 5.43,
+          "fuel": 43.53,
+          "planMs": 138.4,
+          "distance": 235.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 224.9,
+          "speed": 5.38,
+          "fuel": 43.53,
+          "planMs": 177.2,
+          "distance": 208.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 230.0,
+          "speed": 5.33,
+          "fuel": 43.53,
+          "planMs": 186.6,
+          "distance": 182.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 235.1,
+          "speed": 5.28,
+          "fuel": 43.53,
+          "planMs": 228.4,
+          "distance": 155.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 240.3,
+          "speed": 5.23,
+          "fuel": 43.53,
+          "planMs": 257.3,
+          "distance": 130.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 245.3,
+          "speed": 5.18,
+          "fuel": 43.53,
+          "planMs": 219.6,
+          "distance": 106.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 250.6,
+          "speed": 5.13,
+          "fuel": 43.53,
+          "planMs": 359.3,
+          "distance": 82.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 255.6,
+          "speed": 5.08,
+          "fuel": 43.53,
+          "planMs": 258.4,
+          "distance": 63.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 260.8,
+          "speed": 5.03,
+          "fuel": 43.53,
+          "planMs": 302.8,
+          "distance": 49.6,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "COAST",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 265.8,
+          "speed": 1.97,
+          "fuel": 46.5,
+          "planMs": 234.5,
+          "distance": 57.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 270.9,
+          "speed": 1.76,
+          "fuel": 49.97,
+          "planMs": 230.4,
+          "distance": 65.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 276.0,
+          "speed": 1.67,
+          "fuel": 53.36,
+          "planMs": 290.4,
+          "distance": 71.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 281.0,
+          "speed": 1.7,
+          "fuel": 56.67,
+          "planMs": 183.6,
+          "distance": 76.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 286.1,
+          "speed": 1.87,
+          "fuel": 59.94,
+          "planMs": 192.5,
+          "distance": 82.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 291.3,
+          "speed": 2.16,
+          "fuel": 63.58,
+          "planMs": 273.6,
+          "distance": 88.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        },
+        {
+          "t": 296.3,
+          "speed": 2.51,
+          "fuel": 66.95,
+          "planMs": 157.0,
+          "distance": 94.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "POST_ENTRY_BRAKE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.20,LAUNCH:3.72,PHASE_TRANSITION:2.47,CRUISE/IMPULSE_COAST:0.15"
+        }
+      ]
+    },
+    {
+      "directory": "261117_194053_FINAL_SUBMISSION__6f9",
+      "official_alerts": [],
+      "telemetry": [
+        {
+          "t": 0.2,
+          "speed": 0.0,
+          "fuel": 0.0,
+          "planMs": 0.5,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "WAIT_RADAR",
+          "fuel_phases": ""
+        },
+        {
+          "t": 5.2,
+          "speed": 0.17,
+          "fuel": 1.52,
+          "planMs": 208.5,
+          "distance": 1305.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:1.41"
+        },
+        {
+          "t": 10.2,
+          "speed": 0.51,
+          "fuel": 3.63,
+          "planMs": 196.0,
+          "distance": 1304.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "LAUNCH",
+          "fuel_phases": "LAUNCH:3.52"
+        },
+        {
+          "t": 15.3,
+          "speed": 0.84,
+          "fuel": 5.79,
+          "planMs": 296.8,
+          "distance": 1301.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:4.37,PHASE_TRANSITION:0.74,CRUISE/IMPULSE_BURN:0.53"
+        },
+        {
+          "t": 20.5,
+          "speed": 0.97,
+          "fuel": 7.9,
+          "planMs": 309.1,
+          "distance": 1296.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "LAUNCH:4.37,CRUISE/IMPULSE_BURN:2.67,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 25.5,
+          "speed": 1.38,
+          "fuel": 10.25,
+          "planMs": 648.2,
+          "distance": 1290.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:4.88,LAUNCH:4.37,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 30.5,
+          "speed": 1.8,
+          "fuel": 12.07,
+          "planMs": 279.9,
+          "distance": 1282.8,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:6.79,LAUNCH:4.37,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 35.7,
+          "speed": 1.98,
+          "fuel": 14.24,
+          "planMs": 346.1,
+          "distance": 1272.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:8.97,LAUNCH:4.37,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 41.0,
+          "speed": 2.04,
+          "fuel": 16.43,
+          "planMs": 267.5,
+          "distance": 1262.5,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:11.20,LAUNCH:4.37,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 46.2,
+          "speed": 2.24,
+          "fuel": 18.84,
+          "planMs": 437.8,
+          "distance": 1251.9,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:13.50,LAUNCH:4.37,PHASE_TRANSITION:0.74"
+        },
+        {
+          "t": 51.5,
+          "speed": 2.46,
+          "fuel": 21.22,
+          "planMs": 385.3,
+          "distance": 1241.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "ESCAPE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:14.37,LAUNCH:4.37,CRUISE/ESCAPE:1.22,PHASE_TRANSITION:0.99"
+        },
+        {
+          "t": 56.7,
+          "speed": 2.44,
+          "fuel": 24.31,
+          "planMs": 363.8,
+          "distance": 1231.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:17.29,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 61.9,
+          "speed": 2.22,
+          "fuel": 26.88,
+          "planMs": 331.2,
+          "distance": 1221.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:19.80,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 67.0,
+          "speed": 1.85,
+          "fuel": 30.04,
+          "planMs": 304.8,
+          "distance": 1212.0,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:22.96,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 72.2,
+          "speed": 2.07,
+          "fuel": 32.51,
+          "planMs": 305.1,
+          "distance": 1202.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:25.51,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 77.5,
+          "speed": 2.52,
+          "fuel": 34.93,
+          "planMs": 390.0,
+          "distance": 1190.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:27.88,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 82.6,
+          "speed": 2.93,
+          "fuel": 36.82,
+          "planMs": 415.2,
+          "distance": 1176.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:29.77,LAUNCH:4.37,PHASE_TRANSITION:1.29,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 87.6,
+          "speed": 3.09,
+          "fuel": 39.52,
+          "planMs": 276.6,
+          "distance": 1161.4,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:31.33,LAUNCH:4.37,PHASE_TRANSITION:2.41,CRUISE/ESCAPE:1.22"
+        },
+        {
+          "t": 93.2,
+          "speed": 3.25,
+          "fuel": 42.49,
+          "planMs": 456.3,
+          "distance": 1143.2,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "ESCAPE",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:32.44,LAUNCH:4.37,PHASE_TRANSITION:3.60,CRUISE/ESCAPE:1.49,CRUISE/AVOID:0.24"
+        },
+        {
+          "t": 98.6,
+          "speed": 3.19,
+          "fuel": 45.07,
+          "planMs": 361.3,
+          "distance": 1126.7,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:33.42,LAUNCH:4.37,PHASE_TRANSITION:4.32,CRUISE/ESCAPE:1.49,CRUISE/AVOID:1.32"
+        },
+        {
+          "t": 103.7,
+          "speed": 3.62,
+          "fuel": 47.21,
+          "planMs": 385.6,
+          "distance": 1109.1,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:35.55,LAUNCH:4.37,PHASE_TRANSITION:4.32,CRUISE/ESCAPE:1.49,CRUISE/AVOID:1.32"
+        },
+        {
+          "t": 108.9,
+          "speed": 4.01,
+          "fuel": 49.46,
+          "planMs": 434.7,
+          "distance": 1089.3,
+          "source_sha256": "fcef22ba734733d334dec1da6b846c63ed269d7d026bcedf73de01f2723c6987",
+          "mode": "IMPULSE_BURN",
+          "fuel_phases": "CRUISE/IMPULSE_BURN:37.76,LAUNCH:4.37,PHASE_TRANSITION:4.32,CRUISE/ESCAPE:1.49,CRUISE/AVOID:1.32"
+        }
+      ]
+    }
+  ]
+}

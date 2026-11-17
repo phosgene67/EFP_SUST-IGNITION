@@ -1,0 +1,2418 @@
+{
+  "note": "Offline development results, not native scores. Only servo_final* identifies the selected build. Experimental orientation and pulse-calibration variants are not enabled in the live controller.",
+  "results": {
+    "servo_before_entry_view.json": {
+      "servo_final100.json": {
+        "controller_sha256": "356e54fa879f2282a791c0fb2c6378b7ac2dc0f5dcf07d6087ad4e12aee5936c",
+        "controller_file_sha256": "142428c75e761112ea172778c359d3d3fa9914fbc08d4447fe32315f1a98432b",
+        "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+        "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+        "debris_count": 500,
+        "seed": 100,
+        "control_hz": 60.0,
+        "camera_requests_hz": 4.0,
+        "benchmark_version": 6,
+        "plan_latency_s": 0.25,
+        "planning_mode": "async",
+        "fuel_plan_target_override": null,
+        "allocator_solver": "native",
+        "scene_variant": "final-scene",
+        "attitude_mode": "normal",
+        "fuel_audit_enabled": true,
+        "axis_thrust": false,
+        "ground_plane_m": 2.5,
+        "drift_bias_m_s2": [
+          0.0024,
+          -0.0008,
+          0.0016
+        ],
+        "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+        "result": {
+          "arrived": true,
+          "time_s": 284.02,
+          "attitude_policy": "FreeAttitude",
+          "fuel_kg": 38.81,
+          "distance_m": 118.02,
+          "peak_speed_m_s": 6.13,
+          "arrival_speed_m_s": 4.133726834972296,
+          "min_debris_gap_m": 14.54,
+          "min_proxy_hull_gap_m": 22.9,
+          "collision": false,
+          "post_arrival_test_s": 56.4,
+          "min_ground_centre_height_m": 2.5,
+          "final_speed_m_s": 0.05,
+          "learned_coast_drift_m_s2": [
+            0.0024000045471614453,
+            -0.00080000234801866,
+            0.0016000534197410416
+          ],
+          "phase": "HOLD",
+          "images": 1361,
+          "plan_p95_ms": 626.57,
+          "angular_active_fraction": 0.0,
+          "linear_active_fraction": 0.385,
+          "nose_error_p95_deg": 93.35,
+          "allocator_retries": 0,
+          "coasting_fraction": 0.534,
+          "terminal_fallback": false,
+          "first_5m_s_time": 69.6,
+          "cruise_mean_after_5m_s": 5.43,
+          "cruise_min_after_5m_s": 4.65,
+          "zero_damage_score_estimate": 40.51,
+          "fuel_audit": {
+            "segments": {
+              "START": {
+                "time_s": 0.25,
+                "fuel_kg": 0.0
+              },
+              "LAUNCH": {
+                "time_s": 8.5,
+                "fuel_kg": 3.5202
+              },
+              "CRUISE/ESCAPE": {
+                "time_s": 1.5,
+                "fuel_kg": 1.1965
+              },
+              "CRUISE/GUIDE": {
+                "time_s": 1.0,
+                "fuel_kg": 0.6638
+              },
+              "CRUISE/IMPULSE_BURN": {
+                "time_s": 91.0,
+                "fuel_kg": 33.4271
+              },
+              "CRUISE/IMPULSE_COAST": {
+                "time_s": 124.5,
+                "fuel_kg": 0.0
+              },
+              "CRUISE/COAST": {
+                "time_s": 4.0,
+                "fuel_kg": 0.0
+              },
+              "CAPTURE_PASS": {
+                "time_s": 53.2667,
+                "fuel_kg": 0.0
+              }
+            },
+            "command_regimes": {
+              "no_command": {
+                "time_s": 193.3167,
+                "fuel_kg": 0.0
+              },
+              "translation_only": {
+                "time_s": 90.7,
+                "fuel_kg": 38.8076
+              }
+            },
+            "counterfactual_same_tick_costs": {
+              "translation_only_kg": 38.8076,
+              "attitude_only_kg": 0.0
+            },
+            "post_arrival_fuel_kg": 17.1673,
+            "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+          }
+        }
+      },
+      "servo_final101.json": {
+        "controller_sha256": "356e54fa879f2282a791c0fb2c6378b7ac2dc0f5dcf07d6087ad4e12aee5936c",
+        "controller_file_sha256": "142428c75e761112ea172778c359d3d3fa9914fbc08d4447fe32315f1a98432b",
+        "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+        "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+        "debris_count": 500,
+        "seed": 101,
+        "control_hz": 60.0,
+        "camera_requests_hz": 4.0,
+        "benchmark_version": 6,
+        "plan_latency_s": 0.25,
+        "planning_mode": "async",
+        "fuel_plan_target_override": null,
+        "allocator_solver": "highs",
+        "scene_variant": "final-scene",
+        "attitude_mode": "normal",
+        "fuel_audit_enabled": false,
+        "axis_thrust": false,
+        "ground_plane_m": 2.5,
+        "drift_bias_m_s2": [
+          0.0024,
+          -0.0008,
+          0.0016
+        ],
+        "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+        "result": {
+          "arrived": true,
+          "time_s": 322.77,
+          "attitude_policy": "FreeAttitude",
+          "fuel_kg": 48.83,
+          "distance_m": 47.73,
+          "peak_speed_m_s": 6.04,
+          "arrival_speed_m_s": 1.019940524363916,
+          "min_debris_gap_m": 12.98,
+          "min_proxy_hull_gap_m": 23.84,
+          "collision": false,
+          "post_arrival_test_s": 30.0,
+          "min_ground_centre_height_m": 2.5,
+          "final_speed_m_s": 0.013,
+          "learned_coast_drift_m_s2": [
+            0.002400000787923447,
+            -0.000800000089949729,
+            0.0016000067687468207
+          ],
+          "phase": "HOLD",
+          "images": 1410,
+          "plan_p95_ms": 623.07,
+          "angular_active_fraction": 0.0,
+          "linear_active_fraction": 0.355,
+          "nose_error_p95_deg": 92.77,
+          "allocator_retries": 0,
+          "coasting_fraction": 0.496,
+          "terminal_fallback": false,
+          "first_5m_s_time": 69.6,
+          "cruise_mean_after_5m_s": 5.23,
+          "cruise_min_after_5m_s": 4.38,
+          "zero_damage_score_estimate": 22.07
+        }
+      },
+      "servo_final102.json": {
+        "controller_sha256": "356e54fa879f2282a791c0fb2c6378b7ac2dc0f5dcf07d6087ad4e12aee5936c",
+        "controller_file_sha256": "142428c75e761112ea172778c359d3d3fa9914fbc08d4447fe32315f1a98432b",
+        "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+        "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+        "debris_count": 500,
+        "seed": 102,
+        "control_hz": 60.0,
+        "camera_requests_hz": 4.0,
+        "benchmark_version": 6,
+        "plan_latency_s": 0.25,
+        "planning_mode": "async",
+        "fuel_plan_target_override": null,
+        "allocator_solver": "highs",
+        "scene_variant": "final-scene",
+        "attitude_mode": "normal",
+        "fuel_audit_enabled": false,
+        "axis_thrust": false,
+        "ground_plane_m": 2.5,
+        "drift_bias_m_s2": [
+          0.0024,
+          -0.0008,
+          0.0016
+        ],
+        "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+        "result": {
+          "arrived": true,
+          "time_s": 295.18,
+          "attitude_policy": "FreeAttitude",
+          "fuel_kg": 41.28,
+          "distance_m": 89.11,
+          "peak_speed_m_s": 6.04,
+          "arrival_speed_m_s": 3.4728793193171787,
+          "min_debris_gap_m": 11.67,
+          "min_proxy_hull_gap_m": 20.81,
+          "collision": false,
+          "post_arrival_test_s": 48.4,
+          "min_ground_centre_height_m": 2.5,
+          "final_speed_m_s": 0.049,
+          "learned_coast_drift_m_s2": [
+            0.0024000013269352676,
+            -0.0008000017020138898,
+            0.0016000451036526084
+          ],
+          "phase": "HOLD",
+          "images": 1374,
+          "plan_p95_ms": 642.04,
+          "angular_active_fraction": 0.0,
+          "linear_active_fraction": 0.377,
+          "nose_error_p95_deg": 98.47,
+          "allocator_retries": 0,
+          "coasting_fraction": 0.483,
+          "terminal_fallback": false,
+          "first_5m_s_time": 70.3,
+          "cruise_mean_after_5m_s": 5.26,
+          "cruise_min_after_5m_s": 4.43,
+          "zero_damage_score_estimate": 35.61
+        }
+      },
+      "servo_final103.json": {
+        "controller_sha256": "356e54fa879f2282a791c0fb2c6378b7ac2dc0f5dcf07d6087ad4e12aee5936c",
+        "controller_file_sha256": "142428c75e761112ea172778c359d3d3fa9914fbc08d4447fe32315f1a98432b",
+        "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+        "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+        "debris_count": 500,
+        "seed": 103,
+        "control_hz": 60.0,
+        "camera_requests_hz": 4.0,
+        "benchmark_version": 6,
+        "plan_latency_s": 0.25,
+        "planning_mode": "async",
+        "fuel_plan_target_override": null,
+        "allocator_solver": "highs",
+        "scene_variant": "final-scene",
+        "attitude_mode": "normal",
+        "fuel_audit_enabled": false,
+        "axis_thrust": false,
+        "ground_plane_m": 2.5,
+        "drift_bias_m_s2": [
+          0.0024,
+          -0.0008,
+          0.0016
+        ],
+        "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+        "result": {
+          "arrived": true,
+          "time_s": 283.88,
+          "attitude_policy": "FreeAttitude",
+          "fuel_kg": 38.9,
+          "distance_m": 118.53,
+          "peak_speed_m_s": 6.16,
+          "arrival_speed_m_s": 4.1509869404504105,
+          "min_debris_gap_m": 11.87,
+          "min_proxy_hull_gap_m": 22.77,
+          "collision": false,
+          "post_arrival_test_s": 56.6,
+          "min_ground_centre_height_m": 2.5,
+          "final_speed_m_s": 0.05,
+          "learned_coast_drift_m_s2": [
+            0.002400004592162974,
+            -0.00080000246837384,
+            0.0016000538577393816
+          ],
+          "phase": "HOLD",
+          "images": 1361,
+          "plan_p95_ms": 636.16,
+          "angular_active_fraction": 0.0,
+          "linear_active_fraction": 0.384,
+          "nose_error_p95_deg": 93.53,
+          "allocator_retries": 0,
+          "coasting_fraction": 0.523,
+          "terminal_fallback": false,
+          "first_5m_s_time": 69.0,
+          "cruise_mean_after_5m_s": 5.45,
+          "cruise_min_after_5m_s": 4.67,
+          "zero_damage_score_estimate": 40.41
+        }
+      }
+    },
+    "servo_budget_trial100.json": {
+      "controller_sha256": "0765403b36341e156d2086ac4dab44bc400da8037e9962385c9c93b09a3a0a38",
+      "controller_file_sha256": "6a2f484659e2d447c93ee4ef09661d456cc3dd232158ab1f4c64abbf2c417d58",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 295.53,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 38.98,
+        "distance_m": 99.69,
+        "peak_speed_m_s": 5.98,
+        "arrival_speed_m_s": 3.7113651085817905,
+        "min_debris_gap_m": 12.69,
+        "min_proxy_hull_gap_m": 23.39,
+        "collision": false,
+        "post_arrival_test_s": 51.5,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.05,
+        "learned_coast_drift_m_s2": [
+          0.0024000035861295507,
+          -0.0008000023286346793,
+          0.0016000479724737745
+        ],
+        "phase": "HOLD",
+        "images": 1387,
+        "plan_p95_ms": 473.11,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.365,
+        "nose_error_p95_deg": 96.34,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.576,
+        "terminal_fallback": false,
+        "first_5m_s_time": 72.7,
+        "cruise_mean_after_5m_s": 5.2,
+        "cruise_min_after_5m_s": 4.37,
+        "zero_damage_score_estimate": 38.63
+      }
+    },
+    "servo_budget_trial101.json": {
+      "controller_sha256": "0765403b36341e156d2086ac4dab44bc400da8037e9962385c9c93b09a3a0a38",
+      "controller_file_sha256": "6a2f484659e2d447c93ee4ef09661d456cc3dd232158ab1f4c64abbf2c417d58",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 284.38,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.21,
+        "distance_m": 90.15,
+        "peak_speed_m_s": 6.24,
+        "arrival_speed_m_s": 3.517264531596629,
+        "min_debris_gap_m": 14.67,
+        "min_proxy_hull_gap_m": 23.01,
+        "collision": false,
+        "post_arrival_test_s": 49.1,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000046785941716,
+          -0.0008000007886202057,
+          0.0016000497600372622
+        ],
+        "phase": "HOLD",
+        "images": 1333,
+        "plan_p95_ms": 474.46,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.395,
+        "nose_error_p95_deg": 92.8,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.493,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.4,
+        "cruise_mean_after_5m_s": 5.46,
+        "cruise_min_after_5m_s": 4.67,
+        "zero_damage_score_estimate": 35.92
+      }
+    },
+    "servo_counter_trial100.json": {
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "controller_file_sha256": "f657033091b3e777428b59eecb867627b6ce52380a4bee3de80d60c9a956841a",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 297.25,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 37.85,
+        "distance_m": 100.16,
+        "peak_speed_m_s": 5.98,
+        "arrival_speed_m_s": 3.7320167880362036,
+        "min_debris_gap_m": 12.69,
+        "min_proxy_hull_gap_m": 23.38,
+        "collision": false,
+        "post_arrival_test_s": 51.5,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000043329019767,
+          -0.000800002058296782,
+          0.001600048189624752
+        ],
+        "phase": "HOLD",
+        "images": 1394,
+        "plan_p95_ms": 590.86,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.357,
+        "nose_error_p95_deg": 95.02,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.536,
+        "terminal_fallback": false,
+        "first_5m_s_time": 72.7,
+        "cruise_mean_after_5m_s": 5.16,
+        "cruise_min_after_5m_s": 4.3,
+        "zero_damage_score_estimate": 39.9
+      }
+    },
+    "servo_counter_trial101.json": {
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "controller_file_sha256": "f657033091b3e777428b59eecb867627b6ce52380a4bee3de80d60c9a956841a",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 277.3,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.58,
+        "distance_m": 102.2,
+        "peak_speed_m_s": 6.29,
+        "arrival_speed_m_s": 3.80707094300176,
+        "min_debris_gap_m": 14.67,
+        "min_proxy_hull_gap_m": 22.89,
+        "collision": false,
+        "post_arrival_test_s": 52.6,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000048733091484,
+          -0.0008000008524908374,
+          0.0016000531235309111
+        ],
+        "phase": "HOLD",
+        "images": 1319,
+        "plan_p95_ms": 600.32,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.41,
+        "nose_error_p95_deg": 92.83,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.483,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.4,
+        "cruise_mean_after_5m_s": 5.62,
+        "cruise_min_after_5m_s": 4.88,
+        "zero_damage_score_estimate": 36.5
+      }
+    },
+    "servo_fusion_trial100.json": {
+      "controller_sha256": "0d42377215e00dd933963faa56e72e0881581a6c4ee1e6eed09deeb3ed2164fa",
+      "controller_file_sha256": "eb01d1805059fa524768c4aa05413710a931285a63452c05f0fbd3de2d5d28f1",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 288.57,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 38.71,
+        "distance_m": 112.36,
+        "peak_speed_m_s": 6.06,
+        "arrival_speed_m_s": 3.980927350364452,
+        "min_debris_gap_m": 12.43,
+        "min_proxy_hull_gap_m": 23.59,
+        "collision": false,
+        "post_arrival_test_s": 54.4,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.002400004536627088,
+          -0.0008000016228712143,
+          0.0016000514324501702
+        ],
+        "phase": "HOLD",
+        "images": 1371,
+        "plan_p95_ms": 531.46,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.374,
+        "nose_error_p95_deg": 93.71,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.515,
+        "terminal_fallback": false,
+        "first_5m_s_time": 72.0,
+        "cruise_mean_after_5m_s": 5.33,
+        "cruise_min_after_5m_s": 4.52,
+        "zero_damage_score_estimate": 39.97
+      }
+    },
+    "servo_fusion_trial101.json": {
+      "controller_sha256": "0d42377215e00dd933963faa56e72e0881581a6c4ee1e6eed09deeb3ed2164fa",
+      "controller_file_sha256": "eb01d1805059fa524768c4aa05413710a931285a63452c05f0fbd3de2d5d28f1",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 277.4,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 39.34,
+        "distance_m": 131.19,
+        "peak_speed_m_s": 6.29,
+        "arrival_speed_m_s": 4.317914714414068,
+        "min_debris_gap_m": 14.67,
+        "min_proxy_hull_gap_m": 24.2,
+        "collision": false,
+        "post_arrival_test_s": 58.7,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.002400005143980757,
+          -0.000800001968357207,
+          0.0016000565515958145
+        ],
+        "phase": "HOLD",
+        "images": 1344,
+        "plan_p95_ms": 533.61,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.397,
+        "nose_error_p95_deg": 92.87,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.513,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.4,
+        "cruise_mean_after_5m_s": 5.61,
+        "cruise_min_after_5m_s": 4.88,
+        "zero_damage_score_estimate": 40.8
+      }
+    },
+    "servo_ground_trial100.json": {
+      "controller_sha256": "79c8fad8a3f074f0c32f830e9f2eeb101aece05d08be5c4291512999f405c9c0",
+      "controller_file_sha256": "89fceb50918d15b2ff1ec03cccfbc989d54845c2e9487cf5d097ddc3c55d9182",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 258.08,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 41.58,
+        "distance_m": 180.93,
+        "peak_speed_m_s": 6.74,
+        "arrival_speed_m_s": 5.1138534996583145,
+        "min_debris_gap_m": 13.63,
+        "min_proxy_hull_gap_m": 24.85,
+        "collision": false,
+        "post_arrival_test_s": 68.6,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000047131484243,
+          -0.0008000025804960024,
+          0.001600066067569237
+        ],
+        "phase": "HOLD",
+        "images": 1306,
+        "plan_p95_ms": 555.77,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.449,
+        "nose_error_p95_deg": 95.75,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.443,
+        "terminal_fallback": false,
+        "first_5m_s_time": 74.3,
+        "cruise_mean_after_5m_s": 6.13,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 41.05
+      }
+    },
+    "servo_ground_trial101.json": {
+      "controller_sha256": "79c8fad8a3f074f0c32f830e9f2eeb101aece05d08be5c4291512999f405c9c0",
+      "controller_file_sha256": "89fceb50918d15b2ff1ec03cccfbc989d54845c2e9487cf5d097ddc3c55d9182",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 260.47,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 44.12,
+        "distance_m": 173.33,
+        "peak_speed_m_s": 6.71,
+        "arrival_speed_m_s": 5.026279861297447,
+        "min_debris_gap_m": 13.46,
+        "min_proxy_hull_gap_m": 24.26,
+        "collision": false,
+        "post_arrival_test_s": 67.7,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000030106026697,
+          -0.0008000036002478938,
+          0.0016000648711295704
+        ],
+        "phase": "HOLD",
+        "images": 1312,
+        "plan_p95_ms": 548.24,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.456,
+        "nose_error_p95_deg": 96.7,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.29,
+        "terminal_fallback": false,
+        "first_5m_s_time": 70.2,
+        "cruise_mean_after_5m_s": 6.04,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 37.24
+      }
+    },
+    "servo_latency_async100.json": {
+      "controller_sha256": "fe91a11ee2d048cd1e0f088bf7ecac65c7fb18cd71c5578bcc87dc402e8bc292",
+      "controller_file_sha256": "a12bceb004e9e8fd3746052da75d50b1d6c28972ac492dfcc6bb0c9932261c4e",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 255.53,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 44.62,
+        "distance_m": 161.6,
+        "peak_speed_m_s": 6.68,
+        "arrival_speed_m_s": 4.9751947722652545,
+        "min_debris_gap_m": 15.35,
+        "min_proxy_hull_gap_m": 18.98,
+        "collision": false,
+        "post_arrival_test_s": 67.1,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          2.690082856379384e-09,
+          9.669147931041437e-11,
+          6.785884140598703e-08
+        ],
+        "phase": "HOLD",
+        "images": 1290,
+        "plan_p95_ms": 523.91,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.455,
+        "nose_error_p95_deg": 96.31,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.473,
+        "terminal_fallback": false,
+        "first_5m_s_time": 70.5,
+        "cruise_mean_after_5m_s": 6.13,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 37.46
+      }
+    },
+    "servo_latency_blocking100.json": {
+      "controller_sha256": "fe91a11ee2d048cd1e0f088bf7ecac65c7fb18cd71c5578bcc87dc402e8bc292",
+      "controller_file_sha256": "a12bceb004e9e8fd3746052da75d50b1d6c28972ac492dfcc6bb0c9932261c4e",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "blocking",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 273.42,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.2,
+        "distance_m": 139.74,
+        "peak_speed_m_s": 6.22,
+        "arrival_speed_m_s": 4.564816187942277,
+        "min_debris_gap_m": 13.91,
+        "min_proxy_hull_gap_m": 21.77,
+        "collision": false,
+        "post_arrival_test_s": 61.8,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.05,
+        "learned_coast_drift_m_s2": [
+          3.2375563808747494e-09,
+          -3.4099769348874327e-09,
+          5.948104234361336e-08
+        ],
+        "phase": "HOLD",
+        "images": 1340,
+        "plan_p95_ms": 519.86,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.419,
+        "nose_error_p95_deg": 96.29,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.492,
+        "terminal_fallback": false,
+        "first_5m_s_time": 70.0,
+        "cruise_mean_after_5m_s": 5.63,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 37.62
+      }
+    },
+    "servo_low_speed_turn_trial100.json": {
+      "seed": 100,
+      "experimental": true,
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "extra_source_sha256": "47a528202b34fea116efeec88f97e3bda9e06099473c0d73c82036dfe18c9b56",
+      "description": "4m single turn +X trim, low-speed (<=2m/s) turn commitment; hard clearance resumes above 2m/s; fuel target 34, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 364.53,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 44.66,
+        "distance_m": 53.34,
+        "peak_speed_m_s": 5.46,
+        "arrival_speed_m_s": 2.1004180941485657,
+        "min_debris_gap_m": 13.7,
+        "min_proxy_hull_gap_m": 23.35,
+        "collision": false,
+        "post_arrival_test_s": 33.0,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000019384106935,
+          -0.0008000021740625098,
+          0.001600026596938921
+        ],
+        "phase": "HOLD",
+        "images": 1589,
+        "plan_p95_ms": 554.0,
+        "angular_active_fraction": 0.087,
+        "linear_active_fraction": 0.226,
+        "nose_error_p95_deg": 9.83,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.695,
+        "terminal_fallback": false,
+        "first_5m_s_time": 52.5,
+        "cruise_mean_after_5m_s": 4.24,
+        "cruise_min_after_5m_s": 3.07,
+        "zero_damage_score_estimate": 23.37,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 2.0,
+              "fuel_kg": 1.5558
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 0.5,
+              "fuel_kg": 0.3813
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 12.0,
+              "fuel_kg": 2.3316
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 63.0,
+              "fuel_kg": 28.2088
+            },
+            "CRUISE/AVOID": {
+              "time_s": 11.5,
+              "fuel_kg": 7.5157
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 170.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/COAST": {
+              "time_s": 6.5,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 88.7833,
+              "fuel_kg": 0.6943
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.4516
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 283.9333,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 46.0333,
+              "fuel_kg": 23.5476
+            },
+            "attitude_only": {
+              "time_s": 12.0,
+              "fuel_kg": 2.3316
+            },
+            "combined": {
+              "time_s": 22.5667,
+              "fuel_kg": 18.78
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 40.5746,
+            "attitude_only_kg": 2.3416
+          },
+          "post_arrival_fuel_kg": 10.0351,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "servo_low_speed_turn_trial101.json": {
+      "seed": 101,
+      "experimental": true,
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "extra_source_sha256": "47a528202b34fea116efeec88f97e3bda9e06099473c0d73c82036dfe18c9b56",
+      "description": "4m single turn +X trim, low-speed (<=2m/s) turn commitment; hard clearance resumes above 2m/s; fuel target 34, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 360.42,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 42.57,
+        "distance_m": 57.28,
+        "peak_speed_m_s": 5.5,
+        "arrival_speed_m_s": 2.164010175986169,
+        "min_debris_gap_m": 13.22,
+        "min_proxy_hull_gap_m": 24.64,
+        "collision": false,
+        "post_arrival_test_s": 34.0,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.048,
+        "learned_coast_drift_m_s2": [
+          0.002400002432295076,
+          -0.000800001447977668,
+          0.0016000225681647013
+        ],
+        "phase": "HOLD",
+        "images": 1577,
+        "plan_p95_ms": 558.04,
+        "angular_active_fraction": 0.089,
+        "linear_active_fraction": 0.21,
+        "nose_error_p95_deg": 10.46,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.689,
+        "terminal_fallback": false,
+        "first_5m_s_time": 53.0,
+        "cruise_mean_after_5m_s": 4.3,
+        "cruise_min_after_5m_s": 3.14,
+        "zero_damage_score_estimate": 26.53,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 3.0,
+              "fuel_kg": 2.0106
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 0.5,
+              "fuel_kg": 0.3813
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 12.0,
+              "fuel_kg": 2.3316
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 64.5,
+              "fuel_kg": 26.867
+            },
+            "CRUISE/AVOID": {
+              "time_s": 11.0,
+              "fuel_kg": 6.89
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 165.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/COAST": {
+              "time_s": 6.5,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 87.6667,
+              "fuel_kg": 0.0
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.5711
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 284.1,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 41.15,
+              "fuel_kg": 20.9608
+            },
+            "attitude_only": {
+              "time_s": 12.0,
+              "fuel_kg": 2.3316
+            },
+            "combined": {
+              "time_s": 23.1667,
+              "fuel_kg": 19.2793
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 38.4405,
+            "attitude_only_kg": 2.3419
+          },
+          "post_arrival_fuel_kg": 10.5724,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "servo_no_budget_trial100.json": {
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "controller_file_sha256": "f657033091b3e777428b59eecb867627b6ce52380a4bee3de80d60c9a956841a",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": 100000.0,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 262.9,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 40.9,
+        "distance_m": 167.97,
+        "peak_speed_m_s": 6.61,
+        "arrival_speed_m_s": 4.913625025247794,
+        "min_debris_gap_m": 13.63,
+        "min_proxy_hull_gap_m": 24.84,
+        "collision": false,
+        "post_arrival_test_s": 66.1,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.002400004595195865,
+          -0.0008000025273122227,
+          0.0016000635724210174
+        ],
+        "phase": "HOLD",
+        "images": 1315,
+        "plan_p95_ms": 592.92,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.434,
+        "nose_error_p95_deg": 95.74,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.455,
+        "terminal_fallback": false,
+        "first_5m_s_time": 74.3,
+        "cruise_mean_after_5m_s": 5.99,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 41.11
+      }
+    },
+    "servo_probe_drift_trial100.json": {
+      "controller_sha256": "01aefc8b50ab8984f64da3d146e11f121ca6c74420d32f9a8512e732bc995f05",
+      "controller_file_sha256": "f108e2c90f7340627a7db1c04a11172c244d1f2f8659b44ccab7a2835a48f0f4",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 258.08,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 41.58,
+        "distance_m": 180.93,
+        "peak_speed_m_s": 6.74,
+        "arrival_speed_m_s": 5.1138534996583145,
+        "min_debris_gap_m": 13.63,
+        "min_proxy_hull_gap_m": 24.85,
+        "collision": false,
+        "post_arrival_test_s": 68.6,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000047131484243,
+          -0.0008000025804960024,
+          0.001600066067569237
+        ],
+        "phase": "HOLD",
+        "images": 1306,
+        "plan_p95_ms": 566.0,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.449,
+        "nose_error_p95_deg": 95.75,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.443,
+        "terminal_fallback": false,
+        "first_5m_s_time": 74.3,
+        "cruise_mean_after_5m_s": 6.13,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 41.05
+      }
+    },
+    "servo_pulse_calibration.json": {
+      "seed": 718,
+      "samples": 2000,
+      "jet_config_sha256": "da8c76cd556e828d568eec83d39da40eab7b6b94307a9b524fc22d75046d6de3",
+      "solver": "revised simplex",
+      "modes": [
+        {
+          "linear": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "angular": [
+            -0.0052432708713237245,
+            -0.004127899097547923,
+            0.0005970313979074023
+          ],
+          "actual": [
+            2.117582368135751e-22,
+            2.8587361969832636e-21,
+            0.13610551928434883
+          ],
+          "angular_actual": [
+            -0.0014272762093800323,
+            -0.0011236597004503114,
+            0.0001625185368824961
+          ],
+          "fuel_rate": 0.5883821218491098,
+          "weight": 0.0008089375976799934
+        },
+        {
+          "linear": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "angular": [
+            -8.126089515809646e-06,
+            5.625822665207286e-06,
+            4.706105616122889e-06
+          ],
+          "actual": [
+            -8.470329472543003e-22,
+            -3.705769144237564e-22,
+            0.13468004152339016
+          ],
+          "angular_actual": [
+            -2.1888441468151387e-06,
+            1.5153720603205967e-06,
+            1.267636999584482e-06
+          ],
+          "fuel_rate": 0.5821363567975001,
+          "weight": 0.994437832269116
+        },
+        {
+          "linear": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "angular": [
+            0.004703797285823152,
+            0.00432904597344362,
+            -0.002406304788505271
+          ],
+          "actual": [
+            1.5881867761018131e-22,
+            -6.384510839929289e-20,
+            0.09427432844814276
+          ],
+          "angular_actual": [
+            0.0008868946605543604,
+            0.0008162358039350628,
+            -0.0004537055359557698
+          ],
+          "fuel_rate": 0.4100626997574331,
+          "weight": 0.0034247067459065145
+        },
+        {
+          "linear": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "angular": [
+            0.0008366611461375769,
+            -0.009660249007413593,
+            0.00046048784264470535
+          ],
+          "actual": [
+            5.1033735072071595e-20,
+            5.4527745979495584e-21,
+            0.1322025957770055
+          ],
+          "angular_actual": [
+            0.00022121755061031007,
+            -0.0025542199892646285,
+            0.00012175537624277161
+          ],
+          "fuel_rate": 0.5715524082666333,
+          "weight": 0.001328523387297622
+        }
+      ],
+      "mean_acceleration": 0.13453952558318888,
+      "mean_fuel_rate": 0.5815380463944655,
+      "kg_per_dv": 4.322432711678377,
+      "mean_angular_accel": [
+        -1.0058516248644817e-21,
+        -8.470329472543003e-22,
+        1.852884572118782e-22
+      ]
+    },
+    "servo_reference_drift100.json": {
+      "controller_sha256": "39e2cd533df548579862dfac4fab22e6025585957580e4bc42a5c2a37485f3d1",
+      "controller_file_sha256": null,
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 262.03,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.56,
+        "distance_m": 157.76,
+        "peak_speed_m_s": 6.59,
+        "arrival_speed_m_s": 4.835235331835369,
+        "min_debris_gap_m": 13.63,
+        "min_proxy_hull_gap_m": 22.11,
+        "collision": false,
+        "post_arrival_test_s": 65.2,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000029269441196,
+          -0.0008000015336260026,
+          0.0016000629511387873
+        ],
+        "phase": "HOLD",
+        "images": 1308,
+        "plan_p95_ms": 530.24,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.447,
+        "nose_error_p95_deg": 96.51,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.484,
+        "terminal_fallback": false,
+        "first_5m_s_time": 74.3,
+        "cruise_mean_after_5m_s": 5.99,
+        "cruise_min_after_5m_s": 5.0,
+        "zero_damage_score_estimate": 39.05
+      }
+    },
+    "servo_reserve34_trial100.json": {
+      "controller_sha256": "efadf4f5920f5b400c19bfcb0b737105f1d2b8005a7e82e8d09133a4225509d2",
+      "controller_file_sha256": "2eb9aa830d4fe8b2ffe0bfac55c2a2ac7ccb0d17fdc4f88e77be6983a9d1a0a9",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": 34.0,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 302.9,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 37.67,
+        "distance_m": 93.06,
+        "peak_speed_m_s": 5.84,
+        "arrival_speed_m_s": 3.558105368414729,
+        "min_debris_gap_m": 11.66,
+        "min_proxy_hull_gap_m": 23.33,
+        "collision": false,
+        "post_arrival_test_s": 49.6,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.002400001959215494,
+          -0.0008000017653681823,
+          0.0016000460775978057
+        ],
+        "phase": "HOLD",
+        "images": 1409,
+        "plan_p95_ms": 460.11,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.345,
+        "nose_error_p95_deg": 97.08,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.538,
+        "terminal_fallback": false,
+        "first_5m_s_time": 70.8,
+        "cruise_mean_after_5m_s": 5.06,
+        "cruise_min_after_5m_s": 4.16,
+        "zero_damage_score_estimate": 39.39
+      }
+    },
+    "servo_reserve34_trial101.json": {
+      "controller_sha256": "efadf4f5920f5b400c19bfcb0b737105f1d2b8005a7e82e8d09133a4225509d2",
+      "controller_file_sha256": "2eb9aa830d4fe8b2ffe0bfac55c2a2ac7ccb0d17fdc4f88e77be6983a9d1a0a9",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": 34.0,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 302.0,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 38.7,
+        "distance_m": 94.23,
+        "peak_speed_m_s": 5.96,
+        "arrival_speed_m_s": 3.612335785010576,
+        "min_debris_gap_m": 12.77,
+        "min_proxy_hull_gap_m": 23.08,
+        "collision": false,
+        "post_arrival_test_s": 50.2,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.05,
+        "learned_coast_drift_m_s2": [
+          0.0024000039903260073,
+          -0.0008000026604070326,
+          0.0016000466945309216
+        ],
+        "phase": "HOLD",
+        "images": 1408,
+        "plan_p95_ms": 447.6,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.353,
+        "nose_error_p95_deg": 93.75,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.529,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.3,
+        "cruise_mean_after_5m_s": 5.08,
+        "cruise_min_after_5m_s": 4.2,
+        "zero_damage_score_estimate": 38.14
+      }
+    },
+    "servo_short_turn_trial100.json": {
+      "seed": 100,
+      "experimental": true,
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "extra_source_sha256": "32fb1a377c4a95724d4c06477cd99c9fcbbca0aade4a8a0f2140cd73389f4d67",
+      "description": "4m single turn +X trim, 3s receding coast clearance, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 498.78,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 72.74,
+        "distance_m": 49.97,
+        "peak_speed_m_s": 4.91,
+        "arrival_speed_m_s": 0.112515415253437,
+        "min_debris_gap_m": 12.06,
+        "min_proxy_hull_gap_m": 18.34,
+        "collision": false,
+        "post_arrival_test_s": 1.2,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.098,
+        "learned_coast_drift_m_s2": [
+          0.002399999996030738,
+          -0.0008000006029022076,
+          0.0015999997302302913
+        ],
+        "phase": "POST_ENTRY_BRAKE",
+        "images": 1999,
+        "plan_p95_ms": 530.5,
+        "angular_active_fraction": 0.042,
+        "linear_active_fraction": 0.305,
+        "nose_error_p95_deg": 66.2,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.308,
+        "terminal_fallback": false,
+        "first_5m_s_time": null,
+        "cruise_mean_after_5m_s": null,
+        "cruise_min_after_5m_s": null,
+        "zero_damage_score_estimate": -22.93,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 1.5,
+              "fuel_kg": 1.1965
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.7514
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 139.5,
+              "fuel_kg": 49.3213
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 146.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/AVOID": {
+              "time_s": 1.5,
+              "fuel_kg": 0.897
+            },
+            "CRUISE/COAST": {
+              "time_s": 7.0,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 177.5333,
+              "fuel_kg": 9.1674
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 15.0,
+              "fuel_kg": 7.6329
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 346.3833,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 131.2833,
+              "fuel_kg": 63.0926
+            },
+            "attitude_only": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "combined": {
+              "time_s": 20.6167,
+              "fuel_kg": 9.3941
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 76.6696,
+            "attitude_only_kg": 10.2229
+          },
+          "post_arrival_fuel_kg": 0.5047,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "servo_short_turn_trial101.json": {
+      "seed": 101,
+      "experimental": true,
+      "controller_sha256": "66f8cb360d2eb065975352c3e84bf4a94dc9530a2e5aa2472e515f37cf4af58c",
+      "extra_source_sha256": "32fb1a377c4a95724d4c06477cd99c9fcbbca0aade4a8a0f2140cd73389f4d67",
+      "description": "4m single turn +X trim, 3s receding coast clearance, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 406.55,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 62.71,
+        "distance_m": 48.5,
+        "peak_speed_m_s": 4.69,
+        "arrival_speed_m_s": 1.4927523148014088,
+        "min_debris_gap_m": 13.17,
+        "min_proxy_hull_gap_m": 23.85,
+        "collision": false,
+        "post_arrival_test_s": 30.0,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.007,
+        "learned_coast_drift_m_s2": [
+          0.002400001717506156,
+          -0.0008000006192955022,
+          0.001600015262403798
+        ],
+        "phase": "HOLD",
+        "images": 1745,
+        "plan_p95_ms": 535.2,
+        "angular_active_fraction": 0.043,
+        "linear_active_fraction": 0.332,
+        "nose_error_p95_deg": 66.48,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.452,
+        "terminal_fallback": false,
+        "first_5m_s_time": null,
+        "cruise_mean_after_5m_s": null,
+        "cruise_min_after_5m_s": null,
+        "zero_damage_score_estimate": -4.1,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 1.5,
+              "fuel_kg": 1.1965
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.7514
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 141.5,
+              "fuel_kg": 55.5257
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 138.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/COAST": {
+              "time_s": 7.5,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 105.3,
+              "fuel_kg": 0.1172
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 2.0,
+              "fuel_kg": 1.3447
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 276.25,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 111.3333,
+              "fuel_kg": 53.086
+            },
+            "attitude_only": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "combined": {
+              "time_s": 18.4667,
+              "fuel_kg": 9.3697
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 63.6175,
+            "attitude_only_kg": 9.1836
+          },
+          "post_arrival_fuel_kg": 9.0712,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "servo_subset_calibration.json": [
+      {
+        "axis": 0,
+        "sign": 1.0,
+        "candidates": 4,
+        "average_acceleration": 0.1745625235478356,
+        "modes": [
+          {
+            "command": [
+              0.49,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              0.1745625235478356,
+              -1.4903915283853838e-17,
+              8.973980161433897e-18,
+              4.553649124439119e-18,
+              -1.3877787807814457e-17,
+              -1.6479873021779667e-17
+            ],
+            "fuel_rate": 0.7545171451350299,
+            "weight": 1.0
+          }
+        ]
+      },
+      {
+        "axis": 0,
+        "sign": -1.0,
+        "candidates": 4,
+        "average_acceleration": 0.09655956570799146,
+        "modes": [
+          {
+            "command": [
+              -0.49,
+              -0.0,
+              -0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              -0.09655956570799146,
+              -8.470329472543003e-22,
+              1.834769821978747e-18,
+              -4.7704895589362195e-18,
+              5.204170427930421e-18,
+              2.7755575615628914e-17
+            ],
+            "fuel_rate": 0.4173660729699554,
+            "weight": 1.0
+          }
+        ]
+      },
+      {
+        "axis": 1,
+        "sign": 1.0,
+        "candidates": 4,
+        "average_acceleration": 0.1431809557641369,
+        "modes": [
+          {
+            "command": [
+              0.0,
+              0.49,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              -1.5881867761018131e-22,
+              0.1431809557641369,
+              1.5797799741003142e-17,
+              1.1199985789298592e-17,
+              8.964023949339152e-18,
+              1.9833951439339286e-17
+            ],
+            "fuel_rate": 0.6188756222808125,
+            "weight": 1.0
+          }
+        ]
+      },
+      {
+        "axis": 1,
+        "sign": -1.0,
+        "candidates": 4,
+        "average_acceleration": 0.09644470948186809,
+        "modes": [
+          {
+            "command": [
+              -0.0,
+              -0.49,
+              -0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              1.8129694679684032e-17,
+              -0.09644470948186809,
+              -1.3815530886191266e-17,
+              -3.469446951953614e-17,
+              -1.0950441942103595e-17,
+              -1.3877787807814457e-17
+            ],
+            "fuel_rate": 0.4168679381674223,
+            "weight": 1.0
+          }
+        ]
+      },
+      {
+        "axis": 2,
+        "sign": 1.0,
+        "candidates": 14,
+        "average_acceleration": 0.09581339692790712,
+        "modes": [
+          {
+            "command": [
+              0.0,
+              0.0,
+              0.49,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              -9.789200582076719e-23,
+              -7.940917107572635e-23,
+              0.09581339692790712,
+              6.938894419912365e-18,
+              -1.0408342355874993e-17,
+              -1.0842061115503729e-18
+            ],
+            "fuel_rate": 0.41413675150195883,
+            "weight": 1.0
+          }
+        ]
+      },
+      {
+        "axis": 2,
+        "sign": -1.0,
+        "candidates": 5,
+        "average_acceleration": 0.11689911375742879,
+        "modes": [
+          {
+            "command": [
+              -0.0,
+              -0.0,
+              -0.49,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "actual": [
+              -7.940933880509066e-23,
+              8.933550615572699e-23,
+              -0.11689911375742879,
+              -1.214306433183765e-17,
+              -9.540979117872439e-18,
+              4.336808689942018e-19
+            ],
+            "fuel_rate": 0.5052755627279295,
+            "weight": 1.0
+          }
+        ]
+      }
+    ],
+    "servo_turn_trial100.json": {
+      "seed": 100,
+      "experimental": true,
+      "controller_sha256": "efadf4f5920f5b400c19bfcb0b737105f1d2b8005a7e82e8d09133a4225509d2",
+      "extra_source_sha256": "af98fd7993712c0c74799eb381a5158484c5bbddc28c3741096bbb29e3491967",
+      "description": "4m single turn +X trim, 12s coast clearance, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 498.78,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 72.74,
+        "distance_m": 49.97,
+        "peak_speed_m_s": 4.91,
+        "arrival_speed_m_s": 0.112515415253437,
+        "min_debris_gap_m": 12.06,
+        "min_proxy_hull_gap_m": 18.34,
+        "collision": false,
+        "post_arrival_test_s": 1.2,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.098,
+        "learned_coast_drift_m_s2": [
+          0.002399999996030738,
+          -0.0008000006029022076,
+          0.0015999997302302913
+        ],
+        "phase": "POST_ENTRY_BRAKE",
+        "images": 1999,
+        "plan_p95_ms": 553.49,
+        "angular_active_fraction": 0.042,
+        "linear_active_fraction": 0.305,
+        "nose_error_p95_deg": 66.2,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.308,
+        "terminal_fallback": false,
+        "first_5m_s_time": null,
+        "cruise_mean_after_5m_s": null,
+        "cruise_min_after_5m_s": null,
+        "zero_damage_score_estimate": -22.93,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 1.5,
+              "fuel_kg": 1.1965
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.7514
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 139.5,
+              "fuel_kg": 49.3213
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 146.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/AVOID": {
+              "time_s": 1.5,
+              "fuel_kg": 0.897
+            },
+            "CRUISE/COAST": {
+              "time_s": 7.0,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 177.5333,
+              "fuel_kg": 9.1674
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 15.0,
+              "fuel_kg": 7.6329
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 346.3833,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 131.2833,
+              "fuel_kg": 63.0926
+            },
+            "attitude_only": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "combined": {
+              "time_s": 20.6167,
+              "fuel_kg": 9.3941
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 76.6696,
+            "attitude_only_kg": 10.2229
+          },
+          "post_arrival_fuel_kg": 0.5047,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "servo_turn_trial101.json": {
+      "seed": 101,
+      "experimental": true,
+      "controller_sha256": "efadf4f5920f5b400c19bfcb0b737105f1d2b8005a7e82e8d09133a4225509d2",
+      "extra_source_sha256": "af98fd7993712c0c74799eb381a5158484c5bbddc28c3741096bbb29e3491967",
+      "description": "4m single turn +X trim, 12s coast clearance, async .25s latency + synthetic drift; offline only",
+      "result": {
+        "arrived": true,
+        "time_s": 406.55,
+        "attitude_policy": "ThrustAttitude",
+        "fuel_kg": 62.71,
+        "distance_m": 48.5,
+        "peak_speed_m_s": 4.69,
+        "arrival_speed_m_s": 1.4927523148014088,
+        "min_debris_gap_m": 13.17,
+        "min_proxy_hull_gap_m": 23.85,
+        "collision": false,
+        "post_arrival_test_s": 30.0,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.007,
+        "learned_coast_drift_m_s2": [
+          0.002400001717506156,
+          -0.0008000006192955022,
+          0.001600015262403798
+        ],
+        "phase": "HOLD",
+        "images": 1745,
+        "plan_p95_ms": 546.04,
+        "angular_active_fraction": 0.043,
+        "linear_active_fraction": 0.332,
+        "nose_error_p95_deg": 66.48,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.452,
+        "terminal_fallback": false,
+        "first_5m_s_time": null,
+        "cruise_mean_after_5m_s": null,
+        "cruise_min_after_5m_s": null,
+        "zero_damage_score_estimate": -4.1,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 1.5,
+              "fuel_kg": 1.1965
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.7514
+            },
+            "ALIGN_FOR_BURN": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 141.5,
+              "fuel_kg": 55.5257
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 138.5,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/COAST": {
+              "time_s": 7.5,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 105.3,
+              "fuel_kg": 0.1172
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 2.0,
+              "fuel_kg": 1.3447
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 276.25,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 111.3333,
+              "fuel_kg": 53.086
+            },
+            "attitude_only": {
+              "time_s": 0.5,
+              "fuel_kg": 0.2564
+            },
+            "combined": {
+              "time_s": 18.4667,
+              "fuel_kg": 9.3697
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 63.6175,
+            "attitude_only_kg": 9.1836
+          },
+          "post_arrival_fuel_kg": 9.0712,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "before_precision_servo_final100.json": {
+      "controller_sha256": "076d0811e5ecaaf9b52bcfe52c44140d4bce998837226bc3e160e20c325ec95e",
+      "controller_file_sha256": "6838198b1348a122d85cbbb3c76928f9983ccdad575fd61ac20cd745db58b6fd",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 100,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "native",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": true,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 294.18,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.26,
+        "distance_m": 89.83,
+        "peak_speed_m_s": 6.06,
+        "arrival_speed_m_s": 3.4810397054474,
+        "min_debris_gap_m": 13.87,
+        "min_proxy_hull_gap_m": 21.55,
+        "collision": false,
+        "post_arrival_test_s": 48.7,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000018101317487,
+          -0.000800001901153492,
+          0.0016000453834977434
+        ],
+        "phase": "HOLD",
+        "images": 1371,
+        "plan_p95_ms": 552.08,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.385,
+        "nose_error_p95_deg": 97.62,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.512,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.8,
+        "cruise_mean_after_5m_s": 5.26,
+        "cruise_min_after_5m_s": 4.43,
+        "zero_damage_score_estimate": 34.44,
+        "fuel_audit": {
+          "segments": {
+            "START": {
+              "time_s": 0.25,
+              "fuel_kg": 0.0
+            },
+            "LAUNCH": {
+              "time_s": 8.5,
+              "fuel_kg": 3.5202
+            },
+            "CRUISE/ESCAPE": {
+              "time_s": 1.5,
+              "fuel_kg": 1.1965
+            },
+            "CRUISE/GUIDE": {
+              "time_s": 1.0,
+              "fuel_kg": 0.6638
+            },
+            "CRUISE/IMPULSE_BURN": {
+              "time_s": 86.5,
+              "fuel_kg": 34.6216
+            },
+            "CRUISE/IMPULSE_COAST": {
+              "time_s": 134.0,
+              "fuel_kg": 0.0
+            },
+            "CRUISE/COAST": {
+              "time_s": 4.5,
+              "fuel_kg": 0.0
+            },
+            "CAPTURE_PASS": {
+              "time_s": 53.9333,
+              "fuel_kg": 0.3784
+            },
+            "OBSERVE_CAPTURE": {
+              "time_s": 4.0,
+              "fuel_kg": 1.8808
+            }
+          },
+          "command_regimes": {
+            "no_command": {
+              "time_s": 195.75,
+              "fuel_kg": 0.0
+            },
+            "translation_only": {
+              "time_s": 98.4333,
+              "fuel_kg": 42.2613
+            }
+          },
+          "counterfactual_same_tick_costs": {
+            "translation_only_kg": 42.2613,
+            "attitude_only_kg": 0.0
+          },
+          "post_arrival_fuel_kg": 15.1847,
+          "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+        }
+      }
+    },
+    "before_precision_servo_final101.json": {
+      "controller_sha256": "076d0811e5ecaaf9b52bcfe52c44140d4bce998837226bc3e160e20c325ec95e",
+      "controller_file_sha256": "6838198b1348a122d85cbbb3c76928f9983ccdad575fd61ac20cd745db58b6fd",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 101,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 286.2,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 42.01,
+        "distance_m": 101.05,
+        "peak_speed_m_s": 6.12,
+        "arrival_speed_m_s": 3.7630705411585437,
+        "min_debris_gap_m": 14.57,
+        "min_proxy_hull_gap_m": 21.3,
+        "collision": false,
+        "post_arrival_test_s": 52.1,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.002400002283680385,
+          -0.0008000009579344558,
+          0.001600049276718316
+        ],
+        "phase": "HOLD",
+        "images": 1352,
+        "plan_p95_ms": 544.31,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.394,
+        "nose_error_p95_deg": 96.22,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.494,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.1,
+        "cruise_mean_after_5m_s": 5.43,
+        "cruise_min_after_5m_s": 4.64,
+        "zero_damage_score_estimate": 35.92
+      }
+    },
+    "before_precision_servo_final102.json": {
+      "controller_sha256": "076d0811e5ecaaf9b52bcfe52c44140d4bce998837226bc3e160e20c325ec95e",
+      "controller_file_sha256": "6838198b1348a122d85cbbb3c76928f9983ccdad575fd61ac20cd745db58b6fd",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 102,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 292.6,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 41.45,
+        "distance_m": 96.85,
+        "peak_speed_m_s": 6.07,
+        "arrival_speed_m_s": 3.6417103421922405,
+        "min_debris_gap_m": 12.13,
+        "min_proxy_hull_gap_m": 21.3,
+        "collision": false,
+        "post_arrival_test_s": 50.8,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000015651668167,
+          -0.0008000019299310762,
+          0.0016000470803777286
+        ],
+        "phase": "HOLD",
+        "images": 1373,
+        "plan_p95_ms": 537.67,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.384,
+        "nose_error_p95_deg": 98.23,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.521,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.9,
+        "cruise_mean_after_5m_s": 5.3,
+        "cruise_min_after_5m_s": 4.49,
+        "zero_damage_score_estimate": 35.75
+      }
+    },
+    "before_precision_servo_final103.json": {
+      "controller_sha256": "076d0811e5ecaaf9b52bcfe52c44140d4bce998837226bc3e160e20c325ec95e",
+      "controller_file_sha256": "6838198b1348a122d85cbbb3c76928f9983ccdad575fd61ac20cd745db58b6fd",
+      "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+      "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "debris_count": 500,
+      "seed": 103,
+      "control_hz": 60.0,
+      "camera_requests_hz": 4.0,
+      "benchmark_version": 6,
+      "plan_latency_s": 0.25,
+      "planning_mode": "async",
+      "fuel_plan_target_override": null,
+      "allocator_solver": "highs",
+      "scene_variant": "final-scene",
+      "attitude_mode": "normal",
+      "fuel_audit_enabled": false,
+      "axis_thrust": false,
+      "ground_plane_m": 2.5,
+      "drift_bias_m_s2": [
+        0.0024,
+        -0.0008,
+        0.0016
+      ],
+      "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+      "result": {
+        "arrived": true,
+        "time_s": 285.93,
+        "attitude_policy": "FreeAttitude",
+        "fuel_kg": 40.02,
+        "distance_m": 112.91,
+        "peak_speed_m_s": 6.14,
+        "arrival_speed_m_s": 4.004749533759807,
+        "min_debris_gap_m": 11.93,
+        "min_proxy_hull_gap_m": 21.56,
+        "collision": false,
+        "post_arrival_test_s": 55.1,
+        "min_ground_centre_height_m": 2.5,
+        "final_speed_m_s": 0.049,
+        "learned_coast_drift_m_s2": [
+          0.0024000027245314995,
+          -0.0008000001632722384,
+          0.001600052134401815
+        ],
+        "phase": "HOLD",
+        "images": 1363,
+        "plan_p95_ms": 527.54,
+        "angular_active_fraction": 0.0,
+        "linear_active_fraction": 0.382,
+        "nose_error_p95_deg": 94.88,
+        "allocator_retries": 0,
+        "coasting_fraction": 0.527,
+        "terminal_fallback": false,
+        "first_5m_s_time": 69.9,
+        "cruise_mean_after_5m_s": 5.43,
+        "cruise_min_after_5m_s": 4.64,
+        "zero_damage_score_estimate": 38.61
+      }
+    }
+  },
+  "sources": {
+    "servo_turn_experiment.py": "\"\"\"Offline single-turn experiment; not imported by Controller.py.\"\"\"\nimport sys,json,hashlib\nfrom pathlib import Path\nimport numpy as np\nfrom benchmark_final import Allocator\nfrom controller_loader import load_namespace\nimport benchmark_final_submission as bench\nsource=Path('Controller.py').read_text()\nnamespace=load_namespace(source)\nextra='\"\"\"Rejected single-turn experiment, executed only by the offline benchmark.\\n\\nDefinitions use its controller namespace; this is never loaded by the simulator.\\n\"\"\"\\ndef turn_rate_command(rotation, forward, omega, maximum):\\n    \"\"\"Minimal nose turn, preserving roll; compensate the allocator\\'s tick gain.\"\"\"\\n    bearing = np.asarray(rotation)@np.asarray(forward)\\n    bearing /= max(np.linalg.norm(bearing), 1e-9)\\n    axis = np.array([0., -bearing[2], bearing[1]])\\n    sine = np.linalg.norm(axis)\\n    angle = np.arctan2(sine, bearing[0])\\n    if sine < 1e-9:\\n        axis = np.array([0., 1., 0.])\\n    else:\\n        axis /= sine\\n    rate = 0. if angle < np.deg2rad(.5) else min(.20, np.sqrt(2.*.045*angle), 1.5*angle)\\n    # Below saturation the official on-time remap delivers command/dt, not\\n    # command. Sending the raw PD value caused unnecessarily violent tiny turns.\\n    return limit_vector(4.*(rate*axis-np.asarray(omega))/60., maximum)\\n\\n\\nclass ThrustNavigator(ShootingNavigator):\\n    \"\"\"Experimental single alignment to exploit the stronger +X jet axis.\"\"\"\\n    def __init__(self, launch=True, nose_first=False):\\n        super().__init__(launch, nose_first)\\n        self.alignment_complete = bool(nose_first or not launch)\\n        self.alignment_started = None\\n        self.alignment_forward = None\\n        self.body_rate = np.zeros(3)\\n        self.alignment_status = \\'pending\\'\\n        self.alignment_braking = False\\n\\n    def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None, **kwargs):\\n        self.aligning = False\\n        if self.failed or self.alignment_complete or not self.launch.done:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        self.control_time = float(now)\\n        height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n        if self.alignment_started is None and height < 4.:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_forward is None:\\n            self.alignment_forward = (target_loc-loc)/max(np.linalg.norm(target_loc-loc), 1e-9)\\n        angle = np.arccos(np.clip(self.body_rotation[0]@self.alignment_forward, -1., 1.))\\n        if self.alignment_braking and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'aborted and settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if angle < np.deg2rad(1.) and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is not None and now-self.alignment_started > 35.:\\n            self.alignment_complete, self.alignment_status = True, \\'timeout\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        centers, speeds, radii, rates, accels, _ = self.observe_scene(now, loc, vel, target_loc, target_vel, radar, camera)\\n        nr = self.latest_radar_count\\n        radii = radii.copy()\\n        radii[:nr] = np.maximum(self.radar_core_radii-1., 3.)\\n        gravity = self.gravity_at(loc)\\n        clearance = np.inf\\n        imminent = np.inf\\n        for t0 in np.arange(12.):\\n            t1 = t0+1.\\n            a = centers+t0*speeds+.5*t0*t0*accels-t0*vel-.5*t0*t0*gravity\\n            b = centers+t1*speeds+.5*t1*t1*accels-t1*vel-.5*t1*t1*gravity\\n            delta = b-a\\n            frac = np.clip(-np.sum(a*delta, axis=1)/np.maximum(np.sum(delta*delta, axis=1), 1e-9), 0., 1.)\\n            growth = t1*rates\\n            growth[:nr] = np.minimum(growth[:nr], 3.)\\n            gaps = np.linalg.norm(a+frac[:, None]*delta, axis=1)-radii-growth-.04\\n            departing = (np.linalg.norm(centers, axis=1) < radii) & (np.sum(a*delta, axis=1) > 1e-8)\\n            gaps[departing] = np.inf\\n            if len(gaps):\\n                clearance = min(clearance, float(gaps.min()))\\n                if t1 <= 3.:\\n                    imminent = min(imminent, float(gaps.min()))\\n        if clearance < 1.:\\n            height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n            if self.alignment_started is not None and imminent > .5:\\n                self.alignment_braking = True\\n            else:\\n                self.alignment_complete = self.alignment_started is not None or height > 60. or now > 70.\\n            self.alignment_status = \\'blocked\\' if self.alignment_complete else \\'waiting for clearance\\'\\n            if not self.alignment_braking:\\n                return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is None:\\n            self.alignment_started = float(now)\\n        self.shooting_active = False\\n        self.aligning, self.coasting = True, True\\n        self.previous_velocity = self.alignment_forward*max(np.linalg.norm(vel), 1.)\\n        self.last_mode = self.last_phase = \\'BURN_ALIGNMENT\\'\\n        self.last_horizon, self.last_delta_v = 12, 0.\\n        self.alignment_status = \\'settling\\' if self.alignment_braking else \\'turning\\'\\n        return np.zeros(3), self.last_mode, clearance\\n\\n    def linear_command(self, velocity, maximum):\\n        return np.zeros(3) if self.aligning else super().linear_command(velocity, maximum)\\n\\n\\nclass ThrustAttitude(FreeAttitude):\\n    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):\\n        result = super().command(now, rotation, velocity, desired_velocity, planet_up, omega, maximum)\\n        if self.aligning:\\n            if getattr(self, \\'braking_turn\\', False):\\n                return limit_vector(-4.*np.asarray(omega)/60., maximum)\\n            bearing = desired_velocity/max(np.linalg.norm(desired_velocity), 1e-9)\\n            self.nose_error_deg = float(np.rad2deg(np.arccos(np.clip(rotation[0]@bearing, -1., 1.))))\\n            return turn_rate_command(rotation, bearing, omega, maximum)\\n        # This also settles an aborted turn without continuously pointing a nose.\\n        return result\\n\\n\\n'\nexec(compile(extra,'<turn>','exec'),namespace)\nBase=namespace['ThrustNavigator']\nclass Candidate(Base):\n def __init__(self):\n  super().__init__()\n  self.axis_accels[0,0]=.1925\n def allocation_command(self,linear,angular,omega):\n  linear,angular,omega=(np.asarray(x,float) for x in (linear,angular,omega))\n  if (not self.shooting_active or self.failed or self.last_phase!='CRUISE'\n    or np.linalg.norm(angular)>1e-9 or np.linalg.norm(omega)>.0015\n    or linear[0]<.05 or np.linalg.norm(linear[1:])>1e-7):return linear,angular\n  return linear,angular+np.array([5.322434115e-7,-6.788721361e-7,6.397641851e-7])*(linear[0]/.5)\nnamespace['ShootingNavigator']=Candidate\nnamespace['FreeAttitude']=namespace['ThrustAttitude']\nmodified=Path(bench.__file__).read_text()\nmodified=modified.replace('            planner.body_rotation = rotation\\n','            planner.body_rotation = rotation\\n            planner.body_rate = omega.copy()\\n')\nmodified=modified.replace(\"                attitude.aligning = planner.aligning\", \"                attitude.aligning = planner.aligning\\n                attitude.braking_turn = planner.alignment_braking\")\nmodified=modified.replace('        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)', '        body_command,angular=planner.allocation_command(body_command,angular,omega)\\n        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)')\nmodule={'__name__':'turn_experiment','__file__':bench.__file__}\nexec(compile(modified,'<experiment benchmark>','exec'),module)\nroot=Path('C:/Users/Asus/AppData/Local/SimDynamX/STPro/Assets/Repos/STU4-Sim')\nseed=int(sys.argv[1])\nresult=module['run'](namespace,Allocator(root/'Data/SpaceBuggyJetConfigNoMains.csv'),bench.load_scene(root/'Sims/FINAL_SUBMISSION.simconf'),500.,seed,ground_height=2.5,fuel_audit=True,plan_latency=.25,planning_mode='async',drift_bias=[.0024,-.0008,.0016])\nrecord=dict(seed=seed,experimental=True,controller_sha256=hashlib.sha256(source.encode()).hexdigest(),extra_source_sha256=hashlib.sha256(extra.encode()).hexdigest(),description='4m single turn +X trim, 12s coast clearance, async .25s latency + synthetic drift; offline only',result=result)\nPath(f'tests/servo_turn_trial{seed}.json').write_text(json.dumps(record,indent=2)+'\\n')\nprint(json.dumps(record),flush=True)\n",
+    "servo_short_turn_experiment.py": "\"\"\"Offline single-turn experiment; not imported by Controller.py.\"\"\"\nimport sys,json,hashlib\nfrom pathlib import Path\nimport numpy as np\nfrom benchmark_final import Allocator\nfrom controller_loader import load_namespace\nimport benchmark_final_submission as bench\nsource=Path('Controller.py').read_text()\nnamespace=load_namespace(source)\nextra='\"\"\"Rejected single-turn experiment, executed only by the offline benchmark.\\n\\nDefinitions use its controller namespace; this is never loaded by the simulator.\\n\"\"\"\\ndef turn_rate_command(rotation, forward, omega, maximum):\\n    \"\"\"Minimal nose turn, preserving roll; compensate the allocator\\'s tick gain.\"\"\"\\n    bearing = np.asarray(rotation)@np.asarray(forward)\\n    bearing /= max(np.linalg.norm(bearing), 1e-9)\\n    axis = np.array([0., -bearing[2], bearing[1]])\\n    sine = np.linalg.norm(axis)\\n    angle = np.arctan2(sine, bearing[0])\\n    if sine < 1e-9:\\n        axis = np.array([0., 1., 0.])\\n    else:\\n        axis /= sine\\n    rate = 0. if angle < np.deg2rad(.5) else min(.20, np.sqrt(2.*.045*angle), 1.5*angle)\\n    # Below saturation the official on-time remap delivers command/dt, not\\n    # command. Sending the raw PD value caused unnecessarily violent tiny turns.\\n    return limit_vector(4.*(rate*axis-np.asarray(omega))/60., maximum)\\n\\n\\nclass ThrustNavigator(ShootingNavigator):\\n    \"\"\"Experimental single alignment to exploit the stronger +X jet axis.\"\"\"\\n    def __init__(self, launch=True, nose_first=False):\\n        super().__init__(launch, nose_first)\\n        self.alignment_complete = bool(nose_first or not launch)\\n        self.alignment_started = None\\n        self.alignment_forward = None\\n        self.body_rate = np.zeros(3)\\n        self.alignment_status = \\'pending\\'\\n        self.alignment_braking = False\\n\\n    def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None, **kwargs):\\n        self.aligning = False\\n        if self.failed or self.alignment_complete or not self.launch.done:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        self.control_time = float(now)\\n        height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n        if self.alignment_started is None and height < 4.:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_forward is None:\\n            self.alignment_forward = (target_loc-loc)/max(np.linalg.norm(target_loc-loc), 1e-9)\\n        angle = np.arccos(np.clip(self.body_rotation[0]@self.alignment_forward, -1., 1.))\\n        if self.alignment_braking and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'aborted and settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if angle < np.deg2rad(1.) and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is not None and now-self.alignment_started > 35.:\\n            self.alignment_complete, self.alignment_status = True, \\'timeout\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        centers, speeds, radii, rates, accels, _ = self.observe_scene(now, loc, vel, target_loc, target_vel, radar, camera)\\n        nr = self.latest_radar_count\\n        radii = radii.copy()\\n        radii[:nr] = np.maximum(self.radar_core_radii-1., 3.)\\n        gravity = self.gravity_at(loc)\\n        clearance = np.inf\\n        imminent = np.inf\\n        for t0 in np.arange(3.):\\n            t1 = t0+1.\\n            a = centers+t0*speeds+.5*t0*t0*accels-t0*vel-.5*t0*t0*gravity\\n            b = centers+t1*speeds+.5*t1*t1*accels-t1*vel-.5*t1*t1*gravity\\n            delta = b-a\\n            frac = np.clip(-np.sum(a*delta, axis=1)/np.maximum(np.sum(delta*delta, axis=1), 1e-9), 0., 1.)\\n            growth = t1*rates\\n            growth[:nr] = np.minimum(growth[:nr], 3.)\\n            gaps = np.linalg.norm(a+frac[:, None]*delta, axis=1)-radii-growth-.04\\n            departing = (np.linalg.norm(centers, axis=1) < radii) & (np.sum(a*delta, axis=1) > 1e-8)\\n            gaps[departing] = np.inf\\n            if len(gaps):\\n                clearance = min(clearance, float(gaps.min()))\\n                if t1 <= 3.:\\n                    imminent = min(imminent, float(gaps.min()))\\n        if clearance < 1.:\\n            height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n            if self.alignment_started is not None and imminent > .5:\\n                self.alignment_braking = True\\n            else:\\n                self.alignment_complete = self.alignment_started is not None or height > 60. or now > 70.\\n            self.alignment_status = \\'blocked\\' if self.alignment_complete else \\'waiting for clearance\\'\\n            if not self.alignment_braking:\\n                return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is None:\\n            self.alignment_started = float(now)\\n        self.shooting_active = False\\n        self.aligning, self.coasting = True, True\\n        self.previous_velocity = self.alignment_forward*max(np.linalg.norm(vel), 1.)\\n        self.last_mode = self.last_phase = \\'BURN_ALIGNMENT\\'\\n        self.last_horizon, self.last_delta_v = 12, 0.\\n        self.alignment_status = \\'settling\\' if self.alignment_braking else \\'turning\\'\\n        return np.zeros(3), self.last_mode, clearance\\n\\n    def linear_command(self, velocity, maximum):\\n        return np.zeros(3) if self.aligning else super().linear_command(velocity, maximum)\\n\\n\\nclass ThrustAttitude(FreeAttitude):\\n    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):\\n        result = super().command(now, rotation, velocity, desired_velocity, planet_up, omega, maximum)\\n        if self.aligning:\\n            if getattr(self, \\'braking_turn\\', False):\\n                return limit_vector(-4.*np.asarray(omega)/60., maximum)\\n            bearing = desired_velocity/max(np.linalg.norm(desired_velocity), 1e-9)\\n            self.nose_error_deg = float(np.rad2deg(np.arccos(np.clip(rotation[0]@bearing, -1., 1.))))\\n            return turn_rate_command(rotation, bearing, omega, maximum)\\n        # This also settles an aborted turn without continuously pointing a nose.\\n        return result\\n\\n\\n'\nexec(compile(extra,'<turn>','exec'),namespace)\nBase=namespace['ThrustNavigator']\nclass Candidate(Base):\n def __init__(self):\n  super().__init__()\n  self.axis_accels[0,0]=.1925\n def allocation_command(self,linear,angular,omega):\n  linear,angular,omega=(np.asarray(x,float) for x in (linear,angular,omega))\n  if (not self.shooting_active or self.failed or self.last_phase!='CRUISE'\n    or np.linalg.norm(angular)>1e-9 or np.linalg.norm(omega)>.0015\n    or linear[0]<.05 or np.linalg.norm(linear[1:])>1e-7):return linear,angular\n  return linear,angular+np.array([5.322434115e-7,-6.788721361e-7,6.397641851e-7])*(linear[0]/.5)\nnamespace['ShootingNavigator']=Candidate\nnamespace['FreeAttitude']=namespace['ThrustAttitude']\nmodified=Path(bench.__file__).read_text()\nmodified=modified.replace('            planner.body_rotation = rotation\\n','            planner.body_rotation = rotation\\n            planner.body_rate = omega.copy()\\n')\nmodified=modified.replace(\"                attitude.aligning = planner.aligning\", \"                attitude.aligning = planner.aligning\\n                attitude.braking_turn = planner.alignment_braking\")\nmodified=modified.replace('        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)', '        body_command,angular=planner.allocation_command(body_command,angular,omega)\\n        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)')\nmodule={'__name__':'turn_experiment','__file__':bench.__file__}\nexec(compile(modified,'<experiment benchmark>','exec'),module)\nroot=Path('C:/Users/Asus/AppData/Local/SimDynamX/STPro/Assets/Repos/STU4-Sim')\nseed=int(sys.argv[1])\nresult=module['run'](namespace,Allocator(root/'Data/SpaceBuggyJetConfigNoMains.csv'),bench.load_scene(root/'Sims/FINAL_SUBMISSION.simconf'),500.,seed,ground_height=2.5,fuel_audit=True,plan_latency=.25,planning_mode='async',drift_bias=[.0024,-.0008,.0016])\nrecord=dict(seed=seed,experimental=True,controller_sha256=hashlib.sha256(source.encode()).hexdigest(),extra_source_sha256=hashlib.sha256(extra.encode()).hexdigest(),description='4m single turn +X trim, 3s receding coast clearance, async .25s latency + synthetic drift; offline only',result=result)\nPath(f'tests/servo_short_turn_trial{seed}.json').write_text(json.dumps(record,indent=2)+'\\n')\nprint(json.dumps(record),flush=True)\n",
+    "servo_low_speed_turn_experiment.py": "\"\"\"Offline single-turn experiment; not imported by Controller.py.\"\"\"\nimport sys,json,hashlib\nfrom pathlib import Path\nimport numpy as np\nfrom benchmark_final import Allocator\nfrom controller_loader import load_namespace\nimport benchmark_final_submission as bench\nsource=Path('Controller.py').read_text()\nnamespace=load_namespace(source)\nnamespace['FUEL_PLAN_TARGET']=34.\nextra='\"\"\"Rejected single-turn experiment, executed only by the offline benchmark.\\n\\nDefinitions use its controller namespace; this is never loaded by the simulator.\\n\"\"\"\\ndef turn_rate_command(rotation, forward, omega, maximum):\\n    \"\"\"Minimal nose turn, preserving roll; compensate the allocator\\'s tick gain.\"\"\"\\n    bearing = np.asarray(rotation)@np.asarray(forward)\\n    bearing /= max(np.linalg.norm(bearing), 1e-9)\\n    axis = np.array([0., -bearing[2], bearing[1]])\\n    sine = np.linalg.norm(axis)\\n    angle = np.arctan2(sine, bearing[0])\\n    if sine < 1e-9:\\n        axis = np.array([0., 1., 0.])\\n    else:\\n        axis /= sine\\n    rate = 0. if angle < np.deg2rad(.5) else min(.20, np.sqrt(2.*.045*angle), 1.5*angle)\\n    # Below saturation the official on-time remap delivers command/dt, not\\n    # command. Sending the raw PD value caused unnecessarily violent tiny turns.\\n    return limit_vector(4.*(rate*axis-np.asarray(omega))/60., maximum)\\n\\n\\nclass ThrustNavigator(ShootingNavigator):\\n    \"\"\"Experimental single alignment to exploit the stronger +X jet axis.\"\"\"\\n    def __init__(self, launch=True, nose_first=False):\\n        super().__init__(launch, nose_first)\\n        self.alignment_complete = bool(nose_first or not launch)\\n        self.alignment_started = None\\n        self.alignment_forward = None\\n        self.body_rate = np.zeros(3)\\n        self.alignment_status = \\'pending\\'\\n        self.alignment_braking = False\\n\\n    def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None, **kwargs):\\n        self.aligning = False\\n        if self.failed or self.alignment_complete or not self.launch.done:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        self.control_time = float(now)\\n        height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n        if self.alignment_started is None and height < 4.:\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_forward is None:\\n            self.alignment_forward = (target_loc-loc)/max(np.linalg.norm(target_loc-loc), 1e-9)\\n        angle = np.arccos(np.clip(self.body_rotation[0]@self.alignment_forward, -1., 1.))\\n        if self.alignment_braking and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'aborted and settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if angle < np.deg2rad(1.) and np.linalg.norm(self.body_rate) < .00015:\\n            self.alignment_complete, self.alignment_status = True, \\'settled\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is not None and now-self.alignment_started > 35.:\\n            self.alignment_complete, self.alignment_status = True, \\'timeout\\'\\n            return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        centers, speeds, radii, rates, accels, _ = self.observe_scene(now, loc, vel, target_loc, target_vel, radar, camera)\\n        nr = self.latest_radar_count\\n        radii = radii.copy()\\n        radii[:nr] = np.maximum(self.radar_core_radii-1., 3.)\\n        gravity = self.gravity_at(loc)\\n        clearance = np.inf\\n        imminent = np.inf\\n        for t0 in np.arange(12.):\\n            t1 = t0+1.\\n            a = centers+t0*speeds+.5*t0*t0*accels-t0*vel-.5*t0*t0*gravity\\n            b = centers+t1*speeds+.5*t1*t1*accels-t1*vel-.5*t1*t1*gravity\\n            delta = b-a\\n            frac = np.clip(-np.sum(a*delta, axis=1)/np.maximum(np.sum(delta*delta, axis=1), 1e-9), 0., 1.)\\n            growth = t1*rates\\n            growth[:nr] = np.minimum(growth[:nr], 3.)\\n            gaps = np.linalg.norm(a+frac[:, None]*delta, axis=1)-radii-growth-.04\\n            departing = (np.linalg.norm(centers, axis=1) < radii) & (np.sum(a*delta, axis=1) > 1e-8)\\n            gaps[departing] = np.inf\\n            if len(gaps):\\n                clearance = min(clearance, float(gaps.min()))\\n                if t1 <= 3.:\\n                    imminent = min(imminent, float(gaps.min()))\\n        if clearance < 1. and np.linalg.norm(vel) > 2.:\\n            height = float((loc-self.launch.origin)@self.launch.up) if self.launch.origin is not None else 0.\\n            if self.alignment_started is not None and imminent > .5:\\n                self.alignment_braking = True\\n            else:\\n                self.alignment_complete = self.alignment_started is not None or height > 60. or now > 70.\\n            self.alignment_status = \\'blocked\\' if self.alignment_complete else \\'waiting for clearance\\'\\n            if not self.alignment_braking:\\n                return super().command(now, loc, vel, target_loc, target_vel, radar, camera, **kwargs)\\n        if self.alignment_started is None:\\n            self.alignment_started = float(now)\\n        self.shooting_active = False\\n        self.aligning, self.coasting = True, True\\n        self.previous_velocity = self.alignment_forward*max(np.linalg.norm(vel), 1.)\\n        self.last_mode = self.last_phase = \\'BURN_ALIGNMENT\\'\\n        self.last_horizon, self.last_delta_v = 12, 0.\\n        self.alignment_status = \\'settling\\' if self.alignment_braking else \\'turning\\'\\n        return np.zeros(3), self.last_mode, clearance\\n\\n    def linear_command(self, velocity, maximum):\\n        return np.zeros(3) if self.aligning else super().linear_command(velocity, maximum)\\n\\n\\nclass ThrustAttitude(FreeAttitude):\\n    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):\\n        result = super().command(now, rotation, velocity, desired_velocity, planet_up, omega, maximum)\\n        if self.aligning:\\n            if getattr(self, \\'braking_turn\\', False):\\n                return limit_vector(-4.*np.asarray(omega)/60., maximum)\\n            bearing = desired_velocity/max(np.linalg.norm(desired_velocity), 1e-9)\\n            self.nose_error_deg = float(np.rad2deg(np.arccos(np.clip(rotation[0]@bearing, -1., 1.))))\\n            return turn_rate_command(rotation, bearing, omega, maximum)\\n        # This also settles an aborted turn without continuously pointing a nose.\\n        return result\\n\\n\\n'\nexec(compile(extra,'<turn>','exec'),namespace)\nBase=namespace['ThrustNavigator']\nclass Candidate(Base):\n def __init__(self):\n  super().__init__()\n  self.axis_accels[0,0]=.1925\n def allocation_command(self,linear,angular,omega):\n  linear,angular,omega=(np.asarray(x,float) for x in (linear,angular,omega))\n  if (not self.shooting_active or self.failed or self.last_phase!='CRUISE'\n    or np.linalg.norm(angular)>1e-9 or np.linalg.norm(omega)>.0015\n    or linear[0]<.05 or np.linalg.norm(linear[1:])>1e-7):return linear,angular\n  return linear,angular+np.array([5.322434115e-7,-6.788721361e-7,6.397641851e-7])*(linear[0]/.5)\nnamespace['ShootingNavigator']=Candidate\nnamespace['FreeAttitude']=namespace['ThrustAttitude']\nmodified=Path(bench.__file__).read_text()\nmodified=modified.replace('            planner.body_rotation = rotation\\n','            planner.body_rotation = rotation\\n            planner.body_rate = omega.copy()\\n')\nmodified=modified.replace(\"                attitude.aligning = planner.aligning\", \"                attitude.aligning = planner.aligning\\n                attitude.braking_turn = planner.alignment_braking\")\nmodified=modified.replace('        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)', '        body_command,angular=planner.allocation_command(body_command,angular,omega)\\n        actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)')\nmodule={'__name__':'turn_experiment','__file__':bench.__file__}\nexec(compile(modified,'<experiment benchmark>','exec'),module)\nroot=Path('C:/Users/Asus/AppData/Local/SimDynamX/STPro/Assets/Repos/STU4-Sim')\nseed=int(sys.argv[1])\nresult=module['run'](namespace,Allocator(root/'Data/SpaceBuggyJetConfigNoMains.csv'),bench.load_scene(root/'Sims/FINAL_SUBMISSION.simconf'),500.,seed,ground_height=2.5,fuel_audit=True,plan_latency=.25,planning_mode='async',drift_bias=[.0024,-.0008,.0016])\nrecord=dict(seed=seed,experimental=True,controller_sha256=hashlib.sha256(source.encode()).hexdigest(),extra_source_sha256=hashlib.sha256(extra.encode()).hexdigest(),description='4m single turn +X trim, low-speed (<=2m/s) turn commitment; hard clearance resumes above 2m/s; fuel target 34, async .25s latency + synthetic drift; offline only',result=result)\nPath(f'tests/servo_low_speed_turn_trial{seed}.json').write_text(json.dumps(record,indent=2)+'\\n')\nprint(json.dumps(record),flush=True)\n",
+    "calibrate_pulse_modes.py": "\"\"\"Offline search for balanced public-API wrench commands, not custom physics.\"\"\"\nimport argparse\nimport hashlib\nimport json\nimport warnings\nfrom pathlib import Path\nimport numpy as np\nfrom scipy.optimize import linprog\nfrom benchmark_final import Allocator\n\n\nif __name__ == '__main__':\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--jet-config', required=True)\n    parser.add_argument('--samples', type=int, default=2000)\n    parser.add_argument('--output', default='tests/servo_pulse_calibration.json')\n    args = parser.parse_args()\n    warnings.filterwarnings('ignore', category=DeprecationWarning)\n    allocator = Allocator(args.jet_config, 'revised simplex')\n    rng = np.random.default_rng(718)\n    modes = []\n    for i in range(args.samples):\n        angular = rng.normal(size=3)\n        angular *= 10.**rng.uniform(-5., np.log10(.02))/np.linalg.norm(angular)\n        linear = np.array([0., 0., .5])\n        actual, torque, fuel = allocator.apply(linear, angular)\n        if actual[2] > .04 and fuel/actual[2] < 4.35 and np.linalg.norm(actual[:2]) < 1e-7:\n            modes.append(dict(linear=linear.tolist(), angular=angular.tolist(),\n                              actual=actual.tolist(), angular_actual=torque.tolist(), fuel_rate=fuel))\n    accelerations = np.array([row['actual'][2] for row in modes])\n    torques = np.array([row['angular_actual'] for row in modes])\n    result = linprog(-accelerations, A_eq=np.vstack((np.ones(len(modes)), 100.*torques.T)),\n                     b_eq=np.array([1., 0., 0., 0.]), bounds=(0, None), method='highs')\n    if not result.success:\n        raise RuntimeError(result.message)\n    selected = []\n    for index in np.flatnonzero(result.x > 1e-7):\n        row = dict(modes[index], weight=float(result.x[index]))\n        selected.append(row)\n    mean_a = sum(row['weight']*row['actual'][2] for row in selected)\n    mean_f = sum(row['weight']*row['fuel_rate'] for row in selected)\n    record = dict(seed=718, samples=args.samples, jet_config_sha256=hashlib.sha256(Path(args.jet_config).read_bytes()).hexdigest(),\n                  solver='revised simplex', modes=selected, mean_acceleration=mean_a,\n                  mean_fuel_rate=mean_f, kg_per_dv=mean_f/mean_a,\n                  mean_angular_accel=sum(row['weight']*np.array(row['angular_actual']) for row in selected).tolist())\n    Path(args.output).write_text(json.dumps(record, indent=2)+'\\n')\n    print(json.dumps(record), flush=True)\n"
+  }
+}

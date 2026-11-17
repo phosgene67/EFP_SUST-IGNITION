@@ -275,6 +275,76 @@ class ShootingTests(unittest.TestCase):
         self.assertEqual(mode, 'IMPULSE_BURN')
         self.assertGreater(np.linalg.norm(command), .1)
 
+    def test_completed_major_burn_can_observe_drift_before_more_trimming(self):
+        planner, location, velocity, target, _ = self.completed_burn(.35)
+        planner.coast_probe_armed = True
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+        self.assertEqual(planner.coast_probe_until, 103.5)
+        self.assertFalse(planner.coast_probe_armed)
+
+    def test_drift_observation_coast_cannot_ignore_incoming_debris(self):
+        planner, location, velocity, target, _ = self.completed_burn(.35)
+        planner.coast_probe_armed = True
+        radar = [np.array([[30., 0., 0.], [20., -7., 20.], [100., 0., 0.]])]
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), radar)
+        self.assertNotEqual(mode, 'IMPULSE_COAST')
+        self.assertGreater(np.linalg.norm(command), .01)
+
+    def test_fuel_budget_prices_new_spending_and_does_not_penalize_coasting(self):
+        price = namespace['fuel_budget_penalty']
+        self.assertEqual(price(45., 0.), 0.)
+        self.assertEqual(price(20., 5.), 0.)
+        self.assertGreater(price(35., 4.), price(35., 2.))
+        self.assertGreater(price(40., 2.), price(35., 2.))
+
+    def test_quiet_observation_preserves_a_pending_return_stage(self):
+        planner, location, velocity, target, _ = self.completed_burn(.35)
+        planner.coast_probe_armed = True
+        planner.last_detour = np.array([0., .15, 0.])
+        planner.counter_time = 140.
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+        np.testing.assert_array_equal(planner.last_detour, [0., .15, 0.])
+        self.assertEqual(planner.counter_time, 140.)
+
+    def test_due_return_stage_is_not_left_as_a_future_unexecuted_burn(self):
+        planner, location, velocity, target, _ = self.completed_burn(.35)
+        planner.last_detour = np.array([0., .15, 0.])
+        planner.counter_time = 99.
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .01)
+        self.assertFalse(np.array_equal(planner.last_detour, [0., .15, 0.]) and planner.counter_time <= 100.)
+
+    def test_capture_handoff_keeps_the_ship_viewable_near_the_success_boundary(self):
+        approach = namespace['CaptureApproach']()
+        approach.body_rotation = np.array([[0., 1., 0.], [0., 0., 1.], [1., 0., 0.]])
+        location, target = np.array([9000., 0., 0.]), np.array([9300., 0., 0.])
+        approach.side, approach.tangent = np.array([-1., 0., 0.]), np.array([0., 1., 0.])
+        end, _, _ = approach.goal(100., location, np.array([7., .3, 0.]), target,
+                                   np.zeros(3), np.empty((0, 3)), np.empty(0))
+        heading = (end-approach.inner_goal)/np.linalg.norm(end-approach.inner_goal)
+        for radius in (150., 80., 52.):
+            bearing = target-approach.inner_goal+np.sqrt(radius**2-47.**2)*heading
+            self.assertTrue(namespace['camera_can_aim'](approach.body_rotation, bearing))
+
+    def test_small_planned_course_correction_is_actually_executed(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.launch.done = True
+        planner.command(100., np.array([9000., 0., 0.]), np.array([7., .35, 0.]),
+                        np.array([10000., 0., 0.]), np.zeros(3), [])
+        planner.shooting_active = True
+        planner.burn_target = np.array([.01, 0., 0.])
+        planner.burn_gravity = np.zeros(3)
+        planner.burn_started = planner.control_time
+        planner.burn_order = np.array([0, 1, 2])
+        planner.axis_done = np.array([False, True, True])
+        planner.burn_signs = np.array([1., 0., 0.])
+        self.assertGreater(planner.linear_command(np.zeros(3), .5)[0], .1)
+
 
 if __name__ == '__main__':
     unittest.main()
