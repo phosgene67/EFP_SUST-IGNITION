@@ -1,5 +1,6 @@
 """Execute the actual connection/loop/command code against a small API double."""
 import datetime
+import hashlib
 from types import SimpleNamespace
 from unittest import mock
 import unittest
@@ -91,6 +92,11 @@ class AdapterTests(unittest.TestCase):
         self.assertIsNotNone(self.runtime['planner'].arrival_time)
         self.assertTrue(self.runtime['planner'].terminal.entered)
         self.assertTrue(self.runtime['fuel_ledger'].frozen)
+
+    def test_runtime_identifies_the_controller_file_used_for_a_native_run(self):
+        self.run_adapter([])
+        self.assertEqual(self.runtime['controller_source_hash'], hashlib.sha256(SOURCE.read_bytes()).hexdigest())
+        self.assertEqual(self.runtime['CONTROLLER_PROFILE'], 'SCORE_COAST')
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])

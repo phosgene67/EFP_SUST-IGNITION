@@ -6,15 +6,19 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-`Controller.py` contains our **SCORE_MOMENTUM** candidate for
+`Controller.py` contains our **SCORE_COAST** candidate for
 `FINAL_SUBMISSION.simconf`: finite body-axis burns selected using the score formula,
 coasting, gravity-aware moving-debris tracking, continuous radar/RGB/depth feedback,
 and a guarded pass into the safe area followed by braking.
 It preserves forward momentum, learns actual coasting drift, prices debris
-uncertainty and detects scoring-sphere entry between planning updates.
-See [Momentum-preserving controller](SCORE_MOMENTUM.md) for the current architecture, fuel
-measurements, score budgets and validation results. The +50/+70 targets remain
-unverified in the native simulator.
+uncertainty and detects scoring-sphere entry between planning updates. Completed
+burns now revalidate their predicted coast before receiving plan-retention credit.
+The approach search also considers camera reach so the selected side can remain
+observable without forcing a body turn.
+See [Coast revalidation](SCORE_COAST.md) for the current change, matched results,
+native evidence and +70 score budgets. This iteration's measured average gain
+is small; +70 remains unverified. The
+[Momentum-preserving controller](SCORE_MOMENTUM.md) documents the underlying architecture.
 Forced nose pointing and horizon leveling are now disabled by default following
 matched fuel/score comparisons. The GUI shows **FREE ATTITUDE**. See
 [Fuel audit and orientation comparison](FUEL_AUDIT.md) for the fuel breakdown,

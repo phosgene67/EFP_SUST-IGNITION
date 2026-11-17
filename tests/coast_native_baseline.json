@@ -1,0 +1,4964 @@
+{
+  "note": "Native runs before SCORE_COAST; no source hash was logged, so these are observational evidence rather than controlled A/B flights.",
+  "runs": [
+    {
+      "run_directory": "261117_140232_FINAL_SUBMISSION__73b",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 36.5; congratulations!",
+        "Sim elapsed time   = 279.26 s",
+        "Distance to ship   = 49.98 m",
+        "Total damage taken = 0.0 J",
+        "Total fuel used    = 42.34 kg"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.6,
+          "speed": 0.04,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planMs": 0.3,
+          "planDV": 0.0,
+          "mode": "WAIT_RADAR"
+        },
+        {
+          "t": 5.6,
+          "speed": 0.07,
+          "fuel": 0.0,
+          "distance": 1306.0,
+          "projectedScore": 55.2,
+          "planMs": 123.6,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 10.7,
+          "speed": 0.14,
+          "fuel": 1.45,
+          "distance": 1306.3,
+          "projectedScore": 44.7,
+          "planMs": 141.2,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 15.7,
+          "speed": 0.48,
+          "fuel": 3.51,
+          "distance": 1305.0,
+          "projectedScore": 45.7,
+          "planMs": 196.9,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 20.9,
+          "speed": 0.83,
+          "fuel": 5.81,
+          "distance": 1301.6,
+          "projectedScore": 46.2,
+          "planMs": 274.9,
+          "planDV": 6.89,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 25.9,
+          "speed": 1.12,
+          "fuel": 8.7,
+          "distance": 1297.7,
+          "projectedScore": 41.1,
+          "planMs": 198.0,
+          "planDV": 6.57,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 31.1,
+          "speed": 1.51,
+          "fuel": 10.88,
+          "distance": 1291.0,
+          "projectedScore": 42.4,
+          "planMs": 350.4,
+          "planDV": 6.08,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 36.1,
+          "speed": 1.94,
+          "fuel": 12.96,
+          "distance": 1282.3,
+          "projectedScore": 43.6,
+          "planMs": 280.4,
+          "planDV": 5.61,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 41.2,
+          "speed": 2.36,
+          "fuel": 15.06,
+          "distance": 1271.5,
+          "projectedScore": 43.4,
+          "planMs": 235.3,
+          "planDV": 5.13,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 46.3,
+          "speed": 2.79,
+          "fuel": 17.17,
+          "distance": 1258.4,
+          "projectedScore": 43.1,
+          "planMs": 220.7,
+          "planDV": 4.66,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 51.5,
+          "speed": 3.22,
+          "fuel": 19.32,
+          "distance": 1242.8,
+          "projectedScore": 42.9,
+          "planMs": 269.0,
+          "planDV": 4.18,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 56.6,
+          "speed": 3.56,
+          "fuel": 21.41,
+          "distance": 1225.5,
+          "projectedScore": 36.5,
+          "planMs": 254.7,
+          "planDV": 3.59,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 61.7,
+          "speed": 3.62,
+          "fuel": 24.05,
+          "distance": 1207.5,
+          "projectedScore": 39.3,
+          "planMs": 258.2,
+          "planDV": 3.46,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 66.8,
+          "speed": 4.05,
+          "fuel": 26.2,
+          "distance": 1187.8,
+          "projectedScore": 39.6,
+          "planMs": 289.3,
+          "planDV": 2.98,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 71.9,
+          "speed": 4.48,
+          "fuel": 28.29,
+          "distance": 1166.2,
+          "projectedScore": 39.5,
+          "planMs": 291.5,
+          "planDV": 2.52,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 76.9,
+          "speed": 4.9,
+          "fuel": 30.38,
+          "distance": 1142.6,
+          "projectedScore": 39.2,
+          "planMs": 241.3,
+          "planDV": 2.05,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 82.0,
+          "speed": 5.33,
+          "fuel": 32.5,
+          "distance": 1116.6,
+          "projectedScore": 39.0,
+          "planMs": 235.9,
+          "planDV": 1.58,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 87.1,
+          "speed": 5.76,
+          "fuel": 34.62,
+          "distance": 1088.5,
+          "projectedScore": 38.7,
+          "planMs": 234.7,
+          "planDV": 1.1,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 92.2,
+          "speed": 6.19,
+          "fuel": 36.73,
+          "distance": 1058.0,
+          "projectedScore": 38.4,
+          "planMs": 270.0,
+          "planDV": 0.63,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 97.3,
+          "speed": 6.41,
+          "fuel": 38.84,
+          "distance": 1026.0,
+          "projectedScore": 38.4,
+          "planMs": 220.6,
+          "planDV": 0.14,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 102.4,
+          "speed": 6.35,
+          "fuel": 39.31,
+          "distance": 993.6,
+          "projectedScore": 37.6,
+          "planMs": 213.8,
+          "planDV": 0.39,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 107.5,
+          "speed": 6.38,
+          "fuel": 41.02,
+          "distance": 961.3,
+          "projectedScore": 37.3,
+          "planMs": 206.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 112.5,
+          "speed": 6.33,
+          "fuel": 41.02,
+          "distance": 929.0,
+          "projectedScore": 36.2,
+          "planMs": 201.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 117.6,
+          "speed": 6.27,
+          "fuel": 41.02,
+          "distance": 897.3,
+          "projectedScore": 35.8,
+          "planMs": 175.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 122.7,
+          "speed": 6.21,
+          "fuel": 41.02,
+          "distance": 865.5,
+          "projectedScore": 35.8,
+          "planMs": 189.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 127.8,
+          "speed": 6.16,
+          "fuel": 41.02,
+          "distance": 834.0,
+          "projectedScore": 35.7,
+          "planMs": 182.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 132.9,
+          "speed": 6.1,
+          "fuel": 41.02,
+          "distance": 802.9,
+          "projectedScore": 35.8,
+          "planMs": 183.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 137.9,
+          "speed": 6.04,
+          "fuel": 41.02,
+          "distance": 772.1,
+          "projectedScore": 35.8,
+          "planMs": 163.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 143.0,
+          "speed": 5.99,
+          "fuel": 41.02,
+          "distance": 741.6,
+          "projectedScore": 35.8,
+          "planMs": 171.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 148.1,
+          "speed": 5.93,
+          "fuel": 41.02,
+          "distance": 711.3,
+          "projectedScore": 35.7,
+          "planMs": 176.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 153.2,
+          "speed": 5.88,
+          "fuel": 41.02,
+          "distance": 681.3,
+          "projectedScore": 35.7,
+          "planMs": 176.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 158.3,
+          "speed": 5.82,
+          "fuel": 41.02,
+          "distance": 651.4,
+          "projectedScore": 35.7,
+          "planMs": 215.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 163.4,
+          "speed": 5.77,
+          "fuel": 41.02,
+          "distance": 622.2,
+          "projectedScore": 35.6,
+          "planMs": 179.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 168.5,
+          "speed": 5.71,
+          "fuel": 41.02,
+          "distance": 593.2,
+          "projectedScore": 35.6,
+          "planMs": 172.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 173.6,
+          "speed": 5.66,
+          "fuel": 41.02,
+          "distance": 564.2,
+          "projectedScore": 35.5,
+          "planMs": 171.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 178.7,
+          "speed": 5.6,
+          "fuel": 41.02,
+          "distance": 535.6,
+          "projectedScore": 35.4,
+          "planMs": 173.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 183.8,
+          "speed": 5.55,
+          "fuel": 41.02,
+          "distance": 507.5,
+          "projectedScore": 35.3,
+          "planMs": 166.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 188.9,
+          "speed": 5.5,
+          "fuel": 41.02,
+          "distance": 479.5,
+          "projectedScore": 35.1,
+          "planMs": 157.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 194.0,
+          "speed": 5.44,
+          "fuel": 41.02,
+          "distance": 451.8,
+          "projectedScore": 35.0,
+          "planMs": 169.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 199.0,
+          "speed": 5.41,
+          "fuel": 42.34,
+          "distance": 424.5,
+          "projectedScore": 35.4,
+          "planMs": 145.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 204.1,
+          "speed": 5.35,
+          "fuel": 42.34,
+          "distance": 397.1,
+          "projectedScore": 35.2,
+          "planMs": 173.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 209.2,
+          "speed": 5.3,
+          "fuel": 42.34,
+          "distance": 370.2,
+          "projectedScore": 35.5,
+          "planMs": 159.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 214.3,
+          "speed": 5.25,
+          "fuel": 42.34,
+          "distance": 343.6,
+          "projectedScore": 35.5,
+          "planMs": 153.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 219.4,
+          "speed": 5.2,
+          "fuel": 42.34,
+          "distance": 317.3,
+          "projectedScore": 35.5,
+          "planMs": 153.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 224.4,
+          "speed": 5.15,
+          "fuel": 42.34,
+          "distance": 291.2,
+          "projectedScore": 35.6,
+          "planMs": 144.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 229.5,
+          "speed": 5.1,
+          "fuel": 42.34,
+          "distance": 265.7,
+          "projectedScore": 36.0,
+          "planMs": 136.6,
+          "planDV": 0.0,
+          "mode": "COAST"
+        },
+        {
+          "t": 234.6,
+          "speed": 5.05,
+          "fuel": 42.34,
+          "distance": 240.4,
+          "projectedScore": 33.7,
+          "planMs": 130.1,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 239.7,
+          "speed": 4.99,
+          "fuel": 42.34,
+          "distance": 215.2,
+          "projectedScore": 33.7,
+          "planMs": 147.3,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 244.8,
+          "speed": 4.94,
+          "fuel": 42.34,
+          "distance": 190.6,
+          "projectedScore": 33.7,
+          "planMs": 144.6,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 249.9,
+          "speed": 4.89,
+          "fuel": 42.34,
+          "distance": 166.2,
+          "projectedScore": 33.8,
+          "planMs": 148.5,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 255.0,
+          "speed": 4.84,
+          "fuel": 42.34,
+          "distance": 142.6,
+          "projectedScore": 33.8,
+          "planMs": 141.8,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 260.1,
+          "speed": 4.79,
+          "fuel": 42.34,
+          "distance": 119.6,
+          "projectedScore": 33.8,
+          "planMs": 129.9,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 265.1,
+          "speed": 4.74,
+          "fuel": 42.34,
+          "distance": 97.6,
+          "projectedScore": 33.8,
+          "planMs": 134.5,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 270.3,
+          "speed": 4.69,
+          "fuel": 42.34,
+          "distance": 77.0,
+          "projectedScore": 33.8,
+          "planMs": 143.5,
+          "planDV": 0.09,
+          "mode": "COAST"
+        },
+        {
+          "t": 275.4,
+          "speed": 4.64,
+          "fuel": 42.34,
+          "distance": 59.5,
+          "projectedScore": 33.8,
+          "planMs": 162.8,
+          "planDV": 0.13,
+          "mode": "COAST"
+        },
+        {
+          "t": 280.5,
+          "speed": 2.8,
+          "fuel": 42.81,
+          "distance": 48.1,
+          "projectedScore": 36.5,
+          "planMs": 171.1,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 285.6,
+          "speed": 0.98,
+          "fuel": 46.15,
+          "distance": 51.9,
+          "projectedScore": 36.5,
+          "planMs": 164.3,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 290.7,
+          "speed": 0.76,
+          "fuel": 49.6,
+          "distance": 55.9,
+          "projectedScore": 36.5,
+          "planMs": 158.0,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 295.7,
+          "speed": 0.81,
+          "fuel": 52.98,
+          "distance": 60.8,
+          "projectedScore": 36.5,
+          "planMs": 138.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 300.8,
+          "speed": 1.09,
+          "fuel": 56.37,
+          "distance": 62.3,
+          "projectedScore": 36.5,
+          "planMs": 144.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 305.9,
+          "speed": 1.46,
+          "fuel": 59.75,
+          "distance": 61.6,
+          "projectedScore": 36.5,
+          "planMs": 145.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 311.0,
+          "speed": 1.88,
+          "fuel": 63.16,
+          "distance": 65.0,
+          "projectedScore": 36.5,
+          "planMs": 131.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 316.1,
+          "speed": 2.34,
+          "fuel": 66.63,
+          "distance": 68.0,
+          "projectedScore": 36.5,
+          "planMs": 172.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 321.2,
+          "speed": 2.78,
+          "fuel": 69.93,
+          "distance": 70.2,
+          "projectedScore": 36.5,
+          "planMs": 167.6,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 326.3,
+          "speed": 3.24,
+          "fuel": 73.37,
+          "distance": 79.9,
+          "projectedScore": 36.5,
+          "planMs": 164.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 331.3,
+          "speed": 3.59,
+          "fuel": 76.6,
+          "distance": 88.8,
+          "projectedScore": 36.5,
+          "planMs": 146.4,
+          "planDV": 0.37,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 336.4,
+          "speed": 3.33,
+          "fuel": 79.92,
+          "distance": 102.0,
+          "projectedScore": 36.5,
+          "planMs": 149.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 341.5,
+          "speed": 2.99,
+          "fuel": 83.1,
+          "distance": 110.4,
+          "projectedScore": 36.5,
+          "planMs": 122.7,
+          "planDV": 0.43,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 346.6,
+          "speed": 2.66,
+          "fuel": 86.34,
+          "distance": 122.2,
+          "projectedScore": 36.5,
+          "planMs": 122.5,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 351.7,
+          "speed": 2.21,
+          "fuel": 90.02,
+          "distance": 128.0,
+          "projectedScore": 36.5,
+          "planMs": 157.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 356.8,
+          "speed": 1.83,
+          "fuel": 93.26,
+          "distance": 135.6,
+          "projectedScore": 36.5,
+          "planMs": 138.0,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 361.9,
+          "speed": 1.34,
+          "fuel": 96.95,
+          "distance": 143.3,
+          "projectedScore": 36.5,
+          "planMs": 123.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 367.0,
+          "speed": 0.75,
+          "fuel": 100.4,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 144.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 372.1,
+          "speed": 0.2,
+          "fuel": 103.59,
+          "distance": 146.2,
+          "projectedScore": 36.5,
+          "planMs": 129.6,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 377.1,
+          "speed": 0.31,
+          "fuel": 106.77,
+          "distance": 148.0,
+          "projectedScore": 36.5,
+          "planMs": 140.4,
+          "planDV": 0.39,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 382.3,
+          "speed": 0.58,
+          "fuel": 110.36,
+          "distance": 145.7,
+          "projectedScore": 36.5,
+          "planMs": 151.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 387.3,
+          "speed": 0.23,
+          "fuel": 113.62,
+          "distance": 144.1,
+          "projectedScore": 36.5,
+          "planMs": 151.7,
+          "planDV": 0.31,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 392.4,
+          "speed": 0.22,
+          "fuel": 116.28,
+          "distance": 144.2,
+          "projectedScore": 36.5,
+          "planMs": 125.2,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 397.5,
+          "speed": 0.02,
+          "fuel": 117.72,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 154.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 402.7,
+          "speed": 0.02,
+          "fuel": 117.95,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 203.3,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 407.7,
+          "speed": 0.0,
+          "fuel": 118.37,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 155.6,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 412.8,
+          "speed": 0.02,
+          "fuel": 118.8,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 142.0,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 417.9,
+          "speed": 0.03,
+          "fuel": 118.8,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 145.5,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 422.9,
+          "speed": 0.03,
+          "fuel": 119.76,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 146.7,
+          "planDV": 0.08,
+          "mode": "HOLD"
+        },
+        {
+          "t": 428.0,
+          "speed": 0.02,
+          "fuel": 120.87,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 148.1,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 433.1,
+          "speed": 0.03,
+          "fuel": 121.52,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 148.7,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 438.2,
+          "speed": 0.03,
+          "fuel": 122.26,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 145.1,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 443.3,
+          "speed": 0.0,
+          "fuel": 123.67,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 143.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 448.4,
+          "speed": 0.01,
+          "fuel": 124.3,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 146.2,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 453.5,
+          "speed": 0.01,
+          "fuel": 124.68,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 147.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 458.6,
+          "speed": 0.0,
+          "fuel": 124.91,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 149.2,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 463.6,
+          "speed": 0.02,
+          "fuel": 125.12,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 136.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 468.8,
+          "speed": 0.03,
+          "fuel": 125.74,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 148.1,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 473.8,
+          "speed": 0.04,
+          "fuel": 126.76,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 140.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 478.9,
+          "speed": 0.06,
+          "fuel": 127.69,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 133.0,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 484.0,
+          "speed": 0.01,
+          "fuel": 128.85,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 163.2,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 489.2,
+          "speed": 0.02,
+          "fuel": 129.78,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 199.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 494.2,
+          "speed": 0.02,
+          "fuel": 130.69,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 165.9,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 499.3,
+          "speed": 0.02,
+          "fuel": 131.58,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 144.8,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 504.4,
+          "speed": 0.0,
+          "fuel": 132.0,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 151.8,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 509.5,
+          "speed": 0.02,
+          "fuel": 132.41,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 147.8,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 514.6,
+          "speed": 0.03,
+          "fuel": 132.41,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 150.2,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 519.7,
+          "speed": 0.03,
+          "fuel": 133.3,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 141.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 524.8,
+          "speed": 0.03,
+          "fuel": 134.21,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 148.7,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 529.9,
+          "speed": 0.0,
+          "fuel": 135.38,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 160.1,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 534.9,
+          "speed": 0.05,
+          "fuel": 136.59,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 149.4,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 540.0,
+          "speed": 0.02,
+          "fuel": 137.79,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 142.9,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 545.1,
+          "speed": 0.02,
+          "fuel": 138.66,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 152.4,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 550.2,
+          "speed": 0.03,
+          "fuel": 139.52,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 140.8,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 555.3,
+          "speed": 0.0,
+          "fuel": 140.69,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 144.8,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 560.5,
+          "speed": 0.04,
+          "fuel": 141.86,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 173.7,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 565.6,
+          "speed": 0.05,
+          "fuel": 142.7,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 196.2,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 570.6,
+          "speed": 0.04,
+          "fuel": 143.53,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 149.6,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 575.7,
+          "speed": 0.01,
+          "fuel": 144.7,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 149.1,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 580.8,
+          "speed": 0.02,
+          "fuel": 145.62,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 150.9,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 585.9,
+          "speed": 0.02,
+          "fuel": 146.54,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 147.2,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 591.0,
+          "speed": 0.02,
+          "fuel": 147.49,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 148.4,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 596.1,
+          "speed": 0.03,
+          "fuel": 148.43,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 140.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 601.2,
+          "speed": 0.02,
+          "fuel": 149.18,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 153.3,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 606.2,
+          "speed": 0.01,
+          "fuel": 150.16,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 144.1,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 611.4,
+          "speed": 0.0,
+          "fuel": 150.57,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 166.2,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 616.4,
+          "speed": 0.0,
+          "fuel": 151.19,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 154.6,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 621.5,
+          "speed": 0.02,
+          "fuel": 151.9,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 144.1,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 626.6,
+          "speed": 0.02,
+          "fuel": 152.83,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 145.9,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 631.7,
+          "speed": 0.02,
+          "fuel": 153.58,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 151.3,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 636.9,
+          "speed": 0.01,
+          "fuel": 154.02,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 158.2,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 642.0,
+          "speed": 0.0,
+          "fuel": 154.3,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 207.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 647.0,
+          "speed": 0.0,
+          "fuel": 154.62,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 173.1,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 652.2,
+          "speed": 0.02,
+          "fuel": 155.09,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 164.3,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 657.2,
+          "speed": 0.03,
+          "fuel": 155.09,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 150.4,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 662.3,
+          "speed": 0.0,
+          "fuel": 156.25,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 154.5,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 667.4,
+          "speed": 0.03,
+          "fuel": 156.69,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 150.8,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 672.5,
+          "speed": 0.0,
+          "fuel": 157.9,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 149.9,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 677.6,
+          "speed": 0.05,
+          "fuel": 159.15,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 165.4,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 682.7,
+          "speed": 0.01,
+          "fuel": 160.33,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 159.9,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 687.8,
+          "speed": 0.03,
+          "fuel": 161.27,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 157.8,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 693.0,
+          "speed": 0.02,
+          "fuel": 162.68,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 168.0,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 698.0,
+          "speed": 0.02,
+          "fuel": 164.25,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 156.1,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 703.1,
+          "speed": 0.01,
+          "fuel": 165.1,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 156.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 708.2,
+          "speed": 0.01,
+          "fuel": 165.89,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 156.3,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 713.3,
+          "speed": 0.02,
+          "fuel": 166.82,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 181.4,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 718.4,
+          "speed": 0.01,
+          "fuel": 167.32,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 173.2,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 723.5,
+          "speed": 0.02,
+          "fuel": 167.5,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 219.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 728.6,
+          "speed": 0.02,
+          "fuel": 168.49,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 165.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 733.7,
+          "speed": 0.03,
+          "fuel": 169.5,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 152.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 738.8,
+          "speed": 0.03,
+          "fuel": 170.64,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 170.4,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 743.8,
+          "speed": 0.02,
+          "fuel": 170.64,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 151.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 748.9,
+          "speed": 0.0,
+          "fuel": 171.08,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 156.7,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 754.0,
+          "speed": 0.0,
+          "fuel": 172.05,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 144.2,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 759.1,
+          "speed": 0.03,
+          "fuel": 173.1,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 165.4,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 764.1,
+          "speed": 0.03,
+          "fuel": 174.19,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 145.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 769.2,
+          "speed": 0.03,
+          "fuel": 174.88,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 157.6,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 774.3,
+          "speed": 0.03,
+          "fuel": 175.61,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 149.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 779.4,
+          "speed": 0.04,
+          "fuel": 176.73,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 146.4,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 784.5,
+          "speed": 0.01,
+          "fuel": 177.38,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 143.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 789.6,
+          "speed": 0.04,
+          "fuel": 177.38,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 155.1,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 794.7,
+          "speed": 0.01,
+          "fuel": 178.27,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 158.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 799.8,
+          "speed": 0.01,
+          "fuel": 178.97,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 143.0,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 805.0,
+          "speed": 0.01,
+          "fuel": 179.84,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 190.2,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 810.0,
+          "speed": 0.03,
+          "fuel": 180.82,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 157.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 815.2,
+          "speed": 0.02,
+          "fuel": 181.21,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 159.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 820.2,
+          "speed": 0.02,
+          "fuel": 181.89,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 139.0,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 825.3,
+          "speed": 0.03,
+          "fuel": 183.01,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 150.5,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 830.4,
+          "speed": 0.06,
+          "fuel": 183.85,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 127.9,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 835.5,
+          "speed": 0.04,
+          "fuel": 184.6,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 155.6,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 840.6,
+          "speed": 0.0,
+          "fuel": 185.56,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 137.5,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 845.7,
+          "speed": 0.0,
+          "fuel": 186.35,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 146.5,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 850.8,
+          "speed": 0.01,
+          "fuel": 187.44,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 135.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 855.9,
+          "speed": 0.03,
+          "fuel": 188.1,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 140.7,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 861.0,
+          "speed": 0.01,
+          "fuel": 188.94,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 132.8,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 866.0,
+          "speed": 0.02,
+          "fuel": 189.66,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 120.3,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 871.1,
+          "speed": 0.03,
+          "fuel": 190.76,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 107.5,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 876.3,
+          "speed": 0.02,
+          "fuel": 190.76,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 136.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 881.4,
+          "speed": 0.0,
+          "fuel": 191.18,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 138.5,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 886.5,
+          "speed": 0.02,
+          "fuel": 191.9,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 125.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 891.6,
+          "speed": 0.03,
+          "fuel": 192.68,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 121.6,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 896.6,
+          "speed": 0.03,
+          "fuel": 194.15,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 123.5,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 901.7,
+          "speed": 0.0,
+          "fuel": 195.24,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 111.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 906.8,
+          "speed": 0.01,
+          "fuel": 195.56,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 123.6,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 912.0,
+          "speed": 0.0,
+          "fuel": 196.25,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 116.4,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 917.0,
+          "speed": 0.01,
+          "fuel": 197.15,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 106.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 922.0,
+          "speed": 0.01,
+          "fuel": 198.12,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 112.3,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 927.0,
+          "speed": 0.05,
+          "fuel": 199.06,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 111.7,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 932.0,
+          "speed": 0.01,
+          "fuel": 200.01,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 110.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 937.1,
+          "speed": 0.01,
+          "fuel": 200.25,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 110.3,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 942.1,
+          "speed": 0.01,
+          "fuel": 200.55,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 116.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 947.2,
+          "speed": 0.01,
+          "fuel": 201.59,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 101.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 952.3,
+          "speed": 0.03,
+          "fuel": 202.57,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 120.5,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 957.3,
+          "speed": 0.02,
+          "fuel": 203.61,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 111.4,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 962.3,
+          "speed": 0.04,
+          "fuel": 204.07,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 105.8,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 967.4,
+          "speed": 0.0,
+          "fuel": 204.96,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 115.3,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 972.4,
+          "speed": 0.01,
+          "fuel": 205.67,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 100.8,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 977.4,
+          "speed": 0.01,
+          "fuel": 206.41,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 102.1,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 982.5,
+          "speed": 0.02,
+          "fuel": 207.12,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 112.5,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 987.5,
+          "speed": 0.02,
+          "fuel": 207.8,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 90.8,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 992.5,
+          "speed": 0.01,
+          "fuel": 208.67,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 107.5,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 997.5,
+          "speed": 0.01,
+          "fuel": 209.69,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 106.0,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1002.5,
+          "speed": 0.01,
+          "fuel": 210.6,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 116.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1007.6,
+          "speed": 0.02,
+          "fuel": 211.26,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 96.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1012.7,
+          "speed": 0.03,
+          "fuel": 211.89,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 90.0,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1017.8,
+          "speed": 0.02,
+          "fuel": 211.89,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 103.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1022.8,
+          "speed": 0.01,
+          "fuel": 212.73,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 110.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1027.8,
+          "speed": 0.02,
+          "fuel": 213.38,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 97.6,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1032.8,
+          "speed": 0.01,
+          "fuel": 214.57,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 105.6,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1037.8,
+          "speed": 0.01,
+          "fuel": 214.93,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 98.7,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1042.8,
+          "speed": 0.04,
+          "fuel": 214.93,
+          "distance": 144.5,
+          "projectedScore": 36.5,
+          "planMs": 97.0,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1047.9,
+          "speed": 0.03,
+          "fuel": 216.29,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 85.2,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1053.0,
+          "speed": 0.02,
+          "fuel": 216.29,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 100.1,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1058.1,
+          "speed": 0.01,
+          "fuel": 216.81,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 89.5,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1063.1,
+          "speed": 0.01,
+          "fuel": 217.52,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 84.3,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 1068.2,
+          "speed": 0.0,
+          "fuel": 218.18,
+          "distance": 144.6,
+          "projectedScore": 36.5,
+          "planMs": 85.9,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        }
+      ]
+    },
+    {
+      "run_directory": "261117_152214_FINAL_SUBMISSION__50a",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 43.3; congratulations!",
+        "Sim elapsed time   = 260.02 s",
+        "Total fuel used    = 39.63 kg",
+        "Total damage taken = 0.0 J",
+        "Distance to ship   = 49.95 m"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.6,
+          "speed": 0.08,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planMs": 0.3,
+          "planDV": 0.0,
+          "mode": "WAIT_RADAR"
+        },
+        {
+          "t": 5.6,
+          "speed": 0.18,
+          "fuel": 1.68,
+          "distance": 1305.6,
+          "projectedScore": 43.7,
+          "planMs": 140.7,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 10.6,
+          "speed": 0.58,
+          "fuel": 3.77,
+          "distance": 1303.8,
+          "projectedScore": 46.3,
+          "planMs": 156.6,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 15.6,
+          "speed": 0.82,
+          "fuel": 5.99,
+          "distance": 1300.2,
+          "projectedScore": 48.1,
+          "planMs": 255.6,
+          "planDV": 7.03,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 20.7,
+          "speed": 1.25,
+          "fuel": 8.1,
+          "distance": 1294.9,
+          "projectedScore": 47.8,
+          "planMs": 274.5,
+          "planDV": 6.56,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 26.1,
+          "speed": 1.69,
+          "fuel": 10.37,
+          "distance": 1287.0,
+          "projectedScore": 47.7,
+          "planMs": 412.1,
+          "planDV": 6.08,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 31.2,
+          "speed": 2.12,
+          "fuel": 12.44,
+          "distance": 1277.2,
+          "projectedScore": 47.5,
+          "planMs": 309.7,
+          "planDV": 5.6,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 36.4,
+          "speed": 2.55,
+          "fuel": 14.57,
+          "distance": 1265.2,
+          "projectedScore": 47.2,
+          "planMs": 311.6,
+          "planDV": 5.13,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 41.5,
+          "speed": 2.98,
+          "fuel": 16.69,
+          "distance": 1251.1,
+          "projectedScore": 47.1,
+          "planMs": 292.7,
+          "planDV": 4.65,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 46.7,
+          "speed": 3.4,
+          "fuel": 18.84,
+          "distance": 1234.6,
+          "projectedScore": 46.9,
+          "planMs": 316.0,
+          "planDV": 4.18,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 52.0,
+          "speed": 3.85,
+          "fuel": 21.04,
+          "distance": 1215.3,
+          "projectedScore": 46.7,
+          "planMs": 368.8,
+          "planDV": 3.68,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 57.2,
+          "speed": 4.29,
+          "fuel": 23.19,
+          "distance": 1194.2,
+          "projectedScore": 46.2,
+          "planMs": 320.6,
+          "planDV": 3.2,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 62.3,
+          "speed": 4.4,
+          "fuel": 25.34,
+          "distance": 1171.6,
+          "projectedScore": 46.3,
+          "planMs": 332.5,
+          "planDV": 2.67,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 67.6,
+          "speed": 4.84,
+          "fuel": 27.51,
+          "distance": 1147.5,
+          "projectedScore": 46.2,
+          "planMs": 384.9,
+          "planDV": 2.18,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 72.8,
+          "speed": 5.27,
+          "fuel": 29.67,
+          "distance": 1121.1,
+          "projectedScore": 46.1,
+          "planMs": 406.0,
+          "planDV": 1.69,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 77.8,
+          "speed": 5.7,
+          "fuel": 31.73,
+          "distance": 1093.7,
+          "projectedScore": 46.0,
+          "planMs": 244.8,
+          "planDV": 1.2,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 82.9,
+          "speed": 6.12,
+          "fuel": 33.83,
+          "distance": 1063.7,
+          "projectedScore": 45.8,
+          "planMs": 300.4,
+          "planDV": 0.72,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 87.9,
+          "speed": 6.55,
+          "fuel": 35.93,
+          "distance": 1031.8,
+          "projectedScore": 45.5,
+          "planMs": 241.5,
+          "planDV": 0.24,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 93.0,
+          "speed": 6.71,
+          "fuel": 36.83,
+          "distance": 997.8,
+          "projectedScore": 43.7,
+          "planMs": 248.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 98.1,
+          "speed": 6.66,
+          "fuel": 38.1,
+          "distance": 963.4,
+          "projectedScore": 43.4,
+          "planMs": 301.6,
+          "planDV": 0.11,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 103.2,
+          "speed": 6.66,
+          "fuel": 38.38,
+          "distance": 929.6,
+          "projectedScore": 43.7,
+          "planMs": 271.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 108.3,
+          "speed": 6.6,
+          "fuel": 38.38,
+          "distance": 896.0,
+          "projectedScore": 43.3,
+          "planMs": 231.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 113.3,
+          "speed": 6.54,
+          "fuel": 38.38,
+          "distance": 862.7,
+          "projectedScore": 43.2,
+          "planMs": 231.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 118.4,
+          "speed": 6.49,
+          "fuel": 38.38,
+          "distance": 829.9,
+          "projectedScore": 43.2,
+          "planMs": 191.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 123.5,
+          "speed": 6.43,
+          "fuel": 38.38,
+          "distance": 797.2,
+          "projectedScore": 43.2,
+          "planMs": 187.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 128.6,
+          "speed": 6.37,
+          "fuel": 38.38,
+          "distance": 764.6,
+          "projectedScore": 43.3,
+          "planMs": 214.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 133.6,
+          "speed": 6.32,
+          "fuel": 38.38,
+          "distance": 732.4,
+          "projectedScore": 43.3,
+          "planMs": 208.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 138.7,
+          "speed": 6.26,
+          "fuel": 38.38,
+          "distance": 700.4,
+          "projectedScore": 43.3,
+          "planMs": 208.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 143.8,
+          "speed": 6.21,
+          "fuel": 38.38,
+          "distance": 668.6,
+          "projectedScore": 43.3,
+          "planMs": 227.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 148.9,
+          "speed": 6.15,
+          "fuel": 38.38,
+          "distance": 637.1,
+          "projectedScore": 43.2,
+          "planMs": 251.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 154.0,
+          "speed": 6.1,
+          "fuel": 38.38,
+          "distance": 606.3,
+          "projectedScore": 43.2,
+          "planMs": 219.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 159.1,
+          "speed": 6.04,
+          "fuel": 38.38,
+          "distance": 575.4,
+          "projectedScore": 43.2,
+          "planMs": 224.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 164.1,
+          "speed": 5.99,
+          "fuel": 38.38,
+          "distance": 545.3,
+          "projectedScore": 43.2,
+          "planMs": 173.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 169.2,
+          "speed": 5.94,
+          "fuel": 38.38,
+          "distance": 514.9,
+          "projectedScore": 43.2,
+          "planMs": 179.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 174.3,
+          "speed": 5.88,
+          "fuel": 38.38,
+          "distance": 485.0,
+          "projectedScore": 43.1,
+          "planMs": 170.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 179.4,
+          "speed": 5.83,
+          "fuel": 38.38,
+          "distance": 455.3,
+          "projectedScore": 42.7,
+          "planMs": 175.4,
+          "planDV": 0.3,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 184.5,
+          "speed": 5.79,
+          "fuel": 39.62,
+          "distance": 426.0,
+          "projectedScore": 42.4,
+          "planMs": 161.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 189.6,
+          "speed": 5.74,
+          "fuel": 39.62,
+          "distance": 396.7,
+          "projectedScore": 42.5,
+          "planMs": 167.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 194.7,
+          "speed": 5.69,
+          "fuel": 39.62,
+          "distance": 367.8,
+          "projectedScore": 42.4,
+          "planMs": 177.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 199.8,
+          "speed": 5.63,
+          "fuel": 39.62,
+          "distance": 339.1,
+          "projectedScore": 42.4,
+          "planMs": 178.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 204.9,
+          "speed": 5.58,
+          "fuel": 39.62,
+          "distance": 310.8,
+          "projectedScore": 42.4,
+          "planMs": 198.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 210.0,
+          "speed": 5.53,
+          "fuel": 39.62,
+          "distance": 282.9,
+          "projectedScore": 42.4,
+          "planMs": 167.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 215.0,
+          "speed": 5.48,
+          "fuel": 39.62,
+          "distance": 255.5,
+          "projectedScore": 40.7,
+          "planMs": 147.9,
+          "planDV": 0.02,
+          "mode": "COAST"
+        },
+        {
+          "t": 220.1,
+          "speed": 5.43,
+          "fuel": 39.62,
+          "distance": 228.2,
+          "projectedScore": 40.7,
+          "planMs": 149.0,
+          "planDV": 0.02,
+          "mode": "COAST"
+        },
+        {
+          "t": 225.2,
+          "speed": 5.38,
+          "fuel": 39.62,
+          "distance": 201.5,
+          "projectedScore": 40.7,
+          "planMs": 137.1,
+          "planDV": 0.01,
+          "mode": "COAST"
+        },
+        {
+          "t": 230.3,
+          "speed": 5.33,
+          "fuel": 39.62,
+          "distance": 175.0,
+          "projectedScore": 40.7,
+          "planMs": 131.7,
+          "planDV": 0.01,
+          "mode": "COAST"
+        },
+        {
+          "t": 235.4,
+          "speed": 5.28,
+          "fuel": 39.62,
+          "distance": 149.3,
+          "projectedScore": 40.7,
+          "planMs": 146.1,
+          "planDV": 0.01,
+          "mode": "COAST"
+        },
+        {
+          "t": 240.4,
+          "speed": 5.23,
+          "fuel": 39.62,
+          "distance": 124.4,
+          "projectedScore": 40.7,
+          "planMs": 138.7,
+          "planDV": 0.03,
+          "mode": "COAST"
+        },
+        {
+          "t": 245.5,
+          "speed": 5.18,
+          "fuel": 39.62,
+          "distance": 100.5,
+          "projectedScore": 40.7,
+          "planMs": 151.6,
+          "planDV": 0.05,
+          "mode": "COAST"
+        },
+        {
+          "t": 250.6,
+          "speed": 5.13,
+          "fuel": 39.62,
+          "distance": 78.4,
+          "projectedScore": 40.7,
+          "planMs": 146.2,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 255.7,
+          "speed": 5.08,
+          "fuel": 39.62,
+          "distance": 59.8,
+          "projectedScore": 40.7,
+          "planMs": 168.3,
+          "planDV": 0.15,
+          "mode": "COAST"
+        },
+        {
+          "t": 260.8,
+          "speed": 2.34,
+          "fuel": 40.06,
+          "distance": 51.8,
+          "projectedScore": 43.3,
+          "planMs": 183.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 265.9,
+          "speed": 2.05,
+          "fuel": 43.31,
+          "distance": 61.0,
+          "projectedScore": 43.3,
+          "planMs": 158.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 271.0,
+          "speed": 1.79,
+          "fuel": 46.47,
+          "distance": 72.6,
+          "projectedScore": 43.3,
+          "planMs": 167.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 276.0,
+          "speed": 1.65,
+          "fuel": 49.58,
+          "distance": 79.0,
+          "projectedScore": 43.3,
+          "planMs": 139.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 281.1,
+          "speed": 1.62,
+          "fuel": 52.79,
+          "distance": 88.2,
+          "projectedScore": 43.3,
+          "planMs": 155.6,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 286.3,
+          "speed": 1.71,
+          "fuel": 55.96,
+          "distance": 92.6,
+          "projectedScore": 43.3,
+          "planMs": 173.0,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 291.3,
+          "speed": 1.92,
+          "fuel": 58.94,
+          "distance": 100.1,
+          "projectedScore": 43.3,
+          "planMs": 144.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 296.5,
+          "speed": 2.22,
+          "fuel": 62.37,
+          "distance": 104.1,
+          "projectedScore": 43.3,
+          "planMs": 200.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 301.5,
+          "speed": 2.49,
+          "fuel": 65.12,
+          "distance": 110.4,
+          "projectedScore": 43.3,
+          "planMs": 150.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 306.7,
+          "speed": 2.91,
+          "fuel": 68.72,
+          "distance": 117.4,
+          "projectedScore": 43.3,
+          "planMs": 198.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 311.8,
+          "speed": 3.24,
+          "fuel": 71.59,
+          "distance": 123.6,
+          "projectedScore": 43.3,
+          "planMs": 221.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 316.8,
+          "speed": 3.7,
+          "fuel": 74.8,
+          "distance": 134.5,
+          "projectedScore": 43.3,
+          "planMs": 195.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 321.9,
+          "speed": 4.09,
+          "fuel": 78.19,
+          "distance": 144.9,
+          "projectedScore": 43.3,
+          "planMs": 203.6,
+          "planDV": 0.07,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 327.0,
+          "speed": 3.96,
+          "fuel": 81.37,
+          "distance": 156.0,
+          "projectedScore": 43.3,
+          "planMs": 163.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 332.1,
+          "speed": 3.73,
+          "fuel": 84.14,
+          "distance": 168.6,
+          "projectedScore": 43.3,
+          "planMs": 152.6,
+          "planDV": 0.35,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 337.2,
+          "speed": 3.47,
+          "fuel": 87.66,
+          "distance": 179.7,
+          "projectedScore": 43.3,
+          "planMs": 175.5,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 342.3,
+          "speed": 3.17,
+          "fuel": 90.73,
+          "distance": 187.6,
+          "projectedScore": 43.3,
+          "planMs": 144.9,
+          "planDV": 0.34,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 347.4,
+          "speed": 2.89,
+          "fuel": 93.99,
+          "distance": 193.9,
+          "projectedScore": 43.3,
+          "planMs": 169.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 352.4,
+          "speed": 2.64,
+          "fuel": 96.76,
+          "distance": 199.2,
+          "projectedScore": 43.3,
+          "planMs": 142.6,
+          "planDV": 0.42,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 357.5,
+          "speed": 2.39,
+          "fuel": 100.37,
+          "distance": 203.1,
+          "projectedScore": 43.3,
+          "planMs": 160.7,
+          "planDV": 0.47,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 362.6,
+          "speed": 2.18,
+          "fuel": 104.1,
+          "distance": 205.0,
+          "projectedScore": 43.3,
+          "planMs": 146.5,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 367.7,
+          "speed": 2.06,
+          "fuel": 107.2,
+          "distance": 204.7,
+          "projectedScore": 43.3,
+          "planMs": 156.2,
+          "planDV": 0.4,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 372.8,
+          "speed": 1.94,
+          "fuel": 110.17,
+          "distance": 202.7,
+          "projectedScore": 43.3,
+          "planMs": 167.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 377.9,
+          "speed": 1.9,
+          "fuel": 113.23,
+          "distance": 199.0,
+          "projectedScore": 43.3,
+          "planMs": 161.3,
+          "planDV": 0.45,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 383.0,
+          "speed": 1.89,
+          "fuel": 116.71,
+          "distance": 193.3,
+          "projectedScore": 43.3,
+          "planMs": 175.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 388.1,
+          "speed": 1.89,
+          "fuel": 120.79,
+          "distance": 185.9,
+          "projectedScore": 43.3,
+          "planMs": 168.0,
+          "planDV": 0.46,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 393.2,
+          "speed": 1.94,
+          "fuel": 124.73,
+          "distance": 176.8,
+          "projectedScore": 43.3,
+          "planMs": 153.0,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 398.2,
+          "speed": 2.03,
+          "fuel": 128.49,
+          "distance": 166.9,
+          "projectedScore": 43.3,
+          "planMs": 145.8,
+          "planDV": 0.28,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 403.3,
+          "speed": 2.06,
+          "fuel": 131.33,
+          "distance": 156.7,
+          "projectedScore": 43.3,
+          "planMs": 158.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 408.4,
+          "speed": 2.1,
+          "fuel": 134.05,
+          "distance": 147.1,
+          "projectedScore": 43.3,
+          "planMs": 136.0,
+          "planDV": 0.47,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 413.5,
+          "speed": 2.19,
+          "fuel": 137.03,
+          "distance": 138.4,
+          "projectedScore": 43.3,
+          "planMs": 147.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 418.6,
+          "speed": 2.2,
+          "fuel": 140.99,
+          "distance": 132.1,
+          "projectedScore": 43.3,
+          "planMs": 136.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 423.7,
+          "speed": 2.35,
+          "fuel": 145.07,
+          "distance": 129.2,
+          "projectedScore": 43.3,
+          "planMs": 151.8,
+          "planDV": 0.37,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 428.8,
+          "speed": 2.46,
+          "fuel": 148.95,
+          "distance": 130.2,
+          "projectedScore": 43.3,
+          "planMs": 153.9,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 433.9,
+          "speed": 2.5,
+          "fuel": 152.32,
+          "distance": 134.7,
+          "projectedScore": 43.3,
+          "planMs": 161.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 439.0,
+          "speed": 2.62,
+          "fuel": 155.7,
+          "distance": 142.4,
+          "projectedScore": 43.3,
+          "planMs": 185.5,
+          "planDV": 0.38,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 444.1,
+          "speed": 2.74,
+          "fuel": 158.28,
+          "distance": 152.8,
+          "projectedScore": 43.3,
+          "planMs": 180.8,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 449.2,
+          "speed": 2.74,
+          "fuel": 158.48,
+          "distance": 164.2,
+          "projectedScore": 43.3,
+          "planMs": 188.5,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 454.2,
+          "speed": 2.74,
+          "fuel": 158.73,
+          "distance": 175.9,
+          "projectedScore": 43.3,
+          "planMs": 165.2,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 459.3,
+          "speed": 2.74,
+          "fuel": 159.01,
+          "distance": 187.9,
+          "projectedScore": 43.3,
+          "planMs": 143.9,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 464.3,
+          "speed": 2.74,
+          "fuel": 159.5,
+          "distance": 200.2,
+          "projectedScore": 43.3,
+          "planMs": 149.9,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 469.4,
+          "speed": 2.74,
+          "fuel": 159.75,
+          "distance": 212.7,
+          "projectedScore": 43.3,
+          "planMs": 132.5,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 474.5,
+          "speed": 2.74,
+          "fuel": 160.01,
+          "distance": 225.4,
+          "projectedScore": 43.3,
+          "planMs": 133.9,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 479.6,
+          "speed": 2.74,
+          "fuel": 160.26,
+          "distance": 238.3,
+          "projectedScore": 43.3,
+          "planMs": 142.3,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 484.7,
+          "speed": 2.74,
+          "fuel": 160.53,
+          "distance": 251.2,
+          "projectedScore": 43.3,
+          "planMs": 128.9,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 489.7,
+          "speed": 2.74,
+          "fuel": 160.78,
+          "distance": 264.3,
+          "projectedScore": 43.3,
+          "planMs": 132.2,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 494.8,
+          "speed": 2.74,
+          "fuel": 161.04,
+          "distance": 277.5,
+          "projectedScore": 43.3,
+          "planMs": 128.1,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 499.9,
+          "speed": 2.74,
+          "fuel": 161.32,
+          "distance": 290.8,
+          "projectedScore": 43.3,
+          "planMs": 150.5,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 505.1,
+          "speed": 2.75,
+          "fuel": 161.8,
+          "distance": 304.2,
+          "projectedScore": 43.3,
+          "planMs": 146.8,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 510.1,
+          "speed": 2.75,
+          "fuel": 162.1,
+          "distance": 317.6,
+          "projectedScore": 43.3,
+          "planMs": 118.3,
+          "planDV": 0.0,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 515.2,
+          "speed": 2.75,
+          "fuel": 162.35,
+          "distance": 331.1,
+          "projectedScore": 43.3,
+          "planMs": 131.6,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 520.3,
+          "speed": 2.75,
+          "fuel": 162.53,
+          "distance": 344.5,
+          "projectedScore": 43.3,
+          "planMs": 122.9,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 525.4,
+          "speed": 2.75,
+          "fuel": 162.72,
+          "distance": 358.0,
+          "projectedScore": 43.3,
+          "planMs": 116.9,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 530.5,
+          "speed": 2.75,
+          "fuel": 163.1,
+          "distance": 371.6,
+          "projectedScore": 43.3,
+          "planMs": 105.0,
+          "planDV": 0.0,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 535.6,
+          "speed": 2.75,
+          "fuel": 163.27,
+          "distance": 385.3,
+          "projectedScore": 43.3,
+          "planMs": 123.0,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 540.7,
+          "speed": 2.75,
+          "fuel": 163.51,
+          "distance": 398.9,
+          "projectedScore": 43.3,
+          "planMs": 111.1,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 545.8,
+          "speed": 2.75,
+          "fuel": 163.75,
+          "distance": 412.6,
+          "projectedScore": 43.3,
+          "planMs": 148.9,
+          "planDV": 0.04,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 550.8,
+          "speed": 2.75,
+          "fuel": 164.07,
+          "distance": 426.2,
+          "projectedScore": 43.3,
+          "planMs": 112.9,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 555.9,
+          "speed": 2.75,
+          "fuel": 164.21,
+          "distance": 439.8,
+          "projectedScore": 43.3,
+          "planMs": 110.4,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 561.0,
+          "speed": 2.75,
+          "fuel": 164.46,
+          "distance": 453.6,
+          "projectedScore": 43.3,
+          "planMs": 151.5,
+          "planDV": 0.02,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 566.2,
+          "speed": 2.75,
+          "fuel": 164.67,
+          "distance": 467.6,
+          "projectedScore": 43.3,
+          "planMs": 198.8,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 571.2,
+          "speed": 2.75,
+          "fuel": 164.92,
+          "distance": 481.1,
+          "projectedScore": 43.3,
+          "planMs": 120.0,
+          "planDV": 0.03,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 576.3,
+          "speed": 2.75,
+          "fuel": 165.33,
+          "distance": 494.9,
+          "projectedScore": 43.3,
+          "planMs": 114.0,
+          "planDV": 0.01,
+          "mode": "POST_ENTRY_BRAKE"
+        }
+      ]
+    },
+    {
+      "run_directory": "261117_153305_FINAL_SUBMISSION__991",
+      "official_alerts": [
+        "Successfully escaped Phobos with a score of 25.5; congratulations!",
+        "Distance to ship   = 49.9 m",
+        "Total fuel used    = 49.32 kg",
+        "Sim elapsed time   = 291.05 s",
+        "Total damage taken = 0.0 J"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.6,
+          "speed": 0.06,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "projectedScore": 56.7,
+          "planMs": 344.5,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 5.6,
+          "speed": 0.16,
+          "fuel": 1.43,
+          "distance": 1305.7,
+          "projectedScore": 44.7,
+          "planMs": 138.3,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 10.6,
+          "speed": 0.57,
+          "fuel": 3.5,
+          "distance": 1303.9,
+          "projectedScore": 47.1,
+          "planMs": 167.5,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 15.8,
+          "speed": 0.74,
+          "fuel": 5.71,
+          "distance": 1300.2,
+          "projectedScore": 48.1,
+          "planMs": 254.3,
+          "planDV": 7.09,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 20.9,
+          "speed": 1.1,
+          "fuel": 7.83,
+          "distance": 1295.7,
+          "projectedScore": 47.9,
+          "planMs": 235.0,
+          "planDV": 6.6,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 26.1,
+          "speed": 1.54,
+          "fuel": 9.99,
+          "distance": 1288.8,
+          "projectedScore": 47.6,
+          "planMs": 309.6,
+          "planDV": 6.11,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 31.2,
+          "speed": 1.96,
+          "fuel": 12.06,
+          "distance": 1280.0,
+          "projectedScore": 46.2,
+          "planMs": 295.5,
+          "planDV": 5.63,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 36.2,
+          "speed": 2.01,
+          "fuel": 14.16,
+          "distance": 1269.9,
+          "projectedScore": 30.1,
+          "planMs": 267.4,
+          "planDV": 6.35,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 41.3,
+          "speed": 2.13,
+          "fuel": 16.3,
+          "distance": 1260.0,
+          "projectedScore": 22.8,
+          "planMs": 245.2,
+          "planDV": 5.86,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 46.4,
+          "speed": 2.39,
+          "fuel": 18.72,
+          "distance": 1249.9,
+          "projectedScore": 23.3,
+          "planMs": 227.0,
+          "planDV": 5.3,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 51.5,
+          "speed": 2.78,
+          "fuel": 20.84,
+          "distance": 1237.6,
+          "projectedScore": 32.6,
+          "planMs": 255.0,
+          "planDV": 5.48,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 56.6,
+          "speed": 2.55,
+          "fuel": 23.98,
+          "distance": 1224.5,
+          "projectedScore": 32.6,
+          "planMs": 263.5,
+          "planDV": 4.77,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 61.7,
+          "speed": 2.96,
+          "fuel": 26.11,
+          "distance": 1210.6,
+          "projectedScore": 31.9,
+          "planMs": 279.3,
+          "planDV": 4.31,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 66.8,
+          "speed": 3.39,
+          "fuel": 28.25,
+          "distance": 1194.3,
+          "projectedScore": 30.8,
+          "planMs": 283.0,
+          "planDV": 3.84,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 71.9,
+          "speed": 3.73,
+          "fuel": 30.35,
+          "distance": 1176.2,
+          "projectedScore": 16.1,
+          "planMs": 292.5,
+          "planDV": 4.27,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 77.3,
+          "speed": 3.66,
+          "fuel": 33.07,
+          "distance": 1156.4,
+          "projectedScore": 28.4,
+          "planMs": 176.0,
+          "planDV": 3.3,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 82.4,
+          "speed": 3.9,
+          "fuel": 35.13,
+          "distance": 1137.3,
+          "projectedScore": 27.9,
+          "planMs": 404.0,
+          "planDV": 2.87,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 87.4,
+          "speed": 4.32,
+          "fuel": 37.21,
+          "distance": 1116.7,
+          "projectedScore": 27.5,
+          "planMs": 237.6,
+          "planDV": 2.38,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 92.5,
+          "speed": 4.75,
+          "fuel": 39.29,
+          "distance": 1093.9,
+          "projectedScore": 27.2,
+          "planMs": 206.4,
+          "planDV": 1.9,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 97.5,
+          "speed": 5.17,
+          "fuel": 41.37,
+          "distance": 1068.9,
+          "projectedScore": 26.9,
+          "planMs": 194.7,
+          "planDV": 1.41,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 102.6,
+          "speed": 5.6,
+          "fuel": 43.48,
+          "distance": 1041.6,
+          "projectedScore": 26.6,
+          "planMs": 202.1,
+          "planDV": 0.94,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 107.7,
+          "speed": 6.04,
+          "fuel": 45.6,
+          "distance": 1011.7,
+          "projectedScore": 26.3,
+          "planMs": 242.5,
+          "planDV": 0.45,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 112.8,
+          "speed": 6.03,
+          "fuel": 46.03,
+          "distance": 981.1,
+          "projectedScore": 27.2,
+          "planMs": 222.1,
+          "planDV": 0.33,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 117.9,
+          "speed": 6.21,
+          "fuel": 47.32,
+          "distance": 949.8,
+          "projectedScore": 27.0,
+          "planMs": 222.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 123.0,
+          "speed": 6.16,
+          "fuel": 47.32,
+          "distance": 918.3,
+          "projectedScore": 25.4,
+          "planMs": 226.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 128.1,
+          "speed": 6.1,
+          "fuel": 47.32,
+          "distance": 887.2,
+          "projectedScore": 25.2,
+          "planMs": 199.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 133.1,
+          "speed": 6.04,
+          "fuel": 47.32,
+          "distance": 856.4,
+          "projectedScore": 25.1,
+          "planMs": 190.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 138.2,
+          "speed": 5.99,
+          "fuel": 47.32,
+          "distance": 825.9,
+          "projectedScore": 25.1,
+          "planMs": 198.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 143.3,
+          "speed": 5.93,
+          "fuel": 47.32,
+          "distance": 795.5,
+          "projectedScore": 25.2,
+          "planMs": 193.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 148.4,
+          "speed": 5.93,
+          "fuel": 48.29,
+          "distance": 765.5,
+          "projectedScore": 24.9,
+          "planMs": 208.3,
+          "planDV": 0.21,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 153.4,
+          "speed": 5.89,
+          "fuel": 49.09,
+          "distance": 735.8,
+          "projectedScore": 24.4,
+          "planMs": 162.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 158.5,
+          "speed": 5.84,
+          "fuel": 49.09,
+          "distance": 706.3,
+          "projectedScore": 24.6,
+          "planMs": 149.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 163.6,
+          "speed": 5.78,
+          "fuel": 49.09,
+          "distance": 676.3,
+          "projectedScore": 24.5,
+          "planMs": 219.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 168.7,
+          "speed": 5.73,
+          "fuel": 49.09,
+          "distance": 647.0,
+          "projectedScore": 24.4,
+          "planMs": 224.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 173.9,
+          "speed": 5.67,
+          "fuel": 49.09,
+          "distance": 617.7,
+          "projectedScore": 24.4,
+          "planMs": 298.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 178.9,
+          "speed": 5.62,
+          "fuel": 49.09,
+          "distance": 589.3,
+          "projectedScore": 24.3,
+          "planMs": 256.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 184.0,
+          "speed": 5.56,
+          "fuel": 49.09,
+          "distance": 560.9,
+          "projectedScore": 24.2,
+          "planMs": 222.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 189.0,
+          "speed": 5.51,
+          "fuel": 49.09,
+          "distance": 533.0,
+          "projectedScore": 24.1,
+          "planMs": 180.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 194.1,
+          "speed": 5.46,
+          "fuel": 49.09,
+          "distance": 505.1,
+          "projectedScore": 24.1,
+          "planMs": 167.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 199.2,
+          "speed": 5.41,
+          "fuel": 49.09,
+          "distance": 477.6,
+          "projectedScore": 24.0,
+          "planMs": 155.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 204.3,
+          "speed": 5.35,
+          "fuel": 49.09,
+          "distance": 450.4,
+          "projectedScore": 23.9,
+          "planMs": 154.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 209.4,
+          "speed": 5.3,
+          "fuel": 49.09,
+          "distance": 423.3,
+          "projectedScore": 23.8,
+          "planMs": 150.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 214.5,
+          "speed": 5.25,
+          "fuel": 49.09,
+          "distance": 396.6,
+          "projectedScore": 23.7,
+          "planMs": 143.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 219.6,
+          "speed": 5.2,
+          "fuel": 49.09,
+          "distance": 370.2,
+          "projectedScore": 23.6,
+          "planMs": 149.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 224.6,
+          "speed": 5.15,
+          "fuel": 49.09,
+          "distance": 344.0,
+          "projectedScore": 23.5,
+          "planMs": 153.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 229.7,
+          "speed": 5.09,
+          "fuel": 49.09,
+          "distance": 318.2,
+          "projectedScore": 23.3,
+          "planMs": 148.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 234.8,
+          "speed": 5.04,
+          "fuel": 49.09,
+          "distance": 292.6,
+          "projectedScore": 23.2,
+          "planMs": 150.4,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 239.9,
+          "speed": 4.99,
+          "fuel": 49.09,
+          "distance": 267.3,
+          "projectedScore": 24.8,
+          "planMs": 172.6,
+          "planDV": 0.0,
+          "mode": "COAST"
+        },
+        {
+          "t": 244.9,
+          "speed": 4.94,
+          "fuel": 49.32,
+          "distance": 242.7,
+          "projectedScore": 22.7,
+          "planMs": 119.0,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 250.0,
+          "speed": 4.89,
+          "fuel": 49.32,
+          "distance": 218.0,
+          "projectedScore": 22.7,
+          "planMs": 106.4,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 255.2,
+          "speed": 4.84,
+          "fuel": 49.32,
+          "distance": 193.5,
+          "projectedScore": 22.7,
+          "planMs": 168.2,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 260.3,
+          "speed": 4.79,
+          "fuel": 49.32,
+          "distance": 169.7,
+          "projectedScore": 22.7,
+          "planMs": 151.8,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 265.4,
+          "speed": 4.74,
+          "fuel": 49.32,
+          "distance": 146.5,
+          "projectedScore": 22.7,
+          "planMs": 147.1,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 270.4,
+          "speed": 4.69,
+          "fuel": 49.32,
+          "distance": 123.9,
+          "projectedScore": 22.7,
+          "planMs": 128.0,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 275.5,
+          "speed": 4.65,
+          "fuel": 49.32,
+          "distance": 102.2,
+          "projectedScore": 22.7,
+          "planMs": 144.8,
+          "planDV": 0.09,
+          "mode": "COAST"
+        },
+        {
+          "t": 280.6,
+          "speed": 4.6,
+          "fuel": 49.32,
+          "distance": 81.9,
+          "projectedScore": 22.7,
+          "planMs": 135.6,
+          "planDV": 0.1,
+          "mode": "COAST"
+        },
+        {
+          "t": 285.7,
+          "speed": 4.55,
+          "fuel": 49.32,
+          "distance": 63.8,
+          "projectedScore": 22.7,
+          "planMs": 142.9,
+          "planDV": 0.14,
+          "mode": "COAST"
+        },
+        {
+          "t": 290.8,
+          "speed": 4.5,
+          "fuel": 49.32,
+          "distance": 50.5,
+          "projectedScore": 22.8,
+          "planMs": 162.5,
+          "planDV": 0.26,
+          "mode": "COAST"
+        },
+        {
+          "t": 295.9,
+          "speed": 1.7,
+          "fuel": 51.73,
+          "distance": 49.5,
+          "projectedScore": 25.5,
+          "planMs": 156.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 301.0,
+          "speed": 1.37,
+          "fuel": 55.05,
+          "distance": 49.9,
+          "projectedScore": 25.5,
+          "planMs": 155.2,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        }
+      ]
+    },
+    {
+      "run_directory": "261117_154246_FINAL_SUBMISSION__42b",
+      "official_alerts": [
+        "Total damage taken = 0.0 J",
+        "Total fuel used    = 54.68 kg",
+        "Successfully escaped Phobos with a score of 16.5; congratulations!",
+        "Distance to ship   = 49.96 m",
+        "Sim elapsed time   = 304.83 s"
+      ],
+      "controller_source_hash": null,
+      "telemetry": [
+        {
+          "t": 0.4,
+          "speed": 0.0,
+          "fuel": 0.0,
+          "distance": 1305.8,
+          "planMs": 0.2,
+          "planDV": 0.0,
+          "mode": "WAIT_RADAR"
+        },
+        {
+          "t": 5.4,
+          "speed": 0.16,
+          "fuel": 1.44,
+          "distance": 1305.8,
+          "projectedScore": 45.1,
+          "planMs": 195.7,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 10.4,
+          "speed": 0.54,
+          "fuel": 3.5,
+          "distance": 1304.2,
+          "projectedScore": 45.0,
+          "planMs": 144.6,
+          "planDV": 0.51,
+          "mode": "LAUNCH"
+        },
+        {
+          "t": 15.5,
+          "speed": 0.73,
+          "fuel": 5.74,
+          "distance": 1300.7,
+          "projectedScore": 47.5,
+          "planMs": 225.8,
+          "planDV": 7.1,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 20.5,
+          "speed": 1.06,
+          "fuel": 7.83,
+          "distance": 1296.3,
+          "projectedScore": 47.8,
+          "planMs": 225.5,
+          "planDV": 6.63,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 25.8,
+          "speed": 1.49,
+          "fuel": 10.02,
+          "distance": 1289.6,
+          "projectedScore": 46.8,
+          "planMs": 371.6,
+          "planDV": 6.15,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 30.8,
+          "speed": 1.91,
+          "fuel": 12.1,
+          "distance": 1281.0,
+          "projectedScore": 47.2,
+          "planMs": 312.7,
+          "planDV": 5.67,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 35.9,
+          "speed": 2.33,
+          "fuel": 14.2,
+          "distance": 1270.2,
+          "projectedScore": 47.1,
+          "planMs": 284.1,
+          "planDV": 5.19,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 41.0,
+          "speed": 2.76,
+          "fuel": 16.31,
+          "distance": 1257.2,
+          "projectedScore": 46.9,
+          "planMs": 285.1,
+          "planDV": 4.71,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 46.1,
+          "speed": 3.19,
+          "fuel": 18.41,
+          "distance": 1242.1,
+          "projectedScore": 46.7,
+          "planMs": 290.0,
+          "planDV": 4.23,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 51.2,
+          "speed": 3.62,
+          "fuel": 20.52,
+          "distance": 1224.7,
+          "projectedScore": 46.4,
+          "planMs": 307.4,
+          "planDV": 3.74,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 56.4,
+          "speed": 4.05,
+          "fuel": 22.67,
+          "distance": 1204.7,
+          "projectedScore": 46.1,
+          "planMs": 327.7,
+          "planDV": 3.25,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 61.4,
+          "speed": 4.39,
+          "fuel": 25.27,
+          "distance": 1183.3,
+          "projectedScore": 10.8,
+          "planMs": 640.0,
+          "planDV": 1.95,
+          "mode": "ESCAPE"
+        },
+        {
+          "t": 66.9,
+          "speed": 3.83,
+          "fuel": 28.77,
+          "distance": 1161.0,
+          "projectedScore": 1.9,
+          "planMs": 558.1,
+          "planDV": 1.61,
+          "mode": "ESCAPE"
+        },
+        {
+          "t": 72.5,
+          "speed": 3.27,
+          "fuel": 33.3,
+          "distance": 1141.1,
+          "projectedScore": -14.0,
+          "planMs": 718.4,
+          "planDV": 1.7,
+          "mode": "ESCAPE"
+        },
+        {
+          "t": 77.9,
+          "speed": 3.06,
+          "fuel": 35.51,
+          "distance": 1124.6,
+          "projectedScore": 21.6,
+          "planMs": 424.4,
+          "planDV": 3.6,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 82.9,
+          "speed": 3.33,
+          "fuel": 37.6,
+          "distance": 1108.8,
+          "projectedScore": 21.5,
+          "planMs": 348.8,
+          "planDV": 3.13,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 88.1,
+          "speed": 3.77,
+          "fuel": 39.74,
+          "distance": 1090.3,
+          "projectedScore": 21.4,
+          "planMs": 334.7,
+          "planDV": 2.64,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 93.1,
+          "speed": 4.19,
+          "fuel": 41.83,
+          "distance": 1070.3,
+          "projectedScore": 21.1,
+          "planMs": 261.0,
+          "planDV": 2.16,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 98.1,
+          "speed": 4.62,
+          "fuel": 43.92,
+          "distance": 1048.2,
+          "projectedScore": 21.0,
+          "planMs": 209.9,
+          "planDV": 1.67,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 103.2,
+          "speed": 5.06,
+          "fuel": 46.03,
+          "distance": 1023.5,
+          "projectedScore": 20.9,
+          "planMs": 227.5,
+          "planDV": 1.19,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 108.4,
+          "speed": 5.5,
+          "fuel": 48.14,
+          "distance": 996.5,
+          "projectedScore": 20.3,
+          "planMs": 260.8,
+          "planDV": 0.7,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 113.4,
+          "speed": 5.8,
+          "fuel": 50.25,
+          "distance": 967.6,
+          "projectedScore": 19.2,
+          "planMs": 247.0,
+          "planDV": 0.17,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 118.5,
+          "speed": 5.82,
+          "fuel": 52.03,
+          "distance": 938.2,
+          "projectedScore": 19.1,
+          "planMs": 228.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 123.5,
+          "speed": 5.82,
+          "fuel": 52.52,
+          "distance": 909.0,
+          "projectedScore": 18.4,
+          "planMs": 175.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 128.7,
+          "speed": 5.76,
+          "fuel": 52.52,
+          "distance": 879.3,
+          "projectedScore": 16.0,
+          "planMs": 203.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 133.7,
+          "speed": 5.7,
+          "fuel": 52.52,
+          "distance": 850.3,
+          "projectedScore": 15.6,
+          "planMs": 198.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 138.8,
+          "speed": 5.64,
+          "fuel": 52.52,
+          "distance": 821.7,
+          "projectedScore": 15.5,
+          "planMs": 182.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 143.9,
+          "speed": 5.59,
+          "fuel": 52.52,
+          "distance": 793.1,
+          "projectedScore": 15.5,
+          "planMs": 198.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 148.9,
+          "speed": 5.53,
+          "fuel": 52.52,
+          "distance": 765.0,
+          "projectedScore": 15.4,
+          "planMs": 182.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 154.0,
+          "speed": 5.48,
+          "fuel": 52.52,
+          "distance": 737.2,
+          "projectedScore": 15.3,
+          "planMs": 175.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 159.1,
+          "speed": 5.48,
+          "fuel": 53.24,
+          "distance": 709.6,
+          "projectedScore": 17.4,
+          "planMs": 150.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 164.2,
+          "speed": 5.42,
+          "fuel": 53.24,
+          "distance": 681.7,
+          "projectedScore": 17.3,
+          "planMs": 187.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 169.4,
+          "speed": 5.36,
+          "fuel": 53.24,
+          "distance": 653.9,
+          "projectedScore": 17.3,
+          "planMs": 232.2,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 174.5,
+          "speed": 5.31,
+          "fuel": 53.24,
+          "distance": 626.8,
+          "projectedScore": 17.3,
+          "planMs": 250.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 179.5,
+          "speed": 5.25,
+          "fuel": 53.24,
+          "distance": 600.0,
+          "projectedScore": 16.6,
+          "planMs": 214.7,
+          "planDV": 0.16,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "t": 184.6,
+          "speed": 5.2,
+          "fuel": 54.68,
+          "distance": 573.5,
+          "projectedScore": 15.2,
+          "planMs": 204.6,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 189.8,
+          "speed": 5.14,
+          "fuel": 54.68,
+          "distance": 546.9,
+          "projectedScore": 15.3,
+          "planMs": 247.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 194.8,
+          "speed": 5.09,
+          "fuel": 54.68,
+          "distance": 521.3,
+          "projectedScore": 15.3,
+          "planMs": 174.3,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 199.9,
+          "speed": 5.03,
+          "fuel": 54.68,
+          "distance": 495.5,
+          "projectedScore": 15.2,
+          "planMs": 174.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 204.9,
+          "speed": 4.98,
+          "fuel": 54.68,
+          "distance": 470.3,
+          "projectedScore": 15.2,
+          "planMs": 162.9,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 210.1,
+          "speed": 4.93,
+          "fuel": 54.68,
+          "distance": 445.0,
+          "projectedScore": 15.1,
+          "planMs": 158.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 215.2,
+          "speed": 4.88,
+          "fuel": 54.68,
+          "distance": 420.0,
+          "projectedScore": 15.0,
+          "planMs": 177.7,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 220.2,
+          "speed": 4.82,
+          "fuel": 54.68,
+          "distance": 395.6,
+          "projectedScore": 15.0,
+          "planMs": 151.5,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 225.3,
+          "speed": 4.77,
+          "fuel": 54.68,
+          "distance": 371.4,
+          "projectedScore": 14.9,
+          "planMs": 152.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 230.4,
+          "speed": 4.72,
+          "fuel": 54.68,
+          "distance": 347.3,
+          "projectedScore": 14.8,
+          "planMs": 151.1,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 235.5,
+          "speed": 4.67,
+          "fuel": 54.68,
+          "distance": 323.6,
+          "projectedScore": 14.7,
+          "planMs": 128.8,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 240.6,
+          "speed": 4.62,
+          "fuel": 54.68,
+          "distance": 300.2,
+          "projectedScore": 14.7,
+          "planMs": 123.0,
+          "planDV": 0.0,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "t": 245.7,
+          "speed": 4.57,
+          "fuel": 54.68,
+          "distance": 276.9,
+          "projectedScore": 15.9,
+          "planMs": 159.2,
+          "planDV": 0.0,
+          "mode": "COAST"
+        },
+        {
+          "t": 250.8,
+          "speed": 4.52,
+          "fuel": 54.68,
+          "distance": 254.1,
+          "projectedScore": 13.7,
+          "planMs": 152.9,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 255.9,
+          "speed": 4.46,
+          "fuel": 54.68,
+          "distance": 231.6,
+          "projectedScore": 13.7,
+          "planMs": 149.8,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 261.0,
+          "speed": 4.41,
+          "fuel": 54.68,
+          "distance": 209.3,
+          "projectedScore": 13.7,
+          "planMs": 135.4,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 266.1,
+          "speed": 4.36,
+          "fuel": 54.68,
+          "distance": 187.7,
+          "projectedScore": 13.7,
+          "planMs": 142.9,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 271.2,
+          "speed": 4.31,
+          "fuel": 54.68,
+          "distance": 166.2,
+          "projectedScore": 13.7,
+          "planMs": 151.9,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 276.3,
+          "speed": 4.26,
+          "fuel": 54.68,
+          "distance": 145.3,
+          "projectedScore": 13.7,
+          "planMs": 142.5,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 281.4,
+          "speed": 4.21,
+          "fuel": 54.68,
+          "distance": 124.9,
+          "projectedScore": 13.7,
+          "planMs": 153.6,
+          "planDV": 0.06,
+          "mode": "COAST"
+        },
+        {
+          "t": 286.5,
+          "speed": 4.16,
+          "fuel": 54.68,
+          "distance": 105.3,
+          "projectedScore": 13.7,
+          "planMs": 153.3,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 291.6,
+          "speed": 4.12,
+          "fuel": 54.68,
+          "distance": 86.8,
+          "projectedScore": 13.7,
+          "planMs": 164.8,
+          "planDV": 0.07,
+          "mode": "COAST"
+        },
+        {
+          "t": 296.6,
+          "speed": 4.07,
+          "fuel": 54.68,
+          "distance": 70.0,
+          "projectedScore": 13.7,
+          "planMs": 148.9,
+          "planDV": 0.08,
+          "mode": "COAST"
+        },
+        {
+          "t": 301.7,
+          "speed": 4.02,
+          "fuel": 54.68,
+          "distance": 56.2,
+          "projectedScore": 13.7,
+          "planMs": 163.2,
+          "planDV": 0.12,
+          "mode": "COAST"
+        },
+        {
+          "t": 306.8,
+          "speed": 0.96,
+          "fuel": 55.05,
+          "distance": 48.3,
+          "projectedScore": 16.4,
+          "planMs": 173.3,
+          "planDV": 0.0,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 311.9,
+          "speed": 1.06,
+          "fuel": 58.32,
+          "distance": 53.4,
+          "projectedScore": 16.4,
+          "planMs": 162.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 317.0,
+          "speed": 0.93,
+          "fuel": 61.89,
+          "distance": 56.9,
+          "projectedScore": 16.4,
+          "planMs": 149.4,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 322.1,
+          "speed": 1.04,
+          "fuel": 65.31,
+          "distance": 62.5,
+          "projectedScore": 16.4,
+          "planMs": 152.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 327.2,
+          "speed": 1.29,
+          "fuel": 68.47,
+          "distance": 65.2,
+          "projectedScore": 16.4,
+          "planMs": 186.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 332.3,
+          "speed": 1.68,
+          "fuel": 72.19,
+          "distance": 66.1,
+          "projectedScore": 16.4,
+          "planMs": 209.6,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 337.4,
+          "speed": 2.06,
+          "fuel": 75.35,
+          "distance": 69.8,
+          "projectedScore": 16.4,
+          "planMs": 157.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 342.5,
+          "speed": 2.51,
+          "fuel": 79.05,
+          "distance": 75.6,
+          "projectedScore": 16.4,
+          "planMs": 155.8,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 347.6,
+          "speed": 2.88,
+          "fuel": 82.03,
+          "distance": 81.6,
+          "projectedScore": 16.4,
+          "planMs": 144.7,
+          "planDV": 0.41,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 352.7,
+          "speed": 3.04,
+          "fuel": 85.23,
+          "distance": 88.5,
+          "projectedScore": 16.4,
+          "planMs": 171.9,
+          "planDV": 0.5,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 357.8,
+          "speed": 2.75,
+          "fuel": 88.56,
+          "distance": 95.5,
+          "projectedScore": 16.4,
+          "planMs": 187.3,
+          "planDV": 0.45,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 362.9,
+          "speed": 2.4,
+          "fuel": 92.82,
+          "distance": 101.1,
+          "projectedScore": 16.4,
+          "planMs": 171.1,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 368.0,
+          "speed": 2.03,
+          "fuel": 96.78,
+          "distance": 105.0,
+          "projectedScore": 16.4,
+          "planMs": 200.7,
+          "planDV": 0.51,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 373.0,
+          "speed": 1.63,
+          "fuel": 100.25,
+          "distance": 107.3,
+          "projectedScore": 16.4,
+          "planMs": 170.8,
+          "planDV": 0.46,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 378.2,
+          "speed": 1.02,
+          "fuel": 104.15,
+          "distance": 109.7,
+          "projectedScore": 16.4,
+          "planMs": 189.8,
+          "planDV": 0.19,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 383.2,
+          "speed": 0.42,
+          "fuel": 107.46,
+          "distance": 111.0,
+          "projectedScore": 16.4,
+          "planMs": 154.8,
+          "planDV": 0.43,
+          "mode": "POST_ENTRY_BRAKE"
+        },
+        {
+          "t": 388.3,
+          "speed": 0.05,
+          "fuel": 109.87,
+          "distance": 111.5,
+          "projectedScore": 16.4,
+          "planMs": 147.1,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 393.4,
+          "speed": 0.04,
+          "fuel": 110.65,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 177.0,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 398.6,
+          "speed": 0.02,
+          "fuel": 111.33,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 203.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 403.7,
+          "speed": 0.02,
+          "fuel": 111.53,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 190.0,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 408.7,
+          "speed": 0.01,
+          "fuel": 112.24,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 186.5,
+          "planDV": 0.0,
+          "mode": "HOLD"
+        },
+        {
+          "t": 413.8,
+          "speed": 0.04,
+          "fuel": 113.26,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 198.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 419.0,
+          "speed": 0.02,
+          "fuel": 114.63,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 241.3,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 424.0,
+          "speed": 0.07,
+          "fuel": 116.36,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 173.6,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 429.1,
+          "speed": 0.05,
+          "fuel": 117.4,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 191.4,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 434.2,
+          "speed": 0.04,
+          "fuel": 118.21,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 168.1,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 439.3,
+          "speed": 0.02,
+          "fuel": 119.43,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 175.8,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 444.4,
+          "speed": 0.01,
+          "fuel": 120.87,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 191.3,
+          "planDV": 0.05,
+          "mode": "HOLD"
+        },
+        {
+          "t": 449.5,
+          "speed": 0.03,
+          "fuel": 121.41,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 190.9,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 454.6,
+          "speed": 0.02,
+          "fuel": 121.41,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 201.1,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 459.7,
+          "speed": 0.01,
+          "fuel": 122.18,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 162.7,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 464.8,
+          "speed": 0.01,
+          "fuel": 123.16,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 168.2,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 469.9,
+          "speed": 0.02,
+          "fuel": 124.12,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 161.2,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 475.0,
+          "speed": 0.03,
+          "fuel": 124.12,
+          "distance": 111.3,
+          "projectedScore": 16.4,
+          "planMs": 178.3,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 480.1,
+          "speed": 0.02,
+          "fuel": 125.95,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 227.5,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 485.1,
+          "speed": 0.0,
+          "fuel": 126.27,
+          "distance": 111.3,
+          "projectedScore": 16.4,
+          "planMs": 182.0,
+          "planDV": 0.07,
+          "mode": "HOLD"
+        },
+        {
+          "t": 490.2,
+          "speed": 0.06,
+          "fuel": 127.64,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 187.3,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        },
+        {
+          "t": 495.4,
+          "speed": 0.02,
+          "fuel": 128.97,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 240.8,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 500.5,
+          "speed": 0.01,
+          "fuel": 129.78,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 247.9,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 505.5,
+          "speed": 0.03,
+          "fuel": 130.82,
+          "distance": 111.3,
+          "projectedScore": 16.4,
+          "planMs": 171.2,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 510.6,
+          "speed": 0.01,
+          "fuel": 131.69,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 161.3,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 515.7,
+          "speed": 0.01,
+          "fuel": 132.1,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 187.4,
+          "planDV": 0.01,
+          "mode": "HOLD"
+        },
+        {
+          "t": 520.8,
+          "speed": 0.02,
+          "fuel": 132.55,
+          "distance": 111.3,
+          "projectedScore": 16.4,
+          "planMs": 158.1,
+          "planDV": 0.04,
+          "mode": "HOLD"
+        },
+        {
+          "t": 525.9,
+          "speed": 0.03,
+          "fuel": 133.21,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 146.1,
+          "planDV": 0.03,
+          "mode": "HOLD"
+        },
+        {
+          "t": 531.0,
+          "speed": 0.02,
+          "fuel": 133.21,
+          "distance": 111.4,
+          "projectedScore": 16.4,
+          "planMs": 191.3,
+          "planDV": 0.02,
+          "mode": "HOLD"
+        },
+        {
+          "t": 536.1,
+          "speed": 0.0,
+          "fuel": 134.32,
+          "distance": 111.3,
+          "projectedScore": 16.4,
+          "planMs": 154.1,
+          "planDV": 0.06,
+          "mode": "HOLD"
+        }
+      ]
+    }
+  ]
+}

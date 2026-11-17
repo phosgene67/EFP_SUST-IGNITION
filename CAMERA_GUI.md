@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
-See [SCORE_MOMENTUM.md](SCORE_MOMENTUM.md) for current navigation and validation.
+The active flight profile is **SCORE_COAST** for `FINAL_SUBMISSION.simconf`.
+See [SCORE_COAST.md](SCORE_COAST.md) for current navigation and validation.
 After entry, the footer shows **Entry fuel** separately from the current total,
 which continues increasing during post-arrival braking.
 The FUSION25 comparison at the end is a historical experiment.
@@ -14,7 +14,7 @@ simulation normally. An **EFP Camera Interface** OpenCV window opens automatical
 The controller remains responsible for the camera API; the separate viewer reads
 its snapshots and draws the window.
 
-The installed STPro v0.55.0 Python environment has OpenCV 5.0.0 with WIN32UI support.
+The installed STPro v0.56.0 Python environment has OpenCV 5.0.0 with WIN32UI support.
 The installed camera bindings confirm RGB/depth output modes, capture timestamps,
 row-major pixel storage, and depth in centimetres. No changes to STU4-Sim are needed.
 
@@ -93,7 +93,7 @@ python camera_viewer.py --demo
 If your default Python lacks OpenCV, use the simulator environment:
 
 ```powershell
-& "$env:LOCALAPPDATA\SimDynamX\STPro\Versions\v0.55.0\py\Scripts\python.exe" camera_viewer.py --demo
+& "$env:LOCALAPPDATA\SimDynamX\STPro\Versions\v0.56.0\py\Scripts\python.exe" camera_viewer.py --demo
 ```
 
 Reopen a running or saved controller snapshot by replacing the source argument with
@@ -115,7 +115,7 @@ not change an already-running Space Teams process.
 
 ## Current speed and depth display
 
-`SCORE_MOMENTUM` selects finite burns and coasting using the score formula, with a
+`SCORE_COAST` selects finite burns and coasting using the score formula, with a
 10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
 at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
 four current modeled runs peaked at 6.38--6.87 m/s.

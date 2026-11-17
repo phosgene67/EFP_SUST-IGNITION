@@ -69,6 +69,10 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 # Tuning values require validation with the official simulator/jet allocator.
 from collections import deque
 from threading import Lock
+import hashlib
+from pathlib import Path
+
+CONTROLLER_PROFILE = 'SCORE_COAST'
 
 MAX_SPEED = 25.0
 MIN_CRUISE_SPEED = 18.0
@@ -135,6 +139,21 @@ def camera_rotation(yaw_deg, pitch_deg):
     yaw, pitch = np.deg2rad([yaw_deg, pitch_deg])
     cy, sy, cp, sp = np.cos(yaw), np.sin(yaw), np.cos(pitch), np.sin(pitch)
     return np.array([[cp*cy, cp*sy, -sp], [-sy, cy, 0.], [sp*cy, sp*sy, cp]])
+
+
+
+def camera_can_aim(world_to_body, bearing):
+    """Whether either bounded gimbal can cover a bearing with the depth margin."""
+    body = np.asarray(world_to_body)@np.asarray(bearing)
+    yaw = float(np.clip(np.rad2deg(np.arctan2(body[1], body[0])), -89., 89.))
+    angle = np.rad2deg(np.arctan2(-body[2], max(np.linalg.norm(body[:2]), 1e-9)))
+    tan_y = np.tan(np.deg2rad(CAMERA_FOV/2.-3.))
+    tan_x = tan_y*CAMERA_WIDTH/CAMERA_HEIGHT
+    for pitch in (np.clip(angle, -50., 0.), np.clip(angle, 0., 50.)):
+        view = camera_rotation(yaw, pitch)@body
+        if view[0] > 1e-9 and abs(view[1]) < view[0]*tan_x and abs(view[2]) < view[0]*tan_y:
+            return True
+    return False
 
 
 def connected_regions(values, valid, relative_jump=0.12):
@@ -2290,11 +2309,19 @@ class ShootingNavigator(EconomyNavigator):
         radial_choices = np.array([np.cos(angle)*tangent+np.sin(angle)*second for angle in np.arange(16)*np.pi/8.])
         headings = -np.sqrt(1.-ratio*ratio)*outward+ratio*radial_choices
         goals = loc+distance*np.sqrt(1.-ratio*ratio)*headings
-        goal_valid = np.ones(16, dtype=bool)
+        # Prefer an arrival side the gimbals can actually observe before entry.
+        # Check two inbound distances: a clear bearing now is not enough when
+        # the station later moves behind a fixed, freely coasting body.
+        viewable = np.array([all(camera_can_aim(rotation, target_loc-point)
+            for point in (goals[index]-np.sqrt(range_m**2-47.**2)*headings[index]
+                          for range_m in (150., 80.))) for index in range(16)])
+        # If attitude makes every side unreachable, retain the existing guarded
+        # camera hold rather than assuming a view or bypassing its safety gate.
+        goal_valid = viewable if viewable.any() else np.ones(16, dtype=bool)
         if self.terminal.camera_ready:
             hull = (np.linalg.norm(centers+loc-target_loc, axis=1) < 85.) & (np.linalg.norm(speeds-target_vel, axis=1) < .1)
             for index in range(16):
-                goal_valid[index] = segment_clearance(np.zeros(3), goals[index]+100.*headings[index]-loc,
+                goal_valid[index] &= segment_clearance(np.zeros(3), goals[index]+100.*headings[index]-loc,
                                                      centers[hull], radii[hull]) > 1.
         base_times = np.arange(45., 451., 10.)
         if self.previous_eta is not None and self.previous_eta-now > 10.:
@@ -2375,6 +2402,22 @@ class ShootingNavigator(EconomyNavigator):
                 c_goals.append(goal_indices[base])
                 c_counters.append(max(times[base]/2., cursor))
                 c_delays.append(delays[base])
+        when, miss = ballistic_pass(loc, vel, target_loc, target_vel, gravity)
+        coast_entry = 42. < miss < 48. and 5. < when < 600.
+        if coast_entry and viewable.any():
+            # Check the actual curved coast too, not only newly sampled lines.
+            # Otherwise a free coast could bypass the viewability constraint.
+            for radius in (150., 80.):
+                lower, upper = 0., when
+                for _ in range(18):
+                    stamp = .5*(lower+upper)
+                    bearing = target_loc-loc-stamp*(vel-target_vel)-.5*stamp*stamp*gravity
+                    if np.linalg.norm(bearing) > radius:
+                        lower = stamp
+                    else:
+                        upper = stamp
+                bearing = target_loc-loc-upper*(vel-target_vel)-.5*upper*upper*gravity
+                coast_entry = coast_entry and camera_can_aim(rotation, bearing)
         retained_index = None
         if (was_active and self.previous_eta is not None and self.previous_eta-now > 15.
                 and goal_valid[0] and (np.linalg.norm(self.last_detour) < .01 or now < self.counter_time-1.)):
@@ -2386,7 +2429,10 @@ class ShootingNavigator(EconomyNavigator):
             for component in self.burn_order:
                 start[component], cursor = cursor, cursor+duration[component]
             eta = self.previous_eta-now
-            if cursor < eta:
+            # A completed burn is a coast, so it must still enter the safe
+            # passage. Retention credit cannot grandfather an unsafe miss.
+            finished = np.max(np.abs(residual)) < self.burn_tolerance and np.linalg.norm(self.last_detour) < .01
+            if cursor < eta and (not finished or coast_entry):
                 cost = kg_per_dv*(np.abs(residual).sum()+2.*np.abs(rotation@self.last_detour).sum())
                 retained_index = len(c_scores)
                 c_dv.append(residual); c_start.append(start); c_duration.append(duration)
@@ -2394,8 +2440,7 @@ class ShootingNavigator(EconomyNavigator):
                 c_orders.append(self.burn_order.copy()); c_detours.append(self.last_detour.copy())
                 c_goals.append(0); c_counters.append(self.counter_time-now)
                 c_delays.append(delay)
-        when, miss = ballistic_pass(loc, vel, target_loc, target_vel, gravity)
-        if 42. < miss < 48. and 5. < when < 600.:
+        if coast_entry:
             # Preserve an already successful unpowered pass. It need not hit
             # exactly the old 47 m waypoint to earn the same success result.
             c_dv.append(np.zeros(3)); c_start.append(np.zeros(3)); c_duration.append(np.zeros(3))
@@ -2610,6 +2655,10 @@ class FreeAttitude(FlightAttitude):
 
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
+try:
+    controller_source_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+except OSError:
+    controller_source_hash = 'unavailable'
 rescue_frame = target.GetBodyFixedFrame()
 planner = ShootingNavigator(nose_first=nose_first_enabled)
 flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
@@ -2756,7 +2805,7 @@ try:
             angular_accel = np.zeros(3)
         SetCommand(accel_body, angular_accel)
         if preview is not None:
-            preview.update(running=True, profile='SCORE_MOMENTUM', now=now, mode=mode,
+            preview.update(running=True, profile=CONTROLLER_PROFILE, now=now, mode=mode,
                 speed=float(np.linalg.norm(vel-target_vel)), cruise=cruise,
                 distance=float(np.linalg.norm(target_loc-loc)), fuel=fuel, damage=damage,
                 images=camera_manager.received, rejected=perception.rejected,
@@ -2773,7 +2822,7 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile=SCORE_MOMENTUM t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile={CONTROLLER_PROFILE} sourceSHA256={controller_source_hash} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'noseFirst={nose_first_enabled} '
                 f'axisThrust={axis_thrust_enabled} '

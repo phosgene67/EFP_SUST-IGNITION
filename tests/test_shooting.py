@@ -198,6 +198,83 @@ class ShootingTests(unittest.TestCase):
         self.assertEqual(mode, 'IMPULSE_COAST')
         np.testing.assert_array_equal(command, np.zeros(3))
 
+    def completed_burn(self, sideways_speed):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.launch.done = True
+        location, velocity = np.array([9000., 0., 0.]), np.array([7., sideways_speed, 0.])
+        target = np.array([10000., 0., 0.])
+        when, miss = namespace['ballistic_pass'](location, velocity, target, np.zeros(3),
+                                                planner.gravity_at(location))
+        planner.shooting_active = True
+        planner.burn_target = velocity.copy()
+        planner.axis_done[:] = True
+        planner.burn_gravity = planner.gravity_at(location)
+        planner.burn_started = planner.plan_chosen_at = 100.
+        planner.previous_eta = 100.+when
+        planner.policy.previous = (100., velocity.copy(), 35.)
+        planner.terminal.side, planner.terminal.tangent = np.array([-1., 0., 0.]), np.array([0., 1., 0.])
+        return planner, location, velocity, target, miss
+
+    def test_completed_burn_cannot_retain_a_coast_that_misses_the_zone(self):
+        planner, location, velocity, target, miss = self.completed_burn(.35)
+        self.assertGreater(miss, 50.)
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .1)
+        # The correction starts well before the capture handoff, preserving
+        # the opportunity to make a small change instead of a late hard turn.
+        self.assertGreater(np.linalg.norm(target-location), 280.)
+
+    def test_retention_does_not_preserve_a_pass_too_close_to_ship_centre(self):
+        planner, location, velocity, target, miss = self.completed_burn(.1)
+        self.assertLess(miss, 42.)
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .1)
+
+    def test_completed_safe_burn_keeps_its_unpowered_pass(self):
+        planner, location, velocity, target, miss = self.completed_burn(.28)
+        self.assertGreater(miss, 42.)
+        self.assertLess(miss, 48.)
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+
+    def test_camera_reach_respects_the_fixed_gimbal_limits(self):
+        aim = namespace['camera_can_aim']
+        self.assertTrue(aim(np.eye(3), np.array([100., 0., 0.])))
+        self.assertFalse(aim(np.eye(3), np.array([-100., 0., 0.])))
+        self.assertFalse(aim(np.eye(3), np.array([0., 0., 100.])))
+        self.assertTrue(aim(np.eye(3), np.array([20., 0., 100.])))
+
+    def test_capture_side_stays_visible_without_rotating_the_vehicle(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.launch.done = True
+        # Nose is sideways during a steep climb. The cheapest unconstrained
+        # passage puts the ship behind its gimbals during final approach.
+        rotation = np.array([[0., 1., 0.], [0., 0., 1.], [1., 0., 0.]])
+        planner.body_rotation = rotation.copy()
+        location, target = np.array([9000., 0., 0.]), np.array([10300., 0., 0.])
+        command, mode, _ = planner.command(100., location, np.array([4., .15, 0.]),
+                                           target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .1)
+        heading = planner.terminal.inner_goal-location
+        heading /= np.linalg.norm(heading)
+        for distance in (150., 80.):
+            approach = planner.terminal.inner_goal-np.sqrt(distance**2-47.**2)*heading
+            self.assertTrue(namespace['camera_can_aim'](rotation, target-approach))
+        np.testing.assert_array_equal(planner.body_rotation, rotation)
+
+    def test_free_coast_cannot_bypass_the_camera_reach_check(self):
+        planner, location, velocity, target, miss = self.completed_burn(.28)
+        planner.body_rotation = np.array([[0., 1., 0.], [0., 0., 1.], [1., 0., 0.]])
+        self.assertGreater(miss, 42.)
+        self.assertLess(miss, 48.)
+        command, mode, _ = planner.command(100., location, velocity, target, np.zeros(3), [])
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .1)
+
 
 if __name__ == '__main__':
     unittest.main()

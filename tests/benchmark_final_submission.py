@@ -319,6 +319,7 @@ if __name__ == '__main__':
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
     parser.add_argument('--fuel-audit', action='store_true')
+    parser.add_argument('--allocator-solver', choices=('highs', 'native'), default='highs')
     parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
     parser.add_argument('--ground-plane', type=float, default=0., help='Diagnostic only: synthetic plane this far below initial centre, metres')
     parser.add_argument('--drift-bias', type=float, nargs=3, default=[0., 0., 0.],
@@ -339,15 +340,19 @@ if __name__ == '__main__':
         side = np.cross(direction, axis)
         scene['positions'] += 5000.*side/np.linalg.norm(side)
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
+                  controller_file_sha256=(hashlib.sha256((root/'Controller.py').read_bytes()).hexdigest()
+                                          if not args.baseline_ref else None),
+                  hash_note='controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.',
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=4,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=5,
+                  allocator_solver=args.allocator_solver,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
                   axis_thrust=args.axis_thrust, ground_plane_m=args.ground_plane,
                   drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
-                  result=run(load_namespace(source), Allocator(args.jet_config), scene, args.max_time, args.seed, args.control_hz,
+                  result=run(load_namespace(source), Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
                              args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

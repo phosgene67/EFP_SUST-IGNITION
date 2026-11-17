@@ -17,7 +17,7 @@ from controller_loader import load_namespace
 
 
 class Allocator:
-    def __init__(self, path):
+    def __init__(self, path, solver='highs'):
         jets = np.loadtxt(path, delimiter=',', skiprows=1)
         self.thrust = jets[:, 6]
         self.inertia = np.array([[3025.8, -171.7, 461.7], [-171.7, 5927.5, 313.6],
@@ -27,15 +27,21 @@ class Allocator:
                                  np.linalg.solve(self.inertia, np.cross(jets[:, :3], forces).T)))
         self.cache = {}
         self.retries = 0
+        self.solver = solver
 
     def apply(self, accel, angular):
         command = np.r_[accel, angular]
         if np.linalg.norm(command) < 1e-9:
             return np.zeros(3), np.zeros(3), 0.
-        key = tuple(np.round(command, 5))
+        key = tuple(np.round(command, 12))
         if key not in self.cache:
-            result = linprog(np.ones(len(self.thrust)), A_eq=self.matrix, b_eq=command,
-                             bounds=(0, None), method='highs')
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', DeprecationWarning)
+                result = linprog(np.ones(len(self.thrust)), A_eq=self.matrix, b_eq=command,
+                                 bounds=(0, None), method=self.solver)
+            if not result.success and self.solver == 'revised simplex':
+                raise RuntimeError('native allocator solve failed: '+result.message)
             if not result.success:
                 self.retries += 1
                 result = linprog(np.ones(len(self.thrust)), A_eq=self.matrix, b_eq=command,
