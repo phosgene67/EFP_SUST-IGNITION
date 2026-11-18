@@ -6,6 +6,7 @@ an intentionally rejected tuning condition, not the delivered flight policy.
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 from benchmark_final import Allocator
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', default='tests/coast_camera_stress101.json')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    source = (root/'Controller.py').read_text()
+    source = subprocess.check_output(['git', 'show', 'c89f260:Controller.py'], cwd=root, text=True)
     original = 'horizon = float(min(20., .45*c_times.min()))'
     replacement = 'horizon = float(min(np.clip(8.+2.*np.linalg.norm(vel-target_vel), 12., 20.), .45*c_times.min()))'
     if source.count(original) != 1:

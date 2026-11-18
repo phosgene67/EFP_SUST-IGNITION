@@ -3,13 +3,13 @@ import unittest
 import threading
 import numpy as np
 from test_controller import namespace
-from planning_doubles import ManualExecutor
+from planning_doubles import ManualExecutor, PlanningWorker
 
 
 class WorkerTests(unittest.TestCase):
     def setUp(self):
         self.executor = ManualExecutor()
-        self.worker = namespace['PlanningWorker'](self.executor)
+        self.worker = PlanningWorker(self.executor)
         self.planner = namespace['ShootingNavigator'](launch=False)
         self.planner.launch.done = True
         self.loc, self.vel, self.goal = np.array([9000., 0., 0.]), np.zeros(3), np.array([10300., 0., 0.])
@@ -97,7 +97,7 @@ class WorkerTests(unittest.TestCase):
         live.shooting_active = True
         live.burn_target = np.array([.1, 0., 0.])
         live.burn_signs, live.axis_done = np.array([1., 0., 0.]), np.array([False, True, True])
-        worker = namespace['PlanningWorker']()
+        worker = PlanningWorker()
         try:
             worker.submit(10., live, self.camera, self.loc, self.vel, self.goal, np.zeros(3), [], 10.)
             self.assertTrue(started.wait(1.))

@@ -69,12 +69,6 @@ def SetCommand(accelCommand: npt.NDArray, angAccelCommand: npt.NDArray) -> None:
 # Tuning values require validation with the official simulator/jet allocator.
 from collections import deque
 from threading import Lock
-import hashlib
-from pathlib import Path
-
-CONTROLLER_PROFILE = 'STAGED_COAST'
-FUEL_PLAN_TARGET = 47.0
-FUEL_OVERRUN_WEIGHT = .75
 
 MAX_SPEED = 25.0
 MIN_CRUISE_SPEED = 18.0
@@ -143,21 +137,6 @@ def camera_rotation(yaw_deg, pitch_deg):
     return np.array([[cp*cy, cp*sy, -sp], [-sy, cy, 0.], [sp*cy, sp*sy, cp]])
 
 
-
-def camera_can_aim(world_to_body, bearing):
-    """Whether either bounded gimbal can cover a bearing with the depth margin."""
-    body = np.asarray(world_to_body)@np.asarray(bearing)
-    yaw = float(np.clip(np.rad2deg(np.arctan2(body[1], body[0])), -89., 89.))
-    angle = np.rad2deg(np.arctan2(-body[2], max(np.linalg.norm(body[:2]), 1e-9)))
-    tan_y = np.tan(np.deg2rad(CAMERA_FOV/2.-3.))
-    tan_x = tan_y*CAMERA_WIDTH/CAMERA_HEIGHT
-    for pitch in (np.clip(angle, -50., 0.), np.clip(angle, 0., 50.)):
-        view = camera_rotation(yaw, pitch)@body
-        if view[0] > 1e-9 and abs(view[1]) < view[0]*tan_x and abs(view[2]) < view[0]*tan_y:
-            return True
-    return False
-
-
 def connected_regions(values, valid, relative_jump=0.12):
     """Four-connected depth/brightness regions; bounded by the small image size."""
     height, width = valid.shape
@@ -193,91 +172,6 @@ class CameraPerception:
         self.last_uncertainty = np.empty(0)
         self.boxes = {}
         self.depth_views = {}
-        self.compact_regions = {}
-        self.depth_motion = {}
-        self.rgb_history = {}
-
-    def track_depth_regions(self, name, stamp, regions):
-        """Match compact depth silhouettes in world coordinates across captures."""
-        old_stamp, old = self.compact_regions.get(name, (-np.inf, []))
-        dt = stamp-old_stamp
-        if dt <= 0.:
-            return
-        self.compact_regions[name] = (stamp, regions)
-        motion = []
-        if .15 <= dt <= 2. and old and regions:
-            positions = np.array([p for p, _ in regions])
-            previous = np.array([p for p, _ in old])
-            separation = np.linalg.norm(positions[:, None]-previous, axis=2)
-            size = np.array([r for _, r in regions])[:, None]
-            old_size = np.array([r for _, r in old])
-            match = (separation < 4.*dt+1.) & (np.abs(size-old_size) < 1.+.15*old_size)
-            rows, cols = np.nonzero(match & (match.sum(axis=1)[:, None] == 1) & (match.sum(axis=0) == 1))
-            for row, col in zip(rows, cols):
-                speed = (positions[row]-previous[col])/dt
-                if np.linalg.norm(speed) <= 4.:
-                    motion.append((positions[row], speed))
-        self.depth_motion[name] = stamp, motion
-
-    def refine_motion(self, now, location, centers, speeds, radii):
-        # Depth tracks the visible surface. Keep radar range rate and use
-        # corroborated frame motion only to refine transverse velocity.
-        result = speeds.copy()
-        used = set()
-        for stamp, motion in sorted(self.depth_motion.values(), key=lambda item: -item[0]):
-            age = now-stamp
-            if not 0. <= age <= CAMERA_MAX_AGE:
-                continue
-            for point, velocity in motion:
-                nearby = np.flatnonzero(np.linalg.norm(centers-(point+age*velocity-location), axis=1) < radii)
-                if len(nearby) != 1:
-                    continue
-                idx = nearby[0]
-                if idx in used or np.linalg.norm(velocity-speeds[idx]) > 1.5:
-                    continue
-                ray = centers[idx]/max(np.linalg.norm(centers[idx]), 1e-9)
-                change = velocity-speeds[idx]
-                result[idx] += .2*(change-ray*(change@ray))
-                used.add(idx)
-        # A single distant image has no metric velocity. Use radar range to
-        # project several world-space bearings and fit their transverse drift.
-        absolute = location+centers
-        for history in self.rgb_history.values():
-            if not history or not 0. <= now-history[-1][0] <= CAMERA_MAX_AGE:
-                continue
-            samples = {}
-            for stamp, origin, rays in history:
-                if now-stamp > 9. or not len(rays):
-                    continue
-                predicted = absolute-(now-stamp)*speeds-origin
-                ranges = np.linalg.norm(predicted, axis=1)
-                directions = predicted/np.maximum(ranges[:, None], 1e-9)
-                agreement = rays@directions.T
-                # Include foreground radar objects in ambiguity checks even
-                # though only distant objects need this camera estimate.
-                window = np.clip(radii/np.maximum(ranges, 1.)+.018, .025, .18)
-                hits = agreement > np.cos(window)
-                rows, cols = np.nonzero(hits & (hits.sum(axis=1)[:, None] == 1) & (hits.sum(axis=0) == 1))
-                for row, idx in zip(rows, cols):
-                    if idx in used or not 80. < ranges[idx] < 900.:
-                        continue
-                    error = ranges[idx]*(rays[row]-directions[idx])
-                    samples.setdefault(idx, []).append((stamp, error, ranges[idx]))
-            for idx, track in samples.items():
-                if len(track) < 3 or track[-1][0] != history[-1][0] or track[-1][0]-track[0][0] < 3.:
-                    continue
-                t = np.array([item[0] for item in track])
-                t -= t.mean()
-                offsets = np.stack([item[1] for item in track])
-                correction = t@offsets/(t@t)
-                ray = centers[idx]/max(np.linalg.norm(centers[idx]), 1.)
-                correction -= ray*(correction@ray)
-                residual = offsets-offsets.mean(axis=0)-t[:, None]*correction
-                noise = max(1., np.sqrt(np.mean(np.sum(residual**2, axis=1))), .006*track[-1][2])
-                if 2.*noise/np.sqrt(t@t) < np.linalg.norm(correction) < 3.:
-                    result[idx] += .25*correction
-                    used.add(idx)
-        return result
 
     @staticmethod
     def rays(rows, cols, width, height, fov):
@@ -315,10 +209,6 @@ class CameraPerception:
                 boxes.append(dict(xyxy=[int(region[:, 1].min()), int(region[:, 0].min()),
                                         int(region[:, 1].max()), int(region[:, 0].max())], range_m=None))
             self.visual[name] = (stamp, detections[:48])
-            history = self.rgb_history.setdefault(name, deque(maxlen=6))
-            if not history or stamp > history[-1][0]:
-                bearings = [bearing for _, bearing, spread in detections[:48] if spread < .16]
-                history.append((stamp, origin, np.array(bearings).reshape(-1, 3)))
             self.boxes[(name, mode)] = boxes[:48]
         else:
             depth = np.asarray(pixels, dtype=float)
@@ -329,15 +219,8 @@ class CameraPerception:
             depth = depth*0.01  # OutputMode.Depth_cm returns centimetres.
             valid = np.isfinite(depth) & (depth > 4.) & (depth < CAMERA_MAX_RANGE)
             volumes = []
-            compact = []
             boxes = []
             for region in connected_regions(depth, valid):
-                span = np.ptp(region, axis=0)
-                if (len(compact) < 48 and len(region) >= 4 and span.max() <= 12
-                        and region.min() > 0 and (region.max(axis=0) < [CAMERA_HEIGHT-1, CAMERA_WIDTH-1]).all()):
-                    rows, cols = region.T
-                    points = self.rays(rows, cols, CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FOV)*depth[rows, cols, None]
-                    compact.append((origin+camera_to_world@points.mean(axis=0), np.linalg.norm(np.ptp(points, axis=0))))
                 boxes.append(dict(xyxy=[int(region[:, 1].min()), int(region[:, 0].min()),
                                         int(region[:, 1].max()), int(region[:, 0].max())],
                                   range_m=float(depth[region[:, 0], region[:, 1]].min())))
@@ -366,7 +249,6 @@ class CameraPerception:
             if volumes or previous is None or stamp-previous[0] > CAMERA_MAX_AGE:
                 self.occupied[name] = (stamp, volumes[:384])
             self.boxes[(name, mode)] = boxes[:64]
-            self.track_depth_regions(name, stamp, compact)
         self.frames += 1
         return True
 
@@ -386,7 +268,6 @@ class CameraPerception:
         self.rgb_associations = 0
         self.depth_associations = 0
         uncertainty = []
-        radar_sources = []
         absolute_radar = np.asarray(radar_centers).reshape(-1, 3)+location
         # RGB detections become metric only through a radar association. They may
         # strengthen an occupied bound, but never create a made-up monocular range.
@@ -405,7 +286,6 @@ class CameraPerception:
                     speeds.append(radar_speeds[index])
                     radii.append(radar_radii[index]+1.)
                     uncertainty.append(1.)
-                    radar_sources.append(index)
         for stamp, volumes in self.occupied.values():
             age = now-stamp
             if not 0. <= age <= CAMERA_MAX_AGE:
@@ -414,18 +294,11 @@ class CameraPerception:
                 relative = absolute-location
                 velocity = np.zeros(3)
                 rate = 2.
-                source = -1
-                reference = getattr(self, 'ground_reference', None)
-                below_launch = reference is not None and (absolute-reference[0])@reference[1] < -1.
-                if len(radar_centers) and not below_launch:
+                if len(radar_centers):
                     separation = np.linalg.norm(radar_centers-relative, axis=1)
                     matches = np.flatnonzero(separation < radar_radii+radius)
                     if len(matches):
                         index = int(matches[np.argmin(separation[matches])])
-                        ordered = np.sort(separation[matches])
-                        unique = len(matches) == 1 or ordered[1] > ordered[0]+4.
-                        if unique and separation[index] < max(0., radar_radii[index]-3.):
-                            source = index
                         velocity = radar_speeds[index]
                         self.depth_associations += 1
                         rate = 1.
@@ -435,9 +308,7 @@ class CameraPerception:
                 speeds.append(velocity)
                 radii.append(radius+2.*age)
                 uncertainty.append(rate)
-                radar_sources.append(source)
         self.last_uncertainty = np.asarray(uncertainty)
-        self.last_radar_sources = np.asarray(radar_sources, dtype=int)
         return (np.asarray(centers).reshape(-1, 3), np.asarray(speeds).reshape(-1, 3),
                 np.asarray(radii))
 
@@ -1537,7 +1408,6 @@ class CaptureApproach:
         self.side = self.tangent = None
         self.inner_goal = None
         self.camera_ready = False
-        self.body_rotation = None
         self.fallback = None
         self.entered = False
         self.exit_goal = None
@@ -1591,16 +1461,6 @@ class CaptureApproach:
             self.best_gap = max(self.best_gap, clearance)
             if clearance > 1.25 or distance > 260.:
                 candidates.append((np.linalg.norm(radial-tangent), radial, entry, end))
-        if candidates and self.body_rotation is not None:
-            visible = []
-            for candidate in candidates:
-                _, radial, entry, end = candidate
-                heading = (end-entry)/np.linalg.norm(end-entry)
-                if all(camera_can_aim(self.body_rotation,
-                       target-entry+np.sqrt(radius**2-47.**2)*heading) for radius in ((150., 80., 52.) if distance < 600. else (150., 80.))):
-                    visible.append(candidate)
-            if visible:
-                candidates = visible
         if candidates:
             self.no_pass_since = None
             _, radial, self.inner_goal, goal = min(candidates, key=lambda row: row[0])
@@ -1679,20 +1539,20 @@ class QualificationPlanner:
                 continue
             stamp = float(report[2, 0])
             age = max(0.0, now-stamp)
-            old_loc = np.array([np.interp(stamp, times, positions[:, i]) for i in range(3)])
-            old_vel = np.array([np.interp(stamp, times, velocities[:, i]) for i in range(3)])
-            direction = measured / distance
-            radial_speed = report[1, 1] + old_vel.dot(direction)
             key = tuple(report.ravel())
             track = self.report_cache.get(key)
             if track is None:
+                old_loc = np.array([np.interp(stamp, times, positions[:, i]) for i in range(3)])
+                old_vel = np.array([np.interp(stamp, times, velocities[:, i]) for i in range(3)])
+                direction = measured / distance
+                radial_speed = report[1, 1] + old_vel.dot(direction)
                 absolute = measured + old_loc
                 matches = []
                 dt = stamp-old_stamps
-                residuals = np.linalg.norm(absolute-old_positions-dt[:, None]*old_speeds, axis=1)
+                innovation = absolute-old_positions-dt[:, None]*old_speeds
                 if gravity_tracking:
-                    residuals = np.linalg.norm(absolute-old_positions-dt[:, None]*old_speeds
-                                              -.5*dt[:, None]**2*old_gravity, axis=1)
+                    innovation -= .5*dt[:, None]**2*old_gravity
+                residuals = np.linalg.norm(innovation, axis=1)
                 eligible = (available & (dt >= 0.4) & (dt <= 8.0)
                             & (np.abs(report[1, 2]-old_diameters)
                                <= np.maximum(3.0, 0.25*np.abs(old_diameters)))
@@ -1740,7 +1600,9 @@ class QualificationPlanner:
                 center += .5*age*age*acceleration
                 speed = speed+age*acceleration
                 samples = track.get('samples', [])
-                if len(samples) >= 4:
+                if 'forecast_quality' in track:
+                    rate, confident = track['forecast_quality']
+                elif len(samples) >= 4:
                     stamps = np.array([t for t, _ in samples])
                     if stamps[-1]-stamps[0] >= 8.:
                         positions_fit = np.array([p for _, p in samples])-.5*(stamps-stamps[-1])[:, None]**2*acceleration
@@ -1750,10 +1612,12 @@ class QualificationPlanner:
                         rms = np.sqrt(np.mean(np.sum(residual*residual, axis=1)))
                         rate = float(np.clip(2.2*max(2., rms)/max(np.sqrt(tc@tc), 1.)+.1, .25, .6))
                         confident = rms < 5. and rate < .55
+                    track['forecast_quality'] = (rate, confident)
             # Missing pre-start history and clock skew enlarge uncertainty.
             missing_history = max(0.0, times[0]-stamp)
+            history_margin = np.linalg.norm(velocities[0])*missing_history if missing_history else 0.
             radius = (0.575 * max(0.0, report[1, 2]) + 3.0 + 8.0
-                      + (rate if gravity_tracking else 1.)*age + np.linalg.norm(old_vel)*missing_history)
+                      + (rate if gravity_tracking else 1.)*age + history_margin)
             centers.append(center)
             speeds.append(speed)
             radii.append(radius)
@@ -1920,38 +1784,25 @@ class FinalNavigator(QualificationPlanner):
 
     def observe_scene(self, now, loc, vel, target_loc, target_vel, radar, camera):
         radar_centers, radar_speeds, radar_radii = self.obstacles(now, loc, vel, radar)
-        if len(radar_centers) and hasattr(camera, 'refine_motion'):
-            radar_speeds = camera.refine_motion(now, loc, radar_centers, radar_speeds, radar_radii)
         centers, speeds, radii = radar_centers, radar_speeds, radar_radii
         forecast_rates = (self.radar_forecast_rates.copy() if getattr(self, 'gravity_tracking', False)
                           else np.full(len(centers), .6))
         forecast_accels = (-711000.*(centers+loc)/np.maximum(np.linalg.norm(centers+loc, axis=1)**3, 1.)[:, None]
                            if getattr(self, 'gravity_tracking', False) else np.zeros_like(centers))
         if camera is not None:
-            if self.flythrough and self.launch.origin is not None:
-                camera.ground_reference = (self.launch.origin.copy(), self.launch.up.copy())
             cc, cv, cr = camera.obstacles(now, loc, centers, speeds, radii)
-            sources = getattr(camera, 'last_radar_sources', np.full(len(cc), -1, dtype=int))
             if getattr(self, 'risk_planning', False) and len(cc) and len(centers):
                 # RGB bearing associations copy an existing radar sphere; they
                 # are correlated evidence, not another independently ranged hull.
                 duplicate = ((np.max(np.abs(cc[:, None]-centers[None]), axis=2) < 1e-8)
                              & (np.max(np.abs(cv[:, None]-speeds[None]), axis=2) < 1e-8)
                              & (np.abs(cr[:, None]-radii[None]-1.) < 1e-8)).any(axis=1)
-                cc, cv, cr, sources = cc[~duplicate], cv[~duplicate], cr[~duplicate], sources[~duplicate]
+                cc, cv, cr = cc[~duplicate], cv[~duplicate], cr[~duplicate]
             # Fresh stationary surfaces around the known stationary rescue ship
             # already include pixel/pose/age bounds. Do not inflate them as if
             # they were untracked moving debris. All physical volumes remain.
             ship_surface = (np.linalg.norm(cc+loc-target_loc, axis=1) < 85.) & (np.linalg.norm(cv-target_vel, axis=1) < .3)
             camera_rates = np.where(ship_surface & self.flythrough, .15, .6)
-            # A uniquely associated mature track already models this moving
-            # surface. Share its forecast uncertainty instead of treating the
-            # same object as a second, untracked obstacle. Keep every volume.
-            valid_source = (sources >= 0) & (sources < len(radar_centers)) & ~ship_surface
-            for row in np.flatnonzero(valid_source):
-                index = sources[row]
-                if self.radar_track_confidence[index]:
-                    camera_rates[row] = self.radar_forecast_rates[index]
             if self.flythrough and self.launch.origin is not None:
                 # Depth surfaces below the original launch plane stay behind an
                 # ascending vehicle. Keep their full occupied volumes, without
@@ -2265,8 +2116,6 @@ class EconomyNavigator(FinalNavigator):
         if cruise_speed is not None:
             speed = min(speed, cruise_speed)
         self.terminal.camera_ready = camera is not None and camera.observes(now, target_loc)
-        if hasattr(self, 'body_rotation'):
-            self.terminal.body_rotation = self.body_rotation.copy()
         self.terminal.eta = self.policy.remaining_time
         self.corridor.economy_context = (now, self.last_fuel, self.last_damage, self.policy.fuel_per_dv)
         had_arrived = self.arrival_time is not None
@@ -2367,54 +2216,6 @@ def scheduled_positions(times, velocity, gravity, rotation, impulses, starts, du
     return body_positions@rotation+np.asarray(times)[None, :, None]*velocity+.5*np.asarray(times)[None, :, None]**2*gravity
 
 
-
-def corridor_cost(times, paths, centers, speeds, accelerations, radii, arrival_times):
-    """Estimate future steering cost along swept segments, counting each rock once."""
-    cost = np.zeros((len(paths), len(centers)))
-    if not len(centers):
-        return np.zeros(len(paths))
-    for i, (start, end) in enumerate(zip(times[:-1], times[1:])):
-        rock = centers+start*speeds+.5*start**2*accelerations
-        rock_step = (end-start)*(speeds+.5*(start+end)*accelerations)
-        # Cull tracks outside the envelope of every candidate in this interval.
-        low = paths[:, i:i+2].min(axis=(0, 1))
-        high = paths[:, i:i+2].max(axis=(0, 1))
-        margin = radii[:, None]+18.
-        nearby = ((np.minimum(rock, rock+rock_step) <= high+margin) &
-                  (np.maximum(rock, rock+rock_step) >= low-margin)).all(axis=1)
-        if not np.any(nearby):
-            continue
-        relative = rock[nearby]-paths[:, i, None]
-        step = rock_step[nearby]-(paths[:, i+1]-paths[:, i])[:, None]
-        fraction = np.clip(-np.sum(relative*step, axis=2) /
-                           np.maximum(np.sum(step*step, axis=2), 1e-9), 0., 1.)
-        encounter = start+fraction*(end-start)
-        gap = np.linalg.norm(relative+fraction[:, :, None]*step, axis=2)-radii[nearby]
-        # Lateral speed to clear the occupied lane, plus an eventual return.
-        # Discount distant encounters as tracks and the intended route evolve.
-        avoid_dv = 2.*np.maximum(0., 18.-gap)/np.maximum(encounter-10., 8.)
-        penalty = avoid_dv*(100./75.)*(3388.7/784.)*np.exp(-encounter/130.)
-        cost[:, nearby] = np.maximum(cost[:, nearby], np.where(encounter < arrival_times[:, None], penalty, 0.))
-    # Neighbouring objects may share a single avoidance maneuver.
-    return .65*cost.max(axis=1)+.35*np.minimum(cost.sum(axis=1), 35.)
-
-
-def camera_course(position, velocity, destination, destination_velocity):
-    bearing = destination-position
-    distance = np.linalg.norm(bearing)
-    travel = velocity-destination_velocity
-    if distance < 300. or np.linalg.norm(travel) < 1.:
-        return bearing
-    return .65*bearing/max(distance, 1.)+.35*travel/np.linalg.norm(travel)
-
-
-def fuel_budget_penalty(spent, additional):
-    """Marginal score preference for leaving fuel room for capture/avoidance."""
-    before = max(0., float(spent)-FUEL_PLAN_TARGET)
-    after = np.maximum(0., float(spent)+np.asarray(additional)-FUEL_PLAN_TARGET)
-    return FUEL_OVERRUN_WEIGHT*(after*after-before*before)
-
-
 def encounter_risk(gap, sigma, relative_speed):
     """Gaussian half-space probability bound and conservative energy proxy.
 
@@ -2449,9 +2250,6 @@ class ShootingNavigator(EconomyNavigator):
         self.previous_eta = None
         self.last_detour = np.zeros(3)
         self.measurement = None
-        self.coast_probe_armed = False
-        self.coast_probe_until = -np.inf
-        self.sampled_launch_drift = False
         self.plan_score = -np.inf
         self.risk_planning = True
         self.expected_damage = self.contact_probability = 0.
@@ -2464,7 +2262,6 @@ class ShootingNavigator(EconomyNavigator):
         loc, vel, target_loc, target_vel = map(lambda value: np.asarray(value, float), (loc, vel, target_loc, target_vel))
         gravity = self.gravity_at(loc)
         rotation = self.body_rotation
-        self.terminal.body_rotation = rotation.copy()
         was_active = self.shooting_active
         if self.measurement is not None:
             stamp, old_velocity, old_gravity, old_rotation = self.measurement
@@ -2497,24 +2294,16 @@ class ShootingNavigator(EconomyNavigator):
         radial_choices = np.array([np.cos(angle)*tangent+np.sin(angle)*second for angle in np.arange(16)*np.pi/8.])
         headings = -np.sqrt(1.-ratio*ratio)*outward+ratio*radial_choices
         goals = loc+distance*np.sqrt(1.-ratio*ratio)*headings
-        # Prefer an arrival side the gimbals can actually observe before entry.
-        # Check two inbound distances: a clear bearing now is not enough when
-        # the station later moves behind a fixed, freely coasting body.
-        viewable = np.array([all(camera_can_aim(rotation, target_loc-point)
-            for point in (goals[index]-np.sqrt(range_m**2-47.**2)*headings[index]
-                          for range_m in ((150., 80., 52.) if distance < 600. else (150., 80.)))) for index in range(16)])
-        # If attitude makes every side unreachable, retain the existing guarded
-        # camera hold rather than assuming a view or bypassing its safety gate.
-        goal_valid = viewable if viewable.any() else np.ones(16, dtype=bool)
+        goal_valid = np.ones(16, dtype=bool)
         if self.terminal.camera_ready:
             hull = (np.linalg.norm(centers+loc-target_loc, axis=1) < 85.) & (np.linalg.norm(speeds-target_vel, axis=1) < .1)
             for index in range(16):
-                goal_valid[index] &= segment_clearance(np.zeros(3), goals[index]+100.*headings[index]-loc,
+                goal_valid[index] = segment_clearance(np.zeros(3), goals[index]+100.*headings[index]-loc,
                                                      centers[hull], radii[hull]) > 1.
         base_times = np.arange(45., 451., 10.)
         if self.previous_eta is not None and self.previous_eta-now > 10.:
             base_times = np.r_[base_times, self.previous_eta-now]
-        delay_options = np.array([0., 5.]) if np.linalg.norm(vel-target_vel) > 2. else np.array([0.])
+        delay_options = np.array([0.])
         goal_indices = np.repeat(np.arange(16), len(base_times)*6*len(delay_options))
         times = np.tile(np.repeat(base_times, 6*len(delay_options)), 16)
         orders = np.tile(np.repeat(self.orders, len(delay_options), axis=0), (16*len(base_times), 1))
@@ -2532,7 +2321,6 @@ class ShootingNavigator(EconomyNavigator):
         kg_per_dv = 3388.7/(80.*9.8)
         fuel_needed = kg_per_dv*np.abs(dv).sum(axis=1)
         scores = 100.*(.5+120./(now+times)-(self.last_fuel+fuel_needed)/75.-2.*self.last_damage/209200.)
-        scores -= fuel_budget_penalty(self.last_fuel, fuel_needed)
         scores[~valid] = -np.inf
         order = np.argsort(-scores)
         chosen = [int(i) for i in order[:4] if np.isfinite(scores[i])]
@@ -2569,115 +2357,55 @@ class ShootingNavigator(EconomyNavigator):
         side = np.cross(forward, axis)
         side /= np.linalg.norm(side)
         up = np.cross(forward, side)
-        # Explore bends before the dense field. For each return burn, solve
-        # the departure burn to reach the same station pass at the same time.
-        directions = np.cos(np.arange(8)*np.pi/4.)[:, None]*side+np.sin(np.arange(8)*np.pi/4.)[:, None]*up
-        offsets = (np.array([.35, .9, 1.8])[:, None, None]*directions).reshape(-1, 3)
-        return_body = -2.*offsets@rotation.T
-        return_lengths = np.abs(return_body)/self.axis_accels[(return_body < 0.).astype(int), np.arange(3)]
+        offsets = [m*(np.cos(angle)*side+np.sin(angle)*up)
+                   for m in (.15, .35, .7, 1.) for angle in np.arange(8)*np.pi/4.]
+        if np.linalg.norm(self.last_detour) > .01:
+            offsets.append(self.last_detour)
         for base in chosen[:2]:
-            eta = times[base]
-            # Lateral-first and direct orders can differ by tens of metres at
-            # the first encounter, even with the same station entry point.
-            for axis_order in (orders[base], np.argsort(-np.abs(side@rotation.T)-np.abs(up@rotation.T))):
-                counter = eta*.5
-                return_starts = np.empty_like(return_body)
-                return_starts[:, axis_order] = counter+np.cumsum(return_lengths[:, axis_order], axis=1)-return_lengths[:, axis_order]
-                correction = return_body*(eta-return_starts-.5*return_lengths)
-                variants, first_starts, lengths, possible = axis_schedule(
-                    displacement[base]-correction, np.full(len(offsets), eta),
-                    np.tile(axis_order, (len(offsets), 1)), self.axis_accels)
-                possible &= (lengths.sum(axis=1) <= counter) & (return_lengths.sum(axis=1)+counter < eta)
-                after = vel-target_vel+variants@rotation+lengths.sum(axis=1)[:, None]*gravity
-                possible &= (np.linalg.norm(after, axis=1) <= max(limit, np.linalg.norm(vel-target_vel))+.05)
-                possible &= (variants@rotation)@forward >= -.04
-                for row in np.flatnonzero(possible):
-                    cost = kg_per_dv*(np.abs(variants[row]).sum()+np.abs(return_body[row]).sum())
-                    score = mission_score(now+eta, self.last_fuel+cost, self.last_damage)-fuel_budget_penalty(self.last_fuel, cost)
-                    c_dv.append(variants[row]); c_start.append(first_starts[row]); c_duration.append(lengths[row])
-                    c_times.append(eta); c_scores.append(score); c_orders.append(axis_order)
-                    c_detours.append(offsets[row]); c_goals.append(goal_indices[base])
-                    c_counters.append(counter); c_delays.append(0.)
-        remaining = rotation@(self.burn_target+self.burn_gravity*max(0., now-self.burn_started)-vel)
-        remaining[self.axis_done] = 0.
-        # Measure free-flight drift before committing most of the cruise fuel.
-        # Only offer this coast while climbing clear of the launch plane. The
-        # candidate still has to pass the same moving-obstacle tests as a burn.
-        if (not self.sampled_launch_drift and self.launch.origin is not None
-                and not np.isfinite(self.dynamics.updated) and now < 45.
-                and (loc-self.launch.origin)@self.launch.up > 3.
-                and vel@self.launch.up > .55):
-            self.coast_probe_until = now+3.5
-            self.sampled_launch_drift = True
-        if (was_active and self.coast_probe_armed and np.max(np.abs(remaining)) < .08
-                and distance > 350. and now-self.dynamics.updated > 5.):
-            self.coast_probe_until = now+3.5
-            self.coast_probe_armed = False
-        when, miss = ballistic_pass(loc, vel, target_loc, target_vel, gravity)
-        coast_entry = 42. < miss < 48. and 5. < when < 600.
-        if coast_entry and viewable.any():
-            # Check the actual curved coast too, not only newly sampled lines.
-            # Otherwise a free coast could bypass the viewability constraint.
-            for radius in ((150., 80., 52.) if distance < 600. else (150., 80.)):
-                lower, upper = 0., when
-                for _ in range(18):
-                    stamp = .5*(lower+upper)
-                    bearing = target_loc-loc-stamp*(vel-target_vel)-.5*stamp*stamp*gravity
-                    if np.linalg.norm(bearing) > radius:
-                        lower = stamp
-                    else:
-                        upper = stamp
-                bearing = target_loc-loc-upper*(vel-target_vel)-.5*upper*upper*gravity
-                coast_entry = coast_entry and camera_can_aim(rotation, bearing)
+            for offset in offsets:
+                variant = dv[base]+rotation@offset
+                duration = np.abs(variant)/self.axis_accels[np.where(variant >= 0., 0, 1), np.arange(3)]
+                start, cursor = np.zeros(3), delays[base]
+                for component in orders[base]:
+                    start[component], cursor = cursor, cursor+duration[component]
+                extra_return = 2.*np.abs(rotation@offset).sum()
+                if cursor+extra_return/.08 >= times[base]:
+                    continue
+                cost = kg_per_dv*(np.abs(variant).sum()+extra_return)
+                score = mission_score(now+times[base], self.last_fuel+cost, self.last_damage)
+                c_dv.append(variant); c_start.append(start); c_duration.append(duration)
+                c_times.append(times[base]); c_scores.append(score); c_orders.append(orders[base])
+                c_detours.append(offset)
+                c_goals.append(goal_indices[base])
+                c_counters.append(max(times[base]/2., cursor))
+                c_delays.append(delays[base])
         retained_index = None
-        counter_due = np.linalg.norm(self.last_detour) > .01 and now >= self.counter_time
         if (was_active and self.previous_eta is not None and self.previous_eta-now > 15.
-                and goal_valid[0]):
+                and goal_valid[0] and (np.linalg.norm(self.last_detour) < .01 or now < self.counter_time-1.)):
             residual = rotation@(self.burn_target+self.burn_gravity*(now-self.burn_started)-vel)
             residual[self.axis_done] = 0.
-            retained_detour = self.last_detour.copy()
-            if counter_due:
-                # Execute the promised return stage instead of repeatedly
-                # postponing it to the midpoint of another receding plan.
-                residual -= 2.*(rotation@retained_detour)
-                retained_detour[:] = 0.
             duration = np.abs(residual)/self.axis_accels[np.where(residual >= 0., 0, 1), np.arange(3)]
             delay = max(0., self.not_before-now)
             start, cursor = np.zeros(3), delay
             for component in self.burn_order:
                 start[component], cursor = cursor, cursor+duration[component]
             eta = self.previous_eta-now
-            # A completed burn is a coast, so it must still enter the safe
-            # passage. Retention credit cannot grandfather an unsafe miss.
-            finished = np.max(np.abs(residual)) < self.burn_tolerance and np.linalg.norm(self.last_detour) < .01
-            if cursor < eta and (not finished or coast_entry):
-                cost = kg_per_dv*(np.abs(residual).sum()+2.*np.abs(rotation@retained_detour).sum())
+            if cursor < eta:
+                cost = kg_per_dv*(np.abs(residual).sum()+2.*np.abs(rotation@self.last_detour).sum())
                 retained_index = len(c_scores)
                 c_dv.append(residual); c_start.append(start); c_duration.append(duration)
-                c_times.append(eta); c_scores.append(mission_score(now+eta, self.last_fuel+cost, self.last_damage)-fuel_budget_penalty(self.last_fuel, cost))
-                c_orders.append(self.burn_order.copy()); c_detours.append(retained_detour)
-                c_goals.append(0); c_counters.append(max(0., self.counter_time-now))
+                c_times.append(eta); c_scores.append(mission_score(now+eta, self.last_fuel+cost, self.last_damage))
+                c_orders.append(self.burn_order.copy()); c_detours.append(self.last_detour.copy())
+                c_goals.append(0); c_counters.append(self.counter_time-now)
                 c_delays.append(delay)
-        if coast_entry:
+        when, miss = ballistic_pass(loc, vel, target_loc, target_vel, gravity)
+        if 42. < miss < 48. and 5. < when < 600.:
             # Preserve an already successful unpowered pass. It need not hit
             # exactly the old 47 m waypoint to earn the same success result.
             c_dv.append(np.zeros(3)); c_start.append(np.zeros(3)); c_duration.append(np.zeros(3))
             c_times.append(when); c_scores.append(mission_score(now+when, self.last_fuel, self.last_damage))
             c_orders.append(self.burn_order.copy()); c_detours.append(np.zeros(3))
             c_goals.append(0); c_counters.append(when/2.); c_delays.append(0.)
-        probe_index = None
-        if now < self.coast_probe_until and distance > 350.:
-            # A short, sensor-certified quiet interval lets the drift observer
-            # identify gravity/frame bias instead of chasing it with more jets.
-            probe_index = len(c_scores)
-            eta = float(np.clip(self.previous_eta-now if self.previous_eta is not None else
-                                when if np.isfinite(when) else 200., 45., 450.))
-            cost = 2.*kg_per_dv*np.abs(rotation@self.last_detour).sum()
-            c_dv.append(np.zeros(3)); c_start.append(np.zeros(3)); c_duration.append(np.zeros(3))
-            c_times.append(eta); c_scores.append(mission_score(now+eta, self.last_fuel+cost, self.last_damage)
-                                                 -fuel_budget_penalty(self.last_fuel, cost))
-            c_orders.append(self.burn_order.copy()); c_detours.append(self.last_detour.copy())
-            c_goals.append(0); c_counters.append(max(3.5, self.counter_time-now)); c_delays.append(0.)
         c_dv, c_start, c_duration = np.asarray(c_dv), np.asarray(c_start), np.asarray(c_duration)
         c_times, c_scores = np.asarray(c_times), np.asarray(c_scores)
         return_dv = -2.*np.asarray(c_detours)@rotation.T
@@ -2705,9 +2433,6 @@ class ShootingNavigator(EconomyNavigator):
             mismatch = rotation@(goals[0]-loc+target_vel*c_times[row]-endpoint)
             correction = 2.*np.abs(mismatch).sum()/c_times[row]
             c_scores[row] -= 100.*kg_per_dv*correction/75.
-            before = kg_per_dv*(np.abs(c_dv[row]).sum()+np.abs(return_dv[row]).sum())
-            c_scores[row] -= (fuel_budget_penalty(self.last_fuel, before+kg_per_dv*correction)
-                              -fuel_budget_penalty(self.last_fuel, before))
         reach = np.max(np.linalg.norm(positions[:, -1], axis=1))
         relevant = np.linalg.norm(centers, axis=1) < reach+horizon*np.linalg.norm(speeds, axis=1)+radii+15.
         oc, ov, rr, aa, ur = centers[relevant], speeds[relevant], radii[relevant], accels[relevant], rates[relevant]
@@ -2749,14 +2474,17 @@ class ShootingNavigator(EconomyNavigator):
         c_scores -= 200.*expected_damage/209200.
         # Distant geometry is a soft preference: future velocity uncertainty is
         # too large to certify the entire mission. The next chunk remains hard.
-        future_times = np.linspace(horizon, min(float(np.max(c_times)), 120.), 9)
+        future_times = np.linspace(horizon+5., min(float(np.median(c_times)), 200.), 6)
         future_positions = scheduled_positions(future_times, vel, gravity, rotation, c_dv, c_start, c_duration)
         future_positions += scheduled_positions(future_times, np.zeros(3), np.zeros(3), rotation,
                                                 return_dv, return_start, return_duration)
-        # Count independent radar tracks here. Camera tiles of the same surface
-        # are already covered by the immediate swept collision checks.
-        c_scores -= corridor_cost(future_times, future_positions, centers[:nr], speeds[:nr],
-                                  accels[:nr], radii[:nr], c_times)
+        future_risk = np.zeros(len(c_scores))
+        for index, when in enumerate(future_times):
+            offset = centers+when*speeds+.5*when*when*accels
+            gaps = np.linalg.norm(offset[None]-future_positions[:, index, None], axis=2)-radii[None]-5.
+            if len(centers):
+                future_risk += np.maximum(0., -gaps).max(axis=1)*np.exp(-when/100.)/6.
+        c_scores -= np.minimum(future_risk, .75)
         if not safe.any():
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
                                    cruise_speed, maneuver_accel, fuel_weight)
@@ -2773,10 +2501,6 @@ class ShootingNavigator(EconomyNavigator):
             allowance = 4. if now-self.plan_chosen_at < 4. else 2.
             if c_scores[retained_index] >= c_scores[best]-allowance:
                 best = retained_index
-        if probe_index is not None and safe[probe_index]:
-            best = probe_index
-        if np.linalg.norm(c_dv[best]) > .8:
-            self.coast_probe_armed = True
         self.previous_eta = now+c_times[best]
         self.terminal.tangent = radial_choices[c_goals[best]].copy()
         self.terminal.inner_goal = goals[c_goals[best]].copy()
@@ -2788,7 +2512,7 @@ class ShootingNavigator(EconomyNavigator):
         self.policy.burn_seconds = float(c_duration[best].sum())
         self.policy.speed = float(np.linalg.norm(vel+c_dv[best]@rotation-target_vel))
         self.last_phase = 'CRUISE'
-        self.burn_tolerance = .004
+        self.burn_tolerance = .02
         self.stopping_distance = float(np.linalg.norm(vel-target_vel)**2/(2.*SHIP_BRAKE_ACCEL))
         self.last_mode = 'IMPULSE_BURN'
         self.last_horizon = int(horizon)
@@ -2796,7 +2520,7 @@ class ShootingNavigator(EconomyNavigator):
         self.urgent = self.collision_urgent = False
         self.coasting = False
         self.shooting_active = True
-        if best != retained_index or counter_due:
+        if best != retained_index:
             self.burn_target = vel+c_dv[best]@rotation
             self.burn_gravity, self.burn_started = gravity.copy(), float(now)
             self.burn_order = np.asarray(c_orders[best]).copy()
@@ -2842,255 +2566,6 @@ class ShootingNavigator(EconomyNavigator):
             self.axis_done[component] = True
         self.selected_remaining = 0.
         return np.zeros(3)
-
-
-class FlightFuelLimit:
-    """Independent live command gate, including attitude and post-entry thrust."""
-    margin = .4  # Stop early to allow for actuator and telemetry latency.
-
-    def __init__(self):
-        self.crossing_fuel = None
-        self.ceiling = 20.
-        self.high_water = 0.
-
-    def allows(self, distance, fuel, advance=0.):
-        if not np.isfinite(fuel) or fuel < 0. or not np.isfinite(distance):
-            return False
-        self.high_water = max(self.high_water, fuel)
-        if self.crossing_fuel is None and distance <= 600.:
-            self.crossing_fuel = self.high_water
-            self.ceiling = min(50., self.crossing_fuel+30.)
-        elif self.crossing_fuel is None and np.isfinite(advance):
-            self.ceiling = max(self.ceiling, 20.+np.clip(advance, 0., 3.))
-        return self.high_water < self.ceiling-self.margin
-
-
-class StagedNavigator(ShootingNavigator):
-    """Choose an affordable ballistic arc to the 600 m budget boundary."""
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.inner_leg = False
-        self.boost_until = -np.inf
-        self.outer_active = False
-        self.advance = 0.
-
-    def linear_command(self, velocity, maximum):
-        if self.outer_active and self.shooting_active and self.control_time >= self.boost_until:
-            return np.zeros(3)
-        return super().linear_command(velocity, maximum)
-
-    def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None,
-                cruise_speed=None, maneuver_accel=None, fuel_weight=1.5):
-        self.control_time = now
-        self.outer_active = False
-        relative_goal = target_loc-loc
-        distance = np.linalg.norm(relative_goal)
-        self.inner_leg |= distance <= 600.
-        if self.inner_leg or not self.launch.done or self.failed or self.arrival_time is not None:
-            return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
-                                   cruise_speed, maneuver_accel, fuel_weight)
-        centers, speeds, radii, _, accels, _ = self.observe_scene(
-            now, loc, vel, target_loc, target_vel, radar, camera)
-        rotation = self.body_rotation
-        gravity = self.gravity_at(loc)
-        forward = relative_goal/distance
-        body_forward = rotation@forward
-        main = np.argmax(np.abs(body_forward))
-        sides = [axis for axis in range(3) if axis != main]
-        # The first burn must carry enough forward momentum to reach the next
-        # fuel allowance. Each lateral option spends from that same impulse.
-        remaining_kg = 20.+self.advance-FlightFuelLimit.margin-self.last_fuel
-        if (remaining_kg < .25 and self.advance < 3. and np.isfinite(self.dynamics.updated)):
-            # Propagate unpowered motion with changing Phobos gravity. A
-            # constant surface value can falsely predict a stall higher up.
-            coast_pos, coast_vel = loc.copy(), vel.copy()
-            closest = distance
-            for step in range(1, 101):
-                a = self.gravity_at(coast_pos)
-                coast_pos += 4.*coast_vel+8.*a
-                coast_vel += 2.*(a+self.gravity_at(coast_pos))
-                closest = min(closest, np.linalg.norm(target_loc+4.*step*target_vel-coast_pos))
-            if closest > 599.:
-                remaining_kg += 3.-self.advance
-                self.advance = 3.
-        available = max(0., remaining_kg)/(3388.7/784.)
-        candidates = [np.zeros(3)]
-        for fraction in (.65, .85, 1.):
-            for sideways in (0., .2, .45, .8):
-                for angle in (np.arange(8)*np.pi/4. if sideways else (0.,)):
-                    dv = np.zeros(3)
-                    dv[sides] = sideways*np.array([np.cos(angle), np.sin(angle)])
-                    axial = fraction*available-np.abs(dv).sum()
-                    if axial <= 0.:
-                        continue
-                    dv[main] = np.sign(body_forward[main])*axial
-                    candidates.append(dv)
-        dv = np.asarray(candidates)
-        duration = np.abs(dv)/self.axis_accels[(dv < 0.).astype(int), np.arange(3)]
-        order = np.array(sides+[main])
-        start = np.zeros_like(duration)
-        start[:, order] = np.cumsum(duration[:, order], axis=1)-duration[:, order]
-        times = np.r_[np.arange(0., 21.), np.arange(25., 401., 5.)]
-        paths = scheduled_positions(times, vel, gravity, rotation, dv, start, duration)
-        # Constant launch gravity overstates the loss of height on a 300 s
-        # coast. Integrate the change in gravity along each candidate arc.
-        intervals = np.diff(times)[None, :, None]
-        nominal = -711000.*loc/max(np.linalg.norm(loc)**3, 1.)
-        world = loc+paths
-        dg = -711000.*world/np.maximum(np.linalg.norm(world, axis=2)[:, :, None]**3, 1.)-nominal
-        velocity_change = np.zeros_like(paths)
-        velocity_change[:, 1:] = np.cumsum(.5*(dg[:, :-1]+dg[:, 1:])*intervals, axis=1)
-        paths[:, 1:] += np.cumsum(.5*(velocity_change[:, :-1]+velocity_change[:, 1:])*intervals, axis=1)
-        relative = relative_goal+target_vel*times[:, None]-paths
-        ranges = np.linalg.norm(relative, axis=2)
-        crosses = ranges <= 599.
-        reached = crosses.any(axis=1)
-        sample = np.where(reached, crosses.argmax(axis=1), ranges.argmin(axis=1))
-        row = np.arange(len(dv))
-        eta = times[sample]
-        remaining = ranges[row, sample]
-        delivered = dv*np.clip((eta[:, None]-start)/np.maximum(duration, 1e-12), 0., 1.)
-        motion = vel-target_vel+delivered@rotation+eta[:, None]*gravity+velocity_change[row, sample]
-        cost = self.last_fuel+np.abs(dv).sum(axis=1)*(3388.7/784.)
-        # Compare multiple finish times using the full velocity vector left
-        # at the gate. A side lane can carry useful velocity into the next leg.
-        flight_times = np.arange(65., 351., 10.)
-        duration_grid = flight_times[None, :, None]
-        gate_gravity = gravity+dg[row, sample]
-        to_entry = relative[row, sample]*(1.-45./np.maximum(remaining[:, None], 50.))
-        finish_dv = (to_entry[:, None]/duration_grid-motion[:, None]
-                     -.5*duration_grid*gate_gravity[:, None])@rotation.T
-        next_fuel = 4.32*np.abs(finish_dv).sum(axis=2)
-        finish_times = now+eta[:, None]+flight_times
-        values = 100.*(.5+120./np.maximum(finish_times, 1.)-(cost[:, None]+next_fuel)/75.)
-        values -= 3.*np.maximum(next_fuel-30., 0.)
-        choice = values.argmax(axis=1)
-        score = values[row, choice]
-        finish = finish_times[row, choice]
-        score -= np.where(reached, 0., 20.+.2*np.maximum(remaining-599., 0.))
-        # Score the widest useful arc using moving tracks; camera tiles share
-        # radar identities and are checked separately in the near-field sweep.
-        nr = self.latest_radar_count
-        far = np.searchsorted(times, np.arange(20., 121., 10.))
-        score -= corridor_cost(times[far], paths[:, far], centers[:nr], speeds[:nr],
-                               accels[:nr], radii[:nr], np.maximum(eta, 21.))
-        gap = np.full(len(dv), np.inf)
-        near = np.linalg.norm(centers, axis=1) < (np.linalg.norm(vel)*20.+110.+
-                radii+20.*np.linalg.norm(speeds, axis=1))
-        oc, ov, oa = centers[near], speeds[near], accels[near]
-        core = np.r_[self.radar_core_radii, radii[nr:]][near]
-        if len(oc):
-            for j in range(20):
-                a = oc+j*ov+.5*j*j*oa-paths[:, j, None]
-                delta = ov+(j+.5)*oa-(paths[:, j+1]-paths[:, j])[:, None]
-                fraction = np.clip(-np.sum(a*delta, axis=2)/np.maximum(np.sum(delta**2, axis=2), 1e-9), 0., 1.)
-                clearance = np.linalg.norm(a+fraction[:, :, None]*delta, axis=2)-core
-                leaving = (np.linalg.norm(oc, axis=1) < core) & (np.sum(a*delta, axis=2) > 0.)
-                clearance[leaving] = np.inf
-                gap = np.minimum(gap, clearance.min(axis=1))
-        safe = gap > .8
-        if safe.any():
-            score[~safe] = -np.inf
-            best = int(np.argmax(score))
-        else:
-            best = int(np.argmax(gap))
-        impulse = dv[best]
-        self.burn_order = order
-        self.burn_target = vel+impulse@rotation
-        self.axis_done = np.abs(impulse) <= self.burn_tolerance
-        self.burn_signs = np.sign(impulse)
-        self.burn_started = self.not_before = now
-        self.burn_gravity = gravity.copy()
-        self.boost_until = now+1.
-        self.outer_active = self.shooting_active = True
-        self.previous_velocity = self.burn_target.copy()
-        self.coasting = self.axis_done.all()
-        self.last_phase = 'OUTER'
-        self.last_mode = 'OUTER_COAST' if self.coasting else 'OUTER_BOOST'
-        self.policy.estimated_score = float(score[best])
-        self.policy.burn_seconds = float(duration[best].sum())
-        self.policy.remaining_time = float(finish[best]-now)
-        self.policy.speed = float(np.linalg.norm(vel-target_vel+impulse@rotation))
-        self.last_horizon = 20
-        self.last_delta_v = float(np.abs(impulse).sum())
-        return self.linear_command(vel, MAX_ACCEL), self.last_mode, float(gap[best])
-
-
-class PlanningWorker:
-    """One isolated math job; the flight thread alone owns the simulator API."""
-    def __init__(self, executor=None):
-        from concurrent.futures import ThreadPoolExecutor
-        self.executor = executor or ThreadPoolExecutor(max_workers=1, thread_name_prefix='efp-plan')
-        self.future = None
-        self.generation = 0
-        self.last_accepted = -np.inf
-        self.plan_ms = self.copy_ms = 0.
-        self.error = ''
-
-    @property
-    def busy(self):
-        return self.future is not None
-
-    @staticmethod
-    def compute(generation, stamp, planner, camera, vectors, radar, cruise):
-        import time as clock
-        start = clock.perf_counter()
-        _, mode, clearance = planner.command(stamp, *vectors, radar, camera=camera, cruise_speed=cruise)
-        return generation, stamp, planner, camera, mode, clearance, 1000.*(clock.perf_counter()-start)
-
-    def submit(self, stamp, planner, camera, loc, vel, goal, goal_velocity, radar, cruise):
-        import copy
-        import time as clock
-        if self.busy:
-            return False
-        start = clock.perf_counter()
-        snapshot, image = copy.deepcopy(planner), copy.deepcopy(camera)
-        vectors = tuple(np.asarray(v, float).copy() for v in (loc, vel, goal, goal_velocity))
-        reports = [np.asarray(report, float).copy() for report in radar]
-        self.copy_ms = 1000.*(clock.perf_counter()-start)
-        self.future = self.executor.submit(self.compute, self.generation, float(stamp),
-                                           snapshot, image, vectors, reports, float(cruise))
-        return True
-
-    def take(self, now, live, camera):
-        if self.future is None or not self.future.done():
-            return None
-        future, self.future = self.future, None
-        try:
-            generation, stamp, candidate, image, mode, clearance, elapsed = future.result()
-        except Exception as exc:
-            self.error = 'planning failed: '+str(exc)[:160]
-            return None
-        self.plan_ms = elapsed
-        if generation != self.generation or not 0. <= now-stamp <= 1.:
-            self.error = 'discarded obsolete plan'
-            return None
-        crossed_budget_boundary = getattr(live, 'inner_leg', False) and not getattr(candidate, 'inner_leg', False)
-        if live.failed or candidate.arrival_time != live.arrival_time or crossed_budget_boundary:
-            self.error = 'discarded plan across mission transition'
-            return None
-        # These observations continue arriving while the math job runs. Keep
-        # their live history rather than restoring its older snapshot.
-        candidate.dynamics = live.dynamics
-        for name in ('previous', 'fuel_per_dv', 'acceleration'):
-            setattr(candidate.policy, name, getattr(live.policy, name))
-        candidate.observe_damage(max(live.last_damage, candidate.last_damage))
-        candidate.control_time = float(now)
-        candidate.body_rotation = live.body_rotation.copy()
-        if camera is not None and image is not None:
-            camera.rgb_associations, camera.depth_associations = image.rgb_associations, image.depth_associations
-        self.last_accepted, self.error = float(stamp), ''
-        return candidate, mode, clearance
-
-    def reset(self):
-        self.generation += 1
-        self.last_accepted, self.error = -np.inf, ''
-        if self.future is not None and self.future.cancel():
-            self.future = None
-
-    def close(self):
-        self.generation += 1
-        self.executor.shutdown(wait=False, cancel_futures=True)
 
 
 class EconomyAttitude(FlightAttitude):
@@ -3139,12 +2614,8 @@ class FreeAttitude(FlightAttitude):
 
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
-try:
-    controller_source_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-except OSError:
-    controller_source_hash = 'unavailable'
 rescue_frame = target.GetBodyFixedFrame()
-planner = StagedNavigator(nose_first=nose_first_enabled)
+planner = ShootingNavigator(nose_first=nose_first_enabled)
 flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
@@ -3161,10 +2632,8 @@ if os.environ.get('EFP_CAMERA_GUI', '1') != '0':
         preview_error = str(exc)
         st.OnScreenLogMessage('Camera GUI unavailable: '+preview_error, 'CameraGUI', st.Severity.Info)
 camera_manager = CameraManager(st, dict(top=topCamera, bottom=bottomCamera), PanTiltCamera, radar_epoch, preview)
-planning_worker = PlanningWorker()
 score_policy = planner.policy
 fuel_ledger = FuelLedger()
-flight_budget = FlightFuelLimit()
 last_plan = -np.inf
 last_log = -np.inf
 plan_ms = 0.
@@ -3173,30 +2642,18 @@ angular_accel = np.zeros(3)
 mode, clearance = 'START', np.inf
 damage, fuel = 0., 0.
 arrival_announced = False
-cruise = 10.
-control_period = 1.0 / this.GetParam(st.VarType.double, 'LoopFreqHz')
-tick_deadline = time.perf_counter()+control_period
-previous_control_time = None
-max_control_step_ms = 0.
 linear_limit = min(MAX_ACCEL, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAccel_m_s2']))
 angular_limit = min(0.02, shuttle.GetParam(st.VarType.double, ['Thrusters', 'MaxAngAccel_rad_s2']))
 try:
     while True:
-        time.sleep(max(0., tick_deadline-time.perf_counter()))
-        tick_deadline = time.perf_counter()+control_period
+        time.sleep(1.0 / this.GetParam(st.VarType.double, 'LoopFreqHz'))
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
-        control_step_ms = (max(0., 1000.*(now-previous_control_time))
-                           if previous_control_time is not None else 0.)
-        max_control_step_ms = max(max_control_step_ms, control_step_ms)
-        previous_control_time = now
         if now < last_plan:
-            planning_worker.reset()
-            planner = StagedNavigator(nose_first=nose_first_enabled)
+            planner = ShootingNavigator(nose_first=nose_first_enabled)
             pose_history = PoseHistory()
             perception = CameraPerception()
             score_policy = planner.policy
             fuel_ledger = FuelLedger()
-            flight_budget = FlightFuelLimit()
             camera_manager.reset()
             if preview is not None:
                 preview.reset()
@@ -3234,15 +2691,12 @@ try:
                 fuel_ledger.observe(now, fuel, 'ARRIVAL', arrived=True)
                 planner.policy.estimated_score = mission_score(now, fuel, damage)
         camera_manager.drain(now, pose_history, perception)
-        sightline = camera_course(loc, vel, target_loc, target_vel)
+        sightline = vel-target_vel
+        if np.linalg.norm(sightline) < 1. or np.linalg.norm(target_loc-loc) < 300.:
+            sightline = target_loc-loc
         camera_manager.tick(now, body_dcm@sightline)
-        completed = planning_worker.take(now, planner, perception)
-        if completed is not None:
-            planner, mode, clearance = completed
-            score_policy = planner.policy
-            cruise = min(cruise, planner.policy.speed)
-        plan_ms = planning_worker.plan_ms
-        if now-last_plan >= PLAN_PERIOD and not planning_worker.busy:
+        if now-last_plan >= PLAN_PERIOD:
+            plan_wall_start = time.perf_counter()
             # Read the entire radar list; stale sorting can hide an approaching object.
             radar = GetNearestDebrisLocations(10000)
             radar = [np.asarray(report, dtype=float) for report in radar]
@@ -3266,7 +2720,6 @@ try:
             fresh_depth = any(0. <= now-stamp <= CAMERA_MAX_AGE and len(regions)
                               for stamp, regions in perception.occupied.values())
             if len(radar) == 0 and not fresh_depth:
-                planning_worker.reset()
                 planner.previous_velocity = target_vel.copy()
                 mode, clearance = 'WAIT_RADAR', float('nan')
                 planner.coasting = False
@@ -3274,11 +2727,14 @@ try:
                 planner.last_mode = mode
                 planner.shooting_active = False
             else:
-                planning_worker.submit(now, planner, perception, loc, vel,
-                                       target_loc, target_vel, radar, cruise)
+                accel_world, mode, clearance = planner.command(
+                    now, loc, vel, target_loc, target_vel, radar, camera=perception,
+                    cruise_speed=cruise)
+                cruise = min(cruise, planner.policy.speed)
             fuel_phase = (planner.last_phase+'/'+mode if planner.last_phase == 'CRUISE' else mode)
             fuel_ledger.observe(now, fuel, fuel_phase, arrived=planner.arrival_time is not None)
             last_plan = now
+            plan_ms = 1000.*(time.perf_counter()-plan_wall_start)
         if planner.arrival_time is not None and not arrival_announced:
             st.OnScreenAlert('Arrival zone reached; post-arrival safety control active. Official result is in the Scoring log.',
                              'ArrivalZone', st.Severity.Info)
@@ -3286,11 +2742,9 @@ try:
         # The planner runs at 2 Hz; the velocity servo runs every control tick.
         # Reusing a fixed acceleration for the whole planning period can overshoot.
         accel_world = planner.linear_command(vel, linear_limit)
-        if now-planning_worker.last_accepted > 2. and planner.arrival_time is None and mode != 'WAIT_RADAR':
-            accel_world = np.zeros(3)
-            mode = 'WAIT_PLANNER'
         if axis_thrust_enabled:
             accel_world = axis_thrust(accel_world, body_dcm, linear_limit)
+        accel_body = st.frames.FramedVector(accel_world, phobosFrame).ExprIn(shuttleFrame)
         omega_body = np.asarray(shuttle.getAngVelocity().WRT(phobosFrame).ExprIn(shuttleFrame))
         # Phobos-centred position defines the local outward/up direction.
         up_world = loc/max(np.linalg.norm(loc), 1e-9)
@@ -3304,16 +2758,9 @@ try:
             angular_accel = np.zeros(3)
         if not np.isfinite(angular_accel).all():
             angular_accel = np.zeros(3)
-        fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
-        if not flight_budget.allows(score_distance, fuel, planner.advance):
-            accel_world = np.zeros(3)
-            angular_accel = np.zeros(3)
-            mode = 'FUEL_LIMIT_COAST'
-        planner.inner_leg = flight_budget.crossing_fuel is not None
-        accel_body = st.frames.FramedVector(accel_world, phobosFrame).ExprIn(shuttleFrame)
         SetCommand(accel_body, angular_accel)
         if preview is not None:
-            preview.update(running=True, profile=CONTROLLER_PROFILE, now=now, mode=mode,
+            preview.update(running=True, profile='SCORE_MOMENTUM', now=now, mode=mode,
                 speed=float(np.linalg.norm(vel-target_vel)), cruise=cruise,
                 distance=float(np.linalg.norm(target_loc-loc)), fuel=fuel, damage=damage,
                 images=camera_manager.received, rejected=perception.rejected,
@@ -3330,15 +2777,14 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile={CONTROLLER_PROFILE} sourceSHA256={controller_source_hash} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile=SCORE_MOMENTUM t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
-                f'plannedReturnDV={2.*np.linalg.norm(planner.last_detour) if planner.shooting_active else 0.:.2f}m/s '
                 f'noseFirst={nose_first_enabled} '
                 f'axisThrust={axis_thrust_enabled} '
-                f'planMs={plan_ms:.1f} copyMs={planning_worker.copy_ms:.1f} controlStepMs={control_step_ms:.1f} maxControlStepMs={max_control_step_ms:.1f} planBusy={planning_worker.busy} planFault={planning_worker.error or "none"} '
+                f'planMs={plan_ms:.1f} '
                 f'coastDrift={np.array2string(planner.dynamics.residual, precision=4, separator=",")}m/s2 '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
-                f'fuelCeiling={flight_budget.ceiling:.2f}kg fuelPhaseKg=[{fuel_ledger.summary()}] '
+                f'fuelPhaseKg=[{fuel_ledger.summary()}] '
                 f'lookahead={planner.last_horizon}s planDV={planner.last_delta_v:.2f}m/s '
                 f'stopDistance={planner.stopping_distance:.1f}m routeNodes={len(planner.corridor.points)} '
                 f'chunk={planner.corridor.chunk_id} nextReady={bool(planner.corridor.pending) or len(planner.corridor.points) > 8} '
@@ -3354,16 +2800,12 @@ try:
                 f'guiFault={(preview.error if preview is not None else preview_error) or "none"}',
                 'IgnitionController', st.Severity.Info)
             last_log = now
-            max_control_step_ms = 0.
 finally:
     try:
         SetCommand(np.zeros(3), np.zeros(3))
     finally:
         try:
-            planning_worker.close()
+            if preview is not None:
+                preview.close()
         finally:
-            try:
-                if preview is not None:
-                    preview.close()
-            finally:
-                st.leave_sim()
+            st.leave_sim()

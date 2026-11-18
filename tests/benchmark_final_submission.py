@@ -93,8 +93,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     dt = 1./control_hz
     worker = None
     if plan_latency > 0.:
-        from planning_doubles import ImmediateExecutor
-        worker_type = namespace.get('PlanningWorker') or load_namespace((Path(__file__).resolve().parents[1]/'Controller.py').read_text())['PlanningWorker']
+        from planning_doubles import ImmediateExecutor, PlanningWorker
+        worker_type = namespace.get('PlanningWorker', PlanningWorker)
         worker = worker_type(ImmediateExecutor())
     plan_due = -np.inf
     held_body, held_angular = np.zeros(3), np.zeros(3)
