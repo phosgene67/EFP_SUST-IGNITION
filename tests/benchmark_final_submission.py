@@ -25,7 +25,7 @@ def quaternion_matrix(quaternion):
     return (w*w-v@v)*np.eye(3)+2.*np.outer(v, v)-2.*w*skew
 
 
-def load_scene(path):
+def load_scene(path, numeric_debris_order=False):
     data = json.loads(Path(path).read_text())
     entities = {}
     def visit(node):
@@ -39,7 +39,10 @@ def load_scene(path):
             for item in node:
                 visit(item)
     visit(data)
-    rocks = [entities[key] for key in sorted(entities) if key.startswith('Debris') and 'RadarDiameter_m' in entities[key]]
+    names = [key for key in sorted(entities) if key.startswith('Debris') and 'RadarDiameter_m' in entities[key]]
+    if numeric_debris_order:
+        names.sort(key=lambda name: int(name[6:]))
+    rocks = [entities[key] for key in names]
     shuttle, target = entities['SpaceBuggy'], entities['AsteroidCycler']
     return dict(loc=np.array(shuttle['Location'][1:]), rotation=quaternion_matrix(shuttle['Rotation'][1:]),
                 target=np.array(target['Location'][1:]), station_rotation=quaternion_matrix(target['Rotation'][1:]),
@@ -89,7 +92,7 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async', experiments=()):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async', experiments=(), rng_mode='legacy'):
     dt = 1./control_hz
     worker = None
     if plan_latency > 0.:
@@ -114,12 +117,40 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if not hasattr(planner, 'recheck_coast'):
             raise ValueError('This controller revision does not implement recheck-coast')
         planner.recheck_coast = True
+    if 'inertial-capture' in experiments:
+        if not hasattr(planner, 'inertial_capture'):
+            raise ValueError('This controller revision does not implement inertial-capture')
+        planner.inertial_capture = True
+    if 'vector-burn' in experiments:
+        if not hasattr(planner, 'vector_burn'):
+            raise ValueError('This controller revision does not implement vector-burn')
+        planner.vector_burn = True
+    if 'exact-arcs' in experiments:
+        if not hasattr(planner, 'exact_arcs'):
+            raise ValueError('This controller revision does not implement exact-arcs')
+        planner.exact_arcs = True
+    if 'coast-windows' in experiments:
+        if not hasattr(planner, 'coast_windows'):
+            raise ValueError('This controller revision does not implement coast-windows')
+        planner.coast_windows = True
+    if 'entry-scope' in experiments:
+        if not hasattr(planner, 'entry_scope'):
+            raise ValueError('This controller revision does not implement entry-scope')
+        planner.entry_scope = planner.terminal.entry_scope = True
+    if 'track-cache' in experiments:
+        if not hasattr(planner, 'cache_reports'):
+            raise ValueError('This controller revision does not implement track-cache')
+        planner.cache_reports = True
     gate = None
     fuel_budget = namespace['FuelBudget']() if 'FuelBudget' in namespace else None
     if 'StagedNavigator' in namespace:
         planner = namespace['StagedNavigator']()
         gate = namespace['FlightFuelLimit']()
     attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
+    if 'camera-recovery' in experiments:
+        if 'ViewRecoveryAttitude' not in namespace or attitude_mode != 'normal':
+            raise ValueError('camera-recovery requires ViewRecoveryAttitude and normal attitude mode')
+        attitude_type = namespace['ViewRecoveryAttitude']
     attitude = (attitude_type or namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None)))()
     if hasattr(planner, 'nose_first') and attitude_mode in ('nose-first', 'nose-only', 'burn-only'):
         planner.nose_first, planner.aligned_once = True, False
@@ -127,7 +158,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     loc, vel, omega = scene['loc'].copy(), np.zeros(3), np.zeros(3)
     rotation, target = scene['rotation'].copy(), scene['target']
     objects = scene['positions'].copy()
-    rock_velocities = scene['velocities'].copy()+rng.normal(0., .02, scene['velocities'].shape)
+    rock_rng = np.random.default_rng(8193) if rng_mode == 'native-order' else rng
+    rock_velocities = scene['velocities'].copy()+rock_rng.normal(0., .02, scene['velocities'].shape)
     diameters = scene['diameters']
     count = len(objects)
     reports = np.zeros((count, 3, 3))
@@ -135,8 +167,15 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     def measure(index, stamp):
         relative = objects[index]-loc
         distance = np.linalg.norm(relative)
-        reports[index] = [relative+rng.normal(0., 2., 3),
-            [distance-diameters[index]/2., (rock_velocities[index]-vel).dot(relative/max(distance, 1e-9))
+        position = relative+rng.normal(0., 2., 3)
+        closest = distance-diameters[index]/2.
+        if rng_mode == 'native-order':
+            # Radar.py draws this noise between position and range rate.
+            # Even though guidance does not use closest range, skipping the
+            # draw changes every later noise sample and track association.
+            closest += rng.normal(0., 2.)
+        reports[index] = [position,
+            [closest, (rock_velocities[index]-vel).dot(relative/max(distance, 1e-9))
              +rng.normal(0., .02), diameters[index]*rng.normal(1., .05)], [stamp, 0., 0.]]
     for index in range(count):
         measure(index, 0.)
@@ -181,6 +220,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if now+1e-8 >= next_capture:
             name = 'top' if capture_index % 2 == 0 else 'bottom'
             travel = target-loc if np.linalg.norm(target-loc) < 300. or np.linalg.norm(vel) < 1. else vel
+            if getattr(attitude, 'viewing', False):
+                travel = target-loc
             if 'camera_course' in namespace:
                 travel = namespace['camera_course'](loc, vel, target, np.zeros(3))
             body = rotation@travel
@@ -244,6 +285,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             linear = namespace['axis_thrust'](linear, rotation, namespace['MAX_ACCEL'])
         up = loc/max(np.linalg.norm(loc), 1e-9)
         if attitude is not None:
+            if hasattr(attitude, 'configure') and abs(now-(next_plan-.5)) < 1e-8:
+                attitude.configure(now, planner, loc, vel, target, np.zeros(3), linear, camera)
+            if hasattr(attitude, 'linear_active'):
+                attitude.linear_active = np.linalg.norm(linear) > 1e-8
             if hasattr(attitude, 'aligning'):
                 attitude.aligning = planner.aligning
             budget = namespace.get('attitude_budget', lambda linear, maximum: maximum)(linear, .02)
@@ -405,7 +450,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--experiment', action='append', default=[],
-                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast'),
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache'),
                         help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
@@ -414,6 +459,8 @@ if __name__ == '__main__':
     parser.add_argument('--plan-latency', type=float, default=0., help='Synthetic planning delay in simulation seconds; isolates held-command timing')
     parser.add_argument('--planning-mode', choices=('async', 'blocking'), default='async')
     parser.add_argument('--allocator-solver', choices=('highs', 'native'), default='highs')
+    parser.add_argument('--rng-mode', choices=('legacy', 'native-order'), default='legacy',
+                        help='Native-order uses numeric debris order, fixed spawn RNG 8193 and all official radar noise draws; seed varies radar noise only')
     parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
     parser.add_argument('--ground-plane', type=float, default=0., help='Diagnostic only: synthetic plane this far below initial centre, metres')
     parser.add_argument('--drift-bias', type=float, nargs=3, default=[0., 0., 0.],
@@ -434,19 +481,22 @@ if __name__ == '__main__':
     algorithm = load_namespace(source)
     if args.fuel_plan_target is not None:
         algorithm['FUEL_PLAN_TARGET'] = args.fuel_plan_target
-    scene = load_scene(args.sim_config)
+    scene = load_scene(args.sim_config, numeric_debris_order=args.rng_mode == 'native-order')
     if args.clear_corridor:
         direction = scene['target']-scene['loc']
         axis = np.eye(3)[np.argmin(np.abs(direction))]
         side = np.cross(direction, axis)
         scene['positions'] += 5000.*side/np.linalg.norm(side)
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
-                  controller_file_sha256=(hashlib.sha256((root/'Controller.py').read_bytes()).hexdigest()
-                                          if not args.baseline_ref and not args.baseline_file else None),
+                  controller_file_sha256=(hashlib.sha256(Path(args.baseline_file).read_bytes()).hexdigest()
+                                          if args.baseline_file else
+                                          hashlib.sha256((root/'Controller.py').read_bytes()).hexdigest()
+                                          if not args.baseline_ref else None),
                   hash_note='controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.',
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=7,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=8 if args.rng_mode == 'native-order' else 7,
+                  rng_mode=args.rng_mode,
                   plan_latency_s=args.plan_latency, planning_mode=args.planning_mode,
                   fuel_plan_target_override=args.fuel_plan_target,
                   allocator_solver=args.allocator_solver,
@@ -457,6 +507,6 @@ if __name__ == '__main__':
                   drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(algorithm, Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode, args.experiment))
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode, args.experiment, args.rng_mode))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

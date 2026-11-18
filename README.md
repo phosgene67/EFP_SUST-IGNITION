@@ -23,6 +23,22 @@ Experiments are isolated behind default-off environment flags.
 | `EFP_CLEAN_MAIN_BURN=1` | Small transverse acceleration component during the main burn | Twenty-seed median gain +2.06, 95% interval -0.81 to +7.63. Inconclusive and rejected for promotion. |
 | `EFP_ORDER_DIVERSITY=1` | Preserve a candidate for each body-axis burn order before collision checks | Twenty-seed median gain 0.00, 95% interval -0.07 to +2.44. Inconclusive and rejected for promotion. |
 | `EFP_RECHECK_COAST=1` | Revalidate a completed retained coast against the safe passage requirement | Twenty-seed median change -0.31, 95% interval -0.62 to +0.74. Unit regression fixed; no demonstrated flight-score gain, so it stays off. |
+| `EFP_INERTIAL_CAPTURE=1` | Keep finite-burn/coast planning through a camera-observed terminal approach | Twenty-seed median +0.815 points; marginal at the reported score precision. Stays off pending stronger evidence. |
+| `EFP_VECTOR_BURN=1` | Offer a single fixed-direction translation burn followed by coast | Twenty-seed median -1.90 points with higher fuel. Rejected for promotion. |
+| `EFP_EXACT_ARCS=1` | Solve and execute both finite burns of a curved detour | Both 20-seed revisions had one incomplete arrival. Rejected. |
+| `EFP_COAST_WINDOWS=1` | Predict short coasts before burning through moving debris | Reduced fuel at 600 m by about 2 kg, but one arrival timed out. Rejected. |
+| `EFP_CAMERA_RECOVERY=1` | Maintain station camera coverage during a clear coast | With coast windows, restored 20/20 arrivals but reduced median score. Stays off. |
+| `EFP_ENTRY_SCOPE=1` | Evaluate collision checks up to predicted safe-zone entry | Twenty-seed isolated trial showed no meaningful median gain. Stays off. |
+| `EFP_TRACK_CACHE=1` | Reuse fits for unchanged radar samples | All 20 modeled entry results matched the original; faster tracker fixture. Native score benefit unverified. Stays off. |
+
+Copying this controller alone keeps the baseline flight policy: every experiment
+above defaults to off. No tested trajectory change has established the requested
+60-point native result or 30–35 kg fuel use by 600 m remaining.
+
+For a native diagnostic run, set `EFP_FLIGHT_TRACE=1` before launching the
+simulator, leaving algorithm flags off. Bounded `IGNITION_STATE` JSON records
+are written to simulator logs every five seconds. They include pose, commands,
+fuel and sensor samples needed to investigate the native/offline fuel gap.
 
 [Score tuning and verification](SCORE_TUNING.md) contains the score calculation,
 matched results, phase-fuel audit, limitations and reproduction commands.

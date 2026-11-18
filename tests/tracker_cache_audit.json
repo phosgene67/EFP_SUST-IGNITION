@@ -1,0 +1,24 @@
+{
+  "kind": "measured_compute_on_synthetic_sensor_fixture",
+  "fixture": "500 unchanged mature radar reports; shared constant pose; 30 paired alternating calls; other offline jobs may be running",
+  "source_refs": [
+    "4a8507e",
+    "731c8df"
+  ],
+  "source_hashes": {
+    "4a8507e": "2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af",
+    "731c8df": "463c22f0968f86278dac5c3dcc6079e896a3b19c42291fba01ed87c106476397"
+  },
+  "max_output_abs_difference": 0.0,
+  "timing_ms": {
+    "4a8507e": {
+      "median": 131.979699996009,
+      "p95": 155.48166000226044
+    },
+    "731c8df": {
+      "median": 31.57869999995455,
+      "p95": 41.77475999604212
+    }
+  },
+  "note": "Measures tracker CPU time and output equivalence, not native score. 731 includes a tracker cache; no claim that timing alone explains the native regression."
+}

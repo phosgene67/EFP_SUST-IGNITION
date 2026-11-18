@@ -1,0 +1,353 @@
+{
+  "kind": "measured_native_results",
+  "baseline_ref": "b524b36",
+  "baseline_CRLF_file_sha256": "9240452ccad5122f03dce729a4eb4fb11a63cb1d19c56894456eef061b5ca62e",
+  "note": "Three runs, not a matched 20-seed population estimate. Source bytes and logged flags match the restored default. Native run seed fields are absent. These observations show a larger fuel cost than the legacy offline median, without proving which unmodeled effect causes the gap.",
+  "runs": [
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261118_120401_FINAL_SUBMISSION__96a",
+      "profile": "SCORE_MOMENTUM",
+      "source_sha256": "9240452ccad5122f03dce729a4eb4fb11a63cb1d19c56894456eef061b5ca62e",
+      "seed": null,
+      "has_fuel_limit": false,
+      "clean_main_burn": false,
+      "order_diversity": false,
+      "recheck_coast": false,
+      "inertial_capture": null,
+      "vector_burn": null,
+      "status": "official_success",
+      "score": 5.1,
+      "time_s": 297.73,
+      "fuel_kg": 63.92,
+      "damage_J": 0.0,
+      "entry_distance_m": 49.92,
+      "score_from_reported_fields": 5.0783076389122055,
+      "score_rounding_difference": 0.021692361087794154,
+      "matches_committed_baseline_CRLF_bytes": true,
+      "log_sha256": "4ab3014b497f834aabd29c44cc7c88866dee9106a71925d58d707a1b78f503a1",
+      "early_steering_and_600m_samples": [
+        {
+          "time_s": 20.3,
+          "distance_m": 1294.3,
+          "speed_m_s": 1.31,
+          "fuel_kg": 7.71,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 25.6,
+          "distance_m": 1286.0,
+          "speed_m_s": 1.77,
+          "fuel_kg": 9.93,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 30.7,
+          "distance_m": 1276.0,
+          "speed_m_s": 2.15,
+          "fuel_kg": 12.04,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 35.8,
+          "distance_m": 1265.2,
+          "speed_m_s": 2.13,
+          "fuel_kg": 14.17,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 40.9,
+          "distance_m": 1254.5,
+          "speed_m_s": 2.19,
+          "fuel_kg": 16.28,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 45.9,
+          "distance_m": 1244.3,
+          "speed_m_s": 2.2,
+          "fuel_kg": 18.76,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 51.0,
+          "distance_m": 1234.3,
+          "speed_m_s": 1.93,
+          "fuel_kg": 21.92,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 56.2,
+          "distance_m": 1224.3,
+          "speed_m_s": 1.97,
+          "fuel_kg": 24.56,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 61.3,
+          "distance_m": 1213.5,
+          "speed_m_s": 2.34,
+          "fuel_kg": 26.67,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 66.4,
+          "distance_m": 1201.1,
+          "speed_m_s": 2.49,
+          "fuel_kg": 29.49,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 173.4,
+          "distance_m": 639.7,
+          "speed_m_s": 5.65,
+          "fuel_kg": 54.18,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 178.4,
+          "distance_m": 611.2,
+          "speed_m_s": 5.6,
+          "fuel_kg": 54.18,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 183.5,
+          "distance_m": 583.1,
+          "speed_m_s": 5.54,
+          "fuel_kg": 54.18,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 188.6,
+          "distance_m": 555.1,
+          "speed_m_s": 5.49,
+          "fuel_kg": 54.18,
+          "mode": "IMPULSE_COAST"
+        }
+      ]
+    },
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261118_121822_FINAL_SUBMISSION__5fa",
+      "profile": "SCORE_MOMENTUM",
+      "source_sha256": "9240452ccad5122f03dce729a4eb4fb11a63cb1d19c56894456eef061b5ca62e",
+      "seed": null,
+      "has_fuel_limit": false,
+      "clean_main_burn": false,
+      "order_diversity": false,
+      "recheck_coast": false,
+      "inertial_capture": null,
+      "vector_burn": null,
+      "status": "official_success",
+      "score": 9.7,
+      "time_s": 309.31,
+      "fuel_kg": 59.3,
+      "damage_J": 0.0,
+      "entry_distance_m": 49.88,
+      "score_from_reported_fields": 9.729363206276332,
+      "score_rounding_difference": -0.02936320627633293,
+      "matches_committed_baseline_CRLF_bytes": true,
+      "log_sha256": "21824a0134b69ed3a2ffdcac82a1e4978a065f12ccbb7b08e243b8dd8ac9a323",
+      "early_steering_and_600m_samples": [
+        {
+          "time_s": 20.6,
+          "distance_m": 1292.5,
+          "speed_m_s": 1.43,
+          "fuel_kg": 7.97,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 25.6,
+          "distance_m": 1284.2,
+          "speed_m_s": 1.86,
+          "fuel_kg": 10.04,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 30.8,
+          "distance_m": 1273.4,
+          "speed_m_s": 2.31,
+          "fuel_kg": 12.21,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 35.9,
+          "distance_m": 1260.3,
+          "speed_m_s": 2.76,
+          "fuel_kg": 14.32,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 41.1,
+          "distance_m": 1244.9,
+          "speed_m_s": 3.2,
+          "fuel_kg": 16.47,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 46.3,
+          "distance_m": 1227.3,
+          "speed_m_s": 3.63,
+          "fuel_kg": 18.61,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 51.3,
+          "distance_m": 1207.9,
+          "speed_m_s": 4.06,
+          "fuel_kg": 20.72,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 56.5,
+          "distance_m": 1186.5,
+          "speed_m_s": 4.24,
+          "fuel_kg": 22.83,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 61.6,
+          "distance_m": 1164.7,
+          "speed_m_s": 4.19,
+          "fuel_kg": 25.16,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 66.6,
+          "distance_m": 1143.8,
+          "speed_m_s": 4.17,
+          "fuel_kg": 27.56,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 173.8,
+          "distance_m": 625.0,
+          "speed_m_s": 5.15,
+          "fuel_kg": 57.99,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 178.9,
+          "distance_m": 599.1,
+          "speed_m_s": 5.1,
+          "fuel_kg": 57.99,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 183.9,
+          "distance_m": 573.4,
+          "speed_m_s": 5.05,
+          "fuel_kg": 57.99,
+          "mode": "IMPULSE_COAST"
+        }
+      ]
+    },
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261118_122950_FINAL_SUBMISSION__20a",
+      "profile": "SCORE_MOMENTUM",
+      "source_sha256": "9240452ccad5122f03dce729a4eb4fb11a63cb1d19c56894456eef061b5ca62e",
+      "seed": null,
+      "has_fuel_limit": false,
+      "clean_main_burn": false,
+      "order_diversity": false,
+      "recheck_coast": false,
+      "inertial_capture": null,
+      "vector_burn": null,
+      "status": "official_success",
+      "score": 14.2,
+      "time_s": 289.87,
+      "fuel_kg": 57.9,
+      "damage_J": 0.0,
+      "entry_distance_m": 49.86,
+      "score_from_reported_fields": 14.1978680097975,
+      "score_rounding_difference": 0.0021319902024998783,
+      "matches_committed_baseline_CRLF_bytes": true,
+      "log_sha256": "25c44de4174f0a93681a8732571b1fdd76b4bb72f152158d35557ca0c827f724",
+      "early_steering_and_600m_samples": [
+        {
+          "time_s": 21.4,
+          "distance_m": 1297.4,
+          "speed_m_s": 0.98,
+          "fuel_kg": 7.6,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 26.4,
+          "distance_m": 1291.5,
+          "speed_m_s": 1.39,
+          "fuel_kg": 9.74,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 31.8,
+          "distance_m": 1282.8,
+          "speed_m_s": 1.83,
+          "fuel_kg": 11.94,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 36.8,
+          "distance_m": 1272.7,
+          "speed_m_s": 2.09,
+          "fuel_kg": 14.5,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 41.8,
+          "distance_m": 1261.6,
+          "speed_m_s": 2.43,
+          "fuel_kg": 16.28,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 47.0,
+          "distance_m": 1247.9,
+          "speed_m_s": 2.86,
+          "fuel_kg": 18.67,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 52.0,
+          "distance_m": 1232.4,
+          "speed_m_s": 3.29,
+          "fuel_kg": 20.5,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 57.3,
+          "distance_m": 1214.6,
+          "speed_m_s": 3.5,
+          "fuel_kg": 22.66,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 62.5,
+          "distance_m": 1195.9,
+          "speed_m_s": 3.59,
+          "fuel_kg": 24.82,
+          "mode": "IMPULSE_BURN"
+        },
+        {
+          "time_s": 175.4,
+          "distance_m": 626.0,
+          "speed_m_s": 5.89,
+          "fuel_kg": 57.9,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 180.5,
+          "distance_m": 595.9,
+          "speed_m_s": 5.83,
+          "fuel_kg": 57.9,
+          "mode": "IMPULSE_COAST"
+        },
+        {
+          "time_s": 185.6,
+          "distance_m": 566.5,
+          "speed_m_s": 5.78,
+          "fuel_kg": 57.9,
+          "mode": "IMPULSE_COAST"
+        }
+      ]
+    }
+  ]
+}

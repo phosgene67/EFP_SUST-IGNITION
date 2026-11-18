@@ -5,7 +5,71 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+## Selected state after the inertia experiments
+
+This snapshot supersedes the historical work-in-progress notes below.
+Controller.py retains the original 4a8507e SCORE_MOMENTUM flight policy by
+default, with mandatory zero thrust after actual safe-zone entry. Every
+algorithm experiment remains default-off. No hard fuel budget, forced late
+9 m/s burn, full nose pointing or new official simulator configuration is used.
+Connection prefix, BasicController.py, UserAPI.py and installed official assets
+were checked unchanged. The current suite passes 163 tests.
+
+Twenty matched offline seeds100–119 per trajectory cohort found no reliable
+score gain with all arrivals preserved. Original median score38.275,
+T264.97 s and fuel43.725 kg are modeled, not native performance. Its median
+fuel at600 m remaining was41.6845 kg. The short-coast-window experiment
+reduced that to39.6915 kg, but timed out on one camera-observation case.
+Adding camera recovery restored20/20 arrivals but median score fell to36.325.
+Adding entry-scoped collision checks gave37.39. Entry-scope alone gave38.31,
+delta+0.035, rounding-adjusted interval[-0.295,+0.77]: inconclusive. No tested
+cohort crossed600 m below35 kg. The native60–70 goal remains unmet.
+
+Rejected/default-off alternatives: simultaneous vector burn (higher fuel,
+median36.375), exact finite-burn arcsV1/V2 (each19/20 arrivals), inertial terminal
+handoff (marginal+0.815 at rounded-score precision), short coast windows and
+their view/entry combinations (above). Read SCORE_TUNING.md and corresponding
+tests/score_sweep_*.json before revisiting them. Frozen sources and individual
+records preserve reproducibility and distinguish revisions.
+
+EFP_TRACK_CACHE=1 is a separate computation experiment which reuses unchanged
+radar report fits. Unit fixtures verify exact output/uncertainty equivalence
+through report changes and missing history. A paired500-object unchanged-report
+fixture measured median107.79 ms uncached versus24.32 ms cached. This is an
+upper-bound cache opportunity under concurrent load, not a native score gain.
+Record: tests/tracker_cache_current_audit.json. The final20-seed replay finished:
+all20 entry times, fuels, scores, contacts and phase-fuel totals matched the
+original exactly at reported precision, with20 arrivals and zero contacts.
+Report: tests/score_sweep_cache.json; frozen source:
+tests/score_sweeps/final_cache_controller.py. This establishes modeled policy
+equivalence, not score improvement. The flag remains off pending native timing
+verification. No benchmark jobs remain running.
+
+Three identified native baseline logs scored5.1/9.7/14.2 at57.9–63.92 kg,
+zero entry damage, much worse than the model. Native-order radar RNG diagnostic
+did not explain this discrepancy. EFP_FLIGHT_TRACE=1 adds bounded file-only
+state/command/radar/camera records every5 s; failure disables tracing without
+interrupting flight. The user was asked for the new run folder under their
+existing Logs root with algorithm flags off. Native timing, camera calibration,
+meshes and dynamics remain unverified; do not guess the cause or promote more
+offline tuning as a native improvement until those traces are available.
+The subsequent full same-source November18 inventory contains13 official
+success alerts: descriptive median14.2 points,289.87 s,57.9 kg, zero entry
+damage; score range-19.3 to43.2 and fuel40.95–78.05 kg. Two other logs had no
+success alert at read time (one live), so no failure rate is inferred. These
+are not matched seeds. See tests/inertia_native_inventory.json. Newly completed
+143820 run scored24.1,T265.27,F53.36 and still used9240452c… deployed source.
+It provides no current experiment/trace validation. Do not cherry-pick the
+three diagnostic poor examples as the whole native population.
+
 ## Current user direction
+
+Latest continuation: prioritize inertia, predict moving-debris corridors from
+radar and RGB/depth, reduce repeated lateral corrections, aim for 30–35 kg or
+less by 600 m remaining, and evaluate a late boost toward 9 m/s only when it
+pays in score and the sensed corridor is clear. Continuously aim the predicted
+trajectory into the 50 m safe sphere. These are performance targets, not fuel
+cutoffs or evidence that the last 600 m is always debris-free.
 
 The latest request supersedes all fuel ceilings, staged reserves and forced
 bypass work below. Restore SCORE_MOMENTUM from 4a8507e. Optimize the actual
@@ -18,7 +82,111 @@ time/fuel, phase-fuel differences and contacts. Reject gains within seed noise.
 Never brake after entry. Native scores require official logs and source/seed
 identity. Offline contacts do not provide damage joules.
 
-### Current work in progress
+### Historical experiment notes (superseded by selected state above)
+
+New isolated experiments are in progress. EFP_INERTIAL_CAPTURE=1 keeps finite
+burn/coast control below 280 m only while the existing camera observation and
+capture guards permit CAPTURE_PASS. It uses a 2–120 s terminal arrival grid
+and allows a safe ballistic coast less than five seconds from closest approach.
+It does not change camera reach, gravity, far cruise, margins or score weights.
+This differs from the failed SCORE_COAST bundle by removing the controller
+handoff, with existing perception guards intact. Its 20-seed cohort uses frozen
+tests/score_sweeps/inertial_capture_controller.py with all other flags off.
+
+EFP_VECTOR_BURN=1 adds a fixed-direction simultaneous translation burn followed
+by coast to the original sequential-axis candidate set. It estimates finite
+burn duration, charges L1 impulse fuel, learns directional acceleration from
+telemetry and uses the unchanged radar/camera trajectory checks. It adds no
+attitude command, artificial component bias, hard budget or altered jet selector.
+Unlike CLEAN_MAIN_BURN it applies the lateral impulse the selected trajectory
+actually needs during the same burn. The vector direction is held within the
+burn; only a new scored plan can reopen a completed burn. Both new flags are off.
+The vector v1 pilot is diagnostic only: a missing completed-burn latch was found
+and corrected before the v2 cohort. V1 source/results must not be mixed with v2.
+V2 source is tests/score_sweeps/vector_burn_v2_controller.py. Tests pass 140/140.
+The 600 m baseline median is 156.785 s, 41.684 kg and 5.848 m/s; none of its
+20 seeds crossed 600 m under 35 kg. Full comparisons are pending.
+
+The inertial-capture cohort completed 20/20 with no modeled contact. Median
+score 39.09 vs38.275, entry T264.82 s, fuel42.875 kg. The paired bootstrap
+interval for the median change was [0.01,2.89], marginal at the legacy score's
+0.01-point precision. After allowing median-difference rounding it includes
+zero; this is not a robust promotion. Mean paired fuel change -0.5145 kg and
+time change -0.2835 s; paired fuel median -0.15 kg, time median zero.
+
+EFP_EXACT_ARCS=1 is a third separate experiment. The original detour adds an
+initial lateral impulse and a -2x return impulse as if they were instantaneous.
+Finite-burn fixtures showed endpoint errors 13–17 m. arc_schedule instead
+subtracts the return burn's actual displacement and solves the first burn to
+the existing endpoint, moving the return start after the first burn if needed.
+Only the internal constant-gravity detour algebra changes: no gravity-gradient
+correction, new route cost, new camera guard or budget. A 20-seed cohort runs
+from tests/score_sweeps/exact_arcs_controller.py with other flags off. All 142
+tests pass, including endpoints for all six axis orders and infeasible returns.
+
+The arc V1 cohort contains at least one incomplete arrival (seed105), so it is
+rejected irrespective of other scores. A second execution mismatch was found:
+the old controller did not explicitly start its planned return impulse at the
+counter time, relying on a subsequent replan. V2 now starts a pending return
+once, after the first burn completes, then retains the remaining return as a
+normal finite burn. A better sensor-checked successful coast can cancel an
+unnecessary pending return. This completes the two-stage arc's execution;
+V1 and V2 source/results are kept separate. V2 frozen source is
+tests/score_sweeps/exact_arcs_v2_controller.py, outputs score_arcs_v2_SEED.json.
+Tests cover return timing, no interruption of unfinished thrust, and no repeated
+return impulse. All 148 tests passed before an additional summary-prefix test.
+
+The vector V2 cohort finished 20/20 with no modeled contact, but median score
+fell to36.375, time249.755 s, fuel46.74 kg. Fuel at600m median44.125 kg.
+Median score delta -1.90; rounding-adjusted bootstrap interval [-3.19,1.37].
+It did not establish improvement and is rejected for promotion. Translational
+simultaneous burns changed encounters and increased corrections enough to
+outweigh their shorter time; they do not inherently reduce L1 fuel cost.
+See tests/score_sweep_vector_v2.json.
+
+Both exact-arc cohorts completed with 19/20 arrivals, zero modeled contacts
+and seed105 stalled in WAIT_SHIP_CAMERA at about95m. V1 successful-only median
+38.68; V2 successful-only median38.36, with no executed return events in the
+final selected trajectories. Both are rejected for an incomplete run. The extra
+executor fix did not resolve the actual camera stall. The failed V1 seed used
+30.634kg while waiting for camera. That evidence, not a claimed return failure,
+motivates a separate guarded camera-recovery experiment.
+
+EFP_CAMERA_RECOVERY=1 selects ViewRecoveryAttitude. During a sensed clear coast
+between85 and600m, it can make a limited attitude adjustment that brings a ship
+bearing beyond the gimbals into a35deg inner camera cone. It uses bounded
+alpha0.003rad/s2 and the published low-duty /60 mapping, then settles rate.
+It starts no view turn during translation thrust, imminent ship passage,
+missing radar, blocked coast, damage failure or after entry. Radar certifies
+the next12s and the unobserved80m ship guard remains. Fresh station coverage
+ends the request. This is not continuous nose pointing. A pilot with exact
+arcs plus camera recovery on failed seed105 is in progress. All155 tests pass.
+
+EFP_COAST_WINDOWS=1 is another isolated test of the user's early inertia idea.
+Before600m only, with forward closing speed>=1.5m/s, the finite-burn grid offers
+0/1/2/4s coast prefixes. Full time/fuel scoring and sensed swept-path checks
+choose whether waiting for moving debris beats a lateral detour. Retained
+plans preserve their absolute burn start; no sliding wait or fuel cutoff.
+The bounded one-radar-sweep option differs from older single/two-seed delay
+trials that used other guidance/reserve overrides. Its20-seed test uses
+tests/score_sweeps/coast_windows_controller.py with all other flags off.
+Outputs are tests/score_windows_SEED.json. No variant has been promoted.
+
+New native evidence: three runs with exact CRLF source hash matching committed
+baseline b524b36 (9240452c...) score5.1/9.7/14.2, T297.73/309.31/289.87 s,
+fuel63.92/59.30/57.90 kg, zero entry damage. The large early lateral steering
+cost is measured; its cause is not proven. See tests/inertia_native_observations.json.
+It is not a 20-run native median. Body command/rate and remaining impulse
+telemetry are now logged to help distinguish control timing and vehicle motion.
+
+An opt-in benchmark --rng-mode native-order now uses numeric debris order,
+separate spawn RNG8193, radar seed from --seed, and the official closest-range
+noise draw. Legacy mode is unchanged and used for all paired cohorts above.
+The native-order baseline pilot100 scored42.24, T267.28 s, fuel39.49 kg. It
+does not close the native gap: noise ordering alone is insufficient. No flight
+improvement is claimed from that model-only calibration. Do not mix its records
+with legacy-mode trials. Native mesh, dynamics, timing and camera calibration
+differences still need verification.
 
 Controller.py and its original tests have been restored from 4a8507e.
 All bypass and fuel-limiter code has been removed. The required unconditional

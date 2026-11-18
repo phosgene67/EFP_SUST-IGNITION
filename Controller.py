@@ -1408,6 +1408,7 @@ class CaptureApproach:
         self.side = self.tangent = None
         self.inner_goal = None
         self.camera_ready = False
+        self.entry_scope = False
         self.fallback = None
         self.entered = False
         self.exit_goal = None
@@ -1457,7 +1458,8 @@ class CaptureApproach:
             along = distance*np.sqrt(1.-ratio*ratio)
             entry = location+along*heading
             end = entry+500.*heading
-            clearance = segment_clearance(np.zeros(3), entry+100.*heading-location, centers, radii)
+            clearance_end = entry if self.entry_scope else entry+100.*heading
+            clearance = segment_clearance(np.zeros(3), clearance_end-location, centers, radii)
             self.best_gap = max(self.best_gap, clearance)
             if clearance > 1.25 or distance > 260.:
                 candidates.append((np.linalg.norm(radial-tangent), radial, entry, end))
@@ -1532,6 +1534,7 @@ class QualificationPlanner:
         old_ids = np.array([track['id'] for track in old_tracks])
         old_gravity = -711000.*old_positions/np.maximum(np.linalg.norm(old_positions, axis=1)**3, 1.)[:, None]
         available = np.array([identity not in used for identity in old_ids], dtype=bool)
+        cache_reports = getattr(self, 'cache_reports', False)
         for report in sorted(valid, key=lambda r: r[2, 0]):
             measured = report[0]
             distance = np.linalg.norm(measured)
@@ -1539,12 +1542,13 @@ class QualificationPlanner:
                 continue
             stamp = float(report[2, 0])
             age = max(0.0, now-stamp)
-            old_loc = np.array([np.interp(stamp, times, positions[:, i]) for i in range(3)])
-            old_vel = np.array([np.interp(stamp, times, velocities[:, i]) for i in range(3)])
-            direction = measured / distance
-            radial_speed = report[1, 1] + old_vel.dot(direction)
             key = tuple(report.ravel())
             track = self.report_cache.get(key)
+            if not cache_reports or track is None:
+                old_loc = np.array([np.interp(stamp, times, positions[:, i]) for i in range(3)])
+                old_vel = np.array([np.interp(stamp, times, velocities[:, i]) for i in range(3)])
+                direction = measured / distance
+                radial_speed = report[1, 1] + old_vel.dot(direction)
             if track is None:
                 absolute = measured + old_loc
                 matches = []
@@ -1600,7 +1604,9 @@ class QualificationPlanner:
                 center += .5*age*age*acceleration
                 speed = speed+age*acceleration
                 samples = track.get('samples', [])
-                if len(samples) >= 4:
+                if cache_reports and 'forecast_quality' in track:
+                    rate, confident = track['forecast_quality']
+                elif len(samples) >= 4:
                     stamps = np.array([t for t, _ in samples])
                     if stamps[-1]-stamps[0] >= 8.:
                         positions_fit = np.array([p for _, p in samples])-.5*(stamps-stamps[-1])[:, None]**2*acceleration
@@ -1610,10 +1616,16 @@ class QualificationPlanner:
                         rms = np.sqrt(np.mean(np.sum(residual*residual, axis=1)))
                         rate = float(np.clip(2.2*max(2., rms)/max(np.sqrt(tc@tc), 1.)+.1, .25, .6))
                         confident = rms < 5. and rate < .55
+                    if cache_reports:
+                        track['forecast_quality'] = (rate, confident)
             # Missing pre-start history and clock skew enlarge uncertainty.
             missing_history = max(0.0, times[0]-stamp)
+            if cache_reports:
+                history_margin = np.linalg.norm(velocities[0])*missing_history if missing_history else 0.
+            else:
+                history_margin = np.linalg.norm(old_vel)*missing_history
             radius = (0.575 * max(0.0, report[1, 2]) + 3.0 + 8.0
-                      + (rate if gravity_tracking else 1.)*age + np.linalg.norm(old_vel)*missing_history)
+                      + (rate if gravity_tracking else 1.)*age + history_margin)
             centers.append(center)
             speeds.append(speed)
             radii.append(radius)
@@ -1913,6 +1925,9 @@ class FinalNavigator(QualificationPlanner):
         positions = np.zeros((len(candidates), 3))
         velocities = np.tile(vel, (len(candidates), 1))
         clearance, risk, effort = np.full(len(candidates), np.inf), np.zeros(len(candidates)), np.zeros(len(candidates))
+        scope_capture = (getattr(self, 'entry_scope', False) and self.flythrough
+                         and station_observed and phase == 'CAPTURE_PASS')
+        captured = np.zeros(len(candidates), dtype=bool)
         local_economy = self.flythrough and phase == 'CRUISE'
         gravity = self.gravity_at(loc) if local_economy else np.zeros(3)
         for step in range(horizon):
@@ -1929,12 +1944,20 @@ class FinalNavigator(QualificationPlanner):
             effort += np.linalg.norm(accel, axis=1)
             accel += gravity
             end_position = positions+velocities+.5*accel
+            if scope_capture:
+                entry_fraction, enters = capture_fraction(
+                    loc+positions-target_loc-step*target_vel,
+                    loc+end_position-target_loc-(step+1)*target_vel)
             if len(centers):
                 start = centers[None]+step*speeds[None]+.5*step*step*forecast_accels[None]-positions[:, None]
                 end = centers[None]+(step+1)*speeds[None]+.5*(step+1)**2*forecast_accels[None]-end_position[:, None]
                 delta = end-start
+                if scope_capture:
+                    delta *= entry_fraction[:, None, None]
                 fraction = np.clip(-np.sum(start*delta, axis=2)/np.maximum(np.sum(delta*delta, axis=2), 1e-9), 0., 1.)
                 gap = np.linalg.norm(start+fraction[:, :, None]*delta, axis=2)-radii[None]-forecast_rates[None]*(step+1)-.03
+                if scope_capture:
+                    gap[captured] = np.inf
                 if self.flythrough and phase == 'LAUNCH':
                     # Near the surface the vehicle may begin inside an inflated
                     # depth volume. A strictly outward segment may leave that
@@ -1944,6 +1967,8 @@ class FinalNavigator(QualificationPlanner):
                     gap[departing] = np.inf
                 clearance = np.minimum(clearance, gap.min(axis=1))
                 risk += np.maximum(-gap, 0.).sum(axis=1)/(1.+.1*step)
+            if scope_capture:
+                captured |= enters
             positions, velocities = end_position, velocities+accel
         progress_goal = self.corridor.points[-1]-loc if use_chunks and self.corridor.points else route
         hint_distance = np.linalg.norm(positions-progress_goal, axis=1)
@@ -2201,8 +2226,74 @@ def axis_schedule(displacements, times, orders, accelerations, delays=None):
     return impulses, starts, durations, valid
 
 
+def capture_fraction(start, end, radius=48.):
+    """First sphere entry on each swept segment, with a 2 m scoring margin."""
+    start, end = np.asarray(start), np.asarray(end)
+    delta = end-start
+    aa = np.sum(delta*delta, axis=1)
+    bb = np.sum(start*delta, axis=1)
+    cc = np.sum(start*start, axis=1)-radius*radius
+    discriminant = bb*bb-aa*cc
+    root = (-bb-np.sqrt(np.maximum(discriminant, 0.)))/np.maximum(aa, 1e-12)
+    inside = cc <= 0.
+    enters = inside | ((aa > 1e-12) & (discriminant >= 0.) & (root >= 0.) & (root <= 1.))
+    return np.where(inside, 0., np.where(enters, root, 1.)), enters
+
+
+def arc_schedule(displacements, times, orders, accelerations, return_impulses):
+    """Solve a two-burn detour's actual finite-burn endpoint and ordering.
+
+    The return impulse is fixed. Its finite displacement is subtracted before
+    solving the initial burn, instead of assuming instantaneous kicks halfway.
+    """
+    times, orders = np.asarray(times), np.asarray(orders)
+    returns = np.asarray(return_impulses)
+    durations_return = np.abs(returns)/accelerations[np.where(returns >= 0., 0, 1), np.arange(3)]
+    counter = times/2.
+    rows = np.arange(len(times))
+    converged = np.zeros(len(times), dtype=bool)
+    for _ in range(12):
+        start_return, cursor = np.zeros_like(returns), counter.copy()
+        for stage in range(3):
+            axes = orders[:, stage]
+            start_return[rows, axes] = cursor
+            cursor += durations_return[rows, axes]
+        contribution = returns*(times[:, None]-start_return-.5*durations_return)
+        initial, starts, durations, valid = axis_schedule(
+            np.asarray(displacements)-contribution, times, orders, accelerations)
+        next_counter = np.maximum(times/2., durations.sum(axis=1))
+        converged = np.abs(next_counter-counter) < 1e-7
+        if np.all(converged | ~valid):
+            break
+        counter = next_counter
+    valid &= converged & (counter+durations_return.sum(axis=1) < times)
+    return initial, starts, durations, valid, counter
+
+
+def vector_schedule(displacements, times, accelerations, scales):
+    """A fixed-direction translational burn followed by an unpowered coast.
+
+    Component limits initialize a directional estimate. Flight
+    telemetry calibrates its scale; this never selects or commands jets.
+    """
+    displacements, times = np.asarray(displacements), np.asarray(times)
+    lengths = np.linalg.norm(displacements, axis=1)
+    directions = displacements/np.maximum(lengths[:, None], 1e-12)
+    component_limits = accelerations[np.where(directions >= 0., 0, 1), np.arange(3)]
+    nominal = np.min(component_limits/np.maximum(np.abs(directions), 1e-12), axis=1)
+    dominant = np.argmax(np.abs(directions), axis=1)
+    sign = np.where(directions[np.arange(len(times)), dominant] >= 0., 0, 1)
+    available = nominal*scales[sign, dominant]
+    discriminant = times*times-2.*lengths/np.maximum(available, 1e-12)
+    duration = np.maximum(0., times-np.sqrt(np.maximum(discriminant, 0.)))
+    impulses = directions*(available*duration)[:, None]
+    durations = np.repeat(duration[:, None], 3, axis=1)
+    valid = (discriminant >= 0.) & (times > 0.) & (lengths > 1e-8)
+    return impulses, np.zeros_like(impulses), durations, valid
+
+
 def scheduled_positions(times, velocity, gravity, rotation, impulses, starts, durations):
-    """Relative world positions for finite, sequential body-axis burns."""
+    """Relative world positions for finite body-axis or simultaneous burns."""
     t = np.asarray(times)[None, :, None]
     duration = durations[:, None]
     firing = np.minimum(np.maximum(t-starts[:, None], 0.), duration)
@@ -2226,11 +2317,22 @@ def encounter_risk(gap, sigma, relative_speed):
 class ShootingNavigator(EconomyNavigator):
     """Choose a scored finite burn; check its next motion chunk from sensors."""
     def __init__(self, launch=True, nose_first=False, clean_main_burn=False, order_diversity=False,
-                 recheck_coast=False):
+                 recheck_coast=False, inertial_capture=False, vector_burn=False, exact_arcs=False,
+                 coast_windows=False, entry_scope=False, track_cache=False):
         super().__init__(launch, nose_first)
         self.clean_main_burn = bool(clean_main_burn)
         self.order_diversity = bool(order_diversity)
         self.recheck_coast = bool(recheck_coast)
+        self.inertial_capture = bool(inertial_capture)
+        self.vector_burn = bool(vector_burn)
+        self.exact_arcs = bool(exact_arcs)
+        self.coast_windows = bool(coast_windows)
+        self.entry_scope = self.terminal.entry_scope = bool(entry_scope)
+        self.cache_reports = bool(track_cache)
+        self.vector_active = False
+        self.vector_direction = np.array([0., 0., 1.])
+        self.vector_scales = np.ones((2, 3))
+        self.return_started = False
         self.coast_after_entry = True
         self.body_rotation = np.eye(3)
         # Published official jet allocator, zero torque, 3388.7 kg reference mass.
@@ -2261,9 +2363,12 @@ class ShootingNavigator(EconomyNavigator):
                 cruise_speed=None, maneuver_accel=None, fuel_weight=1.5):
         self.control_time = float(now)
         loc, vel, target_loc, target_vel = map(lambda value: np.asarray(value, float), (loc, vel, target_loc, target_vel))
+        self.start_arc_return(vel)
         gravity = self.gravity_at(loc)
         rotation = self.body_rotation
         was_active = self.shooting_active
+        observed_capture = (self.inertial_capture and np.linalg.norm(target_loc-loc) < 280.
+                            and camera is not None and camera.observes(now, target_loc))
         if self.arrival_time is not None:
             self.shooting_active, self.coasting = False, True
             self.previous_velocity = vel.copy()
@@ -2276,20 +2381,30 @@ class ShootingNavigator(EconomyNavigator):
             if active and remaining > .15 and .3 < dt < 2.:
                 achieved = old_rotation@(vel-old_velocity-.5*dt*(gravity+old_gravity))/dt
                 value = sign*achieved[axis]
-                if .025 < value < .3 and np.linalg.norm(np.delete(achieved, axis)) < .25*value:
+                if self.vector_active:
+                    direction = self.vector_direction
+                    value = achieved@direction
+                    nominal = np.min(self.axis_accels[np.where(direction >= 0., 0, 1), np.arange(3)]
+                                     /np.maximum(np.abs(direction), 1e-12))
+                    if .025 < value < .3 and np.linalg.norm(achieved-value*direction) < .25*value:
+                        dominant = int(np.argmax(np.abs(direction)))
+                        index = 0 if direction[dominant] >= 0. else 1
+                        scale = np.clip(value/nominal, .6, 1.8)
+                        self.vector_scales[index, dominant] = .7*self.vector_scales[index, dominant]+.3*scale
+                elif .025 < value < .3 and np.linalg.norm(np.delete(achieved, axis)) < .25*value:
                     index = 0 if sign > 0. else 1
                     self.axis_accels[index, axis] = .85*self.axis_accels[index, axis]+.15*value
         self.measurement = (now, vel.copy(), gravity.copy(), rotation.copy())
         distance = np.linalg.norm(target_loc-loc)
         self.shooting_active = False
-        if (self.failed or not self.launch.done or distance < 280. or self.arrival_time is not None
+        if (self.failed or not self.launch.done or (distance < 280. and not observed_capture) or self.arrival_time is not None
                 or self.nose_first):
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
                                    cruise_speed, maneuver_accel, fuel_weight)
         centers, speeds, radii, rates, accels, _ = self.observe_scene(now, loc, vel, target_loc, target_vel, radar, camera)
         self.terminal.camera_ready = camera is not None and camera.observes(now, target_loc)
         _, phase, _ = self.terminal.goal(now, loc, vel, target_loc, target_vel, centers, radii)
-        if phase != 'CRUISE' or self.terminal.inner_goal is None:
+        if (phase != 'CRUISE' and not (observed_capture and phase == 'CAPTURE_PASS')) or self.terminal.inner_goal is None:
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
                                    cruise_speed, maneuver_accel, fuel_weight)
         outward = (loc-target_loc)/distance
@@ -2304,12 +2419,22 @@ class ShootingNavigator(EconomyNavigator):
         if self.terminal.camera_ready:
             hull = (np.linalg.norm(centers+loc-target_loc, axis=1) < 85.) & (np.linalg.norm(speeds-target_vel, axis=1) < .1)
             for index in range(16):
-                goal_valid[index] = segment_clearance(np.zeros(3), goals[index]+100.*headings[index]-loc,
+                end = goals[index] if self.entry_scope else goals[index]+100.*headings[index]
+                goal_valid[index] = segment_clearance(np.zeros(3), end-loc,
                                                      centers[hull], radii[hull]) > 1.
         base_times = np.arange(45., 451., 10.)
+        if observed_capture:
+            # Keep the same finite-burn/coast plan through the camera-verified
+            # approach, rather than switching to a changing velocity target.
+            base_times = np.arange(2., 121., 2.)
         if self.previous_eta is not None and self.previous_eta-now > 10.:
             base_times = np.r_[base_times, self.previous_eta-now]
         delay_options = np.array([0.])
+        if self.coast_windows and distance > 600. and (vel-target_vel)@((target_loc-loc)/distance) >= 1.5:
+            # Let moving traffic clear for up to one radar sweep instead of
+            # immediately paying for a lateral detour and its return impulse.
+            # These are scored finite-burn plans, not forced wait intervals.
+            delay_options = np.array([0., 1., 2., 4.])
         goal_indices = np.repeat(np.arange(16), len(base_times)*6*len(delay_options))
         times = np.tile(np.repeat(base_times, 6*len(delay_options)), 16)
         orders = np.tile(np.repeat(self.orders, len(delay_options), axis=0), (16*len(base_times), 1))
@@ -2356,7 +2481,7 @@ class ShootingNavigator(EconomyNavigator):
             retained = np.flatnonzero(valid & (goal_indices == 0) & (np.abs(now+times-self.previous_eta) < .1)
                                      & np.all(orders == self.burn_order, axis=1))
             chosen.extend(int(i) for i in retained if int(i) not in chosen)
-        if not chosen:
+        if not chosen and not observed_capture:
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
                                    cruise_speed, maneuver_accel, fuel_weight)
         c_dv, c_start, c_duration = [dv[i] for i in chosen], [starts[i] for i in chosen], [durations[i] for i in chosen]
@@ -2365,6 +2490,33 @@ class ShootingNavigator(EconomyNavigator):
         c_goals = [goal_indices[i] for i in chosen]
         c_counters = [times[i]/2. for i in chosen]
         c_delays = [delays[i] for i in chosen]
+        c_vectors = [False for _ in chosen]
+        if self.vector_burn:
+            # Compare whole vector burns with the original sequential plans.
+            # Reuse the same target shell, score equation and sensor checks.
+            rows = np.arange(0, len(times), 6*len(delay_options))
+            v_times, v_goals = times[rows], goal_indices[rows]
+            v_dv, v_start, v_duration, v_valid = vector_schedule(
+                displacement[rows], v_times, self.axis_accels, self.vector_scales)
+            final_speed = np.linalg.norm(vel+v_dv@rotation+v_duration[:, :1]*gravity-target_vel, axis=1)
+            v_valid &= final_speed <= max(limit, np.linalg.norm(vel-target_vel))+.05
+            v_valid &= goal_valid[v_goals] & ((v_dv@rotation)@forward >= -.04)
+            v_scores = 100.*(.5+120./(now+v_times)
+                             -(self.last_fuel+kg_per_dv*np.abs(v_dv).sum(axis=1))/75.
+                             -2.*self.last_damage/209200.)
+            v_scores[~v_valid] = -np.inf
+            shortlist = list(np.argsort(-v_scores)[:4])
+            for goal_index in range(16):
+                options = np.flatnonzero(v_valid & (v_goals == goal_index))
+                if len(options):
+                    shortlist.append(int(options[np.argmax(v_scores[options])]))
+            for index in dict.fromkeys(shortlist):
+                if not np.isfinite(v_scores[index]):
+                    continue
+                c_dv.append(v_dv[index]); c_start.append(v_start[index]); c_duration.append(v_duration[index])
+                c_times.append(v_times[index]); c_scores.append(v_scores[index]); c_orders.append(self.orders[0])
+                c_detours.append(np.zeros(3)); c_goals.append(v_goals[index])
+                c_counters.append(v_times[index]/2.); c_delays.append(0.); c_vectors.append(True)
         forward = (target_loc-loc)/distance
         axis = np.eye(3)[np.argmin(np.abs(forward))]
         side = np.cross(forward, axis)
@@ -2376,22 +2528,32 @@ class ShootingNavigator(EconomyNavigator):
             offsets.append(self.last_detour)
         for base in chosen[:2]:
             for offset in offsets:
-                variant = dv[base]+rotation@offset
-                duration = np.abs(variant)/self.axis_accels[np.where(variant >= 0., 0, 1), np.arange(3)]
-                start, cursor = np.zeros(3), delays[base]
-                for component in orders[base]:
-                    start[component], cursor = cursor, cursor+duration[component]
                 extra_return = 2.*np.abs(rotation@offset).sum()
-                if cursor+extra_return/.08 >= times[base]:
-                    continue
+                if self.exact_arcs:
+                    variants, arc_starts, arc_durations, arc_valid, counters = arc_schedule(
+                        displacement[base:base+1], times[base:base+1], orders[base:base+1],
+                        self.axis_accels, (-2.*rotation@offset)[None])
+                    if not arc_valid[0]:
+                        continue
+                    variant, start, duration, counter = variants[0], arc_starts[0], arc_durations[0], counters[0]
+                else:
+                    variant = dv[base]+rotation@offset
+                    duration = np.abs(variant)/self.axis_accels[np.where(variant >= 0., 0, 1), np.arange(3)]
+                    start, cursor = np.zeros(3), delays[base]
+                    for component in orders[base]:
+                        start[component], cursor = cursor, cursor+duration[component]
+                    if cursor+extra_return/.08 >= times[base]:
+                        continue
+                    counter = max(times[base]/2., cursor)
                 cost = kg_per_dv*(np.abs(variant).sum()+extra_return)
                 score = mission_score(now+times[base], self.last_fuel+cost, self.last_damage)
                 c_dv.append(variant); c_start.append(start); c_duration.append(duration)
                 c_times.append(times[base]); c_scores.append(score); c_orders.append(orders[base])
                 c_detours.append(offset)
                 c_goals.append(goal_indices[base])
-                c_counters.append(max(times[base]/2., cursor))
+                c_counters.append(counter)
                 c_delays.append(delays[base])
+                c_vectors.append(False)
         retained_index = None
         if (was_active and self.previous_eta is not None and self.previous_eta-now > 15.
                 and goal_valid[0] and (np.linalg.norm(self.last_detour) < .01 or now < self.counter_time-1.)):
@@ -2402,6 +2564,16 @@ class ShootingNavigator(EconomyNavigator):
             start, cursor = np.zeros(3), delay
             for component in self.burn_order:
                 start[component], cursor = cursor, cursor+duration[component]
+            if self.vector_active:
+                remaining = max(0., residual@self.vector_direction)
+                residual = remaining*self.vector_direction
+                dominant = int(np.argmax(np.abs(self.vector_direction)))
+                sign_index = 0 if self.vector_direction[dominant] >= 0. else 1
+                nominal = np.min(self.axis_accels[np.where(self.vector_direction >= 0., 0, 1), np.arange(3)]
+                                 /np.maximum(np.abs(self.vector_direction), 1e-12))
+                duration[:] = remaining/(nominal*self.vector_scales[sign_index, dominant])
+                start[:] = delay
+                cursor = delay+duration[0]
             eta = self.previous_eta-now
             if cursor < eta:
                 cost = kg_per_dv*(np.abs(residual).sum()+2.*np.abs(rotation@self.last_detour).sum())
@@ -2411,18 +2583,23 @@ class ShootingNavigator(EconomyNavigator):
                 c_orders.append(self.burn_order.copy()); c_detours.append(self.last_detour.copy())
                 c_goals.append(0); c_counters.append(self.counter_time-now)
                 c_delays.append(delay)
+                c_vectors.append(self.vector_active)
         when, miss = ballistic_pass(loc, vel, target_loc, target_vel, gravity)
         if (self.recheck_coast and retained_index is not None
                 and np.all(self.axis_done) and np.linalg.norm(self.last_detour) < .01
                 and not (42. < miss < 48. and 5. < when < 600.)):
             c_scores[retained_index] = -np.inf
-        if 42. < miss < 48. and 5. < when < 600.:
+        if 42. < miss < 48. and (0. if observed_capture else 5.) < when < 600.:
             # Preserve an already successful unpowered pass. It need not hit
             # exactly the old 47 m waypoint to earn the same success result.
             c_dv.append(np.zeros(3)); c_start.append(np.zeros(3)); c_duration.append(np.zeros(3))
             c_times.append(when); c_scores.append(mission_score(now+when, self.last_fuel, self.last_damage))
             c_orders.append(self.burn_order.copy()); c_detours.append(np.zeros(3))
             c_goals.append(0); c_counters.append(when/2.); c_delays.append(0.)
+            c_vectors.append(False)
+        if not c_scores:
+            return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
+                                   cruise_speed, maneuver_accel, fuel_weight)
         c_dv, c_start, c_duration = np.asarray(c_dv), np.asarray(c_start), np.asarray(c_duration)
         c_times, c_scores = np.asarray(c_times), np.asarray(c_scores)
         return_dv = -2.*np.asarray(c_detours)@rotation.T
@@ -2513,11 +2690,18 @@ class ShootingNavigator(EconomyNavigator):
             stable = np.flatnonzero(safe & (np.abs(now+c_times-self.previous_eta) < .1)
                                     & (np.asarray(c_goals) == 0)
                                     & np.all(np.asarray(c_orders) == self.burn_order, axis=1)
+                                    & (np.asarray(c_vectors) == self.vector_active)
                                     & (c_scores > c_scores[best]-.5))
             if len(stable):
                 best = int(stable[np.argmax(c_scores[stable])])
         if retained_index is not None and safe[retained_index]:
             allowance = 4. if now-self.plan_chosen_at < 4. else 2.
+            if (self.exact_arcs and np.linalg.norm(self.last_detour) > .01
+                    and np.linalg.norm(c_dv[best]) < self.burn_tolerance
+                    and np.linalg.norm(c_detours[best]) < .01):
+                # Retention must not schedule an unnecessary return impulse
+                # when the sensor-checked successful coast scores better.
+                allowance = 0.
             if c_scores[retained_index] >= c_scores[best]-allowance:
                 best = retained_index
         self.previous_eta = now+c_times[best]
@@ -2528,9 +2712,9 @@ class ShootingNavigator(EconomyNavigator):
         self.expected_damage = float(expected_damage[best])
         self.contact_probability = float(min(1., probability[best].sum()))
         self.policy.remaining_time = float(c_times[best])
-        self.policy.burn_seconds = float(c_duration[best].sum())
+        self.policy.burn_seconds = float(c_duration[best].max() if c_vectors[best] else c_duration[best].sum())
         self.policy.speed = float(np.linalg.norm(vel+c_dv[best]@rotation-target_vel))
-        self.last_phase = 'CRUISE'
+        self.last_phase = 'CAPTURE_PASS' if observed_capture else 'CRUISE'
         self.burn_tolerance = .02
         self.stopping_distance = float(np.linalg.norm(vel-target_vel)**2/(2.*SHIP_BRAKE_ACCEL))
         self.last_mode = 'IMPULSE_BURN'
@@ -2540,10 +2724,16 @@ class ShootingNavigator(EconomyNavigator):
         self.coasting = False
         self.shooting_active = True
         if best != retained_index:
+            self.return_started = False
+            self.vector_active = bool(c_vectors[best])
+            if self.vector_active:
+                self.vector_direction = c_dv[best]/max(np.linalg.norm(c_dv[best]), 1e-12)
             self.burn_target = vel+c_dv[best]@rotation
             self.burn_gravity, self.burn_started = gravity.copy(), float(now)
             self.burn_order = np.asarray(c_orders[best]).copy()
             self.axis_done = np.abs(c_dv[best]) < self.burn_tolerance
+            if self.vector_active:
+                self.axis_done[:] = np.linalg.norm(c_dv[best]) <= self.burn_tolerance
             self.burn_signs = np.sign(c_dv[best])
             self.plan_chosen_at, self.counter_time = float(now), now+c_counters[best]
             self.not_before = now+c_delays[best]
@@ -2554,13 +2744,41 @@ class ShootingNavigator(EconomyNavigator):
                 self.selected_axis, self.selected_sign = int(component), float(np.sign(remaining))
                 self.selected_remaining = float(abs(remaining))
                 break
+        if self.vector_active:
+            self.selected_remaining = float(np.linalg.norm(c_dv[best]))
         self.previous_velocity = self.burn_target.copy()
         if self.selected_remaining == 0.:
             self.last_mode, self.coasting = 'IMPULSE_COAST', True
             self.previous_velocity = vel.copy()
         elif self.not_before > now:
             self.last_mode, self.coasting = 'WAIT_CLEAR_PATH', True
+        elif self.vector_active:
+            self.last_mode = 'VECTOR_BURN'
+        elif self.return_started:
+            self.last_mode = 'ARC_RETURN'
         return self.linear_command(vel, MAX_ACCEL), self.last_mode, float(clearance[best])
+
+    def start_arc_return(self, velocity):
+        if (not self.exact_arcs or not self.shooting_active or self.failed or self.arrival_time is not None
+                or self.return_started or self.control_time < self.counter_time
+                or np.linalg.norm(self.last_detour) < .01):
+            return
+        before = self.body_rotation@(
+            self.burn_target+self.burn_gravity*max(0., self.control_time-self.burn_started)-velocity)
+        if not np.all(self.axis_done | (self.burn_signs*before <= self.burn_tolerance)):
+            return
+        self.burn_target -= 2.*self.last_detour
+        residual = self.body_rotation@(
+            self.burn_target+self.burn_gravity*max(0., self.control_time-self.burn_started)-velocity)
+        self.axis_done = np.abs(residual) < self.burn_tolerance
+        self.burn_signs = np.sign(residual)
+        self.last_detour = np.zeros(3)
+        self.counter_time = np.inf
+        self.return_started = True
+        self.vector_active = False
+        self.coasting = False
+        self.last_mode = 'ARC_RETURN'
+        self.previous_velocity = self.burn_target.copy()
 
     def linear_command(self, velocity, maximum):
         if self.arrival_time is not None:
@@ -2575,8 +2793,18 @@ class ShootingNavigator(EconomyNavigator):
             return np.zeros(3)
         if self.control_time < self.not_before:
             return np.zeros(3)
+        self.start_arc_return(np.asarray(velocity))
         expected = self.burn_target+self.burn_gravity*max(0., self.control_time-self.burn_started)
         residual = self.body_rotation@(expected-np.asarray(velocity))
+        if self.vector_active:
+            if self.axis_done.all():
+                self.selected_remaining = 0.
+                return np.zeros(3)
+            self.selected_remaining = max(0., float(residual@self.vector_direction))
+            if self.selected_remaining > self.burn_tolerance:
+                return maximum*(self.vector_direction@self.body_rotation)
+            self.axis_done[:] = True
+            return np.zeros(3)
         for component in self.burn_order:
             if self.axis_done[component]:
                 continue
@@ -2636,18 +2864,92 @@ class FreeAttitude(FlightAttitude):
         return limit_vector(-.8*omega, maximum) if self.damping else np.zeros(3)
 
 
+class ViewRecoveryAttitude(FreeAttitude):
+    """Bring an unreachable ship bearing into the cameras during a clear coast."""
+    def __init__(self):
+        super().__init__()
+        self.viewing = self.settling = self.eligible = self.linear_active = False
+        self.ship_direction = np.array([1., 0., 0.])
+
+    def configure(self, now, planner, location, velocity, target, target_velocity, linear, camera):
+        self.eligible = False
+        self.ship_direction = np.asarray(target)-location
+        distance = np.linalg.norm(self.ship_direction)
+        observed = camera is not None and camera.observes(now, target)
+        if (camera is None or camera.frames == 0
+                or planner.failed or planner.arrival_time is not None or not planner.launch.done
+                or planner.latest_radar_count == 0 or planner.collision_urgent
+                or planner.last_phase not in ('CRUISE', 'CAPTURE_PASS', 'WAIT_SHIP_CAMERA')
+                or not (50. if observed else 85.) < distance < 600. or np.linalg.norm(linear) > 1e-8):
+            return
+        gravity = planner.gravity_at(location)
+        duration = 12.
+        if getattr(planner, 'entry_scope', False) and observed:
+            when, miss = ballistic_pass(location, velocity, target, target_velocity, gravity)
+            if 0. < when < duration and miss < 48.:
+                duration = when
+        times = np.linspace(0., duration, 13)
+        relative = (-self.ship_direction+times[:, None]*(velocity-target_velocity)
+                    +.5*times[:, None]**2*gravity)
+        if not observed and np.linalg.norm(relative, axis=1).min() <= 80.:
+            return
+        self.eligible = coast_path_clearance(location, velocity, *planner.latest_scene, duration,
+                                             planner.latest_accels, gravity) > 2.
+
+    @staticmethod
+    def view_error(bearing):
+        bearing = np.asarray(bearing)/max(np.linalg.norm(bearing), 1e-12)
+        yaw = np.clip(np.rad2deg(np.arctan2(bearing[1], bearing[0])), -89., 89.)
+        pitch = np.clip(np.rad2deg(np.arctan2(-bearing[2], np.linalg.norm(bearing[:2]))), -50., 50.)
+        center = camera_rotation(yaw, pitch).T@np.array([1., 0., 0.])
+        # Keep a margin before gimbal saturation, so coverage is maintained
+        # through the pass rather than recovering only after braking to wait.
+        angle = max(0., np.arccos(np.clip(center@bearing, -1., 1.))-np.deg2rad(25.))
+        axis = np.cross(center, bearing)
+        return axis/max(np.linalg.norm(axis), 1e-12), float(angle)
+
+    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):
+        normal = super().command(now, rotation, velocity, desired_velocity, planet_up, omega, maximum)
+        axis, angle = self.view_error(np.asarray(rotation)@self.ship_direction)
+        self.viewing = bool(self.eligible and not self.linear_active and angle > np.deg2rad(.25))
+        if self.viewing:
+            self.settling = True
+            target_rate = axis*min(.05, np.sqrt(2.*.003*angle), .5*angle)
+        elif self.settling and np.linalg.norm(omega) > .0002:
+            target_rate = np.zeros(3)
+        else:
+            self.settling = False
+            return normal
+        # In the published selector's unsaturated regime, requested impulse
+        # is divided by the 1/60 s tick. Keep this as a small pure attitude pulse.
+        return limit_vector(limit_vector(2.*(target_rate-np.asarray(omega)), .003)/60., maximum)
+
+
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
+camera_recovery_enabled = os.environ.get('EFP_CAMERA_RECOVERY', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
 clean_main_burn_enabled = os.environ.get('EFP_CLEAN_MAIN_BURN', '0') == '1'
 order_diversity_enabled = os.environ.get('EFP_ORDER_DIVERSITY', '0') == '1'
 recheck_coast_enabled = os.environ.get('EFP_RECHECK_COAST', '0') == '1'
+inertial_capture_enabled = os.environ.get('EFP_INERTIAL_CAPTURE', '0') == '1'
+vector_burn_enabled = os.environ.get('EFP_VECTOR_BURN', '0') == '1'
+exact_arcs_enabled = os.environ.get('EFP_EXACT_ARCS', '0') == '1'
+coast_windows_enabled = os.environ.get('EFP_COAST_WINDOWS', '0') == '1'
+entry_scope_enabled = os.environ.get('EFP_ENTRY_SCOPE', '0') == '1'
+track_cache_enabled = os.environ.get('EFP_TRACK_CACHE', '0') == '1'
 import hashlib
+import json
 from pathlib import Path
+flight_trace_enabled = os.environ.get('EFP_FLIGHT_TRACE', '0') == '1'
 controller_source_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 rescue_frame = target.GetBodyFixedFrame()
 planner = ShootingNavigator(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
-                            order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled)
-flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
+                            order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled,
+                            inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
+                            exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
+                            entry_scope=entry_scope_enabled, track_cache=track_cache_enabled)
+flight_attitude = (EconomyAttitude() if nose_first_enabled else
+                   ViewRecoveryAttitude() if camera_recovery_enabled else FreeAttitude())
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
 radar_epoch = st.SimGlobals.SimClock.GetTimeNow().as_datetime()
@@ -2681,7 +2983,10 @@ try:
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
         if now < last_plan:
             planner = ShootingNavigator(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
-                                        order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled)
+                                        order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled,
+                                        inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
+                                        exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
+                                        entry_scope=entry_scope_enabled, track_cache=track_cache_enabled)
             pose_history = PoseHistory()
             perception = CameraPerception()
             score_policy = planner.policy
@@ -2689,7 +2994,8 @@ try:
             camera_manager.reset()
             if preview is not None:
                 preview.reset()
-            flight_attitude = EconomyAttitude() if nose_first_enabled else FreeAttitude()
+            flight_attitude = (EconomyAttitude() if nose_first_enabled else
+                               ViewRecoveryAttitude() if camera_recovery_enabled else FreeAttitude())
             last_plan = last_log = -np.inf
             arrival_announced = False
         state = shuttle.getLocVelAcc()
@@ -2725,6 +3031,8 @@ try:
         camera_manager.drain(now, pose_history, perception)
         sightline = vel-target_vel
         if np.linalg.norm(sightline) < 1. or np.linalg.norm(target_loc-loc) < 300.:
+            sightline = target_loc-loc
+        if getattr(flight_attitude, 'viewing', False):
             sightline = target_loc-loc
         camera_manager.tick(now, body_dcm@sightline)
         if now-last_plan >= PLAN_PERIOD:
@@ -2767,6 +3075,8 @@ try:
             fuel_ledger.observe(now, fuel, fuel_phase, arrived=planner.arrival_time is not None)
             last_plan = now
             plan_ms = 1000.*(time.perf_counter()-plan_wall_start)
+            if hasattr(flight_attitude, 'configure'):
+                flight_attitude.configure(now, planner, loc, vel, target_loc, target_vel, accel_world, perception)
         if planner.arrival_time is not None and not arrival_announced:
             st.OnScreenAlert('Arrival zone reached; post-arrival safety control active. Official result is in the Scoring log.',
                              'ArrivalZone', st.Severity.Info)
@@ -2784,6 +3094,8 @@ try:
             up_world = np.array([0.0, 0.0, 1.0])
         nose_hint = attitude_reference(mode, vel-target_vel, planner.previous_velocity-target_vel, target_loc-loc)
         flight_attitude.aligning = planner.aligning
+        if hasattr(flight_attitude, 'linear_active'):
+            flight_attitude.linear_active = np.linalg.norm(accel_world) > 1e-8
         angular_accel = flight_attitude.command(now, body_dcm, vel-target_vel,
             nose_hint, up_world, omega_body, angular_limit)
         if planner.failed or planner.arrival_time is not None:
@@ -2817,7 +3129,17 @@ try:
                 f'cleanMainBurn={clean_main_burn_enabled} '
                 f'orderDiversity={order_diversity_enabled} '
                 f'recheckCoast={recheck_coast_enabled} '
+                f'inertialCapture={inertial_capture_enabled} '
+                f'vectorBurn={vector_burn_enabled} '
+                f'exactArcs={exact_arcs_enabled} '
+                f'cameraRecovery={camera_recovery_enabled} '
+                f'coastWindows={coast_windows_enabled} '
+                f'entryScope={entry_scope_enabled} '
+                f'trackCache={track_cache_enabled} '
                 f'planMs={plan_ms:.1f} '
+                f'cmdBody={np.array2string(np.asarray(accel_body), precision=4, separator=",")}m/s2 '
+                f'bodyRate={np.array2string(omega_body, precision=5, separator=",")}rad/s '
+                f'burnAxis={planner.selected_axis} remainingDV={planner.selected_remaining:.3f}m/s '
                 f'coastDrift={np.array2string(planner.dynamics.residual, precision=4, separator=",")}m/s2 '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '
                 f'fuelPhaseKg=[{fuel_ledger.summary()}] '
@@ -2835,6 +3157,30 @@ try:
                 f'travelBody={np.array2string(flight_attitude.body_velocity, precision=2, separator=",")}m/s '
                 f'guiFault={(preview.error if preview is not None else preview_error) or "none"}',
                 'IgnitionController', st.Severity.Info)
+            if flight_trace_enabled:
+                try:
+                    scene = getattr(planner, 'latest_scene', (np.empty((0, 3)), np.empty((0, 3)), np.empty(0)))
+                    nr = getattr(planner, 'latest_radar_count', 0)
+                    # File log only: bounded sensor/state samples for comparing
+                    # native motion with the offline model, without GUI clutter.
+                    st.logger_info('IGNITION_STATE '+json.dumps(dict(
+                        state_time_s=now, mode=mode, arrived=planner.arrival_time is not None,
+                        location=loc.tolist(), velocity=vel.tolist(), target_location=target_loc.tolist(),
+                        target_velocity=target_vel.tolist(), body_dcm=body_dcm.tolist(),
+                        body_command=np.asarray(accel_body).tolist(), body_rate=omega_body.tolist(),
+                        angular_command=angular_accel.tolist(), fuel_kg=float(fuel), damage_J=float(damage),
+                        burn_target=planner.burn_target.tolist(), burn_gravity=planner.burn_gravity.tolist(),
+                        axis_accelerations=planner.axis_accels.tolist(), axes_done=planner.axis_done.tolist(),
+                        detour=planner.last_detour.tolist(),
+                        not_before=planner.not_before,
+                        counter_time=planner.counter_time if np.isfinite(planner.counter_time) else None,
+                        radar=[report.tolist() for report in radar[:12]],
+                        camera_surfaces=[dict(center=center.tolist(), radius_m=float(radius))
+                                         for center, radius in zip(scene[0][nr:nr+8], scene[2][nr:nr+8])]),
+                        allow_nan=False))
+                except Exception:
+                    # An optional diagnostic must never interrupt flight.
+                    flight_trace_enabled = False
             last_log = now
 finally:
     try:

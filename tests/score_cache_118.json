@@ -1,0 +1,154 @@
+{
+  "controller_sha256": "c38781b72df5d21aea49e2b4eefe7941e25161a510987763975b5254cb3dfd52",
+  "controller_file_sha256": "1f00b238ce0ff2328e9b5e94b1956185fb9f150805b1e59c33721838c32799ea",
+  "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 118,
+  "control_hz": 60.0,
+  "camera_requests_hz": 4.0,
+  "benchmark_version": 7,
+  "rng_mode": "legacy",
+  "plan_latency_s": 0.0,
+  "planning_mode": "async",
+  "fuel_plan_target_override": null,
+  "allocator_solver": "highs",
+  "experiments": [
+    "track-cache"
+  ],
+  "scene_variant": "final-scene",
+  "attitude_mode": "normal",
+  "fuel_audit_enabled": true,
+  "axis_thrust": false,
+  "ground_plane_m": 2.5,
+  "drift_bias_m_s2": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+  "result": {
+    "arrived": true,
+    "time_s": 265.32,
+    "attitude_policy": "FreeAttitude",
+    "fuel_kg": 41.9,
+    "distance_m": 394.44,
+    "peak_speed_m_s": 6.42,
+    "arrival_speed_m_s": 4.866594108609344,
+    "min_debris_gap_m": 16.51,
+    "min_proxy_hull_gap_m": 22.88,
+    "collision": false,
+    "pre_entry_collision": false,
+    "post_arrival_test_s": 90.0,
+    "min_ground_centre_height_m": 2.5,
+    "final_speed_m_s": 4.201,
+    "learned_coast_drift_m_s2": [
+      1.578187724774919e-09,
+      -2.3815579755989577e-09,
+      4.7846682443675986e-08
+    ],
+    "phase": "MISSION_COMPLETE_COAST",
+    "images": 1421,
+    "plan_p95_ms": 384.5,
+    "angular_active_fraction": 0.0,
+    "linear_active_fraction": 0.274,
+    "nose_error_p95_deg": 98.77,
+    "allocator_retries": 0,
+    "coasting_fraction": 0.724,
+    "terminal_fallback": false,
+    "first_5m_s_time": 70.4,
+    "cruise_mean_after_5m_s": 5.88,
+    "cruise_min_after_5m_s": 5.0,
+    "milestones_by_remaining_metres": {
+      "1100": {
+        "time_s": 75.92,
+        "fuel_kg": 32.237,
+        "speed_m_s": 5.468
+      },
+      "1000": {
+        "time_s": 92.37,
+        "fuel_kg": 36.806,
+        "speed_m_s": 6.358
+      },
+      "600": {
+        "time_s": 157.43,
+        "fuel_kg": 41.452,
+        "speed_m_s": 5.846
+      },
+      "550": {
+        "time_s": 166.07,
+        "fuel_kg": 41.452,
+        "speed_m_s": 5.77
+      },
+      "500": {
+        "time_s": 174.82,
+        "fuel_kg": 41.452,
+        "speed_m_s": 5.695
+      },
+      "200": {
+        "time_s": 230.32,
+        "fuel_kg": 41.452,
+        "speed_m_s": 5.235
+      },
+      "50": {
+        "time_s": 265.32,
+        "fuel_kg": 41.903,
+        "speed_m_s": 4.867
+      }
+    },
+    "bent_plan_updates": 8,
+    "return_burn_events": 0,
+    "max_bend_impulse_m_s": 0.15000000000000002,
+    "reserve_coast_time_s": 0.0,
+    "max_lateral_deviation_m": 90.05,
+    "zero_damage_score_estimate": 39.36,
+    "fuel_audit": {
+      "segments": {
+        "LAUNCH": {
+          "time_s": 8.0,
+          "fuel_kg": 3.3131
+        },
+        "CRUISE/ESCAPE": {
+          "time_s": 2.0,
+          "fuel_kg": 1.3545
+        },
+        "CRUISE/IMPULSE_BURN": {
+          "time_s": 87.0,
+          "fuel_kg": 36.7839
+        },
+        "CRUISE/IMPULSE_COAST": {
+          "time_s": 118.0,
+          "fuel_kg": 0.0
+        },
+        "CRUISE/COAST": {
+          "time_s": 4.0,
+          "fuel_kg": 0.0
+        },
+        "CAPTURE_PASS": {
+          "time_s": 45.3167,
+          "fuel_kg": 0.0
+        },
+        "OBSERVE_CAPTURE": {
+          "time_s": 1.0,
+          "fuel_kg": 0.4514
+        }
+      },
+      "command_regimes": {
+        "translation_only": {
+          "time_s": 97.4,
+          "fuel_kg": 41.903
+        },
+        "no_command": {
+          "time_s": 167.9167,
+          "fuel_kg": 0.0
+        }
+      },
+      "counterfactual_same_tick_costs": {
+        "translation_only_kg": 41.903,
+        "attitude_only_kg": 0.0
+      },
+      "post_arrival_fuel_kg": 0.0,
+      "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+    }
+  }
+}

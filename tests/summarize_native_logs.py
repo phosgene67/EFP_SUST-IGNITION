@@ -34,6 +34,11 @@ def read_runs(path):
                       clean_main_burn='cleanMainBurn=True' in earlier,
                       order_diversity='orderDiversity=True' in earlier,
                       recheck_coast='recheckCoast=True' in earlier,
+                      inertial_capture=('inertialCapture=True' in earlier if 'inertialCapture=' in earlier else None),
+                      vector_burn=('vectorBurn=True' in earlier if 'vectorBurn=' in earlier else None),
+                      exact_arcs=('exactArcs=True' in earlier if 'exactArcs=' in earlier else None),
+                      camera_recovery=('cameraRecovery=True' in earlier if 'cameraRecovery=' in earlier else None),
+                      coast_windows=('coastWindows=True' in earlier if 'coastWindows=' in earlier else None),
                       status='official_success' if successes else 'no_official_success_alert')
         if successes:
             # Alerts can put fuel/time/damage BEFORE the success message.

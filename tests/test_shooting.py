@@ -1,11 +1,204 @@
 """Finite-burn endpoint accuracy, execution, sensing and moving-track regression."""
 import unittest
+from unittest import mock
+from types import SimpleNamespace
 import numpy as np
 from test_controller import namespace
 from test_camera_fusion import Perception, depth_patch
 
 
 class ShootingTests(unittest.TestCase):
+    def test_short_coast_options_are_scored_only_before_600m_with_momentum(self):
+        original = namespace['axis_schedule']
+        def delays_for(distance, speed):
+            observed = []
+            def schedule(*args, **kwargs):
+                observed.append(np.unique(args[4]).tolist())
+                return original(*args, **kwargs)
+            planner = namespace['ShootingNavigator'](launch=False, coast_windows=True)
+            with mock.patch.dict(namespace, {'axis_schedule': schedule}):
+                planner.command(100., np.array([9000., 0., 0.]), np.array([speed, 0., 0.]),
+                                np.array([9000.+distance, 0., 0.]), np.zeros(3), [])
+            return observed[0]
+        self.assertEqual(delays_for(1300., 2.), [0., 1., 2., 4.])
+        self.assertEqual(delays_for(1300., 1.), [0.])
+        self.assertEqual(delays_for(1300., -2.), [0.])
+        self.assertEqual(delays_for(500., 2.), [0.])
+        self.assertFalse(namespace['ShootingNavigator']().coast_windows)
+
+    def test_retained_coast_window_keeps_its_absolute_burn_start(self):
+        planner = namespace['ShootingNavigator'](launch=False, coast_windows=True)
+        location, velocity = np.array([9000., 0., 0.]), np.array([2., 0., 0.])
+        target = np.array([10300., 0., 0.])
+        planner.command(100., location, velocity, target, np.zeros(3), [])
+        duration, gravity = planner.previous_eta-100., planner.gravity_at(location)
+        needed = (planner.terminal.inner_goal-location-velocity*duration-.5*gravity*duration**2)[None]
+        dv, _, _, valid = namespace['axis_schedule'](
+            needed, np.array([duration]), planner.burn_order[None], planner.axis_accels, np.array([4.]))
+        self.assertTrue(valid[0])
+        planner.burn_target = velocity+dv[0]
+        planner.burn_gravity = gravity
+        planner.burn_started = planner.plan_chosen_at = 100.
+        planner.axis_done, planner.burn_signs = np.abs(dv[0]) < .02, np.sign(dv[0])
+        planner.not_before, planner.shooting_active = 104., True
+        for now in (100.5, 101.):
+            dt = now-100.
+            command, mode, _ = planner.command(now, location+dt*velocity+.5*dt**2*gravity,
+                velocity+dt*gravity, target, np.zeros(3), [])
+            self.assertEqual(mode, 'WAIT_CLEAR_PATH')
+            self.assertEqual(planner.not_before, 104.)
+            np.testing.assert_array_equal(command, np.zeros(3))
+
+    def test_arc_return_starts_once_then_coasts_after_delivery(self):
+        planner = namespace['ShootingNavigator'](launch=False, exact_arcs=True)
+        planner.shooting_active = True
+        planner.burn_target = np.array([0., 0., 6.])
+        planner.burn_gravity = np.zeros(3)
+        planner.burn_signs = np.array([0., 0., 1.])
+        planner.axis_done[:] = True
+        planner.last_detour = np.array([0., .35, 0.])
+        planner.counter_time = 100.
+        planner.control_time = 99.
+        np.testing.assert_array_equal(planner.linear_command(np.array([0., 0., 6.]), .5), np.zeros(3))
+        planner.control_time = 100.
+        np.testing.assert_allclose(planner.linear_command(np.array([0., 0., 6.]), .5), [0., -.5, 0.])
+        self.assertTrue(planner.return_started)
+        np.testing.assert_allclose(planner.burn_target, [0., -.7, 6.])
+        planner.control_time = 101.
+        np.testing.assert_array_equal(planner.linear_command(np.array([0., -.7, 6.]), .5), np.zeros(3))
+        np.testing.assert_allclose(planner.burn_target, [0., -.7, 6.])
+        self.assertTrue(planner.axis_done.all())
+
+    def test_arc_return_does_not_interrupt_an_unfinished_first_burn(self):
+        planner = namespace['ShootingNavigator'](launch=False, exact_arcs=True)
+        planner.shooting_active = True
+        planner.burn_target = np.array([0., 0., 6.])
+        planner.burn_signs = np.array([0., 0., 1.])
+        planner.axis_done = np.array([True, True, False])
+        planner.burn_order = np.array([2, 0, 1])
+        planner.last_detour = np.array([0., .35, 0.])
+        planner.counter_time = planner.control_time = 100.
+        np.testing.assert_allclose(planner.linear_command(np.array([0., 0., 5.]), .5), [0., 0., .5])
+        self.assertFalse(planner.return_started)
+
+    def test_finite_arc_hits_endpoint_with_nonoverlapping_return_burn(self):
+        planner = namespace['ShootingNavigator']()
+        for requested in ([1300., 30., -50.], [-75., -90., 1300.]):
+            target = np.tile(requested, (6, 1))
+            times = np.full(6, 230.)
+            return_dv = np.tile([0., -1.4, 0.], (6, 1))
+            dv, starts, durations, valid, counter = namespace['arc_schedule'](
+                target, times, planner.orders, planner.axis_accels, return_dv)
+            self.assertTrue(valid.all())
+            self.assertTrue((counter >= durations.sum(axis=1)-1e-7).all())
+            return_durations = np.abs(return_dv)/planner.axis_accels[
+                np.where(return_dv >= 0., 0, 1), np.arange(3)]
+            return_starts = np.zeros_like(return_dv)
+            for row, order in enumerate(planner.orders):
+                cursor = counter[row]
+                for axis in order:
+                    return_starts[row, axis], cursor = cursor, cursor+return_durations[row, axis]
+                self.assertLess(cursor, times[row])
+            endpoint = namespace['scheduled_positions'](
+                np.array([230.]), np.zeros(3), np.zeros(3), np.eye(3), dv, starts, durations)
+            endpoint += namespace['scheduled_positions'](
+                np.array([230.]), np.zeros(3), np.zeros(3), np.eye(3),
+                return_dv, return_starts, return_durations)
+            np.testing.assert_allclose(endpoint[:, 0], target, atol=1e-7)
+        self.assertFalse(planner.exact_arcs)
+
+    def test_impossible_return_arc_is_rejected(self):
+        planner = namespace['ShootingNavigator']()
+        *_, valid, _ = namespace['arc_schedule'](
+            np.array([[1300., 30., -50.]]), np.array([230.]), planner.orders[:1],
+            planner.axis_accels, np.array([[0., -100., 0.]]))
+        self.assertFalse(valid[0])
+
+    def test_vector_burn_hits_endpoint_without_sequential_side_burns(self):
+        planner = namespace['ShootingNavigator']()
+        displacement = np.array([[-50., -80., 1000.], [15., -20., -300.]])
+        times = np.array([220., 100.])
+        dv, starts, durations, valid = namespace['vector_schedule'](
+            displacement, times, planner.axis_accels, planner.vector_scales)
+        self.assertTrue(valid.all())
+        for index, time in enumerate(times):
+            endpoint = namespace['scheduled_positions'](
+                np.array([time]), np.zeros(3), np.zeros(3), np.eye(3),
+                dv[index:index+1], starts[index:index+1], durations[index:index+1])[0, 0]
+            np.testing.assert_allclose(endpoint, displacement[index], atol=1e-8)
+        self.assertTrue((starts == 0.).all())
+        self.assertTrue((np.ptp(durations, axis=1) == 0.).all())
+        self.assertFalse(planner.vector_burn)
+
+    def test_vector_burn_holds_direction_until_impulse_is_delivered(self):
+        planner = namespace['ShootingNavigator'](launch=False, vector_burn=True)
+        planner.shooting_active = planner.vector_active = True
+        planner.burn_target = np.array([-.5, -.3, 7.])
+        planner.axis_done[:] = False
+        planner.vector_direction = planner.burn_target/np.linalg.norm(planner.burn_target)
+        direction = planner.vector_direction.copy()
+        first = planner.linear_command(np.zeros(3), .5)
+        # Small transverse error does not cause alternating axis corrections
+        # within an already selected burn; planning revalidates it at 2 Hz.
+        second = planner.linear_command(np.array([.02, -.02, 1.]), .5)
+        np.testing.assert_allclose(first, .5*direction)
+        np.testing.assert_allclose(second, first)
+        np.testing.assert_array_equal(planner.linear_command(planner.burn_target, .5), np.zeros(3))
+        self.assertTrue(planner.axis_done.all())
+        # A completed burn stays off during coast. Only a new scored plan can
+        # reopen it when gravity-model error later changes the velocity.
+        np.testing.assert_array_equal(planner.linear_command(planner.burn_target-.1*direction, .5), np.zeros(3))
+
+    @staticmethod
+    def clear_ship_camera(observed=True):
+        return SimpleNamespace(observes=lambda now, target: observed,
+            obstacles=lambda *args: (np.empty((0, 3)), np.empty((0, 3)), np.empty(0)),
+            last_uncertainty=np.empty(0))
+
+    def test_inertial_capture_preserves_a_safe_short_coast(self):
+        planner = namespace['ShootingNavigator'](launch=False, inertial_capture=True)
+        location, velocity = np.array([9968., -46., 0.]), np.array([7., 0., 0.])
+        target = np.array([10000., 0., 0.])
+        when, miss = namespace['ballistic_pass'](
+            location, velocity, target, np.zeros(3), planner.gravity_at(location))
+        self.assertLess(when, 5.)
+        self.assertTrue(42. < miss < 48.)
+        command, mode, _ = planner.command(180., location, velocity, target, np.zeros(3), [],
+                                          camera=self.clear_ship_camera())
+        self.assertEqual(mode, 'IMPULSE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+        self.assertEqual(planner.last_phase, 'CAPTURE_PASS')
+
+    def test_inertial_capture_corrects_a_miss_before_closest_approach(self):
+        planner = namespace['ShootingNavigator'](launch=False, inertial_capture=True)
+        location, velocity = np.array([9800., 0., 0.]), np.array([7., 2.1, 0.])
+        target = np.array([10000., 0., 0.])
+        gravity = planner.gravity_at(location)
+        _, miss = namespace['ballistic_pass'](location, velocity, target, np.zeros(3), gravity)
+        self.assertGreater(miss, 50.)
+        command, mode, _ = planner.command(180., location, velocity, target, np.zeros(3), [],
+                                          camera=self.clear_ship_camera())
+        self.assertEqual(mode, 'IMPULSE_BURN')
+        self.assertGreater(np.linalg.norm(command), .1)
+        delta_v = planner.body_rotation@(planner.burn_target-velocity)
+        durations = np.abs(delta_v)/planner.axis_accels[np.where(delta_v >= 0., 0, 1), np.arange(3)]
+        starts, cursor = np.zeros(3), 0.
+        for axis in planner.burn_order:
+            starts[axis], cursor = cursor, cursor+durations[axis]
+        endpoint = location+namespace['scheduled_positions'](
+            np.array([planner.previous_eta-180.]), velocity, gravity, planner.body_rotation,
+            delta_v[None], starts[None], durations[None])[0, 0]
+        self.assertLess(np.linalg.norm(endpoint-target), 50.)
+
+    def test_inertial_capture_requires_current_station_observation(self):
+        planner = namespace['ShootingNavigator'](launch=False, inertial_capture=True)
+        planner.command(180., np.array([9800., 0., 0.]), np.array([7., 1.5, 0.]),
+                        np.array([10000., 0., 0.]), np.zeros(3), [],
+                        camera=self.clear_ship_camera(False))
+        self.assertFalse(planner.shooting_active)
+        self.assertEqual(planner.last_phase, 'WAIT_SHIP_CAMERA')
+        self.assertFalse(namespace['ShootingNavigator']().inertial_capture)
+
     def test_empty_corridor_produces_an_active_finite_burn(self):
         planner = namespace['ShootingNavigator'](launch=False)
         command, mode, clearance = planner.command(10., np.array([9000., 0., 0.]),

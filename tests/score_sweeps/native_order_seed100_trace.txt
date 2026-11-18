@@ -1,0 +1,64 @@
+t=0 phase=LAUNCH d=1306 speed=0.0 fuel=0.0 chunks=0 replans=0 buffer=0 nose=89
+  economy peak=9.00 burn=56.2s forecast=56.5 kgDV=4.5 coast=False fallback=False captureGap=8.9
+  pass=0.1s miss=1305.82m coastGap=-inf dV=2.999 camera=False
+t=5 phase=LAUNCH d=1305 speed=0.4 fuel=2.1 chunks=0 replans=0 buffer=0 nose=90
+  economy peak=7.75 burn=65.7s forecast=53.3 kgDV=4.4 coast=False fallback=False captureGap=1.0
+  pass=41.1s miss=1295.98m coastGap=-inf dV=2.572 camera=False
+t=10 phase=IMPULSE_BURN d=1302 speed=0.9 fuel=4.7 chunks=0 replans=2 buffer=0 nose=90
+  economy peak=7.65 burn=76.3s forecast=48.7 kgDV=4.7 coast=False fallback=False captureGap=1.1
+  pass=84.9s miss=1264.20m coastGap=-0.9 dV=6.771 camera=False
+t=15 phase=IMPULSE_BURN d=1297 speed=1.0 fuel=6.8 chunks=0 replans=2 buffer=0 nose=90
+  economy peak=7.60 burn=71.1s forecast=48.2 kgDV=4.5 coast=False fallback=False captureGap=3.1
+  pass=infs miss=infm coastGap=-0.9 dV=6.661 camera=False
+t=20 phase=IMPULSE_BURN d=1291 speed=1.4 fuel=8.8 chunks=0 replans=2 buffer=0 nose=90
+  economy peak=7.55 burn=66.1s forecast=48.4 kgDV=4.4 coast=False fallback=False captureGap=6.5
+  pass=infs miss=infm coastGap=-0.9 dV=6.234 camera=False
+t=70 phase=IMPULSE_BURN d=1124 speed=4.9 fuel=29.8 chunks=0 replans=2 buffer=0 nose=96
+  economy peak=6.58 burn=17.9s forecast=43.4 kgDV=4.4 coast=False fallback=False captureGap=9.2
+  pass=343.4s miss=119.37m coastGap=-0.9 dV=1.811 camera=False
+t=120 phase=IMPULSE_COAST d=823 speed=6.1 fuel=37.3 chunks=0 replans=2 buffer=0 nose=95
+  economy peak=6.07 burn=0.0s forecast=41.2 kgDV=4.3 coast=True fallback=False captureGap=16.5
+  pass=153.3s miss=45.48m coastGap=-0.9 dV=0.000 camera=False
+t=170 phase=IMPULSE_COAST d=532 speed=5.6 fuel=37.3 chunks=0 replans=2 buffer=0 nose=95
+  economy peak=5.62 burn=0.0s forecast=42.5 kgDV=4.3 coast=True fallback=False captureGap=20.0
+  pass=102.3s miss=44.81m coastGap=-0.9 dV=0.000 camera=False
+t=220 phase=COAST d=263 speed=5.2 fuel=37.3 chunks=1 replans=3 buffer=610 nose=96
+  economy peak=5.20 burn=0.0s forecast=44.0 kgDV=4.3 coast=True fallback=False captureGap=12.1
+  pass=52.0s miss=44.61m coastGap=inf dV=0.000 camera=True
+t=230 phase=COAST d=212 speed=5.1 fuel=37.3 chunks=1 replans=3 buffer=608 nose=96
+  economy peak=5.12 burn=0.0s forecast=42.4 kgDV=4.3 coast=True fallback=False captureGap=9.0
+  pass=41.9s miss=44.59m coastGap=inf dV=0.000 camera=True
+t=240 phase=COAST d=163 speed=5.0 fuel=37.3 chunks=1 replans=3 buffer=608 nose=96
+  economy peak=5.04 burn=0.0s forecast=42.4 kgDV=4.3 coast=True fallback=False captureGap=10.2
+  pass=31.9s miss=44.58m coastGap=inf dV=0.000 camera=True
+t=250 phase=COAST d=116 speed=5.0 fuel=37.3 chunks=1 replans=3 buffer=608 nose=96
+  economy peak=4.96 burn=0.0s forecast=42.4 kgDV=4.3 coast=True fallback=False captureGap=11.3
+  pass=21.9s miss=44.58m coastGap=inf dV=0.000 camera=True
+t=260 phase=OBSERVE_CAPTURE d=73 speed=4.9 fuel=37.3 chunks=1 replans=3 buffer=608 nose=96
+  economy peak=4.88 burn=0.0s forecast=42.4 kgDV=4.3 coast=False fallback=False captureGap=0.8
+  pass=11.9s miss=44.58m coastGap=7.3 dV=4.879 camera=True
+t=270 phase=MISSION_COMPLETE_COAST d=45 speed=4.7 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=2.2s miss=44.27m coastGap=2.1 dV=0.000 camera=True
+t=280 phase=MISSION_COMPLETE_COAST d=58 speed=4.7 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=290 phase=MISSION_COMPLETE_COAST d=94 speed=4.6 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=300 phase=MISSION_COMPLETE_COAST d=136 speed=4.5 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=310 phase=MISSION_COMPLETE_COAST d=179 speed=4.4 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=320 phase=MISSION_COMPLETE_COAST d=222 speed=4.4 fuel=39.5 chunks=1 replans=3 buffer=608 nose=98
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=330 phase=MISSION_COMPLETE_COAST d=264 speed=4.3 fuel=39.5 chunks=1 replans=3 buffer=608 nose=99
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=True
+t=340 phase=MISSION_COMPLETE_COAST d=306 speed=4.2 fuel=39.5 chunks=1 replans=3 buffer=608 nose=99
+  economy peak=4.76 burn=0.0s forecast=39.8 kgDV=5.4 coast=True fallback=False captureGap=8.9
+  pass=infs miss=infm coastGap=2.1 dV=0.000 camera=False
+{"controller_sha256": "ae39ffc3c8dc7da252a195748f956c231f914e30ede7ecb7a30e50dc4afdcd06", "controller_file_sha256": null, "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.", "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751", "debris_count": 500, "seed": 100, "control_hz": 60.0, "camera_requests_hz": 4.0, "benchmark_version": 8, "rng_mode": "native-order", "plan_latency_s": 0.0, "planning_mode": "async", "fuel_plan_target_override": null, "allocator_solver": "highs", "experiments": [], "scene_variant": "final-scene", "attitude_mode": "normal", "fuel_audit_enabled": true, "axis_thrust": false, "ground_plane_m": 2.5, "drift_bias_m_s2": [0.0, 0.0, 0.0], "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.", "result": {"arrived": true, "time_s": 267.28, "attitude_policy": "FreeAttitude", "fuel_kg": 39.49, "distance_m": 377.12, "peak_speed_m_s": 6.39, "arrival_speed_m_s": 4.753567472703799, "min_debris_gap_m": 13.22, "min_proxy_hull_gap_m": 21.04, "collision": false, "pre_entry_collision": false, "post_arrival_test_s": 90.0, "min_ground_centre_height_m": 2.5, "final_speed_m_s": 4.087, "learned_coast_drift_m_s2": [6.8523673198105e-10, 4.3004122040437036e-11, 4.6786580212092185e-08], "phase": "MISSION_COMPLETE_COAST", "images": 1428, "plan_p95_ms": 568.08, "angular_active_fraction": 0.0, "linear_active_fraction": 0.258, "nose_error_p95_deg": 98.67, "allocator_retries": 0, "coasting_fraction": 0.74, "terminal_fallback": false, "first_5m_s_time": 71.4, "cruise_mean_after_5m_s": 5.76, "cruise_min_after_5m_s": 5.0, "milestones_by_remaining_metres": {"1100": {"time_s": 74.78, "fuel_kg": 31.809, "speed_m_s": 5.289}, "1000": {"time_s": 91.57, "fuel_kg": 37.124, "speed_m_s": 6.349}, "600": {"time_s": 157.97, "fuel_kg": 37.266, "speed_m_s": 5.726}, "550": {"time_s": 166.78, "fuel_kg": 37.266, "speed_m_s": 5.648}, "500": {"time_s": 175.73, "fuel_kg": 37.266, "speed_m_s": 5.571}, "200": {"time_s": 232.53, "fuel_kg": 37.266, "speed_m_s": 5.098}, "50": {"time_s": 267.28, "fuel_kg": 39.494, "speed_m_s": 4.754}}, "bent_plan_updates": 0, "return_burn_events": 0, "max_bend_impulse_m_s": 0.0, "reserve_coast_time_s": 0.0, "max_lateral_deviation_m": 71.85, "zero_damage_score_estimate": 42.24, "fuel_audit": {"segments": {"LAUNCH": {"time_s": 8.0, "fuel_kg": 3.3131}, "CRUISE/ESCAPE": {"time_s": 2.0, "fuel_kg": 1.3545}, "CRUISE/IMPULSE_BURN": {"time_s": 78.5, "fuel_kg": 32.5983}, "CRUISE/IMPULSE_COAST": {"time_s": 128.5, "fuel_kg": 0.0}, "CRUISE/COAST": {"time_s": 4.0, "fuel_kg": 0.0}, "CAPTURE_PASS": {"time_s": 45.7833, "fuel_kg": 1.9925}, "OBSERVE_CAPTURE": {"time_s": 0.5, "fuel_kg": 0.2353}}, "command_regimes": {"translation_only": {"time_s": 92.2167, "fuel_kg": 39.4937}, "no_command": {"time_s": 175.0667, "fuel_kg": 0.0}}, "counterfactual_same_tick_costs": {"translation_only_kg": 39.4937, "attitude_only_kg": 0.0}, "post_arrival_fuel_kg": 0.0, "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."}}}

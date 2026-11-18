@@ -1,5 +1,6 @@
 """Execute the actual connection/loop/command code against a small API double."""
 import datetime
+import json
 from types import SimpleNamespace
 from unittest import mock
 import unittest
@@ -13,10 +14,15 @@ class StopSimulation(Exception):
 
 class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
-                    clean_main_burn=False):
+                    clean_main_burn=False, camera_recovery=False, reset_clock=False,
+                    flight_trace=False, trace_failure=False):
         commands = []
         now = [0.]
+        clock_reset = [False]
         st = mock.MagicMock()
+        self.sdk = st
+        if trace_failure:
+            st.logger_info.side_effect = RuntimeError('trace unavailable')
         camera_api = None
         if camera_feed:
             from test_camera_fusion import CameraAPI
@@ -55,6 +61,8 @@ class AdapterTests(unittest.TestCase):
             as_datetime=lambda: epoch+datetime.timedelta(seconds=now[0]))
         def tick(seconds):
             now[0] += .05
+            if reset_clock and not clock_reset[0] and now[0] > .8:
+                now[0], clock_reset[0] = 0., True
             if camera_api is not None:
                 camera_api.now = now[0]
             if now[0] > 2.:
@@ -63,6 +71,14 @@ class AdapterTests(unittest.TestCase):
                 mock.patch.dict('os.environ', {'EFP_CAMERA_GUI': '0', 'EFP_NOSE_FIRST': '0',
                     'EFP_AXIS_THRUST': '0', 'EFP_ORDER_DIVERSITY': '0',
                     'EFP_RECHECK_COAST': '0',
+                    'EFP_INERTIAL_CAPTURE': '0',
+                    'EFP_VECTOR_BURN': '0',
+                    'EFP_EXACT_ARCS': '0',
+                    'EFP_CAMERA_RECOVERY': '1' if camera_recovery else '0',
+                    'EFP_COAST_WINDOWS': '0',
+                    'EFP_ENTRY_SCOPE': '0',
+                    'EFP_TRACK_CACHE': '0',
+                    'EFP_FLIGHT_TRACE': '1' if flight_trace else '0',
                     'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
             self.runtime = {'__file__': str(SOURCE)}
             with self.assertRaises(StopSimulation):
@@ -70,6 +86,22 @@ class AdapterTests(unittest.TestCase):
         st.connect_to_sim.assert_called_once()
         st.leave_sim.assert_called_once()
         return commands
+
+    def test_camera_recovery_configuration_survives_simulation_reset(self):
+        self.run_adapter([], camera_feed=True, camera_recovery=True, reset_clock=True)
+        self.assertEqual(type(self.runtime['flight_attitude']).__name__, 'ViewRecoveryAttitude')
+
+    def test_optional_trace_is_bounded_and_does_not_interrupt_flight(self):
+        self.run_adapter([], flight_trace=True)
+        message = self.sdk.logger_info.call_args.args[0]
+        self.assertTrue(message.startswith('IGNITION_STATE '))
+        payload = json.loads(message.split(' ', 1)[1])
+        self.assertEqual(np.shape(payload['body_dcm']), (3, 3))
+        self.assertLessEqual(len(payload['radar']), 12)
+        self.assertLessEqual(len(payload['camera_surfaces']), 8)
+        commands = self.run_adapter([], flight_trace=True, trace_failure=True)
+        self.assertTrue(commands)
+        self.assertFalse(self.runtime['flight_trace_enabled'])
 
     def test_frame_conversion_limits_and_cleanup(self):
         report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])

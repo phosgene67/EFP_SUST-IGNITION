@@ -1,0 +1,21 @@
+{
+  "kind": "measured_compute_on_synthetic_sensor_fixture",
+  "objects": 500,
+  "paired_calls": 30,
+  "source_sha256": "c38781b72df5d21aea49e2b4eefe7941e25161a510987763975b5254cb3dfd52",
+  "max_output_abs_difference": 0.0,
+  "uncertainty_metadata_equal": true,
+  "timings_ms": {
+    "uncached": {
+      "wall_median": 107.79159999947296,
+      "wall_p95": 116.94722000247566,
+      "cpu_median": 109.375
+    },
+    "cached": {
+      "wall_median": 24.3209999971441,
+      "wall_p95": 28.05645999906119,
+      "cpu_median": 31.25
+    }
+  },
+  "note": "Alternating paired calls, first cold call excluded. All reports unchanged and mature: an upper-bound cache opportunity. Native cycles include fresh reports too. Concurrent workload affects wall time. This does not measure native score."
+}
