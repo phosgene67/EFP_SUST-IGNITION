@@ -1,14 +1,13 @@
 # Camera interface
 
-The active flight profile is **MOMENTUM_BYPASS** for `FINAL_SUBMISSION.simconf`.
-The log includes `bendDV`, `returnBurn`, `captureRadius`, `reserveCoast` and
-`sourceSHA256` so runs can be matched to the deployed controller.
-RGB and depth request a 100-degree field of view to cover the body-Z approach
-at the camera gimbal limit. The flight loop cuts both thrust commands at 49.5 kg
-total fuel, including post-entry control, against the requested 50 kg ceiling.
-See [the controller overview](README.md#current-controller) for current navigation.
-After entry, the footer shows **Entry fuel** separately from the current total,
-and the active controller disables all thrust. The vehicle continues coasting.
+The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
+RGB and depth use the original 80-degree field of view. Camera requests are
+asynchronous. The log reports the controller source hash and active experiment
+flags. See [score tuning](SCORE_TUNING.md) for their default-off settings.
+
+The footer records entry fuel. After safe-zone entry, all thrust goes to zero
+and the vehicle coasts.
+
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -120,7 +119,7 @@ not change an already-running Space Teams process.
 
 ## Current speed and depth display
 
-`MOMENTUM_BYPASS` selects finite burns and coasting using the score formula, with a
+`SCORE_MOMENTUM` selects finite burns and coasting using the score formula, with a
 10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
 at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
 historical SCORE_COAST modeled runs peaked at 6.38--6.87 m/s.
@@ -128,8 +127,7 @@ historical SCORE_COAST modeled runs peaked at 6.38--6.87 m/s.
 The depth display and processing limit are 400 m. This is a software limit,
 not a guarantee of usable real depth at that distance. The radar-loss speed
 guard still uses its conservative 220 m envelope. A camera-verified tangent
-pass enters the safe area. FINAL_COAST preserves a predicted unpowered entry
-inside the last 550 m. Observation and slow-approach
+pass enters the safe area. The original capture planner uses its camera-checked tangent approach. Observation and slow-approach
 fallbacks remain available when the pass cannot be established.
 
 ## Historical nose-first flight and the steep climb

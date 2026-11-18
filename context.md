@@ -7,6 +7,82 @@ The original chats and logs remain the sources for details.
 
 ## Current user direction
 
+The latest request supersedes all fuel ceilings, staged reserves and forced
+bypass work below. Restore SCORE_MOMENTUM from 4a8507e. Optimize the actual
+score tradeoff between time, fuel and damage toward a median native 60–70.
+Fuel is unlimited. Keep the official jet selector and simulator intact.
+
+Establish a baseline using at least 20 offline seeds. Test one change at a time
+behind a default-off flag. Report paired median score delta, spread, entry
+time/fuel, phase-fuel differences and contacts. Reject gains within seed noise.
+Never brake after entry. Native scores require official logs and source/seed
+identity. Offline contacts do not provide damage joules.
+
+### Current work in progress
+
+Controller.py and its original tests have been restored from 4a8507e.
+All bypass and fuel-limiter code has been removed. The required unconditional
+change is zero thrust after safe-zone entry. This is causally after the entry
+score. A regression confirms that fuel above 50 kg does not inhibit commands.
+
+The first default-off experiment is EFP_CLEAN_MAIN_BURN=1. It adds a body-X
+component of 0.0002 times the primary body-Z command direction during positive
+Z shooting burns, normalizing to the existing acceleration limit. It does not
+change other axes, reverse burns or the native jet allocator.
+
+An independent allocator probe with both HiGHS and the official revised-simplex
+method found about 0.13468 m/s² forward acceleration versus 0.0958134 for the
+pure Z command. The fuel/forward-delta-v ratio is 4.32315 versus 4.32233 kg.
+This is numerical evidence from the published allocator, requiring flight
+validation. The small perturbation changes which degenerate LP solution is
+normalized by the published max-on-time remap.
+
+Baseline seeds 100–119 ran against the exact original 4a8507e source,
+using benchmark_final_submission.py with --ground-plane 2.5 --fuel-audit,
+60 Hz, zero synthetic planning delay and HiGHS. Four shell sessions each run
+five seeds and write tests/score_baseline_SEED.json. The sweep summary tool
+requires 20 completed records and checks source/scenario/seed consistency.
+The baseline completed with 20/20 arrivals and no modeled pre-entry contacts.
+Median score was 38.275, p10–p90 22.984–43.789, median entry time 264.97 s,
+and median fuel 43.725 kg. Full results are in tests/score_sweep_baseline.json.
+
+The clean-main-burn experiment also completed 20/20 with no modeled contact.
+Median score was 40.335. Paired median time/fuel changes were -38.025 s and
++2.345 kg. The 95 percent paired bootstrap interval for the cohort-median
+score difference was [-0.815, 7.625]. The gain was inconclusive under the
+user's rule, so it is rejected for promotion and remains default off.
+This differs from the archived angular-trim experiments by using a tiny linear
+component with no added angular control. Its field result nevertheless failed
+to establish a robust gain. See tests/score_sweep_clean.json.
+
+The second isolated experiment is EFP_ORDER_DIVERSITY=1, preserving one feasible
+candidate for each of six axis burn orders before collision checks. It changes
+pruning only. Dynamics, camera, score weights and risk margins stay at the
+original settings. Its cohort uses no clean-main-burn perturbation.
+Seeds 100–119 completed using frozen source tests/score_sweeps/order_controller.py.
+The median was unchanged at 38.275, with 20/20 arrivals and no modeled contact.
+Its bootstrap interval for median score change was [-0.07, 2.44]. The lower tail
+improved, but a median gain was inconclusive and rejected for promotion.
+Results are in tests/score_sweep_order.json. Both experiments remain off.
+
+The third isolated experiment is EFP_RECHECK_COAST=1. A regression reproduces
+an original completed burn being retained as IMPULSE_COAST despite a predicted
+55.4146 m miss. This flag makes that completed coast ineligible unless it meets
+the original successful-pass bounds. It changes only retention eligibility;
+unlike the regressed SCORE_COAST bundle, camera reachability, guidance and cost
+weights are unchanged. A matched 20-seed cohort runs from frozen source
+tests/score_sweeps/recheck_controller.py with both other flags off. All three
+experiments default off. The current full suite passes 132 tests.
+
+The native log directory provided by the user is
+C:/Users/Asus/AppData/Local/SimDynamX/STPro/Logs. The extracted inventory is
+tests/native_score_inventory.json. Available successes contain mixed profiles
+and missing seed/source fields, so they cannot establish a matched native
+20-run baseline. The latest observed native MOMENTUM_BYPASS runs used a
+different source hash from the restored controller.
+
+### Superseded requests and historical direction
+
 Return to SCORE_MOMENTUM at commit `4a8507e`. The user reports this version
 can reach about 50 points in their simulation tests. Improve prediction,
 path choice and fuel/time balance toward 65+ points. Restore a reliable baseline

@@ -50,8 +50,7 @@ class PerceptionTests(unittest.TestCase):
         perception.ingest('top', 'depth', pixels, 0., 0., (np.zeros(3), np.eye(3)), 0., 0.)
         centers, _, radii = perception.obstacles(0., np.zeros(3), *empty_radar())
         rows, cols = np.nonzero(pixels)
-        surfaces = np.array([1.27, 0., .9])+100.*perception.rays(
-            rows, cols, WIDTH, HEIGHT, namespace['CAMERA_FOV'])
+        surfaces = np.array([1.27, 0., .9])+100.*perception.rays(rows, cols, WIDTH, HEIGHT, 80.)
         gaps = np.linalg.norm(surfaces[:, None]-centers[None], axis=2)-(radii[None]-6.)
         self.assertTrue((gaps.min(axis=1) <= 0.).all())
         self.assertGreater(len(centers), 1)
@@ -202,29 +201,6 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(set(camera for camera, _ in api.requests), {'top', 'bottom'})
         self.assertEqual(set(props.output_mode for _, props in api.requests), {'depth', 'rgb'})
         self.assertEqual(len(api.callbacks), 0)
-
-    def test_body_z_station_at_63m_is_visible_at_gimbal_limit(self):
-        api, manager = self.make()
-        history, perception = History(), Perception()
-        for tick in range(5):
-            api.now = tick*.25
-            history.add(api.now, np.zeros(3), np.eye(3))
-            manager.tick(api.now, np.array([0., 0., 63.]))
-            manager.drain(api.now, history, perception)
-        self.assertTrue(perception.observes(api.now, np.array([0., 0., 63.])))
-        terminal = namespace['CaptureApproach']()
-        terminal.camera_ready = perception.observes(api.now, np.array([0., 0., 63.]))
-        _, phase, cap = terminal.goal(api.now, np.zeros(3), np.zeros(3),
-                                      np.array([0., 0., 63.]), np.zeros(3), np.empty((0, 3)), np.empty(0))
-        self.assertEqual(phase, 'CAPTURE_PASS')
-        self.assertGreater(cap, 0.)
-
-    def test_fuel_budget_latches_and_rejects_invalid_readings(self):
-        budget = namespace['FuelBudget']()
-        self.assertTrue(budget.allows(49.49))
-        self.assertFalse(budget.allows(49.5))
-        self.assertFalse(budget.allows(49.))
-        self.assertFalse(namespace['FuelBudget']().allows(float('nan')))
 
     def test_missing_camera_has_bounded_pending_subscriptions(self):
         api, manager = self.make(False)

@@ -89,7 +89,7 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async'):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async', experiments=()):
     dt = 1./control_hz
     worker = None
     if plan_latency > 0.:
@@ -102,6 +102,18 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
+    if 'clean-main-burn' in experiments:
+        if not hasattr(planner, 'clean_main_burn'):
+            raise ValueError('This controller revision does not implement clean-main-burn')
+        planner.clean_main_burn = True
+    if 'order-diversity' in experiments:
+        if not hasattr(planner, 'order_diversity'):
+            raise ValueError('This controller revision does not implement order-diversity')
+        planner.order_diversity = True
+    if 'recheck-coast' in experiments:
+        if not hasattr(planner, 'recheck_coast'):
+            raise ValueError('This controller revision does not implement recheck-coast')
+        planner.recheck_coast = True
     gate = None
     fuel_budget = namespace['FuelBudget']() if 'FuelBudget' in namespace else None
     if 'StagedNavigator' in namespace:
@@ -392,6 +404,9 @@ if __name__ == '__main__':
     parser.add_argument('--output', default='tests/final_submission_results.json')
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
+    parser.add_argument('--experiment', action='append', default=[],
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast'),
+                        help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
     parser.add_argument('--fuel-audit', action='store_true')
@@ -435,12 +450,13 @@ if __name__ == '__main__':
                   plan_latency_s=args.plan_latency, planning_mode=args.planning_mode,
                   fuel_plan_target_override=args.fuel_plan_target,
                   allocator_solver=args.allocator_solver,
+                  experiments=args.experiment,
                   scene_variant='clear-corridor diagnostic' if args.clear_corridor else 'final-scene',
                   attitude_mode=args.attitude_mode, fuel_audit_enabled=args.fuel_audit,
                   axis_thrust=args.axis_thrust, ground_plane_m=args.ground_plane,
                   drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(algorithm, Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode))
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode, args.experiment))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

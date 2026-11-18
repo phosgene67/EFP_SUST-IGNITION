@@ -1,0 +1,86 @@
+{
+  "kind": "verified_installed_configuration_and_modeled_allocator",
+  "paths": {
+    "scenario": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Sims\\FINAL_SUBMISSION.simconf",
+    "scoring": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Systems\\Scoring.py",
+    "actuator": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Systems\\JetSelectionActuator.py",
+    "jet_config": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Data\\SpaceBuggyJetConfigNoMains.csv"
+  },
+  "sha256": {
+    "FINAL_SUBMISSION.simconf": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+    "Scoring.py": "c03683cbb5571ead9902bed1cea8e67968b998e0a2b0f7468035da272ac58865",
+    "JetSelectionActuator.py": "b3c5f7bc3ff61355223ea13ec315fe2770c604d2c45f22db2c0871cd3ea513a1",
+    "SpaceBuggyJetConfigNoMains.csv": "da8c76cd556e828d568eec83d39da40eab7b6b94307a9b524fc22d75046d6de3"
+  },
+  "score_parameters": [
+    {
+      "NominalTime_s": 120.0,
+      "NominalFuel_kg": 75.0,
+      "DamageThreshold_J": 209200.0,
+      "KeepOutRadius_m": 50.0
+    }
+  ],
+  "reference_mass_kg": 3388.7,
+  "g0_m_s2": 9.8,
+  "isp_s": 80.0,
+  "fuel_per_delta_v_kg_s_m": 4.322321428571429,
+  "score_fuel_point_cost_per_kg": 1.3333333333333333,
+  "score_damage_point_cost_per_1000J": 0.9560229445506692,
+  "sixty_point_zero_damage_max_time_s": {
+    "35": 211.76470588235296,
+    "40": 189.47368421052633,
+    "45": 171.42857142857144,
+    "50": 156.52173913043478,
+    "67": 120.80536912751678
+  },
+  "axes": {
+    "-X": {
+      "acceleration_m_s2": 0.09655956570799146,
+      "fuel_rate_kg_s": 0.4173660729699554
+    },
+    "+X": {
+      "acceleration_m_s2": 0.17456252354760046,
+      "fuel_rate_kg_s": 0.7545171451340135
+    },
+    "-Y": {
+      "acceleration_m_s2": 0.09644470948186806,
+      "fuel_rate_kg_s": 0.4168679381674221
+    },
+    "+Y": {
+      "acceleration_m_s2": 0.14318095576431702,
+      "fuel_rate_kg_s": 0.618875622281591
+    },
+    "-Z": {
+      "acceleration_m_s2": 0.11689911375742879,
+      "fuel_rate_kg_s": 0.5052755627279295
+    },
+    "+Z": {
+      "acceleration_m_s2": 0.09581339692790716,
+      "fuel_rate_kg_s": 0.4141367515019589
+    }
+  },
+  "clean_main_burn": {
+    "command_m_s2": [
+      9.999999800000007e-05,
+      0.0,
+      0.4999999900000003
+    ],
+    "modeled_actual_m_s2": [
+      2.6935118123759403e-05,
+      -5.701342372021743e-22,
+      0.13467559061879708
+    ],
+    "modeled_angular_rad_s2": [
+      1.5389741618663383e-17,
+      2.108476763952767e-17,
+      -2.8951586137151986e-18
+    ],
+    "fuel_rate_kg_s": 0.5822222716546576,
+    "fuel_per_forward_delta_v": 4.323146228499962
+  },
+  "caveats": [
+    "Directional accelerations are achieved under the published normalized LP actuator at reference mass, rather than independent thruster commands.",
+    "One-burn score ceilings depend on gravity, initial velocity, direction, range and ignored overhead. No universal 68.7 or 64 point native ceiling has been verified.",
+    "The offline harness varies 0.02 m/s debris velocity jitter and radar noise. It does not model spinning collision meshes or native damage energy."
+  ]
+}

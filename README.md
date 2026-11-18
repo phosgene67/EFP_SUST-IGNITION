@@ -6,58 +6,28 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-The current controller is **MOMENTUM_BYPASS**, based on SCORE_MOMENTUM
-at commit `4a8507e`, for `FINAL_SUBMISSION.simconf`. It compares finite burns and
-unpowered passes using the official time, fuel and damage formula. Radar and
-RGB/depth observations update predicted debris motion. Near-term collision
-checks cover the next 20 seconds and replan at 2 Hz. Existing burns retain useful
-momentum, with a camera-checked tangent pass into the ship's 50 m safe area.
+The controller restores **SCORE_MOMENTUM** from commit `4a8507e` for
+`FINAL_SUBMISSION.simconf`. It evaluates finite burns and coast trajectories
+against the time, fuel and damage score. Fuel use has no command cutoff or
+staged reserve. All thrust stops when the scoring safe zone is reached.
 
-The restoration removes the staged 600 m fuel handoff. Fuel is priced in the
-score calculation. Free attitude remains the default. The controller checks
-official ship-frame distance between planning updates and records entry fuel
-at the safe-zone crossing.
-After entry, the active controller now disables all thrust and coasts.
-Within 550 m, it prioritizes a gravity-aware coast that predicts safe-zone entry,
-with continuing debris and camera checks. A predicted miss or obstruction
-returns control to ordinary guidance.
+The original 20-seed offline baseline had median score 38.28, median entry time
+264.97 s and median entry fuel 43.73 kg. All 20 reached the safe zone without
+modeled pre-entry contact. These are proxy results. A native 60–70 median
+remains unverified.
 
-Radar observations rank curved corridors around the debris band. Broader route
-changes require at least 20 mature tracks and a settled burn. Both initial and
-return burns count toward cost. A curve needs more than two points of forecast
-benefit over an available safe direct plan.
+Experiments are isolated behind default-off environment flags.
 
-Inside 550 m, capture targeting moves inward to 43 m and guidance uses the
-official scoring-origin vector. Short finite corrections remain available near
-the ship. Surface checks end at first safe-zone entry.
+| Flag | Experiment | Status |
+| --- | --- | --- |
+| `EFP_CLEAN_MAIN_BURN=1` | Small transverse acceleration component during the main burn | Twenty-seed median gain +2.06, 95% interval -0.81 to +7.63. Inconclusive and rejected for promotion. |
+| `EFP_ORDER_DIVERSITY=1` | Preserve a candidate for each body-axis burn order before collision checks | Twenty-seed median gain 0.00, 95% interval -0.07 to +2.44. Inconclusive and rejected for promotion. |
+| `EFP_RECHECK_COAST=1` | Revalidate a completed retained coast against the safe passage requirement | Reproduced 55.41 m predicted-miss regression fixed in tests. Twenty-seed flight evaluation running. |
 
-The camera requests a 100-degree field so the station remains observable during
-a body-Z climb with the gimbal at its limit. This addresses the camera-wait
-stop reported near 63 m. A latched command cutoff disables translation and
-angular thrust at 49.5 kg total fuel, leaving a 0.5 kg delay allowance against
-the requested 50 kg ceiling. The cutoff also applies after entry. The vehicle
-coasts once the allowance is exhausted.
-144 tests pass. Four full-scene offline runs entered without modeled pre-entry
-contact using 43.09–45.81 kg. Estimated scores were 34.15–38.42, averaging
-36.24 versus 36.98 for the preceding controller. This is a capture-reliability
-update with a small modeled score decrease. Native verification and the
-60-point target remain pending.
-[Bypass comparisons](tests/momentum_bypass_benchmarks.json) include the
-rejected wider-route tunings. [Final-coast comparisons](tests/momentum_final_coast_benchmarks.json)
-preserve the preceding release.
-
-Radar processing reuses unchanged report transforms and fitted uncertainty until
-fresh measurements arrive. In the earlier matched 500-report replay, median radar
-processing fell from 74.17 ms to 30.05 ms with identical outputs.
-[Restoration comparisons](tests/momentum_restoration_benchmarks.json) and
-[camera-fix comparisons](tests/momentum_camera_budget_benchmarks.json)
-preserve the preceding experiments.
-
-Read [project context](context.md) before future changes. It records the active
-architecture, decisions, historical regressions and current verification.
-[Momentum design](SCORE_MOMENTUM.md) describes the restored algorithm.
-[Fuel audit](FUEL_AUDIT.md) explains the attitude and thruster tradeoffs.
-Earlier experiments remain in the repository for comparison.
+[Score tuning and verification](SCORE_TUNING.md) contains the score calculation,
+matched results, phase-fuel audit, limitations and reproduction commands.
+[Project context](context.md) records current instructions and historical
+regressions. [Original Momentum design](SCORE_MOMENTUM.md) documents the base.
 
 **Live camera GUI:** copy **both `Controller.py` and `camera_viewer.py`** into the
 installed local `STU4-Solution` folder. The OpenCV window opens automatically during

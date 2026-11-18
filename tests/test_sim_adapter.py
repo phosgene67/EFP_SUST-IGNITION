@@ -12,7 +12,8 @@ class StopSimulation(Exception):
 
 
 class AdapterTests(unittest.TestCase):
-    def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05):
+    def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
+                    clean_main_burn=False):
         commands = []
         now = [0.]
         st = mock.MagicMock()
@@ -40,9 +41,6 @@ class AdapterTests(unittest.TestCase):
         target.getLocVelAcc.return_value = state([9305.8, 0., 0.] if target_position is None else target_position)
         if scoring_distance is not None:
             shuttle.getLocation.return_value.WRT_ExprIn.return_value = np.array([scoring_distance, 0., 0.])
-            relative = np.array([8000., 0., 0.])-np.asarray(target_position, float)
-            relative *= scoring_distance/np.linalg.norm(relative)
-            shuttle.getLocation.return_value.WRT.return_value.ExprIn.return_value = relative
         shuttle.GetParam.side_effect = lambda kind, key: (
             fuel_used if key[-1] == 'FuelUsed' else .5 if key[-1] == 'MaxAccel_m_s2' else .05)
         shuttle.GetParamArray.return_value = radar
@@ -62,7 +60,10 @@ class AdapterTests(unittest.TestCase):
             if now[0] > 2.:
                 raise StopSimulation()
         with mock.patch.dict('sys.modules', {'spaceteams': st}), mock.patch('time.sleep', tick), \
-                mock.patch.dict('os.environ', {'EFP_CAMERA_GUI': '0'}):
+                mock.patch.dict('os.environ', {'EFP_CAMERA_GUI': '0', 'EFP_NOSE_FIRST': '0',
+                    'EFP_AXIS_THRUST': '0', 'EFP_ORDER_DIVERSITY': '0',
+                    'EFP_RECHECK_COAST': '0',
+                    'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
             self.runtime = {'__file__': str(SOURCE)}
             with self.assertRaises(StopSimulation):
                 exec(compile(SOURCE.read_text(), str(SOURCE), 'exec'), self.runtime)
@@ -90,35 +91,28 @@ class AdapterTests(unittest.TestCase):
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
 
-    def test_fuel_limit_stops_linear_and_angular_commands_in_actual_runtime(self):
-        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
-        for fuel in (49.5, 50., float('nan')):
-            with self.subTest(fuel=fuel):
-                commands = self.run_adapter([report], fuel_used=fuel)
-                self.assertTrue(self.runtime['fuel_budget'].exhausted)
-                for _, value in commands:
-                    np.testing.assert_array_equal(value, np.zeros(3))
-
     def test_arrival_uses_official_distance_between_planning_ticks(self):
-        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
-        commands = self.run_adapter([report], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        commands = self.run_adapter([], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
         self.assertIsNotNone(self.runtime['planner'].arrival_time)
         self.assertTrue(self.runtime['planner'].terminal.entered)
         self.assertTrue(self.runtime['fuel_ledger'].frozen)
-        self.assertEqual(self.runtime['mode'], 'MISSION_COMPLETE_COAST')
         for _, value in commands:
             np.testing.assert_array_equal(value, np.zeros(3))
+
+    def test_high_fuel_usage_does_not_inhibit_the_controller(self):
+        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
+        commands = self.run_adapter([report], fuel_used=100.)
+        self.assertTrue(any(np.linalg.norm(v) > .25 for name, v in commands if name == 'CommandedAccel'))
+
+    def test_experiment_flag_reaches_the_actual_runtime_planner(self):
+        self.run_adapter([], clean_main_burn=True)
+        self.assertTrue(self.runtime['planner'].clean_main_burn)
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])
         for name, value in commands:
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
-
-    def test_terminal_guidance_targets_the_actual_scoring_origin(self):
-        self.run_adapter([], target_position=[8060., 0., 0.], scoring_distance=70.)
-        np.testing.assert_allclose(self.runtime['target_loc'], [8070., 0., 0.])
-        self.assertIsNone(self.runtime['planner'].arrival_time)
 
     def test_actual_runtime_processes_async_camera_when_radar_missing(self):
         commands = self.run_adapter([], camera_feed=True)

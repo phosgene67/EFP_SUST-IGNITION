@@ -138,44 +138,6 @@ class PlannerTests(unittest.TestCase):
             sign = 1 if report[1, 2] == 20. else -1
             self.assertGreater(sign*estimate[1], .7)
 
-    def test_cached_radar_matches_recomputed_quality_and_updates_on_new_sweep(self):
-        from unittest.mock import patch
-        planner = namespace['ShootingNavigator'](launch=False)
-        origin = np.array([8000., 0., 0.])
-        for stamp in range(0, 21, 4):
-            relative = np.array([100., float(stamp), 0.])
-            report = np.array([relative, [90., relative[1]/np.linalg.norm(relative), 20.],
-                               [float(stamp), 0., 0.]])
-            planner.obstacles(float(stamp), origin, np.zeros(3), [report])
-        track = next(iter(planner.report_cache.values()))
-        self.assertIn('forecast_quality', track)
-        with patch.object(np, 'interp', wraps=np.interp) as interpolate:
-            cached = planner.obstacles(20.5, origin, np.zeros(3), [report])
-            self.assertEqual(interpolate.call_count, 0)
-        cached_rates = planner.radar_forecast_rates.copy()
-        cached_confidence = planner.radar_track_confidence.copy()
-        del track['forecast_quality']
-        recomputed = planner.obstacles(20.5, origin, np.zeros(3), [report])
-        for actual, expected in zip(cached, recomputed):
-            np.testing.assert_array_equal(actual, expected)
-        np.testing.assert_array_equal(cached_rates, planner.radar_forecast_rates)
-        np.testing.assert_array_equal(cached_confidence, planner.radar_track_confidence)
-        report[0, 1], report[2, 0] = 24., 24.
-        planner.obstacles(24., origin, np.zeros(3), [report])
-        updated = next(iter(planner.report_cache.values()))
-        self.assertIsNot(updated, track)
-        self.assertEqual(updated['samples'][-1][0], 24.)
-
-    def test_report_older_than_pose_history_keeps_missing_history_margin(self):
-        planner = namespace['ShootingNavigator'](launch=False)
-        origin, velocity = np.array([8000., 0., 0.]), np.array([2., 0., 0.])
-        report = np.array([[100., 0., 0.], [90., -2., 20.], [0., 0., 0.]])
-        planner.obstacles(5., origin, velocity, [report])
-        _, _, first = planner.obstacles(5.5, origin, velocity, [report])
-        _, _, later = planner.obstacles(6., origin, velocity, [report])
-        self.assertGreater(first[0], 20.)
-        self.assertGreater(later[0], first[0])
-
     def test_noisy_delayed_crossing_debris(self):
         for seed in (7, 19, 43):
             with self.subTest(seed=seed):
