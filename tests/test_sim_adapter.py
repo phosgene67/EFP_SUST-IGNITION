@@ -40,6 +40,9 @@ class AdapterTests(unittest.TestCase):
         target.getLocVelAcc.return_value = state([9305.8, 0., 0.] if target_position is None else target_position)
         if scoring_distance is not None:
             shuttle.getLocation.return_value.WRT_ExprIn.return_value = np.array([scoring_distance, 0., 0.])
+            relative = np.array([8000., 0., 0.])-np.asarray(target_position, float)
+            relative *= scoring_distance/np.linalg.norm(relative)
+            shuttle.getLocation.return_value.WRT.return_value.ExprIn.return_value = relative
         shuttle.GetParam.side_effect = lambda kind, key: (
             fuel_used if key[-1] == 'FuelUsed' else .5 if key[-1] == 'MaxAccel_m_s2' else .05)
         shuttle.GetParamArray.return_value = radar
@@ -111,6 +114,11 @@ class AdapterTests(unittest.TestCase):
         for name, value in commands:
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
+
+    def test_terminal_guidance_targets_the_actual_scoring_origin(self):
+        self.run_adapter([], target_position=[8060., 0., 0.], scoring_distance=70.)
+        np.testing.assert_allclose(self.runtime['target_loc'], [8070., 0., 0.])
+        self.assertIsNone(self.runtime['planner'].arrival_time)
 
     def test_actual_runtime_processes_async_camera_when_radar_missing(self):
         commands = self.run_adapter([], camera_feed=True)

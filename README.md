@@ -6,8 +6,8 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-The current controller is **SCORE_MOMENTUM**, restored from commit
-`4a8507e` for `FINAL_SUBMISSION.simconf`. It compares finite burns and
+The current controller is **MOMENTUM_BYPASS**, based on SCORE_MOMENTUM
+at commit `4a8507e`, for `FINAL_SUBMISSION.simconf`. It compares finite burns and
 unpowered passes using the official time, fuel and damage formula. Radar and
 RGB/depth observations update predicted debris motion. Near-term collision
 checks cover the next 20 seconds and replan at 2 Hz. Existing burns retain useful
@@ -22,18 +22,29 @@ Within 550 m, it prioritizes a gravity-aware coast that predicts safe-zone entry
 with continuing debris and camera checks. A predicted miss or obstruction
 returns control to ordinary guidance.
 
+Radar observations rank curved corridors around the debris band. Broader route
+changes require at least 20 mature tracks and a settled burn. Both initial and
+return burns count toward cost. A curve needs more than two points of forecast
+benefit over an available safe direct plan.
+
+Inside 550 m, capture targeting moves inward to 43 m and guidance uses the
+official scoring-origin vector. Short finite corrections remain available near
+the ship. Surface checks end at first safe-zone entry.
+
 The camera requests a 100-degree field so the station remains observable during
 a body-Z climb with the gimbal at its limit. This addresses the camera-wait
 stop reported near 63 m. A latched command cutoff disables translation and
 angular thrust at 49.5 kg total fuel, leaving a 0.5 kg delay allowance against
 the requested 50 kg ceiling. The cutoff also applies after entry. The vehicle
 coasts once the allowance is exhausted.
-The coast-focused controller passes 136 tests. Four full-scene offline runs
-entered without modeled contact using 43.29–45.02 kg total fuel. Only
-0.24–1.28 kg was spent after crossing 500 m remaining. Fuel stayed unchanged
-during the 90 s post-entry test. Arrival times were 255.70–265.30 s and estimated
-scores were 35.24–38.05. The 60-point target remains unachieved in these models.
-[Final-coast comparisons](tests/momentum_final_coast_benchmarks.json).
+144 tests pass. Four full-scene offline runs entered without modeled pre-entry
+contact using 43.09–45.81 kg. Estimated scores were 34.15–38.42, averaging
+36.24 versus 36.98 for the preceding controller. This is a capture-reliability
+update with a small modeled score decrease. Native verification and the
+60-point target remain pending.
+[Bypass comparisons](tests/momentum_bypass_benchmarks.json) include the
+rejected wider-route tunings. [Final-coast comparisons](tests/momentum_final_coast_benchmarks.json)
+preserve the preceding release.
 
 Radar processing reuses unchanged report transforms and fitted uncertainty until
 fresh measurements arrive. In the earlier matched 500-report replay, median radar

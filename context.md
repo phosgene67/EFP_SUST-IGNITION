@@ -23,6 +23,11 @@ The next request prioritizes spending useful acceleration fuel before about
 After safe-zone entry the user accepts continued coasting and later contact.
 Post-entry braking is therefore removed from the active ShootingNavigator.
 
+The latest request provides two side-view screenshots and proposes a curved
+route around the dense debris band. It also reports missed safe-zone entries
+near 60 m. Keep Momentum as the base, evaluate bypass routes from radar,
+preserve the 50 kg ceiling, and improve reliability and score toward 60+.
+
 Keep the connection prefix and command helpers in Controller.py intact.
 Keep the official STU4-Sim repository intact. No push or deployment was performed
 in the November 18 restoration task.
@@ -167,6 +172,81 @@ The log profile remains SCORE_MOMENTUM. The normalized source hash is
 `1cc462d7734c38f8dc5e78a8b89008eb355de0c6b36c337be50a5a929e00e58e`.
 
 ## Verification and future comparisons
+
+### Radar-ranked bypass and capture corrections
+
+The active profile is MOMENTUM_BYPASS. The screenshots suggest a useful route
+shape but provide no world-space metric boundary. bypass_impulses projects the
+observed radar band into a plane perpendicular to the destination and compares
+12 side directions with five lateral impulse sizes. Constant-velocity forecasts
+rank these broad corridors. The actual finite-burn candidates receive the
+existing gravity-aware swept checks and expected-damage pricing.
+
+bent_schedule solves both the initial and scheduled return burns so the
+constant-gravity endpoint rejoins the destination. The previous detour
+construction added a lateral impulse without compensating the endpoint for
+finite return-burn duration. The flight loop also lacked an explicit scheduled
+return transition. begin_return now executes that transition between planning
+updates. A new plan can replace it when a cheaper safe trajectory is found.
+The original startup steering is retained while a burn is in progress. Broad
+rerouting and the new exact bend schedules require at least 20 mature tracks
+and a settled burn, avoiding the startup regressions seen in the early trials.
+
+Both legs count toward projected fuel, and new bent plans must project at
+most 47.5 kg cumulative use. When a safe direct candidate exists, a bend must
+offer over two points of forecast benefit. Thus the planner can select
+an open corridor without forcing an expensive full-field skirt.
+
+Capture targeting moves from 47 m to 43 m inside 550 m. A final coast must
+predict penetration at least 6 m inside the 50 m scoring sphere. Finite-burn
+planning remains available inside 280 m and adds 5–119 s arrival-time options
+for short corrections. Known station surfaces are checked only as far as first
+entry, retaining the requested post-entry coast.
+
+At 42 kg, ordinary boosting may pause while outside 550 m if both the handoff
+and safe-zone entry are predicted reachable and the next sensor chunk is clear.
+This rule preserves fuel while an aligned trajectory coasts. It does not
+inhibit corrections for a predicted miss. The total cutoff is still 49.5 kg,
+with a 0.5 kg latency allowance. Nose attitude remains free. Success depends on
+position and velocity trajectory through the safe sphere.
+
+Native evidence reviewed for this change includes
+261118_072411_FINAL_SUBMISSION__294. Its allowance was exhausted at 985.8 m
+remaining and 117.7 s. It subsequently coasted to 89.1 m before departing.
+261118_071931_FINAL_SUBMISSION__449 recorded official success with 45.0 points;
+its later coast and damage are distinct from that recorded result.
+
+The first bypass prototype used 45.58–49.51 kg across four modeled flights,
+with scores 29.27–34.69. A trial with a blind 550 m reserve coast plus stronger
+fuel/density penalties produced one missed entry and three low-scoring arrivals.
+Both tunings were rejected. The reserve gate now requires a successful final
+pass, and the two-point benefit threshold suppresses unnecessary bends.
+Final guidance also uses the same origin-to-origin vector as Scoring.py inside
+550 m, rebased onto the vehicle control-state location. This addresses potential
+actor/COM offsets during planning as well as during arrival detection.
+The exact API expression is tested in the real-loop double. The native offset
+magnitude was not measured in this task.
+
+| Case | Entry fuel | Time | Offline score | Previous score |
+| --- | ---: | ---: | ---: | ---: |
+| Nominal 100 | 43.09 kg | 261.60 s | 38.42 | 38.05 |
+| Nominal 101 | 45.81 kg | 257.27 s | 35.57 | 37.66 |
+| Drift 100 | 44.03 kg | 263.50 s | 36.83 | 36.95 |
+| Drift 101 | 45.24 kg | 269.83 s | 34.15 | 35.24 |
+
+All four entered without modeled pre-entry contact and stayed below 50 kg.
+Mean score is 36.24 versus 36.98 for 731c8df. This is a capture-reliability
+update with a small average modeled score decrease. A score improvement or
+60+ native result is unverified. Routing remains conditional on clearance,
+tracking quality, cost and expected score. The tests do not demonstrate a
+complete skirt around the whole debris cloud.
+
+144 tests pass. Coverage includes exact bend endpoints, timed return execution,
+open-side radar ranking, reserve reachability, short terminal correction,
+grazing-pass rejection, station contact after entry and scoring-origin offsets.
+All 20 trial flight records and the four matched baseline records are in
+`tests/momentum_bypass_benchmarks.json`. The final source SHA256 is
+`7a2fd955b49bef8ed639912893e8b07f8cd674fd816c040037a7763ee3960651`.
 
 ### Follow-up fix for the stop at 63 m
 

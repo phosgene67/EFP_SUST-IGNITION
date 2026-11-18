@@ -139,6 +139,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     angular_active, linear_active, nose_errors = 0, 0, []
     first_five, cruise_after_five = None, []
     coast_ticks = 0
+    bent_updates, return_events, reserve_ticks = 0, 0, 0
+    max_bend_impulse, max_lateral_deviation = 0., 0.
+    returning_before = False
+    reference_direction = target-scene['loc']
+    reference_direction /= np.linalg.norm(reference_direction)
     next_capture = next_plan = next_report = radar_credit = 0.
     capture_index = 0
     up_start = loc/max(np.linalg.norm(loc), 1e-9)
@@ -211,10 +216,18 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 plan_due = now+plan_latency
             timings.append(time.perf_counter()-start)
             next_plan = now+.5
+        bend = float(np.linalg.norm(getattr(planner, 'last_detour', np.zeros(3))))
+        max_bend_impulse = max(max_bend_impulse, bend)
+        if abs(now-(next_plan-.5)) < 1e-8 and bend > .01:
+            bent_updates += 1
+        reserve_ticks += getattr(planner, 'last_mode', '') == 'RESERVE_COAST'
         urgent = planner.urgent or np.linalg.norm(target-loc) < 80.
         planner.body_rotation = rotation
         linear = (planner.linear_command(vel, namespace['MAX_ACCEL']) if hasattr(planner, 'linear_command') else
                   namespace['velocity_command'](planner.previous_velocity, vel, namespace['MAX_ACCEL'], urgent=urgent))
+        returning_now = getattr(planner, 'return_started', False)
+        return_events += returning_now and not returning_before
+        returning_before = returning_now
         if axis_mode:
             linear = namespace['axis_thrust'](linear, rotation, namespace['MAX_ACCEL'])
         up = loc/max(np.linalg.norm(loc), 1e-9)
@@ -297,6 +310,9 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if first_five is not None and getattr(planner, 'last_phase', None) == 'CRUISE':
             cruise_after_five.append(float(np.linalg.norm(vel)))
         distance = np.linalg.norm(target-loc)
+        from_start = loc-scene['loc']
+        max_lateral_deviation = max(max_lateral_deviation,
+            float(np.linalg.norm(from_start-reference_direction*(from_start@reference_direction))))
         for threshold in (1100, 1000, 600, 550, 500, 200, 50):
             if threshold not in milestones and distance <= threshold:
                 milestones[threshold] = dict(time_s=round(now+dt, 2), fuel_kg=round(fuel, 3),
@@ -346,6 +362,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 cruise_mean_after_5m_s=round(float(np.mean(cruise_after_five)), 2) if cruise_after_five else None,
                 cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
                 milestones_by_remaining_metres=milestones,
+                bent_plan_updates=bent_updates, return_burn_events=return_events,
+                max_bend_impulse_m_s=max_bend_impulse,
+                reserve_coast_time_s=round(reserve_ticks*dt, 2),
+                max_lateral_deviation_m=round(max_lateral_deviation, 2),
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not arrival_collision else None))
     if fuel_budget is not None:

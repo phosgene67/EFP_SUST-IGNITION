@@ -1,6 +1,8 @@
 # Camera interface
 
-The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
+The active flight profile is **MOMENTUM_BYPASS** for `FINAL_SUBMISSION.simconf`.
+The log includes `bendDV`, `returnBurn`, `captureRadius`, `reserveCoast` and
+`sourceSHA256` so runs can be matched to the deployed controller.
 RGB and depth request a 100-degree field of view to cover the body-Z approach
 at the camera gimbal limit. The flight loop cuts both thrust commands at 49.5 kg
 total fuel, including post-entry control, against the requested 50 kg ceiling.
@@ -118,7 +120,7 @@ not change an already-running Space Teams process.
 
 ## Current speed and depth display
 
-`SCORE_MOMENTUM` selects finite burns and coasting using the score formula, with a
+`MOMENTUM_BYPASS` selects finite burns and coasting using the score formula, with a
 10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
 at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
 historical SCORE_COAST modeled runs peaked at 6.38--6.87 m/s.
