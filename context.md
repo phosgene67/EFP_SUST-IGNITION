@@ -70,9 +70,33 @@ an original completed burn being retained as IMPULSE_COAST despite a predicted
 55.4146 m miss. This flag makes that completed coast ineligible unless it meets
 the original successful-pass bounds. It changes only retention eligibility;
 unlike the regressed SCORE_COAST bundle, camera reachability, guidance and cost
-weights are unchanged. A matched 20-seed cohort runs from frozen source
-tests/score_sweeps/recheck_controller.py with both other flags off. All three
-experiments default off. The current full suite passes 132 tests.
+weights are unchanged. The matched 20-seed cohort completed from frozen source
+tests/score_sweeps/recheck_controller.py with both other flags off. All 20
+entered with no modeled pre-entry contact. Median score was 37.97, delta
+-0.305, with bootstrap interval [-0.62, 0.74]. Median time/fuel were 264.96 s
+and 43.54 kg. Paired median time/fuel and every phase-fuel delta were zero.
+The regression fix did not establish a flight-score gain. It is rejected for
+score promotion and remains off. Results: tests/score_sweep_recheck.json.
+
+Selected implementation: restored original pre-entry SCORE_MOMENTUM, no fuel
+caps or reserves, all thrust off after entry, all three experiment flags off.
+The current full suite passes 135 tests. Eighty modeled flights completed
+across four cohorts; no experimental median gain exceeded paired seed noise.
+Native 60–70 remains unachieved and unverified. Do not claim completion of the
+score target or enable an inconclusive experiment by default.
+
+Latest user question asks where 4.32 kg per m/s comes from and whether 8/9 m/s
+with 50 kg can yield 60 points. The official actuator sums each jet's impulse
+magnitude divided by Isp*g0, using 80 s and 9.8 m/s²; mass 3388.7 kg gives
+4.32232 kg per m/s of clean thrust delta-v. This is not fuel per second or per
+net speed gain. Gravity and opposing corrections matter. At 50 kg, zero damage,
+60 points requires T<=156.52 s, roughly 8.02 m/s average over 1255.82 m.
+The existing speed ceiling is already 10 m/s; a higher forced speed is not
+adopted. A modeled 1-D gravity diagnostic of pure +Z burn/coast gives peaks
+8/9 m/s at T211.49/196.16 s, fuel38.66/43.45 kg, score55.20/53.24, before
+debris or launch overhead. Freely aligned +X models can exceed 60, but omit
+all attitude/alignment costs; previous failed nose-first work is not restored.
+See tests/score_speed_tradeoff.json and SCORE_TUNING.md for assumptions.
 
 The native log directory provided by the user is
 C:/Users/Asus/AppData/Local/SimDynamX/STPro/Logs. The extracted inventory is
@@ -80,6 +104,9 @@ tests/native_score_inventory.json. Available successes contain mixed profiles
 and missing seed/source fields, so they cannot establish a matched native
 20-run baseline. The latest observed native MOMENTUM_BYPASS runs used a
 different source hash from the restored controller.
+The reproducible read-only native audit is tests/summarize_native_logs.py.
+It handles success fields preceding the success message and retains unknown
+source/seed identity; matching original runs still requires native provenance.
 
 ### Superseded requests and historical direction
 

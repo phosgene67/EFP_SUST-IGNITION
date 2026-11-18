@@ -42,6 +42,51 @@ without gravity, range, initial velocity and overhead assumptions.
 Configuration values, file hashes and allocator calculations are stored in
 [the model verification record](tests/score_model_verification.json).
 
+### Where 4.32 comes from, and what 8–9 m/s means
+
+The official actuator's `GetEffectiveImpulseAndFuelUse` adds each jet's
+translational impulse magnitude divided by `Isp * g0`. The installed scenario
+sets the reference mass to 3388.7 kg. Thus, for a clean translational burn,
+
+```text
+fuel = thrust_impulse / (Isp * g0)
+     = reference_mass * thrust_delta_v / (80 * 9.8)
+     = 4.32232 * thrust_delta_v
+```
+
+This is fuel per accumulated thrust impulse, not fuel per second, per metre,
+or per measured speed increase. Gravity reduces the speed gained from thrust.
+Opposing corrections, rotation and nonparallel simultaneous jets can cost
+extra fuel. Eight and nine m/s of clean thrust delta-v would use 34.58 and
+38.90 kg before those effects. Coasting requires no thrust fuel.
+
+At 50 kg and zero damage, 60 points requires entry within 156.52 s. The published
+initial range minus the sphere radius is about 1255.82 m: this needs roughly
+8.02 m/s average along a direct path, including launch and acceleration.
+The current planner already considers speeds through 10 m/s. Raising a speed
+limit to 8 or 9 cannot fix its slower selected flight by itself.
+
+A separate one-dimensional diagnostic burns to a specified peak speed and then
+coasts under inverse-square gravity. These are modeled assumptions, not full
+flight trials or attainable guarantees. They omit debris, terrain, camera gates,
+launch delays, lateral motion, hull geometry and any cost of axis alignment.
+
+| Assumed thrust axis | Peak speed | Entry time | Fuel | Score |
+| --- | ---: | ---: | ---: | ---: |
+| Current +Z acceleration | 8 m/s | 211.49 s | 38.66 kg | 55.20 |
+| Current +Z acceleration | 9 m/s | 196.16 s | 43.45 kg | 53.24 |
+| +X freely aligned with travel | 8 m/s | 193.27 s | 36.74 kg | 63.11 |
+| +X freely aligned with travel | 9 m/s | 174.11 s | 41.32 kg | 63.83 |
+
+The +X cases assume free alignment and are not a flyable controller sequence.
+Earlier attitude changes added overhead, so these numbers do not justify
+restoring nose-first control. Faster acceleration, useful coast and little
+correction overhead matter together. Spending the full 50 kg at the +Z 8/9
+entry times would instead score only 40.07/44.51. No forced minimum speed or
+fuel cutoff is introduced. [Diagnostic records](tests/score_speed_tradeoff.json).
+Reproduce with `python -B tests/benchmark_speed_tradeoff.py --sim-config
+PATH_TO_FINAL_SUBMISSION --output tests/score_speed_tradeoff.json`.
+
 ## Twenty-seed baseline
 
 Seeds 100–119 ran through `tests/benchmark_final_submission.py` against the
@@ -139,7 +184,17 @@ The original successful-coast band, 42–48 m and 5–600 s ahead, is retained.
 No gravity-gradient endpoint correction, camera reachability constraint,
 new camera waiting rule or distant-crossing cost is introduced. This isolates
 one retention check from the earlier regressed SCORE_COAST bundle. The
-20-seed comparison is running with the other two flags disabled.
+20-seed comparison completed with the other two flags disabled.
+
+All 20 entered without modeled pre-entry contact. Median score was 37.97,
+versus 38.275 for the baseline: a -0.305 point difference, with a bootstrap
+interval of -0.62 to +0.74. Median entry time was 264.96 s and median fuel
+43.54 kg. Paired median changes for time, fuel and every phase were zero;
+mean paired changes were +0.730 s and -0.0445 kg. The score p10–p90 was
+23.157–43.789. The unit regression is corrected, but this does not establish
+a flight-score improvement or prove that it resolves the unidentified native
+60 m miss. The experiment remains off and is rejected for score promotion.
+[Full paired results](tests/score_sweep_recheck.json).
 
 ## Active baseline parameters
 
@@ -184,3 +239,12 @@ Keep the official success alert and entry time/fuel/damage for each run.
 Twenty matched native runs are needed to assess the requested native median.
 The available [native log inventory](tests/native_score_inventory.json)
 contains mixed versions and missing seed/source fields.
+
+Rebuild that inventory with `tests/summarize_native_logs.py --root LOG_ROOT
+--output tests/native_score_inventory.json`. It reads official success fields
+in either order, including fields preceding the success alert. It leaves
+unknown entry fields unknown and excludes later fuel/damage from entry results.
+The controller suite passes 135 tests. The 80 full modeled flights comprise
+the 20-seed baseline and three isolated 20-seed experiments; no experiment
+established a median gain beyond its paired seed interval. The native 60–70
+objective has not been achieved or verified.

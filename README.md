@@ -22,7 +22,7 @@ Experiments are isolated behind default-off environment flags.
 | --- | --- | --- |
 | `EFP_CLEAN_MAIN_BURN=1` | Small transverse acceleration component during the main burn | Twenty-seed median gain +2.06, 95% interval -0.81 to +7.63. Inconclusive and rejected for promotion. |
 | `EFP_ORDER_DIVERSITY=1` | Preserve a candidate for each body-axis burn order before collision checks | Twenty-seed median gain 0.00, 95% interval -0.07 to +2.44. Inconclusive and rejected for promotion. |
-| `EFP_RECHECK_COAST=1` | Revalidate a completed retained coast against the safe passage requirement | Reproduced 55.41 m predicted-miss regression fixed in tests. Twenty-seed flight evaluation running. |
+| `EFP_RECHECK_COAST=1` | Revalidate a completed retained coast against the safe passage requirement | Twenty-seed median change -0.31, 95% interval -0.62 to +0.74. Unit regression fixed; no demonstrated flight-score gain, so it stays off. |
 
 [Score tuning and verification](SCORE_TUNING.md) contains the score calculation,
 matched results, phase-fuel audit, limitations and reproduction commands.

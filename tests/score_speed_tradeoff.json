@@ -1,0 +1,48 @@
+{
+  "kind": "modeled_1d_diagnostic",
+  "assumptions": "Radial launch from rest; inverse-square gravity; fixed achieved thrust acceleration and reference-mass fuel rate; single uninterrupted burn to specified peak then coast. Published scene range minus 50 m. No terrain, debris, camera gate, station hull, launch delay, slewing or lateral motion. +X aligned case assumes free axis alignment and is not a flyable command sequence.",
+  "initial_radius_m": 8265.89513487155,
+  "distance_to_entry_m": 1255.8191533255372,
+  "results": [
+    {
+      "axis": "+Z",
+      "peak_speed_m_s": 8.0,
+      "time_s": 211.49499999988015,
+      "fuel_kg": 38.657552800818415,
+      "burn_s": 93.34499999998759,
+      "entry_speed_m_s": 6.981361272541863,
+      "score": 55.19552626395271,
+      "score_if_total_fuel_50kg": 40.0722633317106
+    },
+    {
+      "axis": "+Z",
+      "peak_speed_m_s": 9.0,
+      "time_s": 196.1649999998941,
+      "fuel_kg": 43.45118045810561,
+      "burn_s": 104.91999999997707,
+      "entry_speed_m_s": 8.221539861229008,
+      "score": 53.23808484653614,
+      "score_if_total_fuel_50kg": 44.50632545734362
+    },
+    {
+      "axis": "+X aligned diagnostic",
+      "peak_speed_m_s": 8.0,
+      "time_s": 193.26999999989673,
+      "fuel_kg": 36.737351717400784,
+      "burn_s": 48.69000000000646,
+      "entry_speed_m_s": 6.728861236099185,
+      "score": 63.1061694940257,
+      "score_if_total_fuel_50kg": 45.42263845056008
+    },
+    {
+      "axis": "+X aligned diagnostic",
+      "peak_speed_m_s": 9.0,
+      "time_s": 174.11499999991415,
+      "fuel_kg": 41.31725980786031,
+      "burn_s": 54.76000000000956,
+      "entry_speed_m_s": 7.9556080503466395,
+      "score": 63.830286944903015,
+      "score_if_total_fuel_50kg": 52.2533000220501
+    }
+  ]
+}
