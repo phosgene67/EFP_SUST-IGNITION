@@ -104,7 +104,7 @@ class AdapterTests(unittest.TestCase):
     def test_runtime_identifies_the_controller_file_used_for_a_native_run(self):
         self.run_adapter([])
         self.assertEqual(self.runtime['controller_source_hash'], hashlib.sha256(SOURCE.read_bytes()).hexdigest())
-        self.assertEqual(self.runtime['CONTROLLER_PROFILE'], 'SCORE_SERVO')
+        self.assertEqual(self.runtime['CONTROLLER_PROFILE'], 'SCORE_CORRIDOR')
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])

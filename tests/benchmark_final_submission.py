@@ -157,6 +157,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if now+1e-8 >= next_capture:
             name = 'top' if capture_index % 2 == 0 else 'bottom'
             travel = target-loc if np.linalg.norm(target-loc) < 300. or np.linalg.norm(vel) < 1. else vel
+            if 'camera_course' in namespace:
+                travel = namespace['camera_course'](loc, vel, target, np.zeros(3))
             body = rotation@travel
             yaw = float(np.clip(np.rad2deg(np.arctan2(body[1], body[0])), -89., 89.))
             angle = np.rad2deg(np.arctan2(-body[2], max(np.linalg.norm(body[:2]), 1e-9)))

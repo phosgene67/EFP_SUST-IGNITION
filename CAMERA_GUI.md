@@ -1,7 +1,7 @@
 # Camera interface
 
-The active flight profile is **SCORE_SERVO** for `FINAL_SUBMISSION.simconf`.
-See [SCORE_SERVO.md](SCORE_SERVO.md) for current navigation and validation.
+The active flight profile is **SCORE_CORRIDOR** for `FINAL_SUBMISSION.simconf`.
+See [the controller overview](README.md#current-controller) for current navigation.
 After entry, the footer shows **Entry fuel** separately from the current total,
 which continues increasing during post-arrival braking.
 The FUSION25 comparison at the end is a historical experiment.
@@ -115,11 +115,10 @@ not change an already-running Space Teams process.
 
 ## Current speed and depth display
 
-`SCORE_SERVO` selects finite burns and coasting using the score formula, with a
+`SCORE_CORRIDOR` selects finite burns and coasting using the score formula, with a
 10 m/s ceiling. It checks moving obstacles over each next 20 s chunk and replans
 at 2 Hz. Actual speed depends on thrust, fuel cost and sensed clearance. The
-previous SCORE_COAST modeled runs peaked at 6.38--6.87 m/s; current results are
-recorded in `SCORE_SERVO.md` and its benchmark artifacts.
+historical SCORE_COAST modeled runs peaked at 6.38--6.87 m/s.
 
 The depth display and processing limit are 400 m. This is a software limit,
 not a guarantee of usable real depth at that distance. The radar-loss speed

@@ -57,6 +57,20 @@ def depth_patch(distance=60., row=None, col=None):
 
 
 class PerceptionTests(unittest.TestCase):
+    def test_depth_frames_refine_transverse_speed_after_compensating_rover_motion(self):
+        perception = Perception()
+        # Moving the rover alongside the object keeps the patch at the same pixel.
+        for stamp in (0., 1.):
+            pose = (np.array([0., stamp, 0.]), np.eye(3))
+            perception.ingest('top', 'depth', depth_patch(60.), stamp, stamp, pose, 0., 0.)
+        centers, speed = np.array([[61., 0., 0.]]), np.array([[.25, 0., 0.]])
+        refined = perception.refine_motion(1., np.zeros(3), centers, speed, np.array([12.]))
+        np.testing.assert_allclose(refined, [[.25, .2, 0.]])
+        ambiguous = perception.refine_motion(1., np.zeros(3), centers.repeat(2, 0),
+                                             speed.repeat(2, 0), np.array([12., 12.]))
+        np.testing.assert_array_equal(ambiguous, speed.repeat(2, 0))
+        np.testing.assert_array_equal(perception.refine_motion(10., np.zeros(3), centers, speed, [12.]), speed)
+
     def test_non_square_projection_units_and_camera_offset(self):
         perception = Perception()
         self.assertTrue(perception.ingest('top', 'depth', depth_patch(100.), 0., 0.,

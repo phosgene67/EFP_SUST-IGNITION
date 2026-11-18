@@ -6,6 +6,29 @@ from test_camera_fusion import Perception, depth_patch
 
 
 class ShootingTests(unittest.TestCase):
+    def test_clutter_ahead_selects_a_bend_while_retaining_forward_momentum(self):
+        loc = np.array([9000., 0., 0.])
+        vel = np.array([3., 0., 0.])
+        target = loc+[1305., 0., 0.]
+        column = [np.array([[x, 0., 0.], [x-12., -3., 24.], [100., 0., 0.]])
+                  for x in np.arange(225., 376., 30.)]
+        for reports, bend in (([], False), (column, True)):
+            planner = namespace['ShootingNavigator'](launch=False)
+            _, mode, clearance = planner.command(100., loc, vel, target, np.zeros(3), reports)
+            self.assertEqual(mode, 'IMPULSE_BURN')
+            self.assertGreater(clearance, .5)
+            self.assertEqual(np.linalg.norm(planner.last_detour) > .01, bend)
+            self.assertGreaterEqual(planner.burn_target[0], vel[0]-.04)
+
+    def test_swept_corridor_counts_a_crossing_between_samples_and_ignores_it_after_arrival(self):
+        times = np.array([20., 40.])
+        paths = np.array([[[0., 0., 0.], [100., 0., 0.]]]*3)
+        paths[1, :, 2] += 50.
+        cost = namespace['corridor_cost'](times, paths, np.array([[50., -120., 0.]]),
+            np.array([[0., 4., 0.]]), np.zeros((1, 3)), np.array([8.]), np.array([60., 60., 25.]))
+        self.assertGreater(cost[0], 0.)
+        np.testing.assert_array_equal(cost[1:], [0., 0.])
+
     def test_empty_corridor_produces_an_active_finite_burn(self):
         planner = namespace['ShootingNavigator'](launch=False)
         command, mode, clearance = planner.command(10., np.array([9000., 0., 0.]),
@@ -292,12 +315,25 @@ class ShootingTests(unittest.TestCase):
         self.assertNotEqual(mode, 'IMPULSE_COAST')
         self.assertGreater(np.linalg.norm(command), .01)
 
+    def test_initial_drift_measurement_uses_a_safe_climb_only(self):
+        loc = np.array([9004., 0., 0.])
+        vel = np.array([.7, 0., 0.])
+        incoming = [np.array([[19., 0., 0.], [12., -2.7, 14.], [12., 0., 0.]])]
+        for reports in ([], incoming):
+            planner = namespace['ShootingNavigator'](launch=False)
+            planner.launch.up = np.array([1., 0., 0.])
+            planner.launch.origin = loc-4.*planner.launch.up
+            command, mode, _ = planner.command(12., loc, vel, loc+[1300., 0., 0.], np.zeros(3), reports)
+            self.assertEqual(mode == 'IMPULSE_COAST', not reports)
+            self.assertEqual(bool(np.linalg.norm(command) > .01), bool(reports))
+
     def test_fuel_budget_prices_new_spending_and_does_not_penalize_coasting(self):
         price = namespace['fuel_budget_penalty']
+        target = namespace['FUEL_PLAN_TARGET']
         self.assertEqual(price(45., 0.), 0.)
         self.assertEqual(price(20., 5.), 0.)
-        self.assertGreater(price(35., 4.), price(35., 2.))
-        self.assertGreater(price(40., 2.), price(35., 2.))
+        self.assertGreater(price(target, 4.), price(target, 2.))
+        self.assertGreater(price(target+5., 2.), price(target, 2.))
 
     def test_quiet_observation_preserves_a_pending_return_stage(self):
         planner, location, velocity, target, _ = self.completed_burn(.35)
