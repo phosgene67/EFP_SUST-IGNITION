@@ -84,7 +84,7 @@ CHUNK_CRUISE_SPEED = 9.0
 LAUNCH_HEIGHT = 3.5
 CAMERA_WIDTH = 96
 CAMERA_HEIGHT = 64
-CAMERA_FOV = 80.0
+CAMERA_FOV = 100.0
 CAMERA_PERIOD = 0.25
 CAMERA_MAX_AGE = 2.0
 CAMERA_MAX_RANGE = 400.0
@@ -478,6 +478,18 @@ def velocity_command(desired, measured, maximum, urgent=False):
     return limit_vector(VELOCITY_GAIN*error, maximum)
 
 
+class FuelBudget:
+    """Latch thrust off before 50 kg, reserving fuel for command latency."""
+    def __init__(self):
+        self.limit = 50.
+        self.reserve = .5
+        self.exhausted = False
+
+    def allows(self, used):
+        self.exhausted |= not np.isfinite(used) or used < 0. or used >= self.limit-self.reserve
+        return not self.exhausted
+
+
 class FuelLedger:
     """Sampled native fuel accounting; phase changes have their own bucket."""
     def __init__(self):
@@ -598,6 +610,37 @@ class EconomyPolicy:
             self.remaining_time = distance/max(self.speed, 1.)
             self.estimated_score = -np.inf
         return float(self.speed)
+
+
+def coast_entry_path(location, velocity, target, target_velocity, gravity):
+    """Unpowered inverse-square prediction through the first safe-zone entry."""
+    position, motion = np.asarray(location, float).copy(), np.asarray(velocity, float).copy()
+    origin = position.copy()
+    nominal = lambda p: -711000.*p/max(np.linalg.norm(p)**3, 1.)
+    residual = np.asarray(gravity)-nominal(position)
+    points = [position.copy()]
+    first_entry = None
+    for second in range(1, 181):
+        acceleration = nominal(position)+residual
+        following = position+motion+.5*acceleration
+        motion += .5*(acceleration+nominal(following)+residual)
+        position = following
+        points.append(position.copy())
+        distance = np.linalg.norm(position-target-second*target_velocity)
+        if distance <= 50. and first_entry is None:
+            first_entry = second
+        # Leave a 2 m margin inside the scoring boundary for prediction error.
+        if distance <= 48. and first_entry is not None:
+            k = first_entry
+            start = points[k-1]-target-(k-1)*target_velocity
+            delta = points[k]-points[k-1]-target_velocity
+            a, b, c = delta@delta, 2.*(start@delta), start@start-2500.
+            fraction = np.clip((-b-np.sqrt(max(0., b*b-4.*a*c)))/max(2.*a, 1e-12), 0., 1.)
+            endpoint = points[k-1]+fraction*(points[k]-points[k-1])
+            return k-1+float(fraction), np.vstack((points[:k], endpoint))-origin
+        if (position-target-second*target_velocity)@(motion-target_velocity) >= 0.:
+            break
+    return None
 
 
 def ballistic_pass(location, velocity, target, target_velocity, gravity=None):
@@ -2255,6 +2298,7 @@ class ShootingNavigator(EconomyNavigator):
         self.expected_damage = self.contact_probability = 0.
         self.burn_tolerance = .004
         self.launch.required_height = 2.5
+        self.coast_after_entry = True
 
     def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None,
                 cruise_speed=None, maneuver_accel=None, fuel_weight=1.5):
@@ -2263,6 +2307,12 @@ class ShootingNavigator(EconomyNavigator):
         gravity = self.gravity_at(loc)
         rotation = self.body_rotation
         was_active = self.shooting_active
+        if self.arrival_time is not None:
+            self.shooting_active = False
+            self.coasting = True
+            self.previous_velocity = vel.copy()
+            self.last_phase = self.last_mode = 'MISSION_COMPLETE_COAST'
+            return np.zeros(3), self.last_mode, np.inf
         if self.measurement is not None:
             stamp, old_velocity, old_gravity, old_rotation = self.measurement
             axis, sign, remaining, active = self.selected_axis, self.selected_sign, self.selected_remaining, self.shooting_active
@@ -2276,12 +2326,36 @@ class ShootingNavigator(EconomyNavigator):
         self.measurement = (now, vel.copy(), gravity.copy(), rotation.copy())
         distance = np.linalg.norm(target_loc-loc)
         self.shooting_active = False
-        if (self.failed or not self.launch.done or distance < 280. or self.arrival_time is not None
+        if (self.failed or not self.launch.done
                 or self.nose_first):
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
                                    cruise_speed, maneuver_accel, fuel_weight)
         centers, speeds, radii, rates, accels, _ = self.observe_scene(now, loc, vel, target_loc, target_vel, radar, camera)
         self.terminal.camera_ready = camera is not None and camera.observes(now, target_loc)
+        if distance <= 550. and (self.terminal.camera_ready or distance >= 210.):
+            entry = coast_entry_path(loc, vel, target_loc, target_vel, gravity)
+            if entry is not None:
+                duration, positions = entry
+                # Recheck moving debris over the next chunk. The endpoint is
+                # first entry, so later station contact cannot cause braking.
+                clearance = coast_path_clearance(loc, vel, centers, speeds, radii,
+                                                 min(20., duration), accels, gravity)
+                hull = ((np.linalg.norm(centers+loc-target_loc, axis=1) < 85.)
+                        & (np.linalg.norm(speeds-target_vel, axis=1) < .1))
+                hull_gap = min((segment_clearance(a, b, centers[hull], radii[hull])
+                                for a, b in zip(positions[:-1], positions[1:])), default=np.inf)
+                if min(clearance, hull_gap) > 2.:
+                    self.shooting_active, self.coasting = False, True
+                    self.collision_urgent = self.urgent = False
+                    self.previous_velocity = vel.copy()
+                    self.last_phase, self.last_mode = 'CAPTURE_PASS', 'FINAL_COAST'
+                    self.policy.burn_seconds = 0.
+                    self.policy.remaining_time = duration
+                    self.policy.estimated_score = mission_score(now+duration, self.last_fuel, self.last_damage)
+                    return np.zeros(3), self.last_mode, min(clearance, hull_gap)
+        if distance < 280.:
+            return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
+                                   cruise_speed, maneuver_accel, fuel_weight)
         _, phase, _ = self.terminal.goal(now, loc, vel, target_loc, target_vel, centers, radii)
         if phase != 'CRUISE' or self.terminal.inner_goal is None:
             return super().command(now, loc, vel, target_loc, target_vel, radar, camera,
@@ -2544,6 +2618,8 @@ class ShootingNavigator(EconomyNavigator):
         return self.linear_command(vel, MAX_ACCEL), self.last_mode, float(clearance[best])
 
     def linear_command(self, velocity, maximum):
+        if self.arrival_time is not None:
+            return np.zeros(3)
         if not self.shooting_active:
             command = super().linear_command(velocity, maximum)
             if self.last_phase == 'LAUNCH':
@@ -2634,6 +2710,7 @@ if os.environ.get('EFP_CAMERA_GUI', '1') != '0':
 camera_manager = CameraManager(st, dict(top=topCamera, bottom=bottomCamera), PanTiltCamera, radar_epoch, preview)
 score_policy = planner.policy
 fuel_ledger = FuelLedger()
+fuel_budget = FuelBudget()
 last_plan = -np.inf
 last_log = -np.inf
 plan_ms = 0.
@@ -2654,6 +2731,7 @@ try:
             perception = CameraPerception()
             score_policy = planner.policy
             fuel_ledger = FuelLedger()
+            fuel_budget = FuelBudget()
             camera_manager.reset()
             if preview is not None:
                 preview.reset()
@@ -2754,10 +2832,15 @@ try:
         flight_attitude.aligning = planner.aligning
         angular_accel = flight_attitude.command(now, body_dcm, vel-target_vel,
             nose_hint, up_world, omega_body, angular_limit)
-        if planner.failed:
+        if planner.failed or planner.arrival_time is not None:
             angular_accel = np.zeros(3)
         if not np.isfinite(angular_accel).all():
             angular_accel = np.zeros(3)
+        # Read the real counter each tick. This also caps post-entry braking.
+        fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
+        if not fuel_budget.allows(fuel):
+            accel_body = accel_world = angular_accel = np.zeros(3)
+            mode = 'FUEL_LIMIT_COAST'
         SetCommand(accel_body, angular_accel)
         if preview is not None:
             preview.update(running=True, profile='SCORE_MOMENTUM', now=now, mode=mode,
@@ -2769,7 +2852,8 @@ try:
                 nose_first=nose_first_enabled,
                 body_velocity=flight_attitude.body_velocity.tolist(), vertical_climb=flight_attitude.vertical,
                 arrival_zone=planner.arrival_time is not None, arrival_time=planner.arrival_time,
-                arrival_action=('PARKED AFTER ENTRY' if planner.terminal.entered and planner.last_phase == 'HOLD'
+                arrival_action=('MISSION COMPLETE - COAST' if planner.arrival_time is not None
+                                else 'PARKED AFTER ENTRY' if planner.terminal.entered and planner.last_phase == 'HOLD'
                                 else 'POST-ENTRY BRAKING' if planner.terminal.entered else 'HOLDING POSITION'),
                 projected_score=planner.policy.estimated_score,
                 scored_fuel=(fuel_ledger.previous[1] if fuel_ledger.frozen else None))
@@ -2781,6 +2865,8 @@ try:
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'noseFirst={nose_first_enabled} '
                 f'axisThrust={axis_thrust_enabled} '
+                f'fuelLimit={fuel_budget.limit:.1f}kg fuelCutoff={fuel_budget.limit-fuel_budget.reserve:.1f}kg '
+                f'fuelLimited={fuel_budget.exhausted} '
                 f'planMs={plan_ms:.1f} '
                 f'coastDrift={np.array2string(planner.dynamics.residual, precision=4, separator=",")}m/s2 '
                 f'damage={damage:.1f}J fuel={fuel:.2f}kg '

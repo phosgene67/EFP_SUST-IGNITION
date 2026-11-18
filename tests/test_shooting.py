@@ -106,7 +106,8 @@ class ShootingTests(unittest.TestCase):
         perception = Perception()
         perception.ingest('top', 'depth', depth_patch(100.), 0., 0., (np.zeros(3), np.eye(3)), 0., 0.)
         self.assertTrue(perception.observes(0., np.array([101.27, 0., 74.9])))
-        self.assertFalse(perception.observes(0., np.array([101.27, 0., 94.])))
+        outside = 100.*np.tan(np.deg2rad(namespace['CAMERA_FOV']/2.+2.))+.9
+        self.assertFalse(perception.observes(0., np.array([101.27, 0., outside])))
         self.assertFalse(perception.observes(3., np.array([101.27, 0., 74.9])))
 
     def test_broad_distant_depth_surface_does_not_create_huge_spheres(self):
@@ -197,6 +198,63 @@ class ShootingTests(unittest.TestCase):
                                             np.zeros(3), [])
         self.assertEqual(mode, 'IMPULSE_COAST')
         np.testing.assert_array_equal(command, np.zeros(3))
+
+    def test_last_500m_accepts_a_clear_gravity_predicted_coast(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        location, velocity = np.array([9000., 0., 0.]), np.array([5., .35, 0.])
+        planner.policy.previous = (150., velocity.copy(), 39.)
+        command, mode, _ = planner.command(150., location, velocity, np.array([9500., 0., 0.]),
+                                           np.zeros(3), [])
+        self.assertEqual(mode, 'FINAL_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+        np.testing.assert_array_equal(planner.linear_command(velocity, .5), np.zeros(3))
+        self.assertLess(planner.policy.remaining_time, 120.)
+
+    def test_coast_prediction_rejects_a_miss_or_insufficient_outbound_velocity(self):
+        entry = namespace['coast_entry_path']
+        location, target = np.array([9000., 0., 0.]), np.array([9500., 0., 0.])
+        gravity = -711000.*location/np.linalg.norm(location)**3
+        self.assertIsNone(entry(location, np.array([5., 2., 0.]), target, np.zeros(3), gravity))
+        self.assertIsNone(entry(location, np.array([.1, 0., 0.]), target, np.zeros(3), gravity))
+
+    def test_coast_prediction_stops_collision_checks_at_first_entry(self):
+        location, target = np.array([9000., 0., 0.]), np.array([9500., 0., 0.])
+        gravity = -711000.*location/np.linalg.norm(location)**3
+        duration, path = namespace['coast_entry_path'](
+            location, np.array([5., 0., 0.]), target, np.zeros(3), gravity)
+        self.assertGreater(duration, 0.)
+        self.assertAlmostEqual(np.linalg.norm(location+path[-1]-target), 50., places=6)
+        self.assertTrue((np.linalg.norm(location+path[:-1]-target, axis=1) > 50.).all())
+
+    def test_entry_cancels_an_existing_burn_without_braking(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        planner.shooting_active = True
+        self.assertTrue(planner.observe_arrival(250., np.array([9049., 0., 0.]),
+                         np.array([-5., 0., 0.]), np.array([9000., 0., 0.]), np.zeros(3)))
+        np.testing.assert_array_equal(planner.linear_command(np.array([-5., 0., 0.]), .5), np.zeros(3))
+        command, mode, _ = planner.command(250., np.array([9049., 0., 0.]), np.array([-5., 0., 0.]),
+                                           np.array([9000., 0., 0.]), np.zeros(3), [])
+        self.assertEqual(mode, 'MISSION_COMPLETE_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+
+    def test_station_surface_beyond_entry_does_not_trigger_braking(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        location, velocity = np.array([9000., 0., 0.]), np.array([5., 0., 0.])
+        perception = Perception()
+        perception.ingest('top', 'depth', depth_patch(200.), 10., 10.,
+                          (location, np.eye(3)), 0., 0.)
+        command, mode, _ = planner.command(10., location, velocity, location+[200., 0., 0.],
+                                           np.zeros(3), [], camera=perception)
+        self.assertEqual(mode, 'FINAL_COAST')
+        np.testing.assert_array_equal(command, np.zeros(3))
+
+    def test_crossing_obstacle_keeps_local_avoidance_active(self):
+        planner = namespace['ShootingNavigator'](launch=False)
+        location, velocity = np.array([9000., 0., 0.]), np.array([5., .35, 0.])
+        report = np.array([[60., 4., 0.], [50., -5., 20.], [150., 0., 0.]])
+        _, mode, _ = planner.command(150., location, velocity, location+[500., 0., 0.],
+                                     np.zeros(3), [report])
+        self.assertNotEqual(mode, 'FINAL_COAST')
 
 
 if __name__ == '__main__':

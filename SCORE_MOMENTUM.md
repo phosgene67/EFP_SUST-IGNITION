@@ -142,15 +142,6 @@ matched results remain in `tests/score_shoot_ground100.json` through `103.json`.
 Planning p95 in concurrent final benchmarks was approximately 263--288 ms;
 native scheduling and actual meshes still require live validation.
 
-A separate synthetic drift stress added `[0.001, 0, 0.002] m/s²` to the modeled
-vehicle and debris, without exposing it to the controller. The coast observer
-recovered approximately that bias from velocity feedback. The candidate arrived
-in 278.30 s using 42.64 kg, estimated score +36.26, without modeled contact.
-The preceding controller under the same synthetic bias used 43.23 kg in
-281.33 s, estimated score +35.01. The final stress artifact is
-`tests/momentum_drift_stress100.json`; the reference is in the tuning archive.
-This checks adaptation to a model error, not accuracy against the native engine.
-
 The **117 passing tests** exercise learned drift, rejection of powered/contact intervals,
 unpowered successful passes, finite-burn execution, guarded launch transfer,
 fast arrival detection, the official scoring-frame query and damage priority.

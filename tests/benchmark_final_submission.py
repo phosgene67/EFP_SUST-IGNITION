@@ -103,6 +103,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
     gate = None
+    fuel_budget = namespace['FuelBudget']() if 'FuelBudget' in namespace else None
     if 'StagedNavigator' in namespace:
         planner = namespace['StagedNavigator']()
         gate = namespace['FlightFuelLimit']()
@@ -132,6 +133,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     peak, nearest, hull_gap, ground_gap = 0., np.inf, np.inf, np.inf
     arrived, heading = False, rotation[0].copy()
     arrival_time = arrival_fuel = None
+    arrival_collision = None
     crossing_speed = None
     milestones = {}
     angular_active, linear_active, nose_errors = 0, 0, []
@@ -233,6 +235,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             if np.linalg.norm(travel) > .2:
                 heading = travel.copy()
             angular = namespace['attitude_command'](rotation, heading, up, omega, .02)
+        if getattr(planner, 'coast_after_entry', False) and planner.arrival_time is not None:
+            angular = np.zeros(3)
         body_command = rotation@linear
         if worker is not None and worker.busy and planning_mode == 'blocking':
             body_command, angular = held_body, held_angular
@@ -244,6 +248,9 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 body_command, angular, linear = np.zeros(3), np.zeros(3), np.zeros(3)
                 mode = 'FUEL_LIMIT_COAST'
             planner.inner_leg = gate.crossing_fuel is not None
+        if fuel_budget is not None and not fuel_budget.allows(fuel):
+            body_command, angular, linear = np.zeros(3), np.zeros(3), np.zeros(3)
+            mode = 'FUEL_LIMIT_COAST'
         actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)
         if fuel_audit:
             if arrived:
@@ -290,13 +297,14 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if first_five is not None and getattr(planner, 'last_phase', None) == 'CRUISE':
             cruise_after_five.append(float(np.linalg.norm(vel)))
         distance = np.linalg.norm(target-loc)
-        for threshold in (1100, 1000, 600):
+        for threshold in (1100, 1000, 600, 550, 500, 200, 50):
             if threshold not in milestones and distance <= threshold:
                 milestones[threshold] = dict(time_s=round(now+dt, 2), fuel_kg=round(fuel, 3),
                                              speed_m_s=round(float(np.linalg.norm(vel)), 3))
         if distance <= 50. and not arrived:
             crossing_speed, arrived = float(np.linalg.norm(vel)), True
             arrival_time, arrival_fuel = now+dt, fuel
+            arrival_collision = nearest < 0. or hull_gap < 0. or ground_gap < 0.
         post_duration = 90. if hasattr(planner, 'policy') else 30.
         if arrived and (now+dt >= arrival_time+post_duration or
                         (now+dt >= arrival_time+30. and np.linalg.norm(vel) < .05)):
@@ -322,7 +330,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 fuel_kg=round(arrival_fuel if arrived else fuel, 2),
                 distance_m=round(float(np.linalg.norm(target-loc)), 2), peak_speed_m_s=round(float(peak), 2),
                 arrival_speed_m_s=crossing_speed, min_debris_gap_m=round(nearest, 2), min_proxy_hull_gap_m=round(hull_gap, 2),
-                collision=collision, post_arrival_test_s=round(now+dt-arrival_time, 1) if arrived else 0.,
+                collision=collision, pre_entry_collision=arrival_collision,
+                post_arrival_test_s=round(now+dt-arrival_time, 1) if arrived else 0.,
                 min_ground_centre_height_m=round(ground_gap, 2) if ground is not None else None,
                 final_speed_m_s=round(float(np.linalg.norm(vel)), 3),
                 learned_coast_drift_m_s2=(planner.dynamics.residual.tolist() if hasattr(planner, 'dynamics') else None),
@@ -336,8 +345,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 first_5m_s_time=round(first_five, 1) if first_five is not None else None,
                 cruise_mean_after_5m_s=round(float(np.mean(cruise_after_five)), 2) if cruise_after_five else None,
                 cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
+                milestones_by_remaining_metres=milestones,
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
-                                           if arrived and not collision else None))
+                                           if arrived and not arrival_collision else None))
+    if fuel_budget is not None:
+        result.update(total_fuel_kg=round(fuel, 3), fuel_limited=fuel_budget.exhausted)
     if gate is not None:
         result.update(fuel_at_600m=gate.crossing_fuel, total_fuel_kg=round(fuel, 3),
                       milestones_by_remaining_metres=milestones)
@@ -359,6 +371,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=100)
     parser.add_argument('--output', default='tests/final_submission_results.json')
     parser.add_argument('--baseline-ref')
+    parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
     parser.add_argument('--fuel-audit', action='store_true')
@@ -374,11 +387,15 @@ if __name__ == '__main__':
     parser.add_argument('--clear-corridor', action='store_true',
                         help='Diagnostic only: move debris aside in memory; never edits the official scenario')
     args = parser.parse_args()
+    if args.baseline_ref and args.baseline_file:
+        parser.error('Choose one baseline source')
     if not 1. <= args.control_hz <= 120.:
         parser.error('--control-hz must be between 1 and 120')
     root = Path(__file__).resolve().parents[1]
     source = ((root/'Controller.py').read_text() if not args.baseline_ref else
               subprocess.check_output(['git', 'show', args.baseline_ref+':Controller.py'], cwd=root, text=True))
+    if args.baseline_file:
+        source = Path(args.baseline_file).read_text()
     algorithm = load_namespace(source)
     if args.fuel_plan_target is not None:
         algorithm['FUEL_PLAN_TARGET'] = args.fuel_plan_target
@@ -390,11 +407,11 @@ if __name__ == '__main__':
         scene['positions'] += 5000.*side/np.linalg.norm(side)
     result = dict(controller_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   controller_file_sha256=(hashlib.sha256((root/'Controller.py').read_bytes()).hexdigest()
-                                          if not args.baseline_ref else None),
+                                          if not args.baseline_ref and not args.baseline_file else None),
                   hash_note='controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.',
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
-                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=6,
+                  control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=7,
                   plan_latency_s=args.plan_latency, planning_mode=args.planning_mode,
                   fuel_plan_target_override=args.fuel_plan_target,
                   allocator_solver=args.allocator_solver,

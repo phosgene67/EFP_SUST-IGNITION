@@ -16,18 +16,31 @@ momentum, with a camera-checked tangent pass into the ship's 50 m safe area.
 The restoration removes the staged 600 m fuel handoff. Fuel is priced in the
 score calculation. Free attitude remains the default. The controller checks
 official ship-frame distance between planning updates and records entry fuel
-before post-entry braking.
+at the safe-zone crossing.
+After entry, the active controller now disables all thrust and coasts.
+Within 550 m, it prioritizes a gravity-aware coast that predicts safe-zone entry,
+with continuing debris and camera checks. A predicted miss or obstruction
+returns control to ordinary guidance.
 
-Radar processing now reuses unchanged report transforms and fitted uncertainty
-until fresh measurements arrive. This reduces repeated work during guidance.
-In an 80-update matched replay with 500 reports, median radar processing fell
-from 74.17 ms to 30.05 ms with identical outputs. All 127 tests passed.
-The exact restored baseline reproduced offline scores 44.93, 43.03, 40.03 and
-35.72 on seeds 100–103. The user's live Momentum runs reportedly reach about 50.
-A native 65+ result remains unverified.
-The restored controller with caching reproduced those four scores and the same
-entry time and fuel. [Full comparisons](tests/momentum_restoration_benchmarks.json)
-include the rejected prediction experiments.
+The camera requests a 100-degree field so the station remains observable during
+a body-Z climb with the gimbal at its limit. This addresses the camera-wait
+stop reported near 63 m. A latched command cutoff disables translation and
+angular thrust at 49.5 kg total fuel, leaving a 0.5 kg delay allowance against
+the requested 50 kg ceiling. The cutoff also applies after entry. The vehicle
+coasts once the allowance is exhausted.
+The coast-focused controller passes 136 tests. Four full-scene offline runs
+entered without modeled contact using 43.29–45.02 kg total fuel. Only
+0.24–1.28 kg was spent after crossing 500 m remaining. Fuel stayed unchanged
+during the 90 s post-entry test. Arrival times were 255.70–265.30 s and estimated
+scores were 35.24–38.05. The 60-point target remains unachieved in these models.
+[Final-coast comparisons](tests/momentum_final_coast_benchmarks.json).
+
+Radar processing reuses unchanged report transforms and fitted uncertainty until
+fresh measurements arrive. In the earlier matched 500-report replay, median radar
+processing fell from 74.17 ms to 30.05 ms with identical outputs.
+[Restoration comparisons](tests/momentum_restoration_benchmarks.json) and
+[camera-fix comparisons](tests/momentum_camera_budget_benchmarks.json)
+preserve the preceding experiments.
 
 Read [project context](context.md) before future changes. It records the active
 architecture, decisions, historical regressions and current verification.

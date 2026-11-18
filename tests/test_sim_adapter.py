@@ -12,7 +12,7 @@ class StopSimulation(Exception):
 
 
 class AdapterTests(unittest.TestCase):
-    def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None):
+    def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05):
         commands = []
         now = [0.]
         st = mock.MagicMock()
@@ -40,7 +40,8 @@ class AdapterTests(unittest.TestCase):
         target.getLocVelAcc.return_value = state([9305.8, 0., 0.] if target_position is None else target_position)
         if scoring_distance is not None:
             shuttle.getLocation.return_value.WRT_ExprIn.return_value = np.array([scoring_distance, 0., 0.])
-        shuttle.GetParam.side_effect = lambda kind, key: .5 if key[-1] == 'MaxAccel_m_s2' else .05
+        shuttle.GetParam.side_effect = lambda kind, key: (
+            fuel_used if key[-1] == 'FuelUsed' else .5 if key[-1] == 'MaxAccel_m_s2' else .05)
         shuttle.GetParamArray.return_value = radar
         shuttle.SetParam.side_effect = lambda kind, key, value: commands.append((key[-1], np.array(value)))
         shuttle.getAngVelocity.return_value.WRT.return_value.ExprIn.return_value = np.zeros(3)
@@ -86,11 +87,24 @@ class AdapterTests(unittest.TestCase):
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
 
+    def test_fuel_limit_stops_linear_and_angular_commands_in_actual_runtime(self):
+        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
+        for fuel in (49.5, 50., float('nan')):
+            with self.subTest(fuel=fuel):
+                commands = self.run_adapter([report], fuel_used=fuel)
+                self.assertTrue(self.runtime['fuel_budget'].exhausted)
+                for _, value in commands:
+                    np.testing.assert_array_equal(value, np.zeros(3))
+
     def test_arrival_uses_official_distance_between_planning_ticks(self):
-        self.run_adapter([], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
+        commands = self.run_adapter([report], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
         self.assertIsNotNone(self.runtime['planner'].arrival_time)
         self.assertTrue(self.runtime['planner'].terminal.entered)
         self.assertTrue(self.runtime['fuel_ledger'].frozen)
+        self.assertEqual(self.runtime['mode'], 'MISSION_COMPLETE_COAST')
+        for _, value in commands:
+            np.testing.assert_array_equal(value, np.zeros(3))
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])

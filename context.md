@@ -15,7 +15,13 @@ before adopting changes. The user runs and deploys the competition simulation.
 The latest request supersedes the preceding staged fuel-budget design.
 That earlier design allowed 20 kg before 600 m remaining, a conditional 3 kg
 advance, then 30 kg afterward under a 50 kg total cap. Its early coast spent too
-much time. The active Momentum controller prices fuel through the score again.
+much time. Momentum prices fuel through the score. The follow-up request adds
+a 50 kg total fuel ceiling without reinstating the staged distance allowances.
+
+The next request prioritizes spending useful acceleration fuel before about
+500–550 m remaining, then using inertia for the last leg, targeting 40–45 kg.
+After safe-zone entry the user accepts continued coasting and later contact.
+Post-entry braking is therefore removed from the active ShootingNavigator.
 
 Keep the connection prefix and command helpers in Controller.py intact.
 Keep the official STU4-Sim repository intact. No push or deployment was performed
@@ -48,7 +54,9 @@ in the November 18 restoration task.
   checks. `FreeAttitude` avoids forced nose pointing and damps unwanted spin.
 - `CaptureApproach` plans a camera-checked tangent pass near 47 m. The flight
   loop checks official ship-frame distance between planning updates, marks entry
-  within 50 m, freezes entry fuel statistics and starts post-entry braking.
+  within 50 m and freezes entry fuel statistics. Active ShootingNavigator then
+  coasts with all thrust off. The legacy capture classes still contain their
+  historical braking behavior for comparison tests.
 - `camera_viewer.py` is the separate OpenCV viewer. Both it and Controller.py
   must be present in the installed solution folder. The viewer shows RGB/depth,
   detections, flight statistics and entry fuel.
@@ -159,6 +167,107 @@ The log profile remains SCORE_MOMENTUM. The normalized source hash is
 `1cc462d7734c38f8dc5e78a8b89008eb355de0c6b36c337be50a5a929e00e58e`.
 
 ## Verification and future comparisons
+
+### Follow-up fix for the stop at 63 m
+
+The user reported a stop at 63 m and excessive corrections near the ship, and
+requested fuel use below 50 kg. Comparing restoration commit 5b6a81a with
+4a8507e confirmed that radar caching was the only algorithm change in that
+restoration. The original burn, capture and camera settings were preserved.
+
+Native log `261118_064018_FINAL_SUBMISSION__7bf` confirms the failure. At
+294 m the rover coasted at 5.97 m/s with fuel stable at 42.02 kg. At 206.6 m
+it entered WAIT_SHIP_CAMERA, then burned fuel braking to rest at 62.8 m.
+WAIT_SHIP_CAMERA accounted for 22.93 kg by 273.2 s and total fuel was 64.96 kg.
+This evidence identifies the camera wait as the large terminal expenditure.
+
+With the vehicle traveling along body +Z, the top gimbal clamps at -50 degrees.
+The ship is about 40 degrees off the optical axis. An 80-degree field with
+a 3-degree observation margin rejects that bearing. The fix requests a
+100-degree field in both RGB and depth, using the same calibrated projection
+for ingestion, obstacle mapping and coverage checks.
+
+FuelBudget checks the native FuelUsed counter before every live command.
+It latches both translation and angular thrust off at 49.5 kg, reserving
+0.5 kg for telemetry and actuator delay. The cutoff applies to post-entry
+braking too. Invalid readings also inhibit thrust. A simulation-clock reset
+creates a fresh budget. Once cut off, the rover coasts under external forces.
+If the budget is spent before entry, it can coast short of the safe area.
+
+All 130 unit and adapter tests pass, including actual-runtime fuel inhibition,
+budget latching, body-Z coverage at 63 m, terminal permission after camera
+coverage and outside-field rejection. Matched drift replays used the native
+observed residual [0.0023, -0.0008, 0.0016] m/s².
+
+| Version / seed | Entry time | Entry fuel | Offline score | Final total fuel |
+| --- | ---: | ---: | ---: | ---: |
+| Original Momentum / 100 | 280.12 s | 41.99 kg | 36.85 | Uncapped |
+| Camera + budget fix / 100 | 265.30 s | 43.71 kg | 36.95 | 49.502 kg |
+| Original Momentum / 101 | 271.30 s | 58.41 kg | 16.36 | Uncapped |
+| Camera + budget fix / 101 | 265.15 s | 46.08 kg | 33.81 | 49.502 kg |
+
+Both corrected runs entered without modeled contact and then exhausted the
+budget during post-entry braking. They continued coasting after cutoff, with
+final modeled speeds 2.78 and 3.35 m/s. The original seed 101 replay spent
+extended time in WAIT_SHIP_CAMERA, consistent with the native symptom.
+Records and source hashes are in
+`tests/momentum_camera_budget_benchmarks.json`. This verifies two modeled
+runs and the coverage regression. It does not establish native success or 65+.
+Latest normalized controller SHA256 is
+`47b707eb28dfa9721aee911fba3a1cea51b5b0ec9c7e6f49f0eb6dab18029b0a`.
+
+### Coast-focused final leg
+
+Inside 550 m, ShootingNavigator now offers a zero-thrust FINAL_COAST before
+the ordinary velocity/speed replanning. A one-second velocity-Verlet rollout
+uses inverse-square Phobos gravity plus the coast observer's local residual
+and the ship velocity. It must predict a pass at least 2 m inside the 50 m
+boundary. The first entry is interpolated on the crossing segment.
+
+The next 20 seconds still receive moving-obstacle checks. Station surface checks
+end at first safe-zone entry. The approach continues to require fresh camera
+coverage inside 210 m. If the prediction misses, the path becomes blocked, or
+coverage is unavailable, normal guidance remains active. There is no assumption
+that a particular seed is debris-free after 500 m. Speed naturally changes under
+gravity while the jets are off.
+
+After entry the live loop inhibits attitude thrust and ShootingNavigator returns
+zero translational thrust, including between planning updates. Its mode becomes
+MISSION_COMPLETE_COAST. The existing 49.5 kg command cutoff remains the total
+fuel safeguard. A 40–45 kg target is an optimization goal.
+
+The installed official Scoring.py reads damage before checking success on each
+scoring tick and stops updating after missionSuccess. Consequently, damage
+observed before the winning check reduces the score or can cause failure.
+Damage after recorded success is excluded. A zero-damage 60-point result
+requires at most 189.47 s at 40 kg or 171.43 s at 45 kg.
+
+136 tests pass, including predicted entry versus a miss, insufficient outbound
+momentum, first-entry path truncation, moving-obstacle rejection, a station
+surface beyond entry, and cancellation of a powered burn upon arrival.
+Full-scene comparisons are recorded below. The benchmark now
+records contact at entry independently of contact during the post-entry test.
+
+| Case | Previous entry fuel | New total fuel | New entry time | Previous score | New score |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Nominal seed 100 | 44.95 kg | 43.293 kg | 262.18 s | 35.80 | 38.05 |
+| Nominal seed 101 | 45.54 kg | 44.449 kg | 255.70 s | 36.23 | 37.66 |
+| Native-drift seed 100 | 43.71 kg | 43.710 kg | 265.30 s | 36.95 | 36.95 |
+| Native-drift seed 101 | 46.08 kg | 45.023 kg | 265.05 s | 33.81 | 35.24 |
+
+All four entered without modeled contact. They used 0.235–1.282 kg between
+500 m remaining and entry. Recorded entry fuel and total fuel stayed equal
+through the 90 s post-entry test. Arrival time changed by at most 0.2 s
+against the preceding camera/budget version. The main savings are reduced
+terminal corrections and removal of post-entry braking. A 60-point result
+remains unachieved in these models.
+
+All eight comparison records, source hashes, stage milestones and saved baseline
+source are in `tests/momentum_final_coast_benchmarks.json`. Drift baseline
+records reuse the identical previous controller and matched settings from
+`momentum_camera_budget_benchmarks.json`. These are offline proxies with
+zero synthetic planning delay. The controller source hash for this version is
+`463c22f0968f86278dac5c3dcc6079e896a3b19c42291fba01ed87c106476397`.
 
 Run tests with the simulator Python environment or another Python containing
 NumPy. The offline allocator benchmarks additionally require SciPy.

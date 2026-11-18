@@ -1,9 +1,12 @@
 # Camera interface
 
 The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
+RGB and depth request a 100-degree field of view to cover the body-Z approach
+at the camera gimbal limit. The flight loop cuts both thrust commands at 49.5 kg
+total fuel, including post-entry control, against the requested 50 kg ceiling.
 See [the controller overview](README.md#current-controller) for current navigation.
 After entry, the footer shows **Entry fuel** separately from the current total,
-which continues increasing during post-arrival braking.
+and the active controller disables all thrust. The vehicle continues coasting.
 The FUSION25 comparison at the end is a historical experiment.
 
 ## Open the live interface
@@ -123,7 +126,8 @@ historical SCORE_COAST modeled runs peaked at 6.38--6.87 m/s.
 The depth display and processing limit are 400 m. This is a software limit,
 not a guarantee of usable real depth at that distance. The radar-loss speed
 guard still uses its conservative 220 m envelope. A camera-verified tangent
-pass enters the safe area before braking; observation and slow-approach
+pass enters the safe area. FINAL_COAST preserves a predicted unpowered entry
+inside the last 550 m. Observation and slow-approach
 fallbacks remain available when the pass cannot be established.
 
 ## Historical nose-first flight and the steep climb
