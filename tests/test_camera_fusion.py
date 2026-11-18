@@ -57,6 +57,21 @@ def depth_patch(distance=60., row=None, col=None):
 
 
 class PerceptionTests(unittest.TestCase):
+    def test_far_camera_bearings_refine_only_well_resolved_unique_radar_motion(self):
+        camera = Perception()
+        center = np.array([[500., 0., 0.]])
+        history = []
+        for t in (0., 2., 4., 6.):
+            origin = np.array([t, 0., 0.])
+            ray = center[0]+[0., 2.*(t-6.), 0.]-origin
+            history.append((t, origin, (ray/np.linalg.norm(ray))[None]))
+        camera.rgb_history['top'] = history
+        motion = camera.refine_motion(6., np.zeros(3), center, np.zeros((1, 3)), np.array([12.]))
+        self.assertAlmostEqual(motion[0, 0], 0.)
+        self.assertAlmostEqual(motion[0, 1], .5, places=2)
+        duplicate = np.repeat(center, 2, axis=0)
+        np.testing.assert_array_equal(camera.refine_motion(6., np.zeros(3), duplicate,
+            np.zeros((2, 3)), np.full(2, 12.)), np.zeros((2, 3)))
     def test_depth_frames_refine_transverse_speed_after_compensating_rover_motion(self):
         perception = Perception()
         # Moving the rover alongside the object keeps the patch at the same pixel.

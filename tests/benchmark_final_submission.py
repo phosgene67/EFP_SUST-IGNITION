@@ -102,6 +102,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
+    gate = None
+    if 'StagedNavigator' in namespace:
+        planner = namespace['StagedNavigator']()
+        gate = namespace['FlightFuelLimit']()
     attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
     attitude = (attitude_type or namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None)))()
     if hasattr(planner, 'nose_first') and attitude_mode in ('nose-first', 'nose-only', 'burn-only'):
@@ -129,6 +133,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     arrived, heading = False, rotation[0].copy()
     arrival_time = arrival_fuel = None
     crossing_speed = None
+    milestones = {}
     angular_active, linear_active, nose_errors = 0, 0, []
     first_five, cruise_after_five = None, []
     coast_ticks = 0
@@ -234,6 +239,11 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             linear = rotation.T@body_command
         else:
             held_body, held_angular = body_command.copy(), angular.copy()
+        if gate is not None:
+            if not gate.allows(np.linalg.norm(target-loc), fuel, planner.advance):
+                body_command, angular, linear = np.zeros(3), np.zeros(3), np.zeros(3)
+                mode = 'FUEL_LIMIT_COAST'
+            planner.inner_leg = gate.crossing_fuel is not None
         actual, angular_actual, fuel_rate = allocator.apply(body_command, angular)
         if fuel_audit:
             if arrived:
@@ -280,6 +290,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if first_five is not None and getattr(planner, 'last_phase', None) == 'CRUISE':
             cruise_after_five.append(float(np.linalg.norm(vel)))
         distance = np.linalg.norm(target-loc)
+        for threshold in (1100, 1000, 600):
+            if threshold not in milestones and distance <= threshold:
+                milestones[threshold] = dict(time_s=round(now+dt, 2), fuel_kg=round(fuel, 3),
+                                             speed_m_s=round(float(np.linalg.norm(vel)), 3))
         if distance <= 50. and not arrived:
             crossing_speed, arrived = float(np.linalg.norm(vel)), True
             arrival_time, arrival_fuel = now+dt, fuel
@@ -324,6 +338,9 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 cruise_min_after_5m_s=round(float(np.min(cruise_after_five)), 2) if cruise_after_five else None,
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not collision else None))
+    if gate is not None:
+        result.update(fuel_at_600m=gate.crossing_fuel, total_fuel_kg=round(fuel, 3),
+                      milestones_by_remaining_metres=milestones)
     if fuel_audit:
         result['fuel_audit'] = dict(
             segments={key: {k: round(v, 4) for k, v in value.items()} for key, value in fuel_segments.items()},

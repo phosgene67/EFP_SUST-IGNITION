@@ -15,7 +15,7 @@ class StopSimulation(Exception):
 
 class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None,
-                    executor_type=ImmediateExecutor, duration=2.):
+                    executor_type=ImmediateExecutor, duration=2., fuel_reading=None):
         commands = []
         self.command_times = []
         now = [0.]
@@ -44,7 +44,11 @@ class AdapterTests(unittest.TestCase):
         target.getLocVelAcc.return_value = state([9305.8, 0., 0.] if target_position is None else target_position)
         if scoring_distance is not None:
             shuttle.getLocation.return_value.WRT_ExprIn.return_value = np.array([scoring_distance, 0., 0.])
-        shuttle.GetParam.side_effect = lambda kind, key: .5 if key[-1] == 'MaxAccel_m_s2' else .05
+        def parameter(kind, key):
+            if key[-1] == 'FuelUsed' and fuel_reading is not None:
+                return fuel_reading(now[0])
+            return .5 if key[-1] == 'MaxAccel_m_s2' else .05
+        shuttle.GetParam.side_effect = parameter
         shuttle.GetParamArray.return_value = radar
         def record_command(kind, key, value):
             commands.append((key[-1], np.array(value)))
@@ -95,6 +99,14 @@ class AdapterTests(unittest.TestCase):
             if name == 'CommandedAccel':
                 np.testing.assert_allclose(value, np.zeros(3))
 
+    def test_outer_fuel_limit_stops_both_channels_between_planning_ticks(self):
+        report = np.array([[1000., 0., 0.], [990., 0., 20.], [0., 0., 0.]])
+        self.run_adapter([report], fuel_reading=lambda t: 19.65 if t >= .8 else 5.)
+        self.assertTrue(any(np.linalg.norm(v) > .1 for t, _, v in self.command_times if t < .8))
+        for t, _, value in self.command_times:
+            if t >= .8:
+                np.testing.assert_array_equal(value, np.zeros(3))
+
     def test_arrival_uses_official_distance_between_planning_ticks(self):
         self.run_adapter([], target_position=[8050.1, 0., 0.], scoring_distance=49.9)
         self.assertIsNotNone(self.runtime['planner'].arrival_time)
@@ -104,7 +116,7 @@ class AdapterTests(unittest.TestCase):
     def test_runtime_identifies_the_controller_file_used_for_a_native_run(self):
         self.run_adapter([])
         self.assertEqual(self.runtime['controller_source_hash'], hashlib.sha256(SOURCE.read_bytes()).hexdigest())
-        self.assertEqual(self.runtime['CONTROLLER_PROFILE'], 'SCORE_CORRIDOR')
+        self.assertEqual(self.runtime['CONTROLLER_PROFILE'], 'STAGED_COAST')
 
     def test_invalid_radar_holds_position(self):
         commands = self.run_adapter([np.full((3, 3), np.nan), np.zeros((3, 3))])

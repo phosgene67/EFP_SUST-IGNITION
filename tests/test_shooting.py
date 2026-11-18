@@ -6,6 +6,57 @@ from test_camera_fusion import Perception, depth_patch
 
 
 class ShootingTests(unittest.TestCase):
+    def test_gate_latches_crossing_and_counts_fuel_after_arrival(self):
+        gate = namespace['FlightFuelLimit']()
+        self.assertFalse(gate.allows(800., float('nan')))
+        self.assertFalse(gate.allows(605., 19.8))
+        self.assertTrue(gate.allows(600., 19.8))
+        self.assertAlmostEqual(gate.ceiling, 49.8)
+        self.assertTrue(gate.allows(604., 25.))
+        self.assertFalse(gate.allows(45., 49.5))
+        self.assertFalse(gate.allows(70., 49.))  # stale lower reading cannot unlock thrust
+        early = namespace['FlightFuelLimit']()
+        self.assertTrue(early.allows(590., 12.))
+        self.assertEqual(early.ceiling, 42.)
+        borrowed = namespace['FlightFuelLimit']()
+        self.assertTrue(borrowed.allows(850., 20., .75))
+        self.assertEqual(borrowed.ceiling, 20.75)
+        self.assertFalse(borrowed.allows(800., 22.7, 100.))
+        self.assertTrue(borrowed.allows(600., 22.7))
+        self.assertEqual(borrowed.ceiling, 50.)
+        self.assertFalse(borrowed.allows(40., 49.7))
+
+    def test_outer_boost_expires_without_a_fresh_plan(self):
+        p = namespace['StagedNavigator'](launch=False)
+        loc = np.array([9000., 0., 0.])
+        vel = np.array([1., 0., 0.])
+        p.command(10., loc, vel, loc+[1300., 0., 0.], np.zeros(3), [])
+        self.assertTrue(p.outer_active)
+        self.assertGreater(np.linalg.norm(p.linear_command(vel, .5)), .1)
+        p.control_time = 11.
+        np.testing.assert_array_equal(p.linear_command(vel, .5), np.zeros(3))
+
+    def test_first_leg_preserves_forward_motion_and_steers_before_a_dense_column(self):
+        loc = np.array([9000., 0., 0.])
+        vel = np.array([1., 0., 0.])
+        rocks = [np.array([[x, 0., 0.], [x-5., -1., 10.], [10., 0., 0.]])
+                 for x in np.arange(90., 170., 25.)]
+        for reports in ([], rocks):
+            p = namespace['StagedNavigator'](launch=False)
+            p.command(10., loc, vel, loc+[1300., 0., 0.], np.zeros(3), reports)
+            self.assertGreater(p.burn_target[0], vel[0])
+            self.assertEqual(np.linalg.norm(p.burn_target[1:]) > .1, bool(reports))
+
+    def test_advance_requires_a_learned_coast_that_misses_the_boundary(self):
+        loc = np.array([9000., 0., 0.])
+        for speed, learned, expected in ((.1, False, 0.), (5., True, 0.), (.1, True, 3.)):
+            p = namespace['StagedNavigator'](launch=False)
+            vel = np.array([speed, 0., 0.])
+            p.policy.previous = (20., vel.copy(), 19.6)
+            if learned:
+                p.dynamics.updated = 20.
+            p.command(20., loc, vel, loc+[1200., 0., 0.], np.zeros(3), [])
+            self.assertEqual(p.advance, expected)
     def test_clutter_ahead_selects_a_bend_while_retaining_forward_momentum(self):
         loc = np.array([9000., 0., 0.])
         vel = np.array([3., 0., 0.])
