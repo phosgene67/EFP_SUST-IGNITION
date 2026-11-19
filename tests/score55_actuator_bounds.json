@@ -1,0 +1,35 @@
+{
+  "kind": "modeled_hardware_upper_bound_only_not_a_replacement_allocator",
+  "rows": [
+    {
+      "body_axis": 0,
+      "sign": 1.0,
+      "modeled_zero_torque_hardware_limit": 0.19289583310404912
+    },
+    {
+      "body_axis": 0,
+      "sign": -1.0,
+      "modeled_zero_torque_hardware_limit": 0.2893430803895415
+    },
+    {
+      "body_axis": 1,
+      "sign": 1.0,
+      "modeled_zero_torque_hardware_limit": 0.2893374056106838
+    },
+    {
+      "body_axis": 1,
+      "sign": -1.0,
+      "modeled_zero_torque_hardware_limit": 0.2893412883190453
+    },
+    {
+      "body_axis": 2,
+      "sign": 1.0,
+      "modeled_zero_torque_hardware_limit": 0.3857902408176551
+    },
+    {
+      "body_axis": 2,
+      "sign": -1.0,
+      "modeled_zero_torque_hardware_limit": 0.31526553797421414
+    }
+  ]
+}

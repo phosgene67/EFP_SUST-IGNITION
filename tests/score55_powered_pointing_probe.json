@@ -1,0 +1,45 @@
+{
+  "kind": "modeled_no_obstacles_optimistic_known_bias_boundary_aim",
+  "assumed_start_time_s": 14.0,
+  "assumed_start_fuel_kg": 4.05,
+  "assumed_bias_m_s2": [
+    0.0023,
+    -0.0008,
+    0.0016
+  ],
+  "rows": [
+    {
+      "kp": 0.3,
+      "kd": 1.1,
+      "complete": true,
+      "stage_s": 13.016666666666666,
+      "stage_fuel_kg": 5.943850995791722,
+      "end_speed": 1.952137928242595,
+      "angle_deg": 0.00810686199232527,
+      "modeled_score": 53.19903403335587,
+      "modeled_arrival_s": 212.01666666666665
+    },
+    {
+      "kp": 0.6,
+      "kd": 1.55,
+      "complete": true,
+      "stage_s": 10.466666666666667,
+      "stage_fuel_kg": 4.759149676328344,
+      "end_speed": 1.7092237478851853,
+      "angle_deg": 0.010580345446176009,
+      "modeled_score": 53.42672201990555,
+      "modeled_arrival_s": 209.46666666666667
+    },
+    {
+      "kp": 0.9,
+      "kd": 1.9,
+      "complete": true,
+      "stage_s": 9.45,
+      "stage_fuel_kg": 4.327858187377135,
+      "end_speed": 1.621822705238317,
+      "angle_deg": 0.008746031820803909,
+      "modeled_score": 53.530352769196654,
+      "modeled_arrival_s": 208.45
+    }
+  ]
+}

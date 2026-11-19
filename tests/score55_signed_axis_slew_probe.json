@@ -1,0 +1,67 @@
+{
+  "kind": "modeled_constant_bias_no_obstacles",
+  "assumed_start_s": 20.2,
+  "assumed_start_fuel_kg": 4.83,
+  "assumed_bias": [
+    0.0023,
+    -0.0008,
+    0.0016
+  ],
+  "rows": [
+    {
+      "axis": 0,
+      "sign": 1.0,
+      "calibrated_main": false,
+      "complete": true,
+      "stage_s": 15.016666666666666,
+      "stage_fuel_kg": 6.128999611296918,
+      "stage_speed": 1.6087911302066211,
+      "modeled_clean_score": 47.80879760612519,
+      "modeled_arrival_s": 230.21666666666667
+    },
+    {
+      "axis": 1,
+      "sign": 1.0,
+      "calibrated_main": false,
+      "complete": true,
+      "stage_s": 14.866666666666667,
+      "stage_fuel_kg": 6.229281855965464,
+      "stage_speed": 1.653194572266354,
+      "modeled_clean_score": 46.97474530868339,
+      "modeled_arrival_s": 240.06666666666666
+    },
+    {
+      "axis": 0,
+      "sign": -1.0,
+      "calibrated_main": true,
+      "complete": true,
+      "stage_s": 14.716666666666667,
+      "stage_fuel_kg": 5.6969492832986734,
+      "stage_speed": 1.5414986373946744,
+      "modeled_clean_score": 47.419537662616364,
+      "modeled_arrival_s": 239.91666666666666
+    },
+    {
+      "axis": 1,
+      "sign": -1.0,
+      "calibrated_main": true,
+      "complete": true,
+      "stage_s": 14.7,
+      "stage_fuel_kg": 5.735132121099535,
+      "stage_speed": 1.5597442635224936,
+      "modeled_clean_score": 48.00721711848905,
+      "modeled_arrival_s": 239.9
+    },
+    {
+      "axis": 2,
+      "sign": 1.0,
+      "calibrated_main": true,
+      "complete": true,
+      "stage_s": 5.733333333333333,
+      "stage_fuel_kg": 0.7201956073207086,
+      "stage_speed": 0.7816281190268174,
+      "modeled_clean_score": 48.53806012031856,
+      "modeled_arrival_s": 230.93333333333334
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "kind": "modeled_isolated_no_obstacles",
+    "variant": "normal",
+    "complete": true,
+    "time_s": 5.733333333333333,
+    "fuel_kg": 0.7201439090112037,
+    "useful_thrust_dv": 0.11174357035127401,
+    "overhead_kg": 0.23715228037681313,
+    "final_angle_deg": 0.3200111793814456
+  },
+  {
+    "kind": "modeled_isolated_no_obstacles",
+    "variant": "tight",
+    "complete": false,
+    "time_s": 39.983333333333334,
+    "fuel_kg": 17.905982532375027,
+    "useful_thrust_dv": 4.100643831596075,
+    "overhead_kg": 0.18168182812806322,
+    "final_angle_deg": 0.31019194118605486
+  }
+]

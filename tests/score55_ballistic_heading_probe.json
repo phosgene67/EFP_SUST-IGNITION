@@ -1,0 +1,16 @@
+{
+  "kind": "modeled_constant_gravity_no_debris_fixed_slew_cost",
+  "fixed_target_heading_score": 52.183433362304875,
+  "force_aligned_heading_score": 54.0211005595691,
+  "delta_points": 1.8376671972642242,
+  "heading_delta_degrees": 1.7803954828945978,
+  "post_slew_duration_s": 180.0,
+  "heading": [
+    -0.18314835064257343,
+    0.01866026826406314,
+    -0.9829081727431195
+  ],
+  "modeled_stage_s": 15.5,
+  "modeled_stage_fuel_kg": 6.136,
+  "modeled_stage_dv": 1.05
+}

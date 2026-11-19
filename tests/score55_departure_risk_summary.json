@@ -1,0 +1,187 @@
+{
+  "kind": "offline_proxy_not_native",
+  "controller_sha256": "4f902bb6b95ee6c09742750f717e4800206ef3b79b14229cde9982b8c6bf11a4",
+  "experiments": [
+    "strong-axis",
+    "radar-cruise",
+    "expected-risk",
+    "fine-avoidance",
+    "track-cache",
+    "departure-risk"
+  ],
+  "seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "arrivals": 20,
+  "contacts": 0,
+  "score": {
+    "n": 20,
+    "median": 45.215,
+    "p10": 40.485,
+    "p90": 48.691,
+    "minimum": 29.61,
+    "maximum": 48.94
+  },
+  "time_s": {
+    "n": 20,
+    "median": 220.32999999999998,
+    "p10": 208.30200000000002,
+    "p90": 250.493,
+    "minimum": 205.47,
+    "maximum": 267.62
+  },
+  "fuel_kg": {
+    "n": 20,
+    "median": 43.475,
+    "p10": 41.187000000000005,
+    "p90": 49.885000000000005,
+    "minimum": 37.12,
+    "maximum": 57.7
+  },
+  "paired_against_strong_axis_risk": [
+    {
+      "seed": 100,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 101,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 102,
+      "score": 0.28000000000000114,
+      "time_s": 0.1599999999999966,
+      "fuel_kg": -0.23999999999999488
+    },
+    {
+      "seed": 103,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 104,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 105,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 106,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 107,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 108,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 109,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 110,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 111,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 112,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 113,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 114,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 115,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 116,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 117,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 118,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    },
+    {
+      "seed": 119,
+      "score": 0.0,
+      "time_s": 0.0,
+      "fuel_kg": 0.0
+    }
+  ],
+  "paired_score_median": 0.0,
+  "paired_score_bootstrap95": [
+    0.0,
+    0.0
+  ]
+}

@@ -5,7 +5,524 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
-## Current authoritative state: original Momentum with camera-wait brake removed
+**Live development snapshot (overrides older interim descriptions below):**
+USER REVISED COMPLETION TARGET: finish as soon as practical; a native average
+of47-50 points across TWO runs is acceptable. Native55 is no longer the
+completion gate. Do not continue adding experimental features for55.
+FINALIZED AT USER'S EXPLICIT REQUEST. The user chose to finalize the best
+verified code now despite the missed47-50 two-run average, ending further tuning.
+Controller.py retains the Momentum configuration associated with the earlier
+native47.2 result (261119_140256...7b6, source dcf29c02...), plus the verified
+zero-thrust behavior after confirmed safe-zone entry. No score gain is attributed
+to that post-entry fix. Current byteSHA:
+ebcc04946087543faa17bd7caf3b8401c7227aa524041b1cff717fd95f36285b.
+Installed solution and frozen tests/score_sweeps/final_momentum_controller.py
+match the workspace file. Selected defaults:strong-axis (+X), radar-cruise,
+expected-risk, fine-avoidance, exact track-cache. Other flight options off.
+Final TWO fresh runs:43.5/211.84 s/47.39 kg/0 J and24.2/239.49 s/56.96 kg/0 J;
+mean33.85. Both startup hashes match the selected source. The requested average
+was NOT achieved. Full records:tests/final_native_validation.json. Keep this
+limitation alongside the historical47.2 best; no stable47-50 claim is justified.
+The later local-clearance reduction scored28.8 and was rejected/rolled back.
+125 targeted current+archived checks pass for the selected source. Archived
+prototype tests explicitly load their frozen snapshot. Historical retired
+Dogleg/trace adapter tests remain outside this claim. Protected connection and
+camera-command helpers, official simulator/config/scoring/allocator/CSV verified
+unchanged. Simulator is stopped at main menu; no benchmark is still running.
+No commit, push or external competition submission was performed.
+Future work, only if requested: reproduce native performance over more runs,
+then investigate the main-burn correction fuel and native/proxy mismatch.
+
+Latest isolated findings:
+
+- Final fresh trial1 `261119_170146...5a8`, exact final hash ebcc0494...:
+  official43.5/211.84 s/47.39 kg/0 J. This is BELOW the relaxed average goal.
+  Record it without omission. Trial2 will use unchanged source. Validation
+  JSON tests/final_native_validation.json stores both rows and eventual mean.
+  To average>=47 with this first result, trial2 must score>=50.5.
+
+
+- Selected controller and explicit archived-experiment regression checks125
+  pass after restoration. Tests of rejected features load their frozen archive;
+  active runtime reset checks validate ONLY the chosen final configuration.
+  Protected connection/camera command helper prefix matches baseline exactly.
+  Native-final validation is pending; no average claim yet.
+
+
+- Native soft+physical trial `261119_164814...dbd` is running, installed hash
+  bb7184df...fdd7a02d confirmed in startup log. At207.6 s/204.7 m remaining,
+  fuel51.15 kg,0 J: target55 will not be met. Await official entry result.
+- Soft+physical pilot10049.50/227.93 s/39.86 kg/no contact versus soft-only
+  43.50/255.80 s/40.06 kg. Single seed only; no native gain established.
+  Next prepared +Z profile changes body main axis and corresponding allowed
+  calibrated +Z request; retains all risk settings. Offline pilot running.
+- Signed-axis/torque model found no useful alternative to +X or small +Z turn.
+  +X stage15.02 s/6.129 kg/clean modeled47.81; calibrated negative-Y stage
+  14.7 s/5.735 kg/48.01. No material gain. No negative-axis flight code added.
+
+
+- Departure-risk20 seeds complete: median45.215 vs45.15 baseline; paired
+  median delta0, bootstrap95%[0,0].19/20 seeds exactly match baseline; seed102
+  +.28. No gain beyond seed noise; reject for selection despite unit fix.
+  Native549 -13.0/258.72 s/82.03 kg/0 scored J is recorded without assigning
+  causality from an unmatched single trial. Station damage happened later.
+- +Z soft-risk-gates pilot10050.09/254.05 s/35.36 kg/no contact versus51.11
+  baseline: no pilot gain. Opposing angular-request actuator model found
+  no main acceleration gain above .134676; rejected, no flight code added.
+- NativeX soft-risk gates trial `261119_163424...2ca` is running, installed
+  hash96f5125b...6edf0. Next prepared candidate changes ONLY physical-risk,
+  no threshold/energy/slew/camera changes. Pilot is running before selection.
+
+
+- Soft-risk-gates pilot10043.50/255.80 s/40.06 kg/no contact vs48.79:
+  no pilot score gain. Native test is exploratory because the main target
+  requires actual simulator evidence and proxy behavior has differed markedly.
+  Do not promote this flag from that pilot. A matching +Z profile pilot is
+  running, changing only soft-risk-gates from prior +Z baseline51.11.
+- +Z departure-risk pilot100 is exactly51.11/251.43 s/34.96 kg baseline;
+  no demonstrated gain and no native promotion. A mixed-version full native
+  log inventory found18 tagged Momentum successes, median25.25, max47.2;
+  that is NOT a matched native cohort. No historical native55 result found.
+
+
+- EFP_SOFT_RISK_GATES default0 changes ONLY finite-shot probabilistic
+  eligibility, retaining clearance>.5 and every existing geometric bound.
+  Expected damage and recovery-time costs remain conservative m*v2.
+  Instead of binary fatal-probability<.01 and expected-damage<.2*max gates,
+  it adds expected failure-category cost from the verified official Scoring.py:
+  failure replaces120/T with negative remaining/initial distance. Category
+  penalty=min(sum(fatal probabilities),1)*(12000/T+100*distance/initial).
+  Distance at the present state is a conservative approximation of future
+  failure distance. Contact probability/energy/recovery are still MODELS.
+  This differs from rejected local-expected-risk: local fallback is unchanged;
+  unlike kinetic-impact, impact energy is NOT reduced. Two gate/geometry tests
+  and2 runtime-reset tests pass. No native or median improvement is claimed.
+  Baseline/source and fixed clearance permit an isolated score test.
+
+
+- EFP_DEPARTURE_RISK default0 fixes an inconsistency: the existing monotonic
+  departure rule ignored geometric overlap but still charged probability,
+  energy and recovery. Only radar objects with CURRENT estimated radial
+  separation rate>2*forecast_rate are exempted on departing segments. Earlier
+  approaching or later returning segments keep their original risk. No hard
+  clearance/radius/margin is reduced. A regression test reproduces >40000 J
+  phantom expected damage behind the vehicle and a cancelled clear burn;
+  the flag removes that charge. Three tests pass, including front obstruction
+  and uncertain slow recession retained; runtime-reset test passes. Native
+  score benefit remains UNVERIFIED. Seed100 is identical to baseline.
+- Lookahead-fuel pilot100 exactly48.79,217.88 s,42.22 kg baseline: no gain
+  on this seed. Two path-choice tests pass, but do not promote the prototype.
+
+
+- EFP_LOOKAHEAD_FUEL default0 is a new PROTOTYPE, not deployed. It differs
+  from rejected continuous distant-crossing cost: only confidently fitted
+  radar tracks, only25 s beyond the unchanged20 s hard horizon, continuous
+  segment closest approach, per-object maximum rather than repeated charges,
+  and a modeled later two-pulse repair cost in fuel-score units. Geometry
+  guards remain unchanged. Assumed repair delta-v=2*penetration/20 s, weighted
+  by a Gaussian-tail proxy, capped10 score points. This cost is assumed,
+  NOT measured fuel. Seed100 pilot running. Reject if no paired benefit.
+- Focused checks123 passed after departure-risk/lookahead additions. Official config/scoring/actuator/CSV hashes
+  reverified unchanged. Connection boilerplate remains unchanged.
+
+
+- IMPORTANT native powered+physical+kinetic `261119_160345...bc7` hit debris:
+  154282.6 J, later106.8 s/53.91 kg and severe spin/recovery. Agent stopped
+  the trial because55 was mathematically unattainable even at immediate
+  arrival. This is an aborted trial with NO official finish score, not a win
+  or a synthetic official loss. Reject powered profile for native selection.
+  Offline cohort's zero-contact findings DO NOT predict native safety here.
+  Do not promote this combination based on its offline median. Native best47.2.
+
+
+- Energy-model native206.74 s,49.45 kg scored42.1 versus prior250.54 s,
+  41.77 kg scored42.2. Faster flight was paid for by extra fuel. No gain.
+- Score-entry-lock on powered physical+kinetic seed10048.82 versus48.96:
+  no demonstrated improvement. On physical-only +X seed10051.02 versus
+  48.18, saving2.11 kg with essentially identical entry time. This is one
+  proxy seed; terminal geometry differs from native. Default remains off.
+
+
+- +X physical-risk native `261119_154445...99d`:42.2 points,250.54 s,
+  41.77 kg,0 J. Best remains47.2; this alone did not improve native score.
+  Next installed source2132a18b5117e1d3e835f958d9462d1f4ad048bebe98048916895ebbafe06875
+  differs only by EFP_KINETIC_IMPACT default1. All geometry/clearance guards
+  identical; modeled contact energy uses0.5*m*v2 instead of m*v2.
+- Matching pilot100 physical+kinetic45.21/251.48 s/39.38 kg/no contact
+  versus physical-only48.18. Adding powered-launch alone then48.96/
+  239.82 s/38.31 kg/no contact. These are hypothesis pilots, not promotion
+  evidence or a native55 result. Score-entry-lock pilot on latter is running.
+- EFP_SCORE_ENTRY_LOCK default0 checks all sensed obstacles ONLY until a
+  predicted49.5 m sphere entry, before legacy terminal guidance can inspect
+  its100 m post-tangent extension. Required pre-entry clearance>.25 m.
+  Unlike earlier entry-coast it checks radius49.5 rather than48 and avoids
+  the helper's old minimum1 s horizon when entry is sooner. Four meaningful
+  tests pass: post-entry hull excluded, pre-entry blockage retained,
+  subsecond interval truncated, no lock on a missed sphere/departure.
+  It does not announce mission success before actual official-frame entry.
+
+
+- Native physical-risk diagnostics found all-shots rejection at41.705 s with
+  8.903 m geometric clearance,2392.76 J expected damage, and summed fatal
+  probability .01028 above the .01 limit. Closest modeled object sigma3.918 m,
+  rate.339 m/s, report age5.408 s, closest time15.36 s. These are predictions,
+  not proof of false alarms. The conservative m*v2 energy gate motivates
+  testing existing half-kinetic-energy flag on THIS profile next; actual engine
+  damage law is still unavailable in the public scoring/Radar Python files.
+- EFP_NEAR_RISK_HORIZON default0 changes20 s finite-shot certification to10 s.
+  Pilot10035.23/212.77 s/53.37 kg/no contact vs48.79: hypothesis falsified,
+  reject for selection. Two risk-diagnostic tests and2 reset tests pass.
+- +X physical-risk pilot101:51.39/241.28 s/36.26 kg/no contact versus43.58
+  baseline. Together with seed10048.18 vs48.79 this is insufficient evidence
+  of median gain; native run remains exploratory. Native55 not achieved.
+
+
+- Powered-launch native `261119_153631...634`: official21.0 points,
+  241.02 s,59.13 kg,0 J. Start/turn fuel fell, but avoidance/escape used
+  another9.04 kg plus corrections hidden in main burns. Rejected.
+- Now staged native +X/cache plus ONLY physical-risk and behavior-neutral
+  rejection diagnostics, SHA b521f5cb1bba864136d884d12722715c0ead8d0dc528c662de10d0dcfa1f25ea.
+  Powered launch, efficient-X, force heading and calibrated launch OFF.
+  A diagnostics equivalence test passes. Logs include rejected-shot time,
+  clearance, expected/fatal risk, closest obstacle age, radius, sigma, rate,
+  confidence and relative position/velocity. Do not infer false alarms without
+  examining those measurements. +X physical-risk seed100:48.18/211.0 s/
+  44.02 kg/no contact vs48.79 baseline; no demonstrated score improvement.
+
+
+- Force-aligned-slew pilot100:41.83/230.47 s/45.18 kg/no contact,
+  versus original strong-axis48.79. Three focused heading tests pass,
+  but the flight hypothesis failed this pilot; default remains off.
+- Powered-launch-slew pilot101:45.34/239.95 s/41.00 kg/no contact.
+  Both powered pilots are below the existing matched strong-axis scores.
+- The first powered_efficient_x100 launch used an older frozen source that
+  lacked the powered-launch branch, so that artifact DOES NOT test the
+  combination. Exclude it from combination evidence. Harness now rejects
+  new experiment flags absent from the selected frozen controller rather
+  than silently attaching an unused attribute. No claims based on that run.
+
+
+- EFP_FORCE_ALIGNED_SLEW default0 is a one-time attitude heading screen:
+  price constant-gravity finite burns toward the SAME16 tangent endpoints,
+  then freeze the chosen force direction for the initial turn. Sensor route
+  checks and terminal goals are unchanged. This differs from the rejected
+  repeated gravity-gradient endpoint correction: no gradient or repeated
+  endpoint servo is added. Pilot is running; no score claim yet.
+- Efficient-X offline seed100:46.83/227.20 s/41.99 kg/no contact versus
+  original strong-axis48.79/217.88 s/42.22 kg. Small fuel saving but longer
+  route time, so no promotion based on this seed.
+
+
+- Launch-only calibration native `261119_152937...ef1`: official20.0 points,
+  247.44 s,58.91 kg,0 J. Launch itself used4.19 kg versus best-run4.83,
+  but dense-zone avoidance erased that saving. Rejected for selection.
+- EFP_POWERED_LAUNCH_SLEW default0 starts the existing one-time turn during
+  lift only for a target within acos(.98) of launch up and the unchanged
+  four-second scene clearance guard. A blocked initial turn uses usual launch.
+  This differs from the rejected boost/slew experiment, which started AFTER
+  lift. Existing low world translation request remains .025.8 slew tests,
+  2 runtime-reset tests pass. Offline seed100 scored43.32/239.77 s/42.55 kg,
+  lower than original strong-axis48.79. Native pilot is exploratory because
+  the offline harness does not reproduce measured native launch delay.
+  Native source82c2b7bc2bacfda2fc75840e9c3b80b5a02871f1285afface06089657726bafb
+  retains only the best +X/cache flags plus powered-launch-slew; calibrated
+  launch and efficient-X are OFF. Do not claim improvement until measured.
+
+
+- New isolated EFP_CALIBRATED_LAUNCH default0 applies the already validated
+  +Z request bias only to a positive-up launch pulse. Official revised-simplex
+  model: .095813 to .134676 m/s2, unchanged ~4.322 kg per m/s impulse,
+  negligible transverse force and zero angular acceleration. Two pilot seeds
+  scored41.34 and45.21; not a demonstrated multi-seed improvement. Native
+  test isolates this flag on the best +X/cache configuration. No simulator edits.
+- EFP_EFFICIENT_X default0 separately calibrates the main +X request to
+  [1,3.507949e-6,-1.008332e-5]. Official revised-simplex model .192741 m/s2
+  with <.00001 transverse acceleration, zero torque,4.32237 kg/(m/s).
+  Initial finite-burn prediction is updated consistently. Three allocator
+  integration tests pass, runtime reset tests2 pass. Offline pilot is running.
+- Offline actuator upper bounds were diagnostic only, never a replacement
+  jet selector. Random legal angular-request and direction probes found no
+  large efficient +Z gain beyond .135. Broad diagonal directions lose fuel
+  efficiency; optimistic score screen found no useful alternative. Larger
+  boost/slew requests and higher angular limit alone also failed the modeled
+  score comparison. Do not promote these hypotheses without native evidence.
+
+
+- Small-Z native alignment trial `261119_143200_FINAL_SUBMISSION__d56` scored
+  29.5,267.78 s,48.95 kg,0 J, byte SHA d660c32c...62a1b6. Rejected for
+  selection. Main-burn fuel included significant avoidance: body Y velocity
+  changed from+0.23 to−0.77 to0 m/s during21–61 s, while all fuel was labeled
+  IMPULSE_BURN. Do not attribute the whole43.70 kg main bucket to forward thrust.
+- EFP_SENSOR_SETTLE default0 offers one bounded startup coast after alignment:
+  minimum4 s, until40% of radar tracks confident, maximum12 s, only with
+  positive outward velocity and a clear5 s coast. It preserves velocity and
+  never forces waiting in immediate danger.3 tests and2 runtime reset tests
+  pass. Pilot z_settle49.88/247.73 s/36.42 kg versus Z baseline51.11; no gain.
+- Wait-for-gap V2 lowers the initial positive closing gate from1.5 to0.5 m/s;
+  all0/3/6/10 s prefixes remain scored, retained ignition time is absolute.
+  It differs from V1 and old coast-windows;2 focused tests pass. Z pilot
+  z_early_wait48.80/242.07 s/38.08 kg/no contact, worse than baseline51.11.
+  Rejected for promotion. No native wait/settle trial has been run.
+- EFP_PHYSICAL_RISK default0 removes duplicated uncertainty from finite-shot
+  radar core geometry. New core=.5*measured diameter+unchanged3 m vehicle;
+  hard clearance still>0.5 m. Position variance remains4 m², and diameter
+  radius variance(.025*diameter)² is added. FINAL_SUBMISSION verifies sigma2 m,
+  velocity sigma.02 m/s, diameter sigma5%. Camera occupied bounds are unchanged.
+  The old core was.575*diameter+5 m plus another covariance term.2 targeted
+  tests pass, including covariance accounting and unchanged camera blockage.
+  Diameter metadata is cached without changing previous obstacle outputs;
+  cache equality test passes. Pilot z_physical_risk51.28/221.78 s/39.62 kg/no
+  contact versus51.11 baseline is within seed noise; do NOT claim an offline
+  score improvement. Native experiment is exploratory, motivated by the
+  measured sideways fuel in the previous native run.
+
+- Native +X/cache trial `261119_140256_FINAL_SUBMISSION__7b6`:47.2 points,
+  227.77 s,41.60 kg,0 scored J. No local avoidance fuel in this run. Frozen
+  byte SHA dcf29c02...f8300, official result in score55_native_trials.json.
+- Native efficient +Z/cache without alignment, `261119_141524...c0e`:16.2,
+  261.24 s,59.82 kg,0 J, SHA63f550ca...adf2ed. Rejected. Early ESCAPE cost
+  6.71 kg and subsequent main burns45.22 kg. Do not claim that removing the
+  +X slew alone is an improvement.
+- MainAxisSlew already accepts a body_axis; new EFP_MAIN_AXIS_Z defaults0 and
+  selects axis2 only with strong-axis enabled. The isolated official-allocator
+  model of this small turn measured5.73 s,0.720 kg,0.112 useful delta-v,
+  0.237 kg net overhead and0.32 degree residual angle. A tighter .25 degree
+  tuning failed to settle in40 s and burned17.9 kg; rejected, NOT deployed.
+  Source `score55_z_alignment_probe.json`; new small-turn integration test passes.
+- Offline Z alignment with calibrated main/cache/radar/full-energy risk:
+  `score55_z_axis_100.json`51.11/251.43 s/34.96 kg/no pre-entry contact.
+  Adding accept-safe-pass was identical on that seed. Adding kinetic impact
+  alone: `score55_z_axis_kinetic_100.json`51.67/220.15 s/39.63 kg/no contact.
+  One seed is insufficient for promotion; selected native trial uses full energy.
+- +Z without alignment plus kinetic impact:
+  `score55_efficient_kinetic_100.json`45.94/217.17 s/44.49 kg/no contact,
+  versus prior full-energy efficient_risk41.48/216.50 s/47.96 kg. The impact
+  assumption helped this pilot by4.46 points but did not help the +X pilot.
+- Official revised-simplex allocator integration test confirms the allowed
+  calibrated positive-Z request achieves>0.13 m/s2 versus<0.10 nominal,
+  with<4.33 kg/(m/s) and zero net angular acceleration. Test1 passes. No
+  individual jets are commanded and allocator/configuration remain untouched.
+
+- Radar clock-calibration native trial `261119_120849...7c1` scored37.3,
+  248.30 s,45.81 kg,0 J, source5dd44db4...ee396. Its startup estimate locked
+  at0.258 s. The larger0.8–1.35 s five-second report-age observations included
+  substantial publication latency; do not call them the clock offset or assert
+  they caused the regressions. Synthetic0.8 s epoch stress scored48.15 without
+  calibration and47.89 with it. No demonstrated score gain; default off.
+- Exact tracker cache was ported alone from the archived final_cache source.
+  A500-track microbenchmark measured median72.16→14.52 ms, max output error0.
+  `tests/score55_tracker_cache_timing.json` and
+  `tests/test_current_tracker_cache.py` preserve evidence. New reports still
+  refit; unchanged reports reuse pose transforms and forecast quality. Runtime
+  EFP_TRACK_CACHE default0. Native effect is being measured in the above trial.
+- EFP_KINETIC_IMPACT default0 scales only finite-shot modeled impact energy
+  from m*v² to0.5*m*v². Recovery time still uses full relative speed; physical
+  separation bounds remain. This is a physical full-stop energy assumption,
+  NOT a verified simulator damage law. A focused gate test passes. Source
+  `score55_kinetic_risk_controller.py`, successful live-progress pilot
+  `tests/score55_kinetic_live_100.json`:48.18/250.85 s/37.24 kg/no contact,
+  versus48.79/217.88 s/42.22 kg. No score gain on that seed. Do not promote.
+- EFP_ACCEPT_SAFE_PASS default0 retains the original16 tangent endpoints,
+  additionally prices any sensed clear unpowered pass within48 m, and checks
+  all available geometry up to the first radius48 crossing near the station.
+  Unlike near-entry-goal, it does not change the initial endpoint grid. Pilot
+  `score55_accept_live_100.json`:51.76/217.70 s/40.02 kg/no contact, identical
+  to entry-coast's seed100 outcome. No separate native validation yet.
+- In-progress pilot `score55_efficient_kinetic_100.json` uses calibrated +Z,
+  radar cruise, normal-tail risk, fine sidesteps, kinetic energy; NO +X slew.
+  Uses frozen kinetic-risk source. Earlier efficient-main variants regressed;
+  this trial isolates the half-energy assumption against that prior bundle.
+  Neither simulator physics nor jet selection has been changed.
+- `tests/score55_ballistic_heading_probe.json` is a constant-gravity,
+  no-debris calculation, not implemented guidance: modeled fixed-heading52.18
+  versus force-aligned54.02 with1.78 degree heading change and fixed measured
+  slew cost. It does not prove a native gain or an achievable score.
+- Use `tests/run_score55_trial.py` for new single offline runs: it prints
+  progress, writes a trace and reports entry metrics. Several older PowerShell
+  redirection sessions left empty traces; do not claim results for them.
+  Example flags: `--name NAME --source tests/score_sweeps/FROZEN.py` followed
+  by repeated `--experiment FLAG`. Seed defaults100; optional native-order RNG.
+  Successful newer artifacts have kinetic_live/accept_live names.
+-79 core/focused tests passed before the latest calibration/cache/energy
+  additions; calibration4, cache1, updated risk3 passed separately. Six old
+  adapter cases for retired features still fail as documented below. Run the
+  appropriate current checks before selecting a final implementation.
+
+
+## Active task: continue development until a native score of at least55
+
+Latest explicit user authorization: implement and continuously test improvements
+to the time/fuel tradeoff versus remaining distance. The user clarified that
+completion requires an official native simulator score >=55; an offline median
+does not satisfy the task. Minor nonfatal damage is acceptable if final score
+improves, including the time and fuel required to recover lost motion. Fatal
+damage and missed entry remain unacceptable. This authorization supersedes
+the earlier read-only review and narrowly scoped camera-brake task below.
+
+Keep Momentum as the base and preserve connection boilerplate, SetCommand,
+camera helpers and official STU4-Sim/scoring/physics. New experiments are
+disabled by default; do not promote a modeled result as native success.
+
+Frozen current baseline is `tests/score_sweeps/momentum_55_baseline.py`,
+normalized SHA `a7cb33d7ba02c9d400a0a55bef849e34d2a7c2fed6dc6484916a9a5928c8b2a4`.
+A fresh20-seed baseline (100–119) is complete in
+`tests/score_55_baseline_SEED.json`, summarized by
+`tests/score55_baseline_summary.json`. Median38.275, p10–p90 25.648–43.850,
+range13.79–45.86;20 arrivals/no modeled contacts. Use this baseline, not
+unmatched old sources, for new comparisons. The offline model is still a proxy.
+
+Native testing is available through the installed Space Teams PRO app using
+the computer-use skill. The actual controller path is
+`C:/Users/Asus/AppData/Local/SimDynamX/STPro/Assets/Repos/STU4-Solution/Controller.py`,
+a separate directory, not a junction to this checkout. It matched the frozen
+baseline before testing and has not yet been changed by the agent. Native
+candidate copies outside the workspace require filesystem escalation. Do not
+change STU4-Sim to select a different controller or alter score parameters.
+
+Native baseline official results observed during this task:22.1 points,
+270.36 s,54.24 kg,0 J in `261119_101425_FINAL_SUBMISSION__faf` (agent launched);
+36.0 points,266.42 s,44.30 kg,0 J in `261119_102346_FINAL_SUBMISSION__b60`.
+`tests/score55_native_trials.json` records these official alerts with source
+identity evidence. Their source logs do not contain automatic hashes/seeds;
+do not call them a matched-seed cohort. The first flight continued burning
+after success and later disconnected; that later damage/fuel is not scored.
+Stop a native session after recording its official result. The simulator UI
+was returned to its main menu for candidate preparation. Refresh window
+selection if its HWND changes after a session/restart.
+
+Experiments screened so far (all offline seed100, not native improvements):
+
+- Calibrated forward command:37.64 /225.08 s /49.26 kg, no contact, versus
+  baseline44.93 /255.93 s /38.97 kg. Faster but worse score; rejected. Unlike
+  the previous clean-main experiment, this preloaded achieved acceleration
+  before the first burn and retained the camera-brake fix. Source and result:
+  `tests/score_sweeps/score55_efficient_main_controller.py`,
+  `tests/score55_efficient_main_100.json`. Removed from active code.
+- One-time +X boost/slew:29.04 /226.43 s /55.47 kg, no contact. Local AVOID
+  consumed14.25 kg. Source `score55_axis_align_controller.py`; result
+  `tests/score55_axis_align_100.json`. Rejected for promotion.
+- Same slew plus all burn-order shortlist alternatives:26.67 /224.33 s /
+  57.61 kg, no contact. Source `score55_axis_orders_controller.py`; result
+  `tests/score55_axis_orders_100.json`. Rejected for promotion.
+- Tighter residual spin settling:21.99 /254.22 s /56.41 kg, no contact.
+  Source `score55_axis_settled_controller.py`; result
+  `tests/score55_axis_settled_100.json`. It solved large residual orientation
+  drift but did not improve score; do not claim otherwise.
+- Matched-camera prediction-rate experiment is being screened separately with
+  the settled-axis variant. Depth bounds already given a radar velocity retain
+  their entire occupied geometry, but inherit that radar track's forecast
+  uncertainty rather than growing as unknown motion. Unassociated depth,
+  terrain and station handling remain. Source
+  `tests/score_sweeps/score55_axis_camera_controller.py`; result when finished
+  `tests/score55_axis_camera_100.json`.
+
+Current experimental code includes MainAxisSlew/AxisAlignedNavigator/
+MainAxisAttitude and optional shortlist/camera-rate logic. Runtime switches
+EFP_STRONG_AXIS, EFP_ORDER_DIVERSITY and EFP_CAMERA_TRACK_RATE all default0;
+default flight is still the camera-brake baseline. Native copies must record
+which switches are enabled and exact source. The slew is one fixed heading,
+not continuous nose/horizon tracking; physical slew tests include allocator
+cost. `tests/score55_axis_slew_probe.json` and `tests/score55_command_probe.json`
+are actuator diagnostics, not flight scores or official results.
+
+69 focused tests passed after the initial slew addition; the stricter spin
+settling subsequently passed its5 focused tests. New camera-rate logic still
+needs its targeted tests. Historical full-suite claims are not current:
+the user overwrote the old archive file with the prior completion controller,
+so unrelated archived-feature fixtures can be incompatible. Do not silently
+restore rejected controller bundles just to satisfy those fixtures.
+
+Further measured results (2026-11-19, development still in progress):
+
+- First native candidate, `261119_111837_FINAL_SUBMISSION__84e`: official
+  score34.6,235.46 s,49.75 kg,0 J. Exact installed byte SHA
+  `706514fdd293dab2da29896ede93b30ff2e380824dcc4d0d37d88e2a59d6aef7`.
+  Enabled strong-axis/radar-cruise/expected-risk/fine-avoidance. Frozen native
+  trial results in `tests/score55_native_trials.json`. Not a55-point success.
+  It coasted the terminal segment without further fuel; early local avoidance
+  and recovery, not terminal braking, caused this run's excess fuel.
+- Offline seed100, radar transit plus normal-tail/recovery-risk and fine
+  sidesteps with +X slew:48.79,217.88 s,42.22 kg,no modeled contact. Source
+  `score55_fine_avoidance_controller.py`;20 matched seeds100–119 are running.
+  Native34.6 shows that this pilot proxy does not predict native score closely.
+- +Y alignment instead:48.04,244.18 s,38.33 kg,no contact. Its slew consumed
+  6.24 kg versus6.14 kg for +X; the hoped-for large slew saving was falsified.
+  Source `score55_axis_y_controller.py`, switch EFP_MAIN_AXIS_Y default0.
+- Entry-coast pilot:51.76,217.70 s,40.02 kg,no contact; +2.97 points against
+  the matched48.79 pilot. EFP_ENTRY_COAST default0. Checks a constant-gravity
+  first inward crossing of radius48 m and all sensed geometry up to that
+  crossing. Preserves any certified pass, including miss distances below44 m.
+  This differs from the old entry-scope experiment's tangent47 m trajectory.
+  Source `score55_entry_coast_controller.py`;4 new boundary/hull tests pass.
+- Local expected-risk pilot:48.79,217.88 s,42.22 kg,no contact; no pilot gain.
+  EFP_LOCAL_EXPECTED_RISK default0, separately applies the finite-shot physical
+  core/probability/expected damage/recovery cost to local fallback trajectories.
+  A failed fatal/expected-damage coast gate cannot be overridden by the coast
+  supervisor. Next native trial is staged with this one flight-policy change
+  relative to the first native candidate, installed byte SHA
+  `7351432f2d92b64dcb8fa534df8201ded30838afcc84766270c0e39c90e97d52`.
+  Frozen copy `tests/score_sweeps/score55_native_local_risk_controller.py`.
+- `tests/score55_slew_tradeoff.json` models faster isolated turns; it is not
+  a flight result. Faster turns saved wall time but most fuel savings reflected
+  less useful translation, so do not assume the full fuel difference is gain.
+
+Latest continuation (native target remains unmet):
+
+-20-seed first-candidate comparison finished: median45.15 vs38.275; p10–p90
+  40.485–48.691, range29.61–48.94,20 arrivals/no modeled contacts. Median
+  T220.33 vs264.97 s; fuel43.475 vs43.725 kg. Median-score delta6.875;
+  paired bootstrap95% interval[5.23,10.365]. Summary
+  `tests/score55_fine_axis_risk_summary.json`. This is measured offline,
+  not a native55 success and not an estimate of a native median.
+- Local expected-risk native trials scored4.1 (225.10 s,74.37 kg,0 J) and
+  16.5 (243.20 s,62.12 kg,0 J), folders `261119_114238...641` and
+  `261119_114648...f8a`. Rejected. Exact sources/settings/official fields
+  are in `tests/score55_native_trials.json`; startup source hashes are in
+  the sibling `FINAL_SUBMISSION_PySys_Controller.log`, not the main log.
+- Near boundary-entry goal plus entry-coast native diagnostic scored−16.6,
+  262.30 s,84.30 kg,0 J, `261119_115246_FINAL_SUBMISSION__53b`, byte SHA
+  `3ecf2666a0d08b873c63c1ad652a319dc949ba1d6bab7006f94c588f59a6c7bf`.
+  Early avoidance/recovery again dominated; no evidence for promotion.
+  Offline seed100 was33.41/227.02 s/52.09 kg. EFP_NEAR_ENTRY_GOAL default0.
+- EFP_RETAIN_LOCAL_SPEED keeps existing-speed route alternatives despite a
+  lower advisory chunk speed, with all existing collision rollouts retained.
+  Seed100 was identical to48.79/217.88 s/42.22 kg; no demonstrated gain.
+- EFP_WAIT_FOR_GAP prices0/3/6/10 s unpowered prefixes (only beyond600 m,
+  closing>1.5 m/s), preserving retained absolute ignition times. Different
+  from the old0/1/2/4 s experiment: tested with strong-axis/radar transit/
+  normal-tail risk/fine avoidance/entry coast. Pilot43.08/262.35 s/39.50 kg,
+  versus entry-coast51.76; rejected. No native trial needed on that evidence.
+- Native-order offline diagnostic fixes spawn RNG8193 and varies radar noise
+  only: first candidate47.89/214.08 s/43.62 kg; boundary entry39.69/215.77 s/
+  49.44 kg. Both have no modeled contacts. This mode still does not reproduce
+  native score, timing, camera geometry or engine meshes.
+- Investigating radar clock alignment before further trajectory tuning:
+  official Radar.py defines t0 only AFTER its500 initial API/report reads.
+  Controller uses a separate radar_epoch. No measured offset yet, so do not
+  assert it caused the regressions. Diagnostic-only native source installed
+  SHA `4e9264be26a0cf1c87090603fc047785c2cc5c6e0b8e8f579b9379402bf7c859`:
+  first-candidate flags only, adds radarLag/track counts to five-second logs.
+  Frozen `score55_native_radar_timing_controller.py`. Next run measures this.
+  Do not silently adjust timestamps until measured.
+- User explicitly authorized sole agent operation of the simulator during
+  trials and will leave it untouched. Computer-use window is currently977x640;
+  refresh observed coordinates. Official config/scoring/allocator/jet CSV
+  hashes were rechecked unchanged. No commits or pushes.
+
+All current runtime experiments default off in the workspace Controller.py.
+The installed native candidate differs by explicit flag defaults only. The
+installed baseline has now been replaced for authorized trials; its frozen
+workspace backup remains `momentum_55_baseline.py`. No official sim file changed.
+New risk/sidestep tests2 pass. A broad focused run had82 passes and6 failures
+in pre-existing adapter tests for retired Dogleg/trace/camera-recovery flags;
+those failures predate this task's experimental policies and must not trigger
+restoration of rejected controller bundles. Do not claim the full suite passes.
+
+The55 native target is NOT achieved. Continue experimentation and native
+verification; do not end this task by claiming proxy success. No commit or
+push has been performed.
+
+## Camera-brake baseline — superseded by the active development task above
 
 **Latest user direction, 2026-11-19:** the user again restored original
 SCORE_MOMENTUM and explicitly requests only removal of fuel-burning braking

@@ -1,0 +1,82 @@
+{
+  "kind": "offline_slew_diagnostic_no_obstacles",
+  "results": [
+    {
+      "translation": 0.0,
+      "complete": true,
+      "time_s": 11.350000000000144,
+      "fuel_kg": 3.1418855227183733,
+      "useful_thrust_dv": -0.0041048484371140614,
+      "final_speed": 0.582461271551536,
+      "position_gain": 7.277397872965624,
+      "angle_deg": 0.9146012466934266,
+      "rate": 0.0039036674785662344
+    },
+    {
+      "translation": 0.025,
+      "complete": true,
+      "time_s": 11.833333333333501,
+      "fuel_kg": 6.2958225132108465,
+      "useful_thrust_dv": 1.1220803892059366,
+      "final_speed": 1.7037715848819186,
+      "position_gain": 14.07395676035877,
+      "angle_deg": 0.6938814225654596,
+      "rate": 0.004800069023563327
+    },
+    {
+      "translation": 0.05,
+      "complete": true,
+      "time_s": 13.383333333333578,
+      "fuel_kg": 7.380362590662016,
+      "useful_thrust_dv": 1.3479521253743096,
+      "final_speed": 1.9141466904542759,
+      "position_gain": 17.615482165814193,
+      "angle_deg": 0.3405513332438403,
+      "rate": 0.0048260723937588726
+    },
+    {
+      "translation": 0.1,
+      "complete": true,
+      "time_s": 35.61666666666593,
+      "fuel_kg": 18.79020003181762,
+      "useful_thrust_dv": 3.5845780161747767,
+      "final_speed": 3.9285058975215157,
+      "position_gain": 83.28151368135816,
+      "angle_deg": 1.1625048042241775,
+      "rate": 0.004712530481014203
+    },
+    {
+      "translation": 0.2,
+      "complete": false,
+      "time_s": 40.01666666666568,
+      "fuel_kg": 26.70298992358733,
+      "useful_thrust_dv": 4.5846619548469665,
+      "final_speed": 4.884590674691329,
+      "position_gain": 109.71195986742929,
+      "angle_deg": 13.143900549056285,
+      "rate": 0.11884394867974432
+    },
+    {
+      "translation": 0.3,
+      "complete": false,
+      "time_s": 40.01666666666568,
+      "fuel_kg": 25.899263424112046,
+      "useful_thrust_dv": 4.516192001267333,
+      "final_speed": 4.816122039241625,
+      "position_gain": 110.31156682890374,
+      "angle_deg": 63.17375275303593,
+      "rate": 0.012948366942795102
+    },
+    {
+      "translation": 0.5,
+      "complete": false,
+      "time_s": 40.01666666666568,
+      "fuel_kg": 25.893054968601398,
+      "useful_thrust_dv": 4.5945344982664285,
+      "final_speed": 4.894462946008054,
+      "position_gain": 112.06818045395777,
+      "angle_deg": 61.32024426186955,
+      "rate": 0.04874377919979534
+    }
+  ]
+}

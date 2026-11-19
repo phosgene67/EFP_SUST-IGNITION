@@ -1,0 +1,121 @@
+{
+  "kind": "measured_native_report_time_lag_not_exact_clock_offset",
+  "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_115935_FINAL_SUBMISSION__4bf",
+  "samples": [
+    [
+      "WAIT_RADAR",
+      0.5,
+      0.0,
+      0
+    ],
+    [
+      "LAUNCH",
+      5.5,
+      1.315,
+      0
+    ],
+    [
+      "LAUNCH",
+      10.5,
+      1.095,
+      0
+    ],
+    [
+      "ALIGN_MAIN_AXIS",
+      15.5,
+      0.878,
+      7
+    ],
+    [
+      "ALIGN_MAIN_AXIS",
+      20.5,
+      1.129,
+      141
+    ],
+    [
+      "ALIGN_MAIN_AXIS",
+      25.6,
+      1.005,
+      279
+    ],
+    [
+      "AVOID",
+      30.6,
+      1.354,
+      349
+    ],
+    [
+      "AVOID",
+      35.7,
+      1.287,
+      383
+    ],
+    [
+      "AVOID",
+      40.8,
+      1.324,
+      386
+    ],
+    [
+      "IMPULSE_BURN",
+      45.8,
+      0.813,
+      391
+    ],
+    [
+      "IMPULSE_BURN",
+      50.9,
+      0.832,
+      391
+    ],
+    [
+      "IMPULSE_BURN",
+      56.0,
+      0.838,
+      399
+    ],
+    [
+      "IMPULSE_BURN",
+      61.1,
+      0.872,
+      409
+    ],
+    [
+      "IMPULSE_BURN",
+      66.3,
+      0.949,
+      412
+    ],
+    [
+      "IMPULSE_BURN",
+      71.4,
+      1.033,
+      418
+    ],
+    [
+      "IMPULSE_BURN",
+      76.5,
+      1.006,
+      419
+    ],
+    [
+      "IMPULSE_BURN",
+      81.6,
+      1.019,
+      420
+    ],
+    [
+      "IMPULSE_COAST",
+      86.7,
+      1.023,
+      430
+    ]
+  ],
+  "interpretation": "Lag includes epoch difference, publication batching and request latency. No exact offset claim.",
+  "synthetic_offset_trial": {
+    "offset_s": 0.8,
+    "unaligned_score": 48.15,
+    "aligned_score": 47.89,
+    "note": "No offline score gain. Geometry correction is unit-tested; native score effect remains unmeasured."
+  }
+}

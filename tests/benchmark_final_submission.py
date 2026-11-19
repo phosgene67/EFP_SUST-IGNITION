@@ -92,7 +92,7 @@ def render_scene(namespace, location, rotation, name, objects, radii, target, st
     return (depth*100.).reshape(height, width)
 
 
-def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async', experiments=(), rng_mode='legacy'):
+def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mode='normal', fuel_audit=False, axis_mode=False, ground_height=0., drift_bias=None, plan_latency=0., planning_mode='async', experiments=(), rng_mode='legacy', radar_clock_offset=0.):
     dt = 1./control_hz
     worker = None
     if plan_latency > 0.:
@@ -105,8 +105,19 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
+    if 'strong-axis' in experiments:
+        planner = namespace['AxisAlignedNavigator']()
     if 'dogleg' in experiments:
         planner = namespace['DoglegNavigator']()
+    for experiment, attribute in (('calibrated-launch', 'calibrated_launch'),
+            ('efficient-x', 'efficient_x'), ('powered-launch-slew', 'powered_launch_slew'),
+            ('force-aligned-slew', 'force_aligned_slew'), ('lookahead-fuel', 'lookahead_fuel'),
+            ('departure-risk', 'departure_risk'), ('soft-risk-gates', 'soft_risk_gates'),
+            ('score-entry-lock', 'score_entry_lock'), ('physical-risk', 'physical_risk'),
+            ('sensor-settle', 'sensor_settle'), ('risk-diagnostics', 'risk_diagnostics'),
+            ('near-risk-horizon', 'risk_horizon_limit')):
+        if experiment in experiments and not hasattr(planner, attribute):
+            raise ValueError(f'{experiment} is absent from the selected controller source')
     if 'ground-lateral' in experiments:
         if 'dogleg' not in experiments:
             raise ValueError('ground-lateral requires dogleg')
@@ -119,6 +130,66 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         if not hasattr(planner, 'order_diversity'):
             raise ValueError('This controller revision does not implement order-diversity')
         planner.order_diversity = True
+    if 'camera-track-rate' in experiments:
+        planner.matched_camera_prediction = True
+    if 'radar-cruise' in experiments:
+        planner.radar_cruise_only = True
+    if 'expected-risk' in experiments:
+        planner.expected_risk = True
+    if 'detour-diversity' in experiments:
+        planner.detour_diversity = True
+    if 'fine-avoidance' in experiments:
+        planner.fine_avoidance = True
+    if 'efficient-main' in experiments:
+        planner.efficient_main = True
+    if 'calibrated-launch' in experiments:
+        planner.calibrated_launch = True
+    if 'efficient-x' in experiments:
+        planner.efficient_x = True
+    if 'powered-launch-slew' in experiments:
+        planner.powered_launch_slew = True
+    if 'force-aligned-slew' in experiments:
+        planner.force_aligned_slew = True
+    if 'main-axis-y' in experiments:
+        if 'strong-axis' not in experiments:
+            raise ValueError('main-axis-y requires strong-axis')
+        planner.main_axis = 1
+    if 'main-axis-z' in experiments:
+        if 'strong-axis' not in experiments:
+            raise ValueError('main-axis-z requires strong-axis')
+        planner.main_axis = 2
+    if 'entry-coast' in experiments:
+        planner.entry_coast = True
+    if 'local-expected-risk' in experiments:
+        planner.local_expected_risk = True
+    if 'near-entry-goal' in experiments:
+        planner.near_entry_goal = True
+    if 'retain-local-speed' in experiments:
+        planner.retain_local_speed = True
+    if 'wait-for-gap' in experiments:
+        planner.wait_for_gap = True
+    if 'radar-clock' in experiments:
+        planner.radar_clock_enabled = True
+    if 'accept-safe-pass' in experiments:
+        planner.accept_safe_pass = True
+    if 'kinetic-impact' in experiments:
+        planner.impact_energy_factor = .5
+    if 'sensor-settle' in experiments:
+        planner.sensor_settle = True
+    if 'physical-risk' in experiments:
+        planner.physical_risk = True
+    if 'risk-diagnostics' in experiments:
+        planner.risk_diagnostics = True
+    if 'near-risk-horizon' in experiments:
+        planner.risk_horizon_limit = 10.
+    if 'score-entry-lock' in experiments:
+        planner.score_entry_lock = True
+    if 'lookahead-fuel' in experiments:
+        planner.lookahead_fuel = True
+    if 'departure-risk' in experiments:
+        planner.departure_risk = True
+    if 'soft-risk-gates' in experiments:
+        planner.soft_risk_gates = True
     if 'recheck-coast' in experiments:
         if not hasattr(planner, 'recheck_coast'):
             raise ValueError('This controller revision does not implement recheck-coast')
@@ -153,6 +224,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         planner = namespace['StagedNavigator']()
         gate = namespace['FlightFuelLimit']()
     attitude_type = (namespace.get('FreeAttitude') if attitude_mode == 'normal' else None)
+    if 'strong-axis' in experiments:
+        attitude_type = lambda: namespace['MainAxisAttitude'](planner)
     if 'camera-recovery' in experiments:
         if 'ViewRecoveryAttitude' not in namespace or attitude_mode != 'normal':
             raise ValueError('camera-recovery requires ViewRecoveryAttitude and normal attitude mode')
@@ -184,7 +257,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             closest += rng.normal(0., 2.)
         reports[index] = [position,
             [closest, (rock_velocities[index]-vel).dot(relative/max(distance, 1e-9))
-             +rng.normal(0., .02), diameters[index]*rng.normal(1., .05)], [stamp, 0., 0.]]
+             +rng.normal(0., .02), diameters[index]*rng.normal(1., .05)], [stamp-radar_clock_offset if stamp else 0., 0., 0.]]
     for index in range(count):
         measure(index, 0.)
     pending, timings = [], []
@@ -467,7 +540,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--experiment', action='append', default=[],
-                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg', 'ground-lateral'),
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg', 'ground-lateral', 'strong-axis', 'camera-track-rate', 'radar-cruise', 'expected-risk', 'detour-diversity', 'fine-avoidance', 'efficient-main', 'main-axis-y', 'main-axis-z', 'entry-coast', 'local-expected-risk', 'near-entry-goal', 'retain-local-speed', 'wait-for-gap', 'radar-clock', 'accept-safe-pass', 'kinetic-impact', 'sensor-settle', 'physical-risk', 'calibrated-launch', 'efficient-x', 'powered-launch-slew', 'force-aligned-slew', 'risk-diagnostics', 'near-risk-horizon', 'score-entry-lock', 'lookahead-fuel', 'departure-risk', 'soft-risk-gates'),
                         help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')
@@ -476,6 +549,7 @@ if __name__ == '__main__':
     parser.add_argument('--plan-latency', type=float, default=0., help='Synthetic planning delay in simulation seconds; isolates held-command timing')
     parser.add_argument('--planning-mode', choices=('async', 'blocking'), default='async')
     parser.add_argument('--allocator-solver', choices=('highs', 'native'), default='highs')
+    parser.add_argument('--radar-clock-offset', type=float, default=0., help='Synthetic radar epoch lag, seconds; stress test only')
     parser.add_argument('--rng-mode', choices=('legacy', 'native-order'), default='legacy',
                         help='Native-order uses numeric debris order, fixed spawn RNG 8193 and all official radar noise draws; seed varies radar noise only')
     parser.add_argument('--axis-thrust', action='store_true', help='Experimental body-axis jet pulses')
@@ -513,7 +587,7 @@ if __name__ == '__main__':
                   scenario_sha256=hashlib.sha256(Path(args.sim_config).read_bytes()).hexdigest(),
                   debris_count=len(scene['positions']), seed=args.seed,
                   control_hz=args.control_hz, camera_requests_hz=4., benchmark_version=8 if args.rng_mode == 'native-order' else 7,
-                  rng_mode=args.rng_mode,
+                  rng_mode=args.rng_mode, radar_clock_offset_s=args.radar_clock_offset,
                   plan_latency_s=args.plan_latency, planning_mode=args.planning_mode,
                   fuel_plan_target_override=args.fuel_plan_target,
                   allocator_solver=args.allocator_solver,
@@ -524,6 +598,6 @@ if __name__ == '__main__':
                   drift_bias_m_s2=args.drift_bias,
                   limitations='Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.',
                   result=run(algorithm, Allocator(args.jet_config, 'revised simplex' if args.allocator_solver == 'native' else 'highs'), scene, args.max_time, args.seed, args.control_hz,
-                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode, args.experiment, args.rng_mode))
+                             args.attitude_mode, args.fuel_audit, args.axis_thrust, args.ground_plane, args.drift_bias, args.plan_latency, args.planning_mode, args.experiment, args.rng_mode, args.radar_clock_offset))
     (root/args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)

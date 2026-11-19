@@ -1,0 +1,101 @@
+{
+  "kind": "modeled_no_obstacles",
+  "rows": [
+    {
+      "rate_cap": 0.4,
+      "stopping": 0.03,
+      "settling_gain": 1.5,
+      "body_axis": 0,
+      "complete": true,
+      "time_s": 15.016666666666666,
+      "fuel_kg": 6.128825068310991,
+      "useful_thrust_dv": 1.0484818038791035,
+      "overhead_kg": 1.5969496999371158,
+      "final_rate": 9.787703410004416e-05
+    },
+    {
+      "rate_cap": 0.4,
+      "stopping": 0.03,
+      "settling_gain": 1.5,
+      "body_axis": 1,
+      "complete": true,
+      "time_s": 14.866666666666667,
+      "fuel_kg": 6.228771099852273,
+      "useful_thrust_dv": 1.0911207451283507,
+      "overhead_kg": 1.512596522025179,
+      "final_rate": 9.96554035521068e-05
+    },
+    {
+      "rate_cap": 0.6,
+      "stopping": 0.05,
+      "settling_gain": 4.0,
+      "body_axis": 0,
+      "complete": true,
+      "time_s": 11.183333333333334,
+      "fuel_kg": 5.502331378451554,
+      "useful_thrust_dv": 0.8745829693729202,
+      "overhead_kg": 1.7221026688673517,
+      "final_rate": 9.549564944268989e-05
+    },
+    {
+      "rate_cap": 0.6,
+      "stopping": 0.05,
+      "settling_gain": 4.0,
+      "body_axis": 1,
+      "complete": true,
+      "time_s": 10.866666666666667,
+      "fuel_kg": 5.335616567979436,
+      "useful_thrust_dv": 0.9258421037941751,
+      "overhead_kg": 1.3338294032762201,
+      "final_rate": 9.375193827785238e-05
+    },
+    {
+      "rate_cap": 0.8,
+      "stopping": 0.06,
+      "settling_gain": 4.0,
+      "body_axis": 0,
+      "complete": true,
+      "time_s": 10.866666666666667,
+      "fuel_kg": 5.457824367358803,
+      "useful_thrust_dv": 0.8320404532945824,
+      "overhead_kg": 1.8614780866453446,
+      "final_rate": 9.994232803337828e-05
+    },
+    {
+      "rate_cap": 0.8,
+      "stopping": 0.06,
+      "settling_gain": 4.0,
+      "body_axis": 1,
+      "complete": true,
+      "time_s": 10.466666666666667,
+      "fuel_kg": 5.123661676486191,
+      "useful_thrust_dv": 0.8856375683691048,
+      "overhead_kg": 1.2956514367765157,
+      "final_rate": 9.708060069280657e-05
+    },
+    {
+      "rate_cap": 0.6,
+      "stopping": 0.04,
+      "settling_gain": 4.0,
+      "body_axis": 0,
+      "complete": true,
+      "time_s": 11.716666666666667,
+      "fuel_kg": 5.619187699817506,
+      "useful_thrust_dv": 0.9305771360849537,
+      "overhead_kg": 1.59693420357888,
+      "final_rate": 9.655376919327668e-05
+    },
+    {
+      "rate_cap": 0.6,
+      "stopping": 0.04,
+      "settling_gain": 4.0,
+      "body_axis": 1,
+      "complete": true,
+      "time_s": 11.433333333333334,
+      "fuel_kg": 5.706437275781939,
+      "useful_thrust_dv": 0.9944166920836197,
+      "overhead_kg": 1.4082486986597935,
+      "final_rate": 9.597607182108961e-05
+    }
+  ]
+}

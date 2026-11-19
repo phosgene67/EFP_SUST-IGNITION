@@ -17,7 +17,7 @@ class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
                     clean_main_burn=False, camera_recovery=False, reset_clock=False,
                     flight_trace=False, trace_failure=False, dogleg=False, ground_lateral=False,
-                    angular_velocity=(0., 0., 0.)):
+                    angular_velocity=(0., 0., 0.), runtime_flags=None):
         # Only archived opt-in experiments execute the saved experimental source.
         source = (ARCHIVED_SOURCE if any((clean_main_burn, camera_recovery, flight_trace,
                                          dogleg, ground_lateral)) else SOURCE)
@@ -86,7 +86,7 @@ class AdapterTests(unittest.TestCase):
                     'EFP_DOGLEG': '1' if dogleg else '0',
                     'EFP_GROUND_LATERAL': '1' if ground_lateral else '0',
                     'EFP_FLIGHT_TRACE': '1' if flight_trace else '0',
-                    'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
+                    'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0', **(runtime_flags or {})}):
             self.runtime = {'__file__': str(source)}
             with self.assertRaises(StopSimulation):
                 exec(compile(source.read_text(), str(source), 'exec'), self.runtime)

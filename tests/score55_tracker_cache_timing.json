@@ -1,0 +1,16 @@
+{
+  "kind": "measured_offline_500_track_microbenchmark",
+  "rows": [
+    {
+      "cached": false,
+      "median_ms": 72.16044999999838,
+      "p95_ms": 81.71231000000603
+    },
+    {
+      "cached": true,
+      "median_ms": 14.523850000003335,
+      "p95_ms": 19.781380000009108
+    }
+  ],
+  "max_output_error": 0.0
+}

@@ -6,45 +6,29 @@ All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
 
 ### Current Controller
 
-The controller restores **SCORE_MOMENTUM** from commit `4a8507e` for
-`FINAL_SUBMISSION.simconf`. It evaluates finite burns and coast trajectories
-against the time, fuel and damage score. Fuel use has no command cutoff or
-staged reserve. All thrust stops when the scoring safe zone is reached.
+The selected controller uses **SCORE_MOMENTUM** for
+`FINAL_SUBMISSION.simconf`, with a single +X-axis turn, radar-based cruise
+checks, scored finite burns, small local avoidance maneuvers, and cached radar
+fits. RGB/depth cameras remain active for launch terrain and the station hull.
+Thrust stops after confirmed entry into the official 50 m safe zone. There is
+no hard fuel cutoff and no continuous nose-pointing servo.
 
-The original 20-seed offline baseline had median score 38.28, median entry time
-264.97 s and median entry fuel 43.73 kg. All 20 reached the safe zone without
-modeled pre-entry contact. These are proxy results. A native 60–70 median
-remains unverified.
+Selected defaults are `EFP_STRONG_AXIS=1`, `EFP_RADAR_CRUISE=1`,
+`EFP_EXPECTED_RISK=1`, `EFP_FINE_AVOIDANCE=1`, and `EFP_TRACK_CACHE=1`.
+Later experiments were rejected and archived; dogleg is not the active planner.
 
-Experiments use environment flags. The user's commit `65f0b41` enabled dogleg
-by default; the Task 1 diagnostic update preserves that setting. Other
-experiment defaults remain off. See [Task 1 diagnostics](DOGLEG_DIAGNOSTICS.md).
-That diagnostic-only update completed 20 matched offline runs: all entry
-metrics/fuel audits were unchanged, and all 20 runs hit `no_safe_lane`.
+Finalized at the user's request with the following measured limitation. The selected family has a measured native best of **47.2**. Two fresh native
+validation runs scored43.5 and24.2 (mean33.85), both with zero scored damage.
+The requested47-50 average was not reproduced; no claim of that average is made.
+The matching 20-seed offline cohort had median45.15, entry220.33 s,
+fuel43.475 kg and no modeled contacts. Those proxy results do not establish
+native performance. See [experiment evidence](tests/score55_experiment_report.md)
+and [maintained context](context.md) for source hashes and official results.
 
-| Flag | Experiment | Status |
-| --- | --- | --- |
-| `EFP_CLEAN_MAIN_BURN=1` | Small transverse acceleration component during the main burn | Twenty-seed median gain +2.06, 95% interval -0.81 to +7.63. Inconclusive and rejected for promotion. |
-| `EFP_ORDER_DIVERSITY=1` | Preserve a candidate for each body-axis burn order before collision checks | Twenty-seed median gain 0.00, 95% interval -0.07 to +2.44. Inconclusive and rejected for promotion. |
-| `EFP_RECHECK_COAST=1` | Revalidate a completed retained coast against the safe passage requirement | Twenty-seed median change -0.31, 95% interval -0.62 to +0.74. Unit regression fixed; no demonstrated flight-score gain, so it stays off. |
-| `EFP_INERTIAL_CAPTURE=1` | Keep finite-burn/coast planning through a camera-observed terminal approach | Twenty-seed median +0.815 points; marginal at the reported score precision. Stays off pending stronger evidence. |
-| `EFP_VECTOR_BURN=1` | Offer a single fixed-direction translation burn followed by coast | Twenty-seed median -1.90 points with higher fuel. Rejected for promotion. |
-| `EFP_EXACT_ARCS=1` | Solve and execute both finite burns of a curved detour | Both 20-seed revisions had one incomplete arrival. Rejected. |
-| `EFP_COAST_WINDOWS=1` | Predict short coasts before burning through moving debris | Reduced fuel at 600 m by about 2 kg, but one arrival timed out. Rejected. |
-| `EFP_CAMERA_RECOVERY=1` | Maintain station camera coverage during a clear coast | With coast windows, restored 20/20 arrivals but reduced median score. Stays off. |
-| `EFP_ENTRY_SCOPE=1` | Evaluate collision checks up to predicted safe-zone entry | Twenty-seed isolated trial showed no meaningful median gain. Stays off. |
-| `EFP_TRACK_CACHE=1` | Reuse fits for unchanged radar samples | All 20 modeled entry results matched the original; faster tracker fixture. Native score benefit unverified. Stays off. |
-| `EFP_DOGLEG=1` | Radar-only one-bend lanes, finite burns and one initial +X slew | Twenty-seed median score fell 10.385 points; higher fuel and costly search. Rejected; keep off. [Results](DOGLEG.md). |
-| `EFP_GROUND_LATERAL=1` | Radial-ground-aligned lateral basis within Dogleg | Default off. Twenty-seed median delta -1.91 points, interval -8.27 to +7.12; no demonstrated gain. [Review and results](GROUND_LATERAL.md). |
-
-Set `EFP_DOGLEG=0` explicitly to select the SCORE_MOMENTUM baseline in this
-checkout. No tested trajectory change has established the requested
-60-point native result or 30–35 kg fuel use by 600 m remaining.
-
-For a native diagnostic run, set `EFP_FLIGHT_TRACE=1` before launching the
-simulator, leaving algorithm flags off. Bounded `IGNITION_STATE` JSON records
-are written to simulator logs every five seconds. They include pose, commands,
-fuel and sensor samples needed to investigate the native/offline fuel gap.
+Historical experiment flags and their results are documented in
+[the experiment record](tests/score55_experiment_report.md). They are not
+required to run the selected controller. Native progress and official success
+alerts are written to the simulator's `FINAL_SUBMISSION.log`.
 
 [Score tuning and verification](SCORE_TUNING.md) contains the score calculation,
 matched results, phase-fuel audit, limitations and reproduction commands.
@@ -63,11 +47,16 @@ See [Earlier fusion design](FINAL_DESIGN.md) for sensor implementation details,
 historical offline results, and required live camera calibration. The earlier
 [qualification guide](QUALIFICATION.md) preserves the FAST12 development record.
 
-Run the offline tests with Python and NumPy:
+Run the selected completion and runtime checks with the simulator's Python:
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -p test_momentum_capture.py -v
+python -m unittest discover -s tests -p test_active_runtime_profiles.py -v
 ```
+
+The wider test archive includes retired Dogleg and trace adapter expectations.
+The final validation uses125 targeted current/archived checks; this is not a
+claim that every historical test is compatible with the selected controller.
 
 ### Local Repository Setup
 

@@ -1,0 +1,89 @@
+{
+  "kind": "modeled_actuator_and_constant_bias_no_obstacles",
+  "assumed_initial_time_s": 20.2,
+  "assumed_initial_fuel_kg": 4.83,
+  "assumed_residual_m_s2": [
+    0.0023,
+    -0.0008,
+    0.0016
+  ],
+  "rows": [
+    {
+      "linear_request": 0.025,
+      "angular_limit": 0.02,
+      "sparse_body_axis": false,
+      "complete": true,
+      "stage_time_s": 15.016666666666666,
+      "stage_fuel_kg": 6.128999611296918,
+      "stage_end_speed": 1.6087911302066211,
+      "modeled_clean_continuation_score": 47.80879760612519,
+      "modeled_arrival_s": 230.21666666666667
+    },
+    {
+      "linear_request": 0.05,
+      "angular_limit": 0.05,
+      "sparse_body_axis": false,
+      "complete": true,
+      "stage_time_s": 15.0,
+      "stage_fuel_kg": 5.695689860011425,
+      "stage_end_speed": 1.5078939995951242,
+      "modeled_clean_continuation_score": 47.710851979857026,
+      "modeled_arrival_s": 240.2
+    },
+    {
+      "linear_request": 0.1,
+      "angular_limit": 0.05,
+      "sparse_body_axis": false,
+      "complete": true,
+      "stage_time_s": 15.066666666666666,
+      "stage_fuel_kg": 6.634736819788881,
+      "stage_end_speed": 1.6738681307485275,
+      "modeled_clean_continuation_score": 47.27341462262223,
+      "modeled_arrival_s": 240.26666666666665
+    },
+    {
+      "linear_request": 0.2,
+      "angular_limit": 0.05,
+      "sparse_body_axis": false,
+      "complete": true,
+      "stage_time_s": 23.966666666666665,
+      "stage_fuel_kg": 10.755678696240267,
+      "stage_end_speed": 2.3689413931678374,
+      "modeled_clean_continuation_score": 46.07223708882303,
+      "modeled_arrival_s": 239.16666666666666
+    },
+    {
+      "linear_request": 0.3,
+      "angular_limit": 0.05,
+      "sparse_body_axis": false,
+      "complete": true,
+      "stage_time_s": 32.38333333333333,
+      "stage_fuel_kg": 15.923216239458421,
+      "stage_end_speed": 3.1588158058601272,
+      "modeled_clean_continuation_score": 43.52641655392049,
+      "modeled_arrival_s": 237.58333333333331
+    },
+    {
+      "linear_request": 0.2,
+      "angular_limit": 0.05,
+      "sparse_body_axis": true,
+      "complete": true,
+      "stage_time_s": 24.583333333333332,
+      "stage_fuel_kg": 8.901934837351632,
+      "stage_end_speed": 2.1929718244594265,
+      "modeled_clean_continuation_score": 47.01323235801455,
+      "modeled_arrival_s": 239.78333333333333
+    },
+    {
+      "linear_request": 0.3,
+      "angular_limit": 0.05,
+      "sparse_body_axis": true,
+      "complete": true,
+      "stage_time_s": 30.599999999999998,
+      "stage_fuel_kg": 11.35472316491586,
+      "stage_end_speed": 2.6898666406879963,
+      "modeled_clean_continuation_score": 46.49930622400193,
+      "modeled_arrival_s": 245.8
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "not_selected_no_verified_score_gain",
+  "run": {
+    "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_171512_FINAL_SUBMISSION__e82",
+    "profile": "SCORE_MOMENTUM",
+    "source_sha256": null,
+    "seed": null,
+    "has_fuel_limit": false,
+    "clean_main_burn": false,
+    "order_diversity": false,
+    "recheck_coast": false,
+    "inertial_capture": null,
+    "vector_burn": null,
+    "exact_arcs": null,
+    "camera_recovery": null,
+    "coast_windows": null,
+    "status": "official_success",
+    "score": 28.8,
+    "time_s": 240.46,
+    "fuel_kg": 53.32,
+    "damage_J": 0.0,
+    "entry_distance_m": 49.92,
+    "score_from_reported_fields": 28.81101666250797,
+    "score_rounding_difference": -0.011016662507969954,
+    "controller_file_sha256": "8109a007bf1ba831ea4310c9adc3fe13f72beece640e0ea3604f96453290ae21"
+  }
+}
