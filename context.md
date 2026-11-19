@@ -5,7 +5,79 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
-## Current authoritative state: SCORE_MOMENTUM with completion-thrust fix
+## Current authoritative state: original Momentum with camera-wait brake removed
+
+**Latest user direction, 2026-11-19:** the user again restored original
+SCORE_MOMENTUM and explicitly requests only removal of fuel-burning braking
+near200 m remaining. This supersedes the previous completion-fix selection.
+Do not restore the prior controller or add boost, planner, camera or test-suite
+refactors while performing this narrow fix.
+
+At this task's start, HEAD was `31e139c`, the working tree was clean, and
+Controller.py exactly matched `temp_controller/score_momentum_controller.py`
+and original `4a8507e` (normalized SHA
+`2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af`).
+The user has overwritten `temp_controller/currentcontroller.py` with the last
+completion-fix version, normalized SHA
+`5fd084a2121ceb7772e084caa391df7261d39e4dddb1a20bc6d5ab086c0dbaf3`.
+It is no longer the old Dogleg archive described in the historical notes.
+Neither saved controller is modified by this task.
+
+**Measured native evidence:** read recent FINAL_SUBMISSION logs under
+`C:/Users/Asus/AppData/Local/SimDynamX/STPro/Logs`. In run
+`261119_080233_FINAL_SUBMISSION__c70`, at215.8 m remaining the rover was coasting
+at4.68 m/s with50.38 kg fuel used. At193.3 m it entered WAIT_SHIP_CAMERA;
+by111.7 m it had slowed to0.03 m/s and used68.50 kg. The camera-wait gate,
+not a docking requirement, caused that observed pre-entry stop. Run
+`261119_075432_FINAL_SUBMISSION__1da` shows the same gate near193.7 m and later
+a stop outside the sphere near54 m. These are native observations, not models.
+
+Recent official successes were17.7 /281.61 s /56.19 kg /0 J in
+`261119_091430_FINAL_SUBMISSION__6c8`,22.8 /264.58 s /54.43 kg /0 J in
+`261119_090934_FINAL_SUBMISSION__35d`, and35.1 /268.49 s /44.70 kg /0 J in
+`261119_083947_FINAL_SUBMISSION__467`. The newest folder
+`261119_093216_FINAL_SUBMISSION__2f5` has no official success/flight telemetry
+in its inspected FINAL_SUBMISSION.log: the lobby timed out waiting60 s for
+the ApplyGravity remote to report loaded. Its ApplyGravity log also reports
+that server timeout; it does not contain a Python controller traceback. This
+folder is a startup failure, not a scored flight. Source hashes and seeds are absent;
+do not claim a controlled version comparison from these profile labels.
+The17.7 run already used54.12 kg at207 m, then coasted with constant fuel until
+near67 m; most of that run's fuel cost predates the terminal region. This patch
+does not promise to recover all of the observed score loss.
+
+**Selected patch:** only `CaptureApproach.goal` changes. Remove its automatic
+`distance <210 and not camera_ready -> WAIT_SHIP_CAMERA, cap0` branch. Inside
+210 m, missing station camera coverage also no longer applies the abort/braking
+speed cap. Retain the original distant cap,47 m tangent interception, detected
+obstacle checks, blocked-route handling, course trims, burn planner and all
+other Momentum behavior. No new flags or parameters. The user's restored
+post-entry behavior is deliberately left as restored; the earlier completion
+patch is not reapplied. Connection boilerplate, SetCommand, camera helpers and
+STU4-Sim remain unchanged.
+
+**Validation:**64 focused tests pass: new `test_momentum_camera_brake`, plus
+`test_controller`, `test_final_navigation`, `test_camera_fusion` and
+`test_rolling_chunks`. Four new regressions verify the old camera stop versus
+the new capture pass, identical distant/camera-observed guidance, retained
+known-obstacle handling, and the actual Shooting-to-Economy handoff choosing
+zero-thrust COAST toward a predicted pass inside50 m without station coverage.
+This is functional/model validation, not a new measured native score or a
+20-seed scoring experiment. Older202-test claims below apply to the previous
+source and archive contents; the full historical suite is not claimed passing
+after the user's rollback. Existing unrelated tests are not changed here.
+
+AST comparison against the saved original finds only CaptureApproach changed;
+the connection prefix is identical. Selected normalized controller SHA:
+`a7cb33d7ba02c9d400a0a55bef849e34d2a7c2fed6dc6484916a9a5928c8b2a4`;
+deployed-byte SHA:
+`9dd3102704aff30571ee5b51d519b1ac93ab9cea8b6024b04718e09d2e9c91c3`.
+Remaining verification: native run should no longer enter WAIT_SHIP_CAMERA
+solely on crossing210 m, should retain enough guidance to enter the50 m sphere,
+and should be evaluated by its official entry time/fuel/damage/score. No native
+run, deployment, commit or push is performed during this fix.
+
+## Previous completion-fix task — superseded by the user's rollback
 
 **Latest user direction, 2026-11-19:** the user manually restored SCORE_MOMENTUM
 because subsequent versions performed worse in their testing. Future controller
@@ -15,8 +87,8 @@ braking and consider a boost near 500 m only when the score tradeoff warrants it
 The earlier documentation-only restriction applied to the completed context
 update, not to this code task. Preserve the restored Momentum flight planner.
 
-This section supersedes every older "current", "selected", default-setting,
-pending-task and stop/continue instruction in the historical record below.
+In that prior task, this section superseded older "current", "selected", default-setting,
+pending-task and stop/continue instructions below. The new section above is now authoritative.
 The Dogleg/ground-lateral sequence is no longer the active development track.
 Do not automatically continue wider-lane or data-driven-offset tasks, restore
 the experimental controller, or assume the annotated green path is the chosen

@@ -1476,11 +1476,9 @@ class CaptureApproach:
                 return self.fallback.goal(now, location, velocity, target, target_velocity, centers, radii)
             if distance < 260.:
                 return target+125.*outward, 'OBSERVE_CAPTURE', min(3., np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-125., 0.)))
-        if distance < 210. and not self.camera_ready:
-            return target+100.*outward, 'WAIT_SHIP_CAMERA', 0.
-        # Until the ship is actually observed, retain the ability to abort
-        # outside its hull. This is independent of the score prediction.
-        cap = 10. if self.camera_ready else min(10., np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-80., 0.)))
+        # Missing station camera coverage must not brake a clear capture pass.
+        # Keep the existing obstacle checks and distant approach speed limit.
+        cap = 10. if self.camera_ready or distance < 210. else min(10., np.sqrt(2.*SHIP_BRAKE_ACCEL*max(distance-80., 0.)))
         return goal, 'CAPTURE_PASS' if distance < 260. else 'CRUISE', cap
 
 
