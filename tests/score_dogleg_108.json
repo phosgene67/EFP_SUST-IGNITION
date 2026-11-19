@@ -1,0 +1,449 @@
+{
+  "controller_sha256": "4322889fb7c170567727d3b3fc9b2ebc83b3652c4d5b95bf76d531c40be931a0",
+  "controller_file_sha256": "6465a5efdaf632cde06338706637ac478ae90f9bec25964a08aa057f6bb7cd7b",
+  "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 108,
+  "control_hz": 60.0,
+  "camera_requests_hz": 4.0,
+  "benchmark_version": 7,
+  "rng_mode": "legacy",
+  "plan_latency_s": 0.0,
+  "planning_mode": "async",
+  "fuel_plan_target_override": null,
+  "allocator_solver": "highs",
+  "experiments": [
+    "dogleg"
+  ],
+  "scene_variant": "final-scene",
+  "attitude_mode": "normal",
+  "fuel_audit_enabled": true,
+  "axis_thrust": false,
+  "ground_plane_m": 2.5,
+  "drift_bias_m_s2": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+  "result": {
+    "arrived": true,
+    "time_s": 277.48,
+    "attitude_policy": "DoglegAttitude",
+    "fuel_kg": 56.37,
+    "distance_m": 369.45,
+    "peak_speed_m_s": 5.83,
+    "arrival_speed_m_s": 4.643542163132045,
+    "min_debris_gap_m": 13.3,
+    "min_proxy_hull_gap_m": 18.92,
+    "collision": false,
+    "pre_entry_collision": false,
+    "post_arrival_test_s": 90.0,
+    "min_ground_centre_height_m": 2.5,
+    "final_speed_m_s": 3.975,
+    "learned_coast_drift_m_s2": [
+      2.0356083671491615e-09,
+      1.3826255400562936e-09,
+      4.566550640455595e-08
+    ],
+    "phase": "MISSION_COMPLETE_COAST",
+    "images": 1469,
+    "plan_p95_ms": 136.15,
+    "plan_max_ms": 5254.28,
+    "angular_active_fraction": 0.048,
+    "linear_active_fraction": 0.329,
+    "nose_error_p95_deg": 85.58,
+    "allocator_retries": 0,
+    "coasting_fraction": 0.425,
+    "terminal_fallback": false,
+    "first_5m_s_time": 75.6,
+    "cruise_mean_after_5m_s": 5.35,
+    "cruise_min_after_5m_s": 5.0,
+    "milestones_by_remaining_metres": {
+      "1100": {
+        "time_s": 76.97,
+        "fuel_kg": 32.633,
+        "speed_m_s": 5.119
+      },
+      "1000": {
+        "time_s": 95.32,
+        "fuel_kg": 38.939,
+        "speed_m_s": 5.823
+      },
+      "600": {
+        "time_s": 168.63,
+        "fuel_kg": 39.014,
+        "speed_m_s": 5.152
+      },
+      "550": {
+        "time_s": 178.53,
+        "fuel_kg": 39.014,
+        "speed_m_s": 5.066
+      },
+      "500": {
+        "time_s": 188.37,
+        "fuel_kg": 41.237,
+        "speed_m_s": 5.472
+      },
+      "200": {
+        "time_s": 243.32,
+        "fuel_kg": 51.126,
+        "speed_m_s": 5.3
+      },
+      "50": {
+        "time_s": 277.48,
+        "fuel_kg": 56.37,
+        "speed_m_s": 4.644
+      }
+    },
+    "bent_plan_updates": 9,
+    "return_burn_events": 0,
+    "max_bend_impulse_m_s": 0.35,
+    "reserve_coast_time_s": 0.0,
+    "max_lateral_deviation_m": 78.17,
+    "zero_damage_score_estimate": 18.09,
+    "dogleg": {
+      "event": "no_safe_lane",
+      "searches": 24,
+      "search_ms": 2.604600000040591,
+      "bends_executed": 1,
+      "aligned": true,
+      "events": [
+        {
+          "event": "no_safe_lane",
+          "searches": 1,
+          "search_ms": 4871.1137999998755
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 2,
+          "search_ms": 4506.337699999904
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 3,
+          "search_ms": 4845.946900000172
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 4,
+          "search_ms": 4759.635000000117
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 5,
+          "search_ms": 4947.872400000051
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 6,
+          "search_ms": 4982.877899999949
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 7,
+          "search_ms": 4952.840200000082
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 8,
+          "search_ms": 4979.454700000133
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 9,
+          "search_ms": 5111.863099999937
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 10,
+          "search_ms": 4856.1889000000065
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 11,
+          "search_ms": 4876.00220000013
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 12,
+          "search_ms": 5081.20810000014
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 13,
+          "search_ms": 4920.015799999874
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 14,
+          "search_ms": 4815.114100000073
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 15,
+          "search_ms": 4735.5872000000545
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 16,
+          "search_ms": 4577.149400000053
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 17,
+          "search_ms": 4585.555200000044
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 18,
+          "search_ms": 3289.204400000017
+        },
+        {
+          "event": "radar_evidence",
+          "searches": 19,
+          "waypoint": [
+            -870.4979371498332,
+            92.32405710622248,
+            -9184.82589016471
+          ],
+          "goal": [
+            -884.3597787361119,
+            106.67958541585539,
+            -9504.662830455793
+          ],
+          "speed_m_s": 7.5,
+          "bend_deg": 24.8470350401908,
+          "delta_v_initial_m_s": 2.534004015044008,
+          "delta_v_bend_m_s": 4.27995277023713,
+          "predicted_incremental_fuel_kg": 32.52440245045522,
+          "fuel_at_selection_kg": 34.095834130620574,
+          "slew_fuel_model_kg": 3.072291024074872,
+          "predicted_score": 8.421659098716837,
+          "min_clearance_m": 2.5704507120656714,
+          "bends_executed": 0,
+          "search_ms": 1621.2393999999222
+        },
+        {
+          "event": "closed_new_predicted_risk",
+          "searches": 19,
+          "waypoint": [
+            -870.4979371498332,
+            92.32405710622248,
+            -9184.82589016471
+          ],
+          "goal": [
+            -884.3597787361119,
+            106.67958541585539,
+            -9504.662830455793
+          ],
+          "speed_m_s": 7.5,
+          "bend_deg": 24.8470350401908,
+          "delta_v_initial_m_s": 2.534004015044008,
+          "delta_v_bend_m_s": 4.27995277023713,
+          "predicted_incremental_fuel_kg": 32.52440245045522,
+          "fuel_at_selection_kg": 34.095834130620574,
+          "slew_fuel_model_kg": 3.072291024074872,
+          "predicted_score": 8.421659098716837,
+          "min_clearance_m": -0.4345476367001484,
+          "bends_executed": 0,
+          "search_ms": 1621.2393999999222,
+          "actual_incremental_fuel_kg": 0.10661952240106132,
+          "phase": "DOGLEG_SLEW"
+        },
+        {
+          "event": "new_predicted_risk",
+          "searches": 20,
+          "waypoint": [
+            -840.932814622307,
+            103.49431138396336,
+            -9194.952557521627
+          ],
+          "goal": [
+            -884.4001309195941,
+            106.80511826248602,
+            -9504.651901675908
+          ],
+          "speed_m_s": 8.0,
+          "bend_deg": 4.8861080447159315,
+          "delta_v_initial_m_s": 2.853265587623058,
+          "delta_v_bend_m_s": 0.7034057732183508,
+          "predicted_incremental_fuel_kg": 15.373076837351126,
+          "fuel_at_selection_kg": 34.202453653021635,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 33.754799859203686,
+          "min_clearance_m": 2.2268367610911213,
+          "bends_executed": 0,
+          "search_ms": 321.3542000000871
+        },
+        {
+          "event": "closed_new_predicted_risk",
+          "searches": 20,
+          "waypoint": [
+            -840.932814622307,
+            103.49431138396336,
+            -9194.952557521627
+          ],
+          "goal": [
+            -884.4001309195941,
+            106.80511826248602,
+            -9504.651901675908
+          ],
+          "speed_m_s": 8.0,
+          "bend_deg": 4.8861080447159315,
+          "delta_v_initial_m_s": 2.853265587623058,
+          "delta_v_bend_m_s": 0.7034057732183508,
+          "predicted_incremental_fuel_kg": 15.373076837351126,
+          "fuel_at_selection_kg": 34.202453653021635,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 33.754799859203686,
+          "min_clearance_m": -1.42886159584401,
+          "bends_executed": 0,
+          "search_ms": 321.3542000000871,
+          "actual_incremental_fuel_kg": 2.495814749307037,
+          "phase": "DOGLEG_INITIAL"
+        },
+        {
+          "event": "new_predicted_risk",
+          "searches": 21,
+          "waypoint": [
+            -807.4176893308522,
+            104.70241662287587,
+            -9002.776490169439
+          ],
+          "goal": [
+            -884.5983717378031,
+            107.3151515030016,
+            -9504.661347871266
+          ],
+          "speed_m_s": 5.5,
+          "bend_deg": 5.670260782554677,
+          "delta_v_initial_m_s": 0.5675970070874604,
+          "delta_v_bend_m_s": 1.3554405386089332,
+          "predicted_incremental_fuel_kg": 8.311986391710931,
+          "fuel_at_selection_kg": 36.69826840232867,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 33.00029952526653,
+          "min_clearance_m": 2.5032928322690715,
+          "bends_executed": 0,
+          "search_ms": 98.45769999992626
+        },
+        {
+          "event": "closed_new_predicted_risk",
+          "searches": 21,
+          "waypoint": [
+            -807.4176893308522,
+            104.70241662287587,
+            -9002.776490169439
+          ],
+          "goal": [
+            -884.5983717378031,
+            107.3151515030016,
+            -9504.661347871266
+          ],
+          "speed_m_s": 5.5,
+          "bend_deg": 5.670260782554677,
+          "delta_v_initial_m_s": 0.5675970070874604,
+          "delta_v_bend_m_s": 1.3554405386089332,
+          "predicted_incremental_fuel_kg": 8.311986391710931,
+          "fuel_at_selection_kg": 36.69826840232867,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 33.00029952526653,
+          "min_clearance_m": -13.912594075047448,
+          "bends_executed": 1,
+          "search_ms": 98.45769999992626,
+          "actual_incremental_fuel_kg": 7.975902452180769,
+          "phase": "DOGLEG_COAST2"
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 22,
+          "search_ms": 19.338999999945372
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 23,
+          "search_ms": 9.643299999879673
+        },
+        {
+          "event": "no_safe_lane",
+          "searches": 24,
+          "search_ms": 2.604600000040591
+        }
+      ]
+    },
+    "fuel_audit": {
+      "segments": {
+        "LAUNCH": {
+          "time_s": 8.0,
+          "fuel_kg": 3.3131
+        },
+        "CRUISE/GUIDE": {
+          "time_s": 0.5,
+          "fuel_kg": 0.2794
+        },
+        "CRUISE/IMPULSE_BURN": {
+          "time_s": 75.5,
+          "fuel_kg": 32.6622
+        },
+        "ALIGN_FOR_BURN": {
+          "time_s": 3.5,
+          "fuel_kg": 0.1066
+        },
+        "DOGLEG_INITIAL": {
+          "time_s": 10.5,
+          "fuel_kg": 4.7077
+        },
+        "DOGLEG_COAST1": {
+          "time_s": 88.5,
+          "fuel_kg": 0.1038
+        },
+        "DOGLEG_BEND": {
+          "time_s": 10.5,
+          "fuel_kg": 5.6602
+        },
+        "DOGLEG_COAST2": {
+          "time_s": 31.5,
+          "fuel_kg": 0.0
+        },
+        "CRUISE/COURSE_TRIM": {
+          "time_s": 3.5,
+          "fuel_kg": 1.7839
+        },
+        "CAPTURE_PASS": {
+          "time_s": 43.4833,
+          "fuel_kg": 6.6031
+        },
+        "OBSERVE_CAPTURE": {
+          "time_s": 2.0,
+          "fuel_kg": 1.15
+        }
+      },
+      "command_regimes": {
+        "translation_only": {
+          "time_s": 110.6,
+          "fuel_kg": 51.4518
+        },
+        "attitude_only": {
+          "time_s": 7.3667,
+          "fuel_kg": 0.2169
+        },
+        "combined": {
+          "time_s": 10.3167,
+          "fuel_kg": 4.7013
+        },
+        "no_command": {
+          "time_s": 149.2,
+          "fuel_kg": 0.0
+        }
+      },
+      "counterfactual_same_tick_costs": {
+        "translation_only_kg": 56.1314,
+        "attitude_only_kg": 0.5799
+      },
+      "post_arrival_fuel_kg": 0.0,
+      "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+    }
+  }
+}

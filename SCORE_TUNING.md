@@ -389,6 +389,14 @@ The extra state is needed before attributing the native gap to a particular caus
 
 ## Active baseline parameters
 
+The later default-off `EFP_DOGLEG=1` experiment completed 20 matched seeds.
+Median score fell from38.275 to27.890, with20 arrivals and zero modeled contacts
+in each cohort. Paired median time improved18.335s but fuel increased9.445kg.
+The rounding-adjusted median-score-delta interval[-17.340,-3.030] rejects it
+for score loss. Exhaustive search also had a costly measured latency tail.
+The original Momentum default is retained. See [dogleg design and results](DOGLEG.md)
+for phase fuel, spread, assumptions and native verification requirements.
+
 The finite-burn search uses 16 capture azimuths, six axis orders and arrival
 times from 45 to 450 s, plus retained arrival times. It checks the next 20 s
 against sensors and replans at 2 Hz. The scoring-selected cruise ceiling is

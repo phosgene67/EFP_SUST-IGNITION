@@ -2820,6 +2820,385 @@ class ShootingNavigator(EconomyNavigator):
         return np.zeros(3)
 
 
+DOGLEG_FUEL_PER_DV = 3388.7/(80.*9.8)
+
+
+def dogleg_rotation(rotation, directions):
+    """Minimum rotation taking body +X onto each Phobos-frame burn direction."""
+    directions = np.atleast_2d(directions)
+    directions = directions/np.maximum(np.linalg.norm(directions, axis=1)[:, None], 1e-12)
+    axis = np.cross(np.asarray(rotation)[0], directions)
+    sine = np.linalg.norm(axis, axis=1)
+    cosine = np.clip(directions@np.asarray(rotation)[0], -1., 1.)
+    axis = np.where((sine > 1e-10)[:, None], axis/np.maximum(sine[:, None], 1e-12), rotation[1])
+    skew = np.zeros((len(axis), 3, 3))
+    skew[:, 0, 1], skew[:, 0, 2] = -axis[:, 2], axis[:, 1]
+    skew[:, 1, 0], skew[:, 1, 2] = axis[:, 2], -axis[:, 0]
+    skew[:, 2, 0], skew[:, 2, 1] = -axis[:, 1], axis[:, 0]
+    active = np.eye(3)+sine[:, None, None]*skew+(1.-cosine[:, None, None])*(skew@skew)
+    return np.asarray(rotation)@active.transpose(0, 2, 1), np.arccos(cosine)
+
+
+def dogleg_positions(plan, times):
+    """Finite axis burns and ballistic coasts, relative to plan['origin']."""
+    times = np.asarray(times)
+    if times.ndim == 1:
+        times = np.broadcast_to(times, (len(plan['eta']), len(times)))
+    position = plan['velocity'][:, None]*times[:, :, None]+.5*plan['gravity'][:, None]*times[:, :, None]**2
+    for burn in range(2):
+        duration = plan['durations'][:, burn, None]
+        firing = np.clip(times[:, :, None]-plan['starts'][:, burn, None], 0., duration)
+        kernel = firing*(times[:, :, None]-plan['starts'][:, burn, None]-.5*firing)
+        body = plan['impulses'][:, burn, None]*kernel/np.maximum(duration, 1e-12)
+        position += np.einsum('nki,nij->nkj', body, plan['rotation'])
+    return position
+
+
+def dogleg_clearances(plan, centers, speeds, radii, rates, accelerations, target, target_velocity,
+                      axis_acceleration=.175, max_step=6.):
+    """Every track receives a conservative swept check, then refine close pairs.
+
+    The coarse chord bound subtracts |relative acceleration|*dt^2/8. Pairs
+    certified above 2 m need no refinement. Ambiguous pairs use <=6 s sweeps;
+    only those fine sweeps may end at the 48 m capture boundary. This is a
+    geometric bound, not a collision probability or a debris-truth query.
+    """
+    count = len(plan['eta'])
+    gaps = np.full(count, np.inf)
+    centers, speeds, accelerations = map(np.asarray, (centers, speeds, accelerations))
+    if not len(centers):
+        return gaps
+    for offset in range(0, count, 24):
+        stop = min(offset+24, count)
+        p = {key: value[offset:stop] for key, value in plan.items()}
+        steps = max(1, int(np.ceil(p['eta'].max()/30.)))
+        t = p['eta'][:, None]*np.linspace(0., 1., steps+1)
+        path = dogleg_positions(p, t)
+        relative = (centers[None, None]+t[:, :, None, None]*speeds[None, None]
+                    +.5*t[:, :, None, None]**2*accelerations[None, None]-path[:, :, None])
+        start, delta = relative[:, :-1], np.diff(relative, axis=1)
+        closest = np.clip(-np.sum(start*delta, axis=3)/np.maximum(np.sum(delta*delta, axis=3), 1e-12), 0., 1.)
+        bound = np.linalg.norm(p['gravity'][:, None]-accelerations[None], axis=2)+axis_acceleration
+        coarse = (np.linalg.norm(start+closest[:, :, :, None]*delta, axis=3)-radii[None, None]
+                  -rates[None, None]*t[:, 1:, None]-bound[:, None]*np.diff(t, axis=1)[:, :, None]**2/8.)
+        rows, intervals, objects = np.nonzero(coarse <= 2.)
+        coarse[rows, intervals, objects] = np.inf
+        local = coarse.min(axis=(1, 2))
+        for first in range(0, len(rows), 256):
+            rr, ii, oo = rows[first:first+256], intervals[first:first+256], objects[first:first+256]
+            selected = {key: value[rr] for key, value in p.items()}
+            begin, end = t[rr, ii], t[rr, ii+1]
+            fine_steps = max(1, int(np.ceil((end-begin).max()/max_step)))
+            tt = begin[:, None]+(end-begin)[:, None]*np.linspace(0., 1., fine_steps+1)
+            own = dogleg_positions(selected, tt)
+            ship = selected['origin'][:, None]+own-target-tt[:, :, None]*target_velocity
+            fraction, enters = capture_fraction(ship[:, :-1].reshape(-1, 3), ship[:, 1:].reshape(-1, 3))
+            fraction, enters = fraction.reshape(-1, fine_steps), enters.reshape(-1, fine_steps)
+            captured = (np.cumsum(enters, axis=1)-enters > 0) | (np.linalg.norm(ship[:, :-1], axis=2) <= 48.)
+            rock = centers[oo, None]+tt[:, :, None]*speeds[oo, None]+.5*tt[:, :, None]**2*accelerations[oo, None]
+            start = rock[:, :-1]-own[:, :-1]
+            delta = np.diff(rock-own, axis=1)*fraction[:, :, None]
+            closest = np.clip(-np.sum(start*delta, axis=2)/np.maximum(np.sum(delta*delta, axis=2), 1e-12), 0., 1.)
+            dt = np.diff(tt, axis=1)*fraction
+            ending = tt[:, :-1]+dt
+            powered = np.zeros_like(dt, dtype=bool)
+            for burn in range(2):
+                powered |= ((tt[:, :-1, None] < selected['starts'][:, burn, None]+selected['durations'][:, burn, None])
+                            & (ending[:, :, None] > selected['starts'][:, burn, None])
+                            & (selected['durations'][:, burn, None] > 0.)).any(axis=2)
+            bound = np.linalg.norm(selected['gravity']-accelerations[oo], axis=1)[:, None]+powered*axis_acceleration
+            gap = (np.linalg.norm(start+closest[:, :, None]*delta, axis=2)-radii[oo, None]
+                   -rates[oo, None]*ending-bound*dt**2/8.)
+            gap[captured] = np.inf
+            np.minimum.at(local, rr, gap.min(axis=1))
+        gaps[offset:stop] = local
+    return gaps
+
+
+class DoglegNavigator(ShootingNavigator):
+    """Opt-in radar-only lane choice: two finite burns, held attitude, event replans.
+
+    Camera geometry is included only inside 300 m. All uncertainty is inherited
+    from the radar tracker; there is no simulator debris lookup or fuel ceiling.
+    """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.lane = None
+        self.lane_epoch = 0.
+        self.lane_stage = 0
+        self.lane_aligned = self.lane_aligning = False
+        self.lane_axis = np.array([1., 0., 0.])
+        self.lane_event = 'launch'
+        self.lane_searches = self.lane_bends = 0
+        self.lane_clearance = np.inf
+        self.lane_retry_confidence = -1
+        self.lane_retry_distance = np.inf
+        self.lane_log = dict(event='launch', searches=0)
+        self.lane_records = deque(maxlen=128)
+
+    def candidates(self, loc, vel, target, target_velocity, wide=False):
+        forward = target-loc
+        distance = np.linalg.norm(forward)
+        forward /= max(distance, 1e-9)
+        side = self.body_rotation[np.argmin(np.abs(self.body_rotation@forward))].copy()
+        side -= (side@forward)*forward
+        side /= max(np.linalg.norm(side), 1e-12)
+        tangent = np.cross(forward, side)
+        # Four interior capture points, without assuming the station's hull axes.
+        aims = target-20.*forward+40.*np.array([side, -side, tangent, -tangent])
+        routes = [(aim, aim, 0.) for aim in aims]
+        if distance > 300.:
+            for fraction in (.3, .5, .7):
+                for angle in ((20., 30.) if wide else (4., 8., 12.)):
+                    radius = distance*fraction*(1.-fraction)*np.tan(np.deg2rad(angle))
+                    for azimuth in np.arange(8)*np.pi/4.:
+                        lateral = radius*(np.cos(azimuth)*side+np.sin(azimuth)*tangent)
+                        for aim in aims:
+                            routes.append((loc+fraction*(aim-loc)+lateral, aim, angle))
+        speeds = np.arange(5., 10.01, .5)
+        waypoints = np.repeat(np.array([r[0] for r in routes]), len(speeds), axis=0)
+        aims = np.repeat(np.array([r[1] for r in routes]), len(speeds), axis=0)
+        speed = np.tile(speeds, len(routes))
+        straight = np.repeat(np.array([r[2] == 0. for r in routes]), len(speeds))
+        n = len(speed)
+        gravity = np.broadcast_to(self.gravity_at(loc), (n, 3)).copy()
+        rotation = np.broadcast_to(self.body_rotation, (n, 3, 3)).copy()
+        slew = np.zeros(n)
+        slew_fuel = np.zeros(n)
+        direction = waypoints-loc
+        direction /= np.linalg.norm(direction, axis=1)[:, None]
+        orders = np.tile([0, 1, 2], (n, 1))
+        # Reconcile finite-burn direction, initial coast during slew and axis time.
+        for _ in range(3):
+            if not self.lane_aligned:
+                rotation, angle = dogleg_rotation(self.body_rotation, direction)
+                peak_rate = np.minimum(.12, np.sqrt(.006*angle))
+                slew = np.where(angle > 1e-6, angle/np.maximum(peak_rate, 1e-9)+peak_rate/.006, 0.)
+                # Assumed conservative L1 torque cost; published LP audits bound
+                # canonical axes at 3.98–7.30 kg/(rad/s), not measured native fuel.
+                slew_fuel = 2.*peak_rate*8.*np.sqrt(3.)
+            p0 = vel[None]*slew[:, None]+.5*gravity*slew[:, None]**2
+            v0 = vel[None]+gravity*slew[:, None]
+            leg = waypoints-loc-p0
+            unit = leg/np.maximum(np.linalg.norm(leg, axis=1)[:, None], 1e-9)
+            estimate = np.einsum('nij,nj->ni', rotation, unit*speed[:, None]+target_velocity-v0)
+            duration = np.abs(estimate)/self.axis_accels[np.where(estimate >= 0., 0, 1), np.arange(3)]
+            t1 = np.linalg.norm(leg, axis=1)/speed+.5*duration.sum(axis=1)
+            displacement = leg+(t1+slew)[:, None]*target_velocity-v0*t1[:, None]-.5*gravity*t1[:, None]**2
+            dv1, start1, dur1, valid = axis_schedule(np.einsum('nij,nj->ni', rotation, displacement), t1, orders, self.axis_accels)
+            impulse = np.einsum('ni,nij->nj', dv1, rotation)
+            direction = impulse/np.maximum(np.linalg.norm(impulse, axis=1)[:, None], 1e-9)
+        at_waypoint = v0+gravity*t1[:, None]+impulse
+        leg2 = aims-waypoints
+        length2 = np.linalg.norm(leg2, axis=1)
+        unit2 = leg2/np.maximum(length2[:, None], 1e-9)
+        estimate2 = np.einsum('nij,nj->ni', rotation, unit2*speed[:, None]+target_velocity-at_waypoint)
+        duration2 = np.abs(estimate2)/self.axis_accels[np.where(estimate2 >= 0., 0, 1), np.arange(3)]
+        t2 = np.where(straight, 1., length2/speed+.5*duration2.sum(axis=1))
+        displacement2 = leg2+t2[:, None]*target_velocity-at_waypoint*t2[:, None]-.5*gravity*t2[:, None]**2
+        order2 = np.argsort(-duration2, axis=1)
+        dv2, start2, dur2, valid2 = axis_schedule(np.einsum('nij,nj->ni', rotation, displacement2), t2, order2, self.axis_accels)
+        dv2[straight], start2[straight], dur2[straight], t2[straight] = 0., 0., 0., 0.
+        valid &= straight | valid2
+        t1 += slew
+        plan = dict(origin=np.broadcast_to(loc, (n, 3)).copy(), velocity=np.broadcast_to(vel, (n, 3)).copy(),
+                    gravity=gravity, rotation=rotation, eta=t1+t2,
+                    starts=np.stack((start1+slew[:, None], start2+t1[:, None]), axis=1),
+                    durations=np.stack((dur1, dur2), axis=1), impulses=np.stack((dv1, dv2), axis=1),
+                    bend_time=t1, speed=speed, goal=aims, slew=slew, slew_fuel=slew_fuel,
+                    order1=orders, order2=order2)
+        fuel = DOGLEG_FUEL_PER_DV*np.abs(plan['impulses']).sum(axis=(1, 2))+slew_fuel
+        score = 100.*(.5+120./(self.control_time+plan['eta'])-(self.last_fuel+fuel)/75.-2.*self.last_damage/209200.)
+        valid &= np.isfinite(score) & (plan['eta'] < 450.)
+        # Do not accept a modeled trajectory back through the known launch plane.
+        samples = dogleg_positions(plan, plan['eta'][:, None]*np.linspace(0., 1., 25))
+        if self.launch.origin is not None:
+            valid &= ((samples+loc-self.launch.origin)@self.launch.up).min(axis=1) >= -.25
+        return plan, np.where(valid, score, -np.inf)
+
+    def select_lane(self, now, loc, vel, target, target_velocity, scene):
+        from time import perf_counter
+        started = perf_counter()
+        self.lane_searches += 1
+        best = None
+        best_score = -np.inf
+        for wide in (False, True):
+            plans, scores = self.candidates(loc, vel, target, target_velocity, wide)
+            # Score-ordered branch and bound: lower-score routes cannot win once
+            # a safe candidate is found. Every evaluated route checks EVERY track.
+            ordering = np.argsort(-scores)
+            ordering = ordering[np.isfinite(scores[ordering]) & (scores[ordering] > best_score)]
+            for offset in range(0, len(ordering), 24):
+                rows = ordering[offset:offset+24]
+                batch = {key: value[rows] for key, value in plans.items()}
+                gaps = dogleg_clearances(batch, *scene, target, target_velocity,
+                                          axis_acceleration=float(self.axis_accels.max()))
+                safe = np.flatnonzero(gaps > 2.)
+                if len(safe):
+                    index = int(safe[0])
+                    best = {key: value[index:index+1].copy() for key, value in batch.items()}
+                    gap, score = float(gaps[index]), float(scores[rows[index]])
+                    best_score = score
+                    break
+        if best is None:
+            self.lane_log = dict(event='no_safe_lane', searches=self.lane_searches)
+            self.lane_log['search_ms'] = 1000.*(perf_counter()-started)
+            self.lane_records.append(self.lane_log.copy())
+            return False
+        self.lane, self.lane_epoch, self.lane_stage = best, float(now), 0
+        self.lane_clearance = gap
+        world_impulses = np.einsum('nbi,nij->nbj', best['impulses'], best['rotation'])[0]
+        self.lane_axis = world_impulses[0]/max(np.linalg.norm(world_impulses[0]), 1e-9)
+        self.lane_aligning = not self.lane_aligned
+        self.aligning = self.lane_aligning
+        v1 = vel+self.gravity_at(loc)*best['bend_time'][0]+world_impulses[0]
+        v2 = v1+world_impulses[1]
+        bend_angle = np.rad2deg(np.arccos(np.clip(v1@v2/max(np.linalg.norm(v1)*np.linalg.norm(v2), 1e-9), -1., 1.)))
+        dv = np.abs(best['impulses'][0]).sum(axis=1)
+        self.lane_log = dict(event=self.lane_event, searches=self.lane_searches,
+            waypoint=(loc+dogleg_positions(best, best['bend_time'][:, None])[0, 0]).tolist(),
+            goal=best['goal'][0].tolist(), speed_m_s=float(best['speed'][0]), bend_deg=float(bend_angle),
+            delta_v_initial_m_s=float(dv[0]), delta_v_bend_m_s=float(dv[1]),
+            predicted_incremental_fuel_kg=float(dv.sum()*DOGLEG_FUEL_PER_DV+best['slew_fuel'][0]),
+            fuel_at_selection_kg=float(self.last_fuel), slew_fuel_model_kg=float(best['slew_fuel'][0]),
+            predicted_score=score, min_clearance_m=gap if np.isfinite(gap) else None, bends_executed=self.lane_bends,
+            search_ms=1000.*(perf_counter()-started))
+        self.lane_records.append(self.lane_log.copy())
+        self.policy.speed, self.policy.estimated_score = float(best['speed'][0]), score
+        self.policy.remaining_time = float(best['eta'][0])
+        self.policy.burn_seconds = float(best['durations'][0].sum())
+        if not self.lane_aligning:
+            self.start_lane_burn(0, vel)
+        return True
+
+    def start_lane_burn(self, burn, velocity):
+        p = self.lane
+        dv = p['impulses'][0, burn]@p['rotation'][0]
+        self.burn_target = np.asarray(velocity)+dv
+        self.burn_started, self.burn_gravity = self.control_time, self.gravity_at(self.lane_location)
+        self.burn_order = p['order1' if burn == 0 else 'order2'][0].copy()
+        body = self.body_rotation@dv
+        self.burn_signs, self.axis_done = np.sign(body), np.abs(body) < .02
+        self.burn_tolerance = .02
+        self.not_before = self.control_time
+        self.vector_active = False
+        self.shooting_active = True
+        self.lane_stage = 1 if burn == 0 else 3
+        self.lane_bends += int(burn == 1 and np.linalg.norm(dv) > .02)
+        self.previous_velocity = self.burn_target.copy()
+
+    def command(self, now, loc, vel, target_loc, target_vel, radar, camera=None, **kwargs):
+        self.control_time = float(now)
+        loc, vel, target_loc, target_vel = map(lambda v: np.asarray(v, float), (loc, vel, target_loc, target_vel))
+        self.lane_location = loc.copy()
+        distance = np.linalg.norm(target_loc-loc)
+        if self.failed or self.arrival_time is not None:
+            return np.zeros(3), 'MISSION_COMPLETE_COAST' if not self.failed else 'DAMAGE_LIMIT', np.inf
+        if not self.launch.done:
+            return super().command(now, loc, vel, target_loc, target_vel, radar, camera=None, **kwargs)
+        centers, speeds, radii, rates, accels, _ = self.observe_scene(
+            now, loc, vel, target_loc, target_vel, radar, camera if distance < 300. else None)
+        scene = centers, speeds, radii, rates, accels
+        confidence = int(np.count_nonzero(getattr(self, 'radar_track_confidence', [])))
+        reason = None
+        if self.lane is not None and self.lane_aligned and self.lane_stage == 0:
+            reason = 'slew_settled'
+        if self.lane is not None and reason is None:
+            p = self.lane
+            elapsed = now-self.lane_epoch
+            remaining = float(p['eta'][0]-elapsed)
+            # Rebase the retained finite-burn ephemeris on actual own motion.
+            retained = {key: value.copy() for key, value in p.items()}
+            retained['origin'][:] = loc
+            retained['velocity'][:] = vel
+            retained['gravity'][:] = self.gravity_at(loc)
+            retained['eta'][:] = max(.05, remaining)
+            retained['starts'] -= elapsed
+            for burn in range(2):
+                fired = np.clip(-retained['starts'][:, burn], 0., retained['durations'][:, burn])
+                fraction = 1.-fired/np.maximum(retained['durations'][:, burn], 1e-12)
+                retained['impulses'][:, burn] *= fraction
+                retained['durations'][:, burn] -= fired
+                retained['starts'][:, burn] = np.maximum(0., retained['starts'][:, burn])
+            gap = float(dogleg_clearances(retained, *scene, target_loc, target_vel,
+                                          axis_acceleration=float(self.axis_accels.max()))[0])
+            end = loc+dogleg_positions(retained, retained['eta'][:, None])[0, 0]-target_loc-target_vel*retained['eta'][0]
+            if gap < 0.:
+                reason = 'new_predicted_risk'
+            elif (self.lane_stage in (2, 4) and (remaining <= 0. or np.linalg.norm(end) > 48.)):
+                reason = 'capture_miss'
+            self.lane_clearance = gap
+            self.lane_log['min_clearance_m'] = gap if np.isfinite(gap) else None
+        if self.lane is None:
+            if confidence >= self.lane_retry_confidence+25 or distance < self.lane_retry_distance-100.:
+                reason = 'radar_evidence' if self.lane_searches else 'launch_complete'
+        if reason is not None:
+            self.lane_event = reason
+            if self.lane is not None:
+                self.lane_records.append(dict(self.lane_log, event='closed_'+reason,
+                    actual_incremental_fuel_kg=float(self.last_fuel-self.lane_log['fuel_at_selection_kg'])))
+            if self.lane_aligning:
+                # Abort an unsafe initial slew; do not restart attitude turns
+                # every time new radar evidence invalidates a lane.
+                self.lane_aligned = True
+            self.lane = None
+            self.lane_aligning = self.aligning = self.shooting_active = False
+            if not self.select_lane(now, loc, vel, target_loc, target_vel, scene):
+                self.lane_retry_confidence, self.lane_retry_distance = confidence, distance
+        if self.lane is None:
+            return super().command(now, loc, vel, target_loc, target_vel, radar,
+                                   camera=camera if distance < 300. else None, **kwargs)
+        if self.lane_stage == 2 and now >= self.lane_epoch+self.lane['bend_time'][0]:
+            self.start_lane_burn(1, vel)
+        self.last_phase = ('DOGLEG_SLEW' if self.lane_aligning else
+                           {1: 'DOGLEG_INITIAL', 2: 'DOGLEG_COAST1', 3: 'DOGLEG_BEND', 4: 'DOGLEG_COAST2'}[self.lane_stage])
+        self.last_mode = self.last_phase
+        self.coasting = self.lane_aligning or self.lane_stage in (2, 4)
+        self.lane_log.update(actual_incremental_fuel_kg=float(self.last_fuel-self.lane_log['fuel_at_selection_kg']),
+                             phase=self.last_phase, bends_executed=self.lane_bends)
+        return self.linear_command(vel, MAX_ACCEL), self.last_mode, self.lane_clearance
+
+    def linear_command(self, velocity, maximum):
+        if self.arrival_time is not None or self.failed:
+            return np.zeros(3)
+        if self.lane is None:
+            return super().linear_command(velocity, maximum)
+        if self.lane_aligning or self.lane_stage in (0, 2, 4):
+            return np.zeros(3)
+        command = super().linear_command(velocity, maximum)
+        if self.axis_done.all():
+            self.lane_stage += 1
+            self.shooting_active = False
+        return command
+
+
+class DoglegAttitude(FlightAttitude):
+    """One bounded +X alignment, then spin damping only; no bend slew."""
+    free_attitude = True
+
+    def __init__(self, planner):
+        super().__init__()
+        self.planner = planner
+        self.aligning = False
+
+    def command(self, now, rotation, velocity, desired_velocity, planet_up, omega, maximum):
+        self.body_velocity = np.asarray(rotation)@velocity
+        bearing = np.asarray(rotation)@self.planner.lane_axis
+        angle = float(np.arccos(np.clip(bearing[0], -1., 1.)))
+        self.nose_error_deg = float(np.rad2deg(angle))
+        if self.planner.lane_aligning:
+            if angle < np.deg2rad(.5) and np.linalg.norm(omega) < .002:
+                self.planner.lane_aligned, self.planner.lane_aligning = True, False
+            else:
+                axis = np.cross([1., 0., 0.], bearing)
+                if np.linalg.norm(axis) < 1e-9:
+                    axis = np.array([0., 1., 0.])
+                rate = min(.12, np.sqrt(2.*.006*angle), .8*angle)
+                desired = axis/max(np.linalg.norm(axis), 1e-12)*rate
+                return limit_vector(limit_vector(1.2*(desired-omega), .006)/60., maximum)
+        return limit_vector(-.8*np.asarray(omega), .006)/60. if np.linalg.norm(omega) > .002 else np.zeros(3)
+
+
 class EconomyAttitude(FlightAttitude):
     def __init__(self):
         super().__init__()
@@ -2926,6 +3305,8 @@ class ViewRecoveryAttitude(FreeAttitude):
 
 
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
+dogleg_enabled = os.environ.get('EFP_DOGLEG', '0') == '1'
+navigator_type = DoglegNavigator if dogleg_enabled else ShootingNavigator
 camera_recovery_enabled = os.environ.get('EFP_CAMERA_RECOVERY', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
 clean_main_burn_enabled = os.environ.get('EFP_CLEAN_MAIN_BURN', '0') == '1'
@@ -2943,12 +3324,12 @@ from pathlib import Path
 flight_trace_enabled = os.environ.get('EFP_FLIGHT_TRACE', '0') == '1'
 controller_source_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 rescue_frame = target.GetBodyFixedFrame()
-planner = ShootingNavigator(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
+planner = navigator_type(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
                             order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled,
                             inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
                             exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
                             entry_scope=entry_scope_enabled, track_cache=track_cache_enabled)
-flight_attitude = (EconomyAttitude() if nose_first_enabled else
+flight_attitude = (DoglegAttitude(planner) if dogleg_enabled else EconomyAttitude() if nose_first_enabled else
                    ViewRecoveryAttitude() if camera_recovery_enabled else FreeAttitude())
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
 # Controller and radar start concurrently; their small startup skew is covered by margins.
@@ -2982,7 +3363,7 @@ try:
         time.sleep(1.0 / this.GetParam(st.VarType.double, 'LoopFreqHz'))
         now = (st.SimGlobals.SimClock.GetTimeNow().as_datetime()-radar_epoch).total_seconds()
         if now < last_plan:
-            planner = ShootingNavigator(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
+            planner = navigator_type(nose_first=nose_first_enabled, clean_main_burn=clean_main_burn_enabled,
                                         order_diversity=order_diversity_enabled, recheck_coast=recheck_coast_enabled,
                                         inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
                                         exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
@@ -2994,7 +3375,7 @@ try:
             camera_manager.reset()
             if preview is not None:
                 preview.reset()
-            flight_attitude = (EconomyAttitude() if nose_first_enabled else
+            flight_attitude = (DoglegAttitude(planner) if dogleg_enabled else EconomyAttitude() if nose_first_enabled else
                                ViewRecoveryAttitude() if camera_recovery_enabled else FreeAttitude())
             last_plan = last_log = -np.inf
             arrival_announced = False
@@ -3122,7 +3503,7 @@ try:
             damage = shuttle.GetParam(st.VarType.double, ['Stats', 'Damage'])
             fuel = shuttle.GetParam(st.VarType.double, ['Stats', 'FuelUsed'])
             st.OnScreenLogMessage(
-                f'IGNITION {mode} profile=SCORE_MOMENTUM sourceSHA256={controller_source_hash} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
+                f'IGNITION {mode} profile={"SCORE_DOGLEG" if dogleg_enabled else "SCORE_MOMENTUM"} sourceSHA256={controller_source_hash} t={now:.1f}s distance={np.linalg.norm(target_loc-loc):.1f}m '
                 f'speed={np.linalg.norm(vel-target_vel):.2f}m/s clearance={clearance:.1f}m '
                 f'noseFirst={nose_first_enabled} '
                 f'axisThrust={axis_thrust_enabled} '
@@ -3136,6 +3517,7 @@ try:
                 f'coastWindows={coast_windows_enabled} '
                 f'entryScope={entry_scope_enabled} '
                 f'trackCache={track_cache_enabled} '
+                f'dogleg={dogleg_enabled} '
                 f'planMs={plan_ms:.1f} '
                 f'cmdBody={np.array2string(np.asarray(accel_body), precision=4, separator=",")}m/s2 '
                 f'bodyRate={np.array2string(omega_body, precision=5, separator=",")}rad/s '
@@ -3157,6 +3539,14 @@ try:
                 f'travelBody={np.array2string(flight_attitude.body_velocity, precision=2, separator=",")}m/s '
                 f'guiFault={(preview.error if preview is not None else preview_error) or "none"}',
                 'IgnitionController', st.Severity.Info)
+            if dogleg_enabled:
+                try:
+                    for record in planner.lane_records:
+                        st.logger_info('IGNITION_DOGLEG_EVENT '+json.dumps(record, allow_nan=False))
+                    planner.lane_records.clear()
+                    st.logger_info('IGNITION_DOGLEG '+json.dumps(planner.lane_log, allow_nan=False))
+                except Exception:
+                    pass
             if flight_trace_enabled:
                 try:
                     scene = getattr(planner, 'latest_scene', (np.empty((0, 3)), np.empty((0, 3)), np.empty(0)))

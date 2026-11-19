@@ -5,6 +5,65 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+## Completed dogleg experiment: rejected, default off
+
+User now explicitly requests a default-off one-bend dogleg planner, one initial
+body+X slew, held attitude at the bend, full-route checks against all radar
+tracks and event-triggered search, with cameras only for the final hull check.
+EFP_DOGLEG=1 selects DoglegNavigator/DoglegAttitude; the default remains
+SCORE_MOMENTUM. SetCommand, camera helpers, connection prefix and simulator are
+unchanged. Current baseline is the existing 20-seed original Momentum cohort;
+the prior cache replay established identical default entry metrics on all20.
+
+Installed Radar.py/config verify Phobos-expressed shuttle-relative positions,
+radial velocity only, sigma2m/.02m/s/5% diameter. Full debris velocities are
+tracker estimates, never live simulator truth. The cost model charges sequential
+axis L1 impulse at3388.7/(80*9.8)=4.3223214kg/(m/s), plus an explicitly assumed
+conservative slew cost. Canonical angular LP audit gave3.98–7.30kg/(rad/s);
+actual native phase cost is unverified. No flight trace exists: user answered
+“none” to the specific log-folder question.
+
+The planner searches5–10m/s in.5m/s steps, four interior capture points,
+30/50/70% waypoints and4/8/12deg then20/30deg wider offsets, eight azimuths.
+It includes finite sequential burns, coast during initial slew, gravity,
+uncertainty growth, all-track swept checks and predicted48m entry. It widens
+the route grid, never relaxes clearance. Expensive search occurs on launch,
+new predicted risk, slew settlement, capture miss or a substantial new radar
+confidence/distance event after fallback. Retained checks still run at2Hz.
+No forced cruise speed, smooth thrust arc, direct jets or fuel cap is introduced.
+
+Current suite180/180:15 focused dogleg tests plus two new runtime adapter
+checks. V1 pilot was interrupted without results. V2 pilot and V3 clear-corridor
+diagnostic are excluded from the final cohort. Clear diagnostic arrived at
+T271.27,F46.30,score32.50 without modeled contact; the one slew cost43.5s and
+1.3987kg. Six searches, no bend selected. This exposes overhead, not a win.
+
+The20-seed frozen-source cohort completed from
+tests/score_sweeps/dogleg_final_controller.py (normalizedSHA4322889f…,
+byteSHA6465a5ef…). Only dogleg was enabled. All20 arrived without modeled
+contact; all20 aligned, six executed a bend. Original median score38.275,
+dogleg27.890; difference-10.385, rounding-adjusted bootstrap interval
+[-17.340,-3.030]. Reject for modeled score loss. Dogleg medianT245.845s,
+F54.890kg; paired medianTdelta-18.335s, Fdelta+9.445kg. Scorep10–p90:
+8.882–37.932; range-.44–39.77. Native damage joules are not simulated.
+Mean phase-fuel delta+9.927kg: main burns-3.240,new initial+8.202,bends+1.826,
+alignment+.587,terminal+3.356,other-.804. More burn/terminal fuel outweighed
+time savings. No fuel used after entry. This rejects this configuration;
+it does not prove that every possible dogleg route is unprofitable.
+
+Per-run maximum planner calls ranged5.093–6.763s (median5.870s) under four
+concurrent benchmarks: measured compute, not native flight latency. The
+fixed-step harness does NOT charge this wall time, so native held-command
+effects remain an additional risk. No source changes occurred during the
+cohort; all47 original definitions, connection
+prefix and official asset hashes match37bbd54 (tests/dogleg_preservation_audit.json).
+Keep EFP_DOGLEG=0 for competition. Results:tests/score_sweep_dogleg.json;
+design/assumptions/reproduction/native checks:DOGLEG.md.180 tests pass. No
+benchmark jobs remain running. No native run or source push was performed.
+Next verification is a native baseline run withEFP_FLIGHT_TRACE=1 (user said
+none exists), followed by calibration of state/command/fuel/timing discrepancies.
+Do not promote this planner or claim60+ without new matched native evidence.
+
 ## Selected state after the inertia experiments
 
 This snapshot supersedes the historical work-in-progress notes below.

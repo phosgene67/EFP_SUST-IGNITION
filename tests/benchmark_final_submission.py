@@ -105,6 +105,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     drift_bias = np.zeros(3) if drift_bias is None else np.asarray(drift_bias, float)
     rng = np.random.default_rng(seed)
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
+    if 'dogleg' in experiments:
+        planner = namespace['DoglegNavigator']()
     if 'clean-main-burn' in experiments:
         if not hasattr(planner, 'clean_main_burn'):
             raise ValueError('This controller revision does not implement clean-main-burn')
@@ -152,6 +154,8 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
             raise ValueError('camera-recovery requires ViewRecoveryAttitude and normal attitude mode')
         attitude_type = namespace['ViewRecoveryAttitude']
     attitude = (attitude_type or namespace.get('EconomyAttitude', namespace.get('FlightAttitude', lambda: None)))()
+    if 'dogleg' in experiments:
+        attitude = namespace['DoglegAttitude'](planner)
     if hasattr(planner, 'nose_first') and attitude_mode in ('nose-first', 'nose-only', 'burn-only'):
         planner.nose_first, planner.aligned_once = True, False
     camera, history = namespace['CameraPerception'](), namespace['PoseHistory']()
@@ -409,6 +413,7 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 final_speed_m_s=round(float(np.linalg.norm(vel)), 3),
                 learned_coast_drift_m_s2=(planner.dynamics.residual.tolist() if hasattr(planner, 'dynamics') else None),
                 phase=mode, images=camera.frames, plan_p95_ms=round(float(np.percentile(timings, 95))*1000., 2),
+                plan_max_ms=round(float(np.max(timings))*1000., 2),
                 angular_active_fraction=round(angular_active/(tick+1), 3),
                 linear_active_fraction=round(linear_active/(tick+1), 3),
                 nose_error_p95_deg=round(float(np.percentile(nose_errors, 95)), 2) if nose_errors else None,
@@ -425,6 +430,9 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 max_lateral_deviation_m=round(max_lateral_deviation, 2),
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not arrival_collision else None))
+    if 'dogleg' in experiments:
+        result['dogleg'] = dict(planner.lane_log, searches=planner.lane_searches, bends_executed=planner.lane_bends,
+                                aligned=planner.lane_aligned, events=list(planner.lane_records))
     if fuel_budget is not None:
         result.update(total_fuel_kg=round(fuel, 3), fuel_limited=fuel_budget.exhausted)
     if gate is not None:
@@ -450,7 +458,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--experiment', action='append', default=[],
-                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache'),
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg'),
                         help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')

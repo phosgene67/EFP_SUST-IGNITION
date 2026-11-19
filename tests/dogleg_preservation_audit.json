@@ -1,0 +1,17 @@
+{
+  "kind": "measured_source_preservation_audit",
+  "reference": "37bbd54",
+  "unchanged_existing_definitions": 47,
+  "changed_existing_definitions": [],
+  "connection_prefix_preserved": true,
+  "official_asset_hashes_match": {
+    "scenario": true,
+    "scoring": true,
+    "actuator": true,
+    "jet_config": true
+  },
+  "frozen_source_matches": true,
+  "controller_normalized_sha256": "4322889fb7c170567727d3b3fc9b2ebc83b3652c4d5b95bf76d531c40be931a0",
+  "controller_file_sha256": "6465a5efdaf632cde06338706637ac478ae90f9bec25964a08aa057f6bb7cd7b",
+  "note": "New definitions and opt-in runtime selection/logging added. This audit does not establish native flight performance."
+}

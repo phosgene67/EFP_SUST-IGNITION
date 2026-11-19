@@ -30,6 +30,7 @@ Experiments are isolated behind default-off environment flags.
 | `EFP_CAMERA_RECOVERY=1` | Maintain station camera coverage during a clear coast | With coast windows, restored 20/20 arrivals but reduced median score. Stays off. |
 | `EFP_ENTRY_SCOPE=1` | Evaluate collision checks up to predicted safe-zone entry | Twenty-seed isolated trial showed no meaningful median gain. Stays off. |
 | `EFP_TRACK_CACHE=1` | Reuse fits for unchanged radar samples | All 20 modeled entry results matched the original; faster tracker fixture. Native score benefit unverified. Stays off. |
+| `EFP_DOGLEG=1` | Radar-only one-bend lanes, finite burns and one initial +X slew | Twenty-seed median score fell 10.385 points; higher fuel and costly search. Rejected; keep off. [Results](DOGLEG.md). |
 
 Copying this controller alone keeps the baseline flight policy: every experiment
 above defaults to off. No tested trajectory change has established the requested

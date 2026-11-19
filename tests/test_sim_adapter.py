@@ -15,7 +15,7 @@ class StopSimulation(Exception):
 class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
                     clean_main_burn=False, camera_recovery=False, reset_clock=False,
-                    flight_trace=False, trace_failure=False):
+                    flight_trace=False, trace_failure=False, dogleg=False):
         commands = []
         now = [0.]
         clock_reset = [False]
@@ -78,6 +78,7 @@ class AdapterTests(unittest.TestCase):
                     'EFP_COAST_WINDOWS': '0',
                     'EFP_ENTRY_SCOPE': '0',
                     'EFP_TRACK_CACHE': '0',
+                    'EFP_DOGLEG': '1' if dogleg else '0',
                     'EFP_FLIGHT_TRACE': '1' if flight_trace else '0',
                     'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
             self.runtime = {'__file__': str(SOURCE)}
@@ -90,6 +91,17 @@ class AdapterTests(unittest.TestCase):
     def test_camera_recovery_configuration_survives_simulation_reset(self):
         self.run_adapter([], camera_feed=True, camera_recovery=True, reset_clock=True)
         self.assertEqual(type(self.runtime['flight_attitude']).__name__, 'ViewRecoveryAttitude')
+
+    def test_dogleg_flag_and_attitude_survive_simulation_reset(self):
+        self.run_adapter([], dogleg=True, reset_clock=True)
+        self.assertEqual(type(self.runtime['planner']).__name__, 'DoglegNavigator')
+        self.assertIs(self.runtime['flight_attitude'].planner, self.runtime['planner'])
+
+    def test_dogleg_actual_arrival_zeros_linear_and_angular_commands(self):
+        commands = self.run_adapter([], dogleg=True, target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        self.assertIsNotNone(self.runtime['planner'].arrival_time)
+        for _, value in commands:
+            np.testing.assert_array_equal(value, np.zeros(3))
 
     def test_optional_trace_is_bounded_and_does_not_interrupt_flight(self):
         self.run_adapter([], flight_trace=True)
