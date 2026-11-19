@@ -2935,6 +2935,49 @@ class DoglegNavigator(ShootingNavigator):
         self.lane_retry_distance = np.inf
         self.lane_log = dict(event='launch', searches=0)
         self.lane_records = deque(maxlen=128)
+        self.lane_no_safe_events = 0
+        self.lane_last_selected = None
+
+    @staticmethod
+    def lane_distribution(loc, target, relative_centers):
+        """Diagnostic only: scene centers already are shuttle-relative Phobos vectors.
+
+        Subtracting loc again would mix an absolute position with relative
+        vectors. This nominal-center distribution excludes radius/uncertainty
+        inflation and does not certify a clear corridor.
+        """
+        direction = np.asarray(target, float)-np.asarray(loc, float)
+        distance = float(np.linalg.norm(direction))
+        rel = np.asarray(relative_centers, float).reshape(-1, 3)
+        rel = rel[np.isfinite(rel).all(axis=1)]
+        stats = dict(frame='Phobos', centers='shuttle_relative', slab_count=0,
+                     distance_m=distance, along_min_m=50., along_max_m=distance-50.,
+                     lat_p50_m=None, lat_p90_m=None, lat_p100_m=None)
+        if not np.isfinite(distance) or distance <= 100. or not len(rel):
+            return stats
+        direction /= distance
+        along = rel@direction
+        slab = rel[(along > 50.) & (along < distance-50.)]
+        if len(slab):
+            lateral = np.linalg.norm(slab-(slab@direction)[:, None]*direction, axis=1)
+            values = np.percentile(lateral, [50., 90., 100.])
+            stats.update(slab_count=len(slab), lat_p50_m=float(values[0]),
+                         lat_p90_m=float(values[1]), lat_p100_m=float(values[2]))
+        return stats
+
+    def lane_summary(self, now, fuel=None, record=False):
+        """Snapshot telemetry only; preserve the fuel endpoint of closed routes."""
+        selected = None if self.lane_last_selected is None else self.lane_last_selected.copy()
+        if selected is not None and self.lane is not None:
+            spent = self.last_fuel if fuel is None else float(fuel)
+            selected['actual_incremental_fuel_kg'] = spent-selected['fuel_at_selection_kg']
+        summary = dict(event='run_summary', state_time_s=float(now),
+                       searches=self.lane_searches, no_safe_lane_events=self.lane_no_safe_events,
+                       bends_executed=self.lane_bends, arrived=self.arrival_time is not None,
+                       latest_selected_route=selected)
+        if record:
+            self.lane_records.append(summary)
+        return summary
 
     def candidates(self, loc, vel, target, target_velocity, wide=False):
         forward = target-loc
@@ -3041,8 +3084,14 @@ class DoglegNavigator(ShootingNavigator):
                     best_score = score
                     break
         if best is None:
-            self.lane_log = dict(event='no_safe_lane', searches=self.lane_searches)
-            self.lane_log['search_ms'] = 1000.*(perf_counter()-started)
+            search_ms = 1000.*(perf_counter()-started)
+            self.lane_no_safe_events += 1
+            # Radar tracks precede appended camera surfaces in observe_scene.
+            radar_count = getattr(self, 'latest_radar_count', len(scene[0]))
+            self.lane_log = dict(event='no_safe_lane', state_time_s=float(now),
+                searches=self.lane_searches, no_safe_lane_events=self.lane_no_safe_events,
+                search_ms=search_ms,
+                debris_distribution=self.lane_distribution(loc, target, scene[0][:radar_count]))
             self.lane_records.append(self.lane_log.copy())
             return False
         self.lane, self.lane_epoch, self.lane_stage = best, float(now), 0
@@ -3055,7 +3104,9 @@ class DoglegNavigator(ShootingNavigator):
         v2 = v1+world_impulses[1]
         bend_angle = np.rad2deg(np.arccos(np.clip(v1@v2/max(np.linalg.norm(v1)*np.linalg.norm(v2), 1e-9), -1., 1.)))
         dv = np.abs(best['impulses'][0]).sum(axis=1)
-        self.lane_log = dict(event=self.lane_event, searches=self.lane_searches,
+        self.lane_log = dict(event=self.lane_event, state_time_s=float(now),
+            searches=self.lane_searches, no_safe_lane_events=self.lane_no_safe_events,
+            origin=loc.tolist(),
             waypoint=(loc+dogleg_positions(best, best['bend_time'][:, None])[0, 0]).tolist(),
             goal=best['goal'][0].tolist(), speed_m_s=float(best['speed'][0]), bend_deg=float(bend_angle),
             delta_v_initial_m_s=float(dv[0]), delta_v_bend_m_s=float(dv[1]),
@@ -3063,6 +3114,8 @@ class DoglegNavigator(ShootingNavigator):
             fuel_at_selection_kg=float(self.last_fuel), slew_fuel_model_kg=float(best['slew_fuel'][0]),
             predicted_score=score, min_clearance_m=gap if np.isfinite(gap) else None, bends_executed=self.lane_bends,
             search_ms=1000.*(perf_counter()-started))
+        self.lane_log['actual_incremental_fuel_kg'] = 0.
+        self.lane_last_selected = self.lane_log.copy()
         self.lane_records.append(self.lane_log.copy())
         self.policy.speed, self.policy.estimated_score = float(best['speed'][0]), score
         self.policy.remaining_time = float(best['eta'][0])
@@ -3136,7 +3189,9 @@ class DoglegNavigator(ShootingNavigator):
             self.lane_event = reason
             if self.lane is not None:
                 self.lane_records.append(dict(self.lane_log, event='closed_'+reason,
+                    closed_time_s=float(now),
                     actual_incremental_fuel_kg=float(self.last_fuel-self.lane_log['fuel_at_selection_kg'])))
+                self.lane_last_selected = self.lane_records[-1].copy()
             if self.lane_aligning:
                 # Abort an unsafe initial slew; do not restart attitude turns
                 # every time new radar evidence invalidates a lane.
@@ -3156,6 +3211,7 @@ class DoglegNavigator(ShootingNavigator):
         self.coasting = self.lane_aligning or self.lane_stage in (2, 4)
         self.lane_log.update(actual_incremental_fuel_kg=float(self.last_fuel-self.lane_log['fuel_at_selection_kg']),
                              phase=self.last_phase, bends_executed=self.lane_bends)
+        self.lane_last_selected = self.lane_log.copy()
         return self.linear_command(vel, MAX_ACCEL), self.last_mode, self.lane_clearance
 
     def linear_command(self, velocity, maximum):
@@ -3462,6 +3518,12 @@ try:
             st.OnScreenAlert('Arrival zone reached; post-arrival safety control active. Official result is in the Scoring log.',
                              'ArrivalZone', st.Severity.Info)
             arrival_announced = True
+            if dogleg_enabled:
+                try:
+                    st.logger_info('IGNITION_DOGLEG_SUMMARY '+json.dumps(
+                        planner.lane_summary(now, fuel, record=True), allow_nan=False))
+                except Exception:
+                    pass
         # The planner runs at 2 Hz; the velocity servo runs every control tick.
         # Reusing a fixed acceleration for the whole planning period can overshoot.
         accel_world = planner.linear_command(vel, linear_limit)
@@ -3545,6 +3607,8 @@ try:
                         st.logger_info('IGNITION_DOGLEG_EVENT '+json.dumps(record, allow_nan=False))
                     planner.lane_records.clear()
                     st.logger_info('IGNITION_DOGLEG '+json.dumps(planner.lane_log, allow_nan=False))
+                    st.logger_info('IGNITION_DOGLEG_SUMMARY '+json.dumps(
+                        planner.lane_summary(now, fuel), allow_nan=False))
                 except Exception:
                     pass
             if flight_trace_enabled:

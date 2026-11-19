@@ -1,7 +1,9 @@
 # Dogleg lane experiment
 
-`EFP_DOGLEG=1` selects the new planner in Controller.py. It defaults to **off**.
-The baseline remains SCORE_MOMENTUM. This is an experiment, not a verified
+`EFP_DOGLEG=1` selects the new planner in Controller.py. The original experiment
+defaulted off; the user enabled it by default in commit `65f0b41`. Task 1
+diagnostics preserve that setting; see [the current diagnostic report](DOGLEG_DIAGNOSTICS.md).
+Use `EFP_DOGLEG=0` to select SCORE_MOMENTUM. This is an experiment, not a verified
 60-point native controller. No native flight trace was available for this task.
 
 ## Frames and evidence

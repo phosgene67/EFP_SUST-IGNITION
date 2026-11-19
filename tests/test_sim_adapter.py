@@ -103,6 +103,23 @@ class AdapterTests(unittest.TestCase):
         for _, value in commands:
             np.testing.assert_array_equal(value, np.zeros(3))
 
+    def test_dogleg_arrival_logs_a_json_run_summary(self):
+        self.run_adapter([], dogleg=True, target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        messages = [call.args[0] for call in self.sdk.logger_info.call_args_list]
+        summaries = [json.loads(message.split(' ', 1)[1]) for message in messages
+                     if message.startswith('IGNITION_DOGLEG_SUMMARY ')]
+        self.assertTrue(summaries)
+        self.assertTrue(summaries[-1]['arrived'])
+        self.assertEqual(summaries[-1]['searches'], 0)
+        self.assertEqual(summaries[-1]['no_safe_lane_events'], 0)
+
+    def test_dogleg_diagnostic_logger_failure_does_not_change_arrival_commands(self):
+        commands = self.run_adapter([], dogleg=True, trace_failure=True,
+                                    target_position=[8050.1, 0., 0.], scoring_distance=49.9)
+        self.assertIsNotNone(self.runtime['planner'].arrival_time)
+        for _, value in commands:
+            np.testing.assert_array_equal(value, np.zeros(3))
+
     def test_optional_trace_is_bounded_and_does_not_interrupt_flight(self):
         self.run_adapter([], flight_trace=True)
         message = self.sdk.logger_info.call_args.args[0]

@@ -16,7 +16,11 @@ The original 20-seed offline baseline had median score 38.28, median entry time
 modeled pre-entry contact. These are proxy results. A native 60–70 median
 remains unverified.
 
-Experiments are isolated behind default-off environment flags.
+Experiments use environment flags. The user's commit `65f0b41` enabled dogleg
+by default; the Task 1 diagnostic update preserves that setting. Other
+experiment defaults remain off. See [Task 1 diagnostics](DOGLEG_DIAGNOSTICS.md).
+That diagnostic-only update completed 20 matched offline runs: all entry
+metrics/fuel audits were unchanged, and all 20 runs hit `no_safe_lane`.
 
 | Flag | Experiment | Status |
 | --- | --- | --- |
@@ -32,8 +36,8 @@ Experiments are isolated behind default-off environment flags.
 | `EFP_TRACK_CACHE=1` | Reuse fits for unchanged radar samples | All 20 modeled entry results matched the original; faster tracker fixture. Native score benefit unverified. Stays off. |
 | `EFP_DOGLEG=1` | Radar-only one-bend lanes, finite burns and one initial +X slew | Twenty-seed median score fell 10.385 points; higher fuel and costly search. Rejected; keep off. [Results](DOGLEG.md). |
 
-Copying this controller alone keeps the baseline flight policy: every experiment
-above defaults to off. No tested trajectory change has established the requested
+Set `EFP_DOGLEG=0` explicitly to select the SCORE_MOMENTUM baseline in this
+checkout. No tested trajectory change has established the requested
 60-point native result or 30–35 kg fuel use by 600 m remaining.
 
 For a native diagnostic run, set `EFP_FLIGHT_TRACE=1` before launching the

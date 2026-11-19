@@ -1,0 +1,21 @@
+{
+  "kind": "verified_source_audit",
+  "reference": "65f0b41",
+  "unchanged_existing_definitions": 51,
+  "changed_class": "DoglegNavigator (diagnostics only)",
+  "unchanged_methods": [
+    "candidates",
+    "start_lane_burn",
+    "linear_command"
+  ],
+  "connection_prefix_unchanged": true,
+  "official_assets_unchanged": {
+    "scenario": true,
+    "scoring": true,
+    "actuator": true,
+    "jet_config": true
+  },
+  "dogleg_default_preserved": "1",
+  "normalized_source_sha256": "6b735e26de57aba5fe25ece2faf9c63aea6006870d55a1cc5afb9161eb076347",
+  "deployed_file_sha256": "c347e27ad086fd40f26c05c75b91a7407fee04fbede2ebd8cd625fc0fd5a070e"
+}

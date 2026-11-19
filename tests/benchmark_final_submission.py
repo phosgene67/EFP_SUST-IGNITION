@@ -431,8 +431,13 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
                 zero_damage_score_estimate=(round(100.*(120./arrival_time-arrival_fuel/75.+.5), 2)
                                            if arrived and not arrival_collision else None))
     if 'dogleg' in experiments:
+        diagnostic = (planner.lane_summary(arrival_time if arrived else now+dt,
+                                           arrival_fuel if arrived else fuel, record=True)
+                      if hasattr(planner, 'lane_summary') else None)
         result['dogleg'] = dict(planner.lane_log, searches=planner.lane_searches, bends_executed=planner.lane_bends,
-                                aligned=planner.lane_aligned, events=list(planner.lane_records))
+                                aligned=planner.lane_aligned, events=list(planner.lane_records),
+                                run_summary=diagnostic,
+                                no_safe_lane_events=getattr(planner, 'lane_no_safe_events', None))
     if fuel_budget is not None:
         result.update(total_fuel_kg=round(fuel, 3), fuel_limited=fuel_budget.exhausted)
     if gate is not None:
