@@ -3,7 +3,9 @@ from types import SimpleNamespace
 import unittest
 
 import numpy as np
-from test_controller import namespace
+from controller_loader import load_archived_namespace
+
+namespace = load_archived_namespace()
 
 
 class ViewRecoveryTests(unittest.TestCase):

@@ -3,7 +3,9 @@ from unittest import mock
 import unittest
 
 import numpy as np
-from test_controller import namespace
+from controller_loader import load_archived_namespace
+
+namespace = load_archived_namespace()
 
 
 class TrackerCacheTests(unittest.TestCase):

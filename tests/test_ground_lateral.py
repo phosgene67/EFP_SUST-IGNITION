@@ -2,8 +2,9 @@
 import unittest
 from pathlib import Path
 import numpy as np
-from test_controller import namespace
-from controller_loader import load_namespace
+from controller_loader import load_namespace, load_archived_namespace
+
+namespace = load_archived_namespace()
 
 
 class GroundLateralTests(unittest.TestCase):

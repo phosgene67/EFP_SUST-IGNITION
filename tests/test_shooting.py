@@ -3,8 +3,11 @@ import unittest
 from unittest import mock
 from types import SimpleNamespace
 import numpy as np
-from test_controller import namespace
+from controller_loader import load_archived_namespace
 from test_camera_fusion import Perception, depth_patch
+
+# This module includes opt-in experiments removed by the Momentum restoration.
+namespace = load_archived_namespace()
 
 
 class ShootingTests(unittest.TestCase):

@@ -1,9 +1,15 @@
 """Certify entry before ignoring contacts after the official clock has stopped."""
 from types import SimpleNamespace
 import unittest
+from pathlib import Path
 
 import numpy as np
-from test_controller import namespace
+from controller_loader import load_namespace
+
+# The matched trial was rejected for insufficient score gain; test its frozen
+# source without restoring the experiment into the active Momentum controller.
+namespace = load_namespace((Path(__file__).resolve().parent / 'score_sweeps' /
+                            'momentum_terminal_scope_controller.py').read_text())
 
 
 def camera_sphere(center, radius, observed=True):

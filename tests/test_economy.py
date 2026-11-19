@@ -104,7 +104,7 @@ class EconomyTests(unittest.TestCase):
         self.assertEqual(phase, 'CRUISE')
         self.assertGreater(cap, 4.)
 
-    def test_braking_goal_is_created_only_after_zone_entry(self):
+    def test_entry_switches_to_coast_without_a_braking_goal(self):
         approach = namespace['CaptureApproach']()
         empty = np.empty((0, 3))
         approach.goal(0., np.array([100., 0., 0.]), np.array([0., 0., 4.]), np.zeros(3), np.zeros(3), empty, [])
@@ -112,7 +112,7 @@ class EconomyTests(unittest.TestCase):
         _, phase, _ = approach.goal(1., np.array([49.8, 0., 0.]), np.array([0., 0., 4.]),
                                      np.zeros(3), np.zeros(3), empty, [])
         self.assertTrue(approach.entered)
-        self.assertEqual(phase, 'POST_ENTRY_BRAKE')
+        self.assertEqual(phase, 'MISSION_COMPLETE_COAST')
 
     def test_blocked_pass_uses_arrival_first_fallback(self):
         approach = namespace['CaptureApproach']()

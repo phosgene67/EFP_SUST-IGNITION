@@ -1403,7 +1403,7 @@ class TerminalApproach:
 
 
 class CaptureApproach:
-    """Enter a clear side of the scoring sphere; brake after entry, not before."""
+    """Fly through a clear side of the scoring sphere, without parking."""
     def __init__(self):
         self.side = self.tangent = None
         self.inner_goal = None
@@ -1423,7 +1423,7 @@ class CaptureApproach:
         heading = motion/max(speed, 1e-9)
         if speed < .01:
             heading = self.tangent if self.tangent is not None else np.array([1., 0., 0.])
-        self.exit_goal = location+heading*(speed*speed/(2.*SHIP_BRAKE_ACCEL)+15.)
+        self.exit_goal = location+1000.*heading
 
     def goal(self, now, location, velocity, target, target_velocity, centers, radii):
         relative = location-target
@@ -1440,9 +1440,7 @@ class CaptureApproach:
         if distance <= 50. and not self.entered:
             self.enter(location, velocity, target_velocity)
         if self.entered:
-            error = np.linalg.norm(self.exit_goal-location)
-            cap = min(6., np.sqrt(2.*SHIP_BRAKE_ACCEL*max(error-.5, 0.)), .3*error)
-            return self.exit_goal, 'POST_ENTRY_BRAKE' if error > 1. else 'HOLD', cap
+            return self.exit_goal, 'MISSION_COMPLETE_COAST', np.linalg.norm(motion)
         tangent = self.tangent-outward*(outward@self.tangent)
         tangent /= max(np.linalg.norm(tangent), 1e-9)
         second = np.cross(outward, tangent)
@@ -2055,6 +2053,7 @@ class EconomyNavigator(FinalNavigator):
         self.aligned_once, self.aligning = not self.nose_first, False
         self.failed = False
         self.dynamics = CoastDynamics()
+        self.coast_after_entry = True
 
     def gravity_at(self, location):
         return self.dynamics.gravity(location)
@@ -2072,10 +2071,11 @@ class EconomyNavigator(FinalNavigator):
         self.arrival_time = float(now)
         self.terminal.enter(location, velocity, target_velocity)
         self.shooting_active = False
-        self.coasting = False
-        self.last_phase = self.last_mode = 'POST_ENTRY_BRAKE'
-        motion = velocity-target_velocity
-        self.previous_velocity = velocity-.2*motion/max(np.linalg.norm(motion), 1e-9)
+        self.coasting = True
+        self.aligning = False
+        self.last_phase = self.last_mode = 'MISSION_COMPLETE_COAST'
+        self.previous_velocity = np.asarray(velocity).copy()
+        self.policy.estimated_score = mission_score(now, self.last_fuel, self.last_damage)
         return True
 
     def observe_damage(self, damage):
@@ -2097,6 +2097,11 @@ class EconomyNavigator(FinalNavigator):
             self.last_phase = self.last_mode = 'DAMAGE_LIMIT'
             self.previous_velocity = target_vel.copy()
             return np.zeros(3), self.last_mode, float('nan')
+        self.observe_arrival(now, loc, vel, target_loc, target_vel)
+        if self.arrival_time is not None:
+            self.previous_velocity = vel.copy()
+            self.last_phase = self.last_mode = 'MISSION_COMPLETE_COAST'
+            return np.zeros(3), self.last_mode, float('inf')
         direction = target_loc-loc
         distance = np.linalg.norm(direction)
         direction /= max(distance, 1e-9)
@@ -2167,7 +2172,7 @@ class EconomyNavigator(FinalNavigator):
         return self.policy.previous[2] if self.policy.previous is not None else 0.
 
     def linear_command(self, velocity, maximum):
-        if self.failed:
+        if self.failed or self.arrival_time is not None:
             return np.zeros(3)
         if self.aligning and not self.collision_urgent:
             return np.zeros(3)
@@ -2540,6 +2545,8 @@ class ShootingNavigator(EconomyNavigator):
         return self.linear_command(vel, MAX_ACCEL), self.last_mode, float(clearance[best])
 
     def linear_command(self, velocity, maximum):
+        if self.failed or self.arrival_time is not None:
+            return np.zeros(3)
         if not self.shooting_active:
             command = super().linear_command(velocity, maximum)
             if self.last_phase == 'LAUNCH':
@@ -2715,7 +2722,9 @@ try:
                 cruise = min(cruise, np.sqrt(2.*BRAKE_ACCEL*max(min(CAMERA_MAX_RANGE, 220.)-40., 0.)))
             fresh_depth = any(0. <= now-stamp <= CAMERA_MAX_AGE and len(regions)
                               for stamp, regions in perception.occupied.values())
-            if len(radar) == 0 and not fresh_depth:
+            if planner.arrival_time is not None:
+                mode, clearance = 'MISSION_COMPLETE_COAST', float('inf')
+            elif len(radar) == 0 and not fresh_depth:
                 planner.previous_velocity = target_vel.copy()
                 mode, clearance = 'WAIT_RADAR', float('nan')
                 planner.coasting = False
@@ -2732,7 +2741,7 @@ try:
             last_plan = now
             plan_ms = 1000.*(time.perf_counter()-plan_wall_start)
         if planner.arrival_time is not None and not arrival_announced:
-            st.OnScreenAlert('Arrival zone reached; post-arrival safety control active. Official result is in the Scoring log.',
+            st.OnScreenAlert('Arrival zone reached; thrusters off. Official result is in the Scoring log.',
                              'ArrivalZone', st.Severity.Info)
             arrival_announced = True
         # The planner runs at 2 Hz; the velocity servo runs every control tick.
@@ -2750,7 +2759,7 @@ try:
         flight_attitude.aligning = planner.aligning
         angular_accel = flight_attitude.command(now, body_dcm, vel-target_vel,
             nose_hint, up_world, omega_body, angular_limit)
-        if planner.failed:
+        if planner.failed or planner.arrival_time is not None:
             angular_accel = np.zeros(3)
         if not np.isfinite(angular_accel).all():
             angular_accel = np.zeros(3)
@@ -2765,8 +2774,7 @@ try:
                 nose_first=nose_first_enabled,
                 body_velocity=flight_attitude.body_velocity.tolist(), vertical_climb=flight_attitude.vertical,
                 arrival_zone=planner.arrival_time is not None, arrival_time=planner.arrival_time,
-                arrival_action=('PARKED AFTER ENTRY' if planner.terminal.entered and planner.last_phase == 'HOLD'
-                                else 'POST-ENTRY BRAKING' if planner.terminal.entered else 'HOLDING POSITION'),
+                arrival_action=('THRUSTERS OFF AFTER ENTRY' if planner.arrival_time is not None else 'APPROACHING'),
                 projected_score=planner.policy.estimated_score,
                 scored_fuel=(fuel_ledger.previous[1] if fuel_ledger.frozen else None))
         if now-last_log >= 5.0:

@@ -6,6 +6,7 @@ from unittest import mock
 import unittest
 import numpy as np
 from test_controller import SOURCE
+from controller_loader import ARCHIVED_SOURCE
 
 
 class StopSimulation(Exception):
@@ -15,7 +16,11 @@ class StopSimulation(Exception):
 class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
                     clean_main_burn=False, camera_recovery=False, reset_clock=False,
-                    flight_trace=False, trace_failure=False, dogleg=False, ground_lateral=False):
+                    flight_trace=False, trace_failure=False, dogleg=False, ground_lateral=False,
+                    angular_velocity=(0., 0., 0.)):
+        # Only archived opt-in experiments execute the saved experimental source.
+        source = (ARCHIVED_SOURCE if any((clean_main_burn, camera_recovery, flight_trace,
+                                         dogleg, ground_lateral)) else SOURCE)
         commands = []
         now = [0.]
         clock_reset = [False]
@@ -51,7 +56,7 @@ class AdapterTests(unittest.TestCase):
             fuel_used if key[-1] == 'FuelUsed' else .5 if key[-1] == 'MaxAccel_m_s2' else .05)
         shuttle.GetParamArray.return_value = radar
         shuttle.SetParam.side_effect = lambda kind, key, value: commands.append((key[-1], np.array(value)))
-        shuttle.getAngVelocity.return_value.WRT.return_value.ExprIn.return_value = np.zeros(3)
+        shuttle.getAngVelocity.return_value.WRT.return_value.ExprIn.return_value = np.asarray(angular_velocity)
         # A rotated shuttle: world +X maps to body -Y.
         transform = np.array([[0., 1., 0.], [-1., 0., 0.], [0., 0., 1.]])
         shuttle.getRotation.return_value.DCM_WRT.return_value = transform
@@ -82,9 +87,9 @@ class AdapterTests(unittest.TestCase):
                     'EFP_GROUND_LATERAL': '1' if ground_lateral else '0',
                     'EFP_FLIGHT_TRACE': '1' if flight_trace else '0',
                     'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
-            self.runtime = {'__file__': str(SOURCE)}
+            self.runtime = {'__file__': str(source)}
             with self.assertRaises(StopSimulation):
-                exec(compile(SOURCE.read_text(), str(SOURCE), 'exec'), self.runtime)
+                exec(compile(source.read_text(), str(source), 'exec'), self.runtime)
         st.connect_to_sim.assert_called_once()
         st.leave_sim.assert_called_once()
         return commands

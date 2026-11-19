@@ -1,8 +1,19 @@
 """Load executable controller algorithms without connecting to Space Teams PRO."""
 import ast
+from functools import lru_cache
+from pathlib import Path
 from collections import deque
 from threading import Lock
 import numpy as np
+
+
+ARCHIVED_SOURCE = Path(__file__).resolve().parents[1] / 'temp_controller' / 'currentcontroller.py'
+
+
+@lru_cache(maxsize=1)
+def load_archived_namespace():
+    """Rejected experiments are tested against their saved source, never deployed."""
+    return load_namespace(ARCHIVED_SOURCE.read_text())
 
 
 def load_namespace(source):

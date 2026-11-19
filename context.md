@@ -5,13 +5,15 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
-## Current authoritative state: SCORE_MOMENTUM restored by the user
+## Current authoritative state: SCORE_MOMENTUM with completion-thrust fix
 
 **Latest user direction, 2026-11-19:** the user manually restored SCORE_MOMENTUM
 because subsequent versions performed worse in their testing. Future controller
 improvements must start from this Momentum version and preserve its successful
-behavior. The present request authorizes updating this context file only:
-**do not change controller code, tests, configuration or simulator files now.**
+behavior. The subsequent authorized code task asks to remove station-approach
+braking and consider a boost near 500 m only when the score tradeoff warrants it.
+The earlier documentation-only restriction applied to the completed context
+update, not to this code task. Preserve the restored Momentum flight planner.
 
 This section supersedes every older "current", "selected", default-setting,
 pending-task and stop/continue instruction in the historical record below.
@@ -22,21 +24,28 @@ implementation. It remains an unproven route hypothesis.
 
 ### Verified active files and version identity
 
-- Current checkout: `4210f77`, the user's manual restoration/archive commit.
+- Current committed checkout: `4a75328` (documentation), following the user's
+  restoration/archive commit `4210f77`. The completion fix is an uncommitted diff.
 - Active entry point: `Controller.py`, constructing `ShootingNavigator` and
   reporting `profile=SCORE_MOMENTUM`.
-- Its normalized source text exactly matches `4a8507e:Controller.py`.
-- `temp_controller/score_momentum_controller.py` exactly matches the active
-  controller. Preserve it as the user's saved Momentum copy.
+- Its starting normalized source exactly matched `4a8507e:Controller.py`.
+- `temp_controller/score_momentum_controller.py` remains that unmodified
+  original Momentum baseline. Preserve it; the active file now includes the
+  small completion fix described below. The rejected entry-scope trial exists
+  only in its frozen experiment source.
 - `temp_controller/currentcontroller.py` contains the later Dogleg/ground-lateral
   implementation. It is an archive, not the active entry point or recommended
   baseline. Preserve it without copying it over Controller.py.
-- Active normalized-text SHA256:
+- Original restored baseline normalized-text SHA256:
   `2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af`.
-- Active deployed-byte SHA256 at this inspection:
+- Original restored baseline deployed-byte SHA256:
   `b461c96e8db27d760827e9f29ab9b4ec8de0335033080dcdd0f4d399fd073883`.
   Line-ending conversion can change the byte hash without changing normalized
   source text; compare like-for-like when identifying native runs.
+- Selected completion-fix normalized source SHA256:
+  `5fd084a2121ceb7772e084caa391df7261d39e4dddb1a20bc6d5ab086c0dbaf3`.
+- Selected deployed-byte SHA256 at final validation:
+  `f1e162886a834c4511fdda4248ce132c21ed312c9a137f22079d774923a32a78`.
 
 ### What is active, and what was not carried back
 
@@ -53,19 +62,73 @@ cruise ceiling of 10 m/s. Legacy `MAX_SPEED=25` does not mean that the active
 score optimizer commands 25 m/s. There is no active hard fuel ceiling/reserve.
 `EFP_NOSE_FIRST=0` and `EFP_AXIS_THRUST=0` are the restored defaults;
 `EFP_CAMERA_GUI=1` enables the existing viewer by default.
+No new live experiment flag, fuel cap or staged-coast planner is enabled.
 
 The restored file has **no DoglegNavigator or ground-lateral implementation**.
-The later EFP_DOGLEG/EFP_GROUND_LATERAL and other experiment switches, source-hash
+The later EFP_DOGLEG/EFP_GROUND_LATERAL and other archived experiment switches, source-hash
 logging, IGNITION_STATE flight trace and lane diagnostics are not present in
 this active source. Setting those old environment variables does not add the
 missing features. Existing fuelPhaseKg, planMs, speed, damage and camera-status
 logs remain available. Older guides describe archived versions and must not
 be treated as a feature inventory for the restored file.
 
-Restoration also predates later unconditional post-entry zero-command guards:
-the active source still contains POST_ENTRY_BRAKE behavior. Record this as a
-future verification/fix item; do not claim that later post-entry protections
-survived the rollback, and do not modify them during this documentation task.
+### Selected completion fix and rejected terminal experiment, 2026-11-19
+
+**Active correctness fix:** a detected 50 m scoring-sphere entry now latches
+`MISSION_COMPLETE_COAST`. Both the normal servo and an unfinished Shooting burn
+return zero linear acceleration; the runtime also sends zero angular acceleration.
+Losing radar, moving out of the sphere, a camera obstacle after entry or spin
+damping cannot restart the jets. The capture approach no longer creates a
+post-entry braking/parking command. The official result still comes from Scoring.
+The installed Scoring.py uses `distance <= KeepOutRadius_m`; its damage test
+runs before success. Damage from a collision before entry remains scored.
+Removing fuel burn after success cannot increase an already frozen official score.
+
+**Rejected experiment, frozen source only:** with current station camera
+coverage, terminate local swept-obstacle checks at a predicted 48 m entry
+(2 m inside the 50 m sphere), and stop rejecting capture lines solely because
+they encounter geometry after capture. Obstacles before entry and missing-camera
+guards remain. The terminal coast rollout now includes gravity and zero thrust;
+it previously simulated a constant-speed velocity servo during CAPTURE_PASS.
+The prior entry-scope trial gained only 0.035 modeled median points. This trial
+also corrected the coast rollout's gravity/servo approximation, but the new
+20-seed result still fails the gain-above-seed-noise requirement. It has been
+removed from active Controller.py; EFP_ENTRY_SCOPE is not a live switch.
+
+**Late boost:** inspection and regression fixtures confirm that the restored
+Shooting planner already evaluates finite scored burns near 500 m, up to 10 m/s.
+No mandatory 500 m kick or assumed debris-free region is added. In a clear
+modeled 450 m case, elapsed 100 s, current 3 m/s, fuel 25 kg, it chooses a 13.26 s
+burn toward 5.32 m/s; at elapsed 150 s, 8 m/s and 35 kg it chooses zero thrust.
+These are planner fixtures, not native flight results or guaranteed speeds.
+Nearer than 280 m the original terminal handoff is retained.
+
+The active default settings preserve the original pre-entry Momentum decisions.
+Completion thrust is removed by default; no terminal experiment is promoted.
+Connection boilerplate, SetCommand, camera helpers, official scoring, physics,
+jet selection and STU4-Sim files are unchanged. No commits, pushes or deployment
+are performed by this task.
+
+**Measured offline comparison, seeds100–119:** baseline median38.275, candidate
+38.310; delta+0.035 points, rounding-adjusted paired-bootstrap95% interval
+[-0.295,+0.770]. Both medians264.97 s; fuel43.725 vs43.595 kg. Both20/20 arrivals
+with zero modeled contacts;13 entry-result records identical. Paired median
+time/fuel deltas are both0; mean fuel delta-0.085 kg. Launch/cruise phase deltas
+are exactly0; mean CAPTURE_PASS delta-0.073935 kg, OBSERVE_CAPTURE-0.011095 kg.
+The score-gain hypothesis is inconclusive; reject promotion. All20 candidates
+used0 kg in their90 s post-entry tests, but that fuel is outside official scoring.
+Results: `tests/score_sweep_momentum_terminal_scope.json`,
+`tests/momentum_terminal_scope_SEED.json`; tested candidate source:
+`tests/score_sweeps/momentum_terminal_scope_controller.py` (normalized SHA
+`7c11adeff9d372d1468a9d03d603e2d3a105d2098ad53e219ce32ff145c87f60`).
+This source is an archive, not the selected entry point.
+
+**Default completion check, modeled seed100:** same original entry score44.93,
+time255.93 s and fuel38.97 kg; post-entry90 s fuel drops23.1234 ->0 kg.
+Do not present a single completion check as a new20-run score improvement.
+Tests:202 pass, including active Momentum completion/late-burn cases and
+explicitly archived experiment cases. See `MOMENTUM_TERMINAL.md` and
+`tests/momentum_validation.json`. Native revalidation remains required.
 
 ### Evidence to use as the Momentum baseline
 
@@ -77,8 +140,8 @@ judgment, not a verified matched 20-run native median or a guarantee.
 in `tests/score_sweep_baseline.json` / `tests/score_baseline_SEED.json`:
 median score38.275, p10–p90 22.984–43.789, range13.79–44.93;
 median entry time264.97 s, fuel43.725 kg;20 arrivals and zero modeled contacts.
-These archived offline estimates were not rerun during this documentation-only
-task. The model does not provide native damage energy or fully account for
+These archived offline estimates are reused as the exact-source baseline for
+this task. The model does not provide native damage energy or fully account for
 native meshes, rendering, dynamics and controller scheduling.
 
 **Later experiments, retained as rejected historical evidence:** Dogleg median
@@ -98,7 +161,7 @@ and the historical notes below. A faster tracker fixture or a single better
 seed is not evidence of a native score gain. Do not restore whole failed
 bundles to recover one useful idea.
 
-### Direction for a future authorized code task
+### Continuing direction
 
 Improve **achieved official score** from SCORE_MOMENTUM, initially toward55–60+
 with zero scored damage, stretch70+. Do not change the organizers' nominal
@@ -112,8 +175,7 @@ Fuel targets remain tradeoffs, not reinstated hard caps.
 Profile the restored controller's own phase fuel and planning latency before
 assuming that an archived version's bottleneck is identical. Match native logs
 to this exact source/settings; the current restoration has no automatic source
-hash/IGNITION_STATE logging. Any added telemetry or selective restoration of a
-verified fix requires a future code task, not this one.
+hash/IGNITION_STATE logging. Match native evidence to source and actual settings.
 
 Keep the existing connection boilerplate and official jet selector unchanged;
 leave STU4-Sim untouched. Use supported acceleration/angular-acceleration
@@ -132,12 +194,14 @@ score. The nominal/reference run scores50; improving the controller does not
 mean changing nominal time120 s, fuel75 kg, damage threshold209200 J or the
 50 m success sphere.
 
-Historical193-test passes belong to the later experimental source. No tests
-were run after this manual restoration in this documentation task. Some tests
-and benchmark switches refer to classes/arguments removed from the active file;
-check compatibility before claiming the current suite passes. Preserve frozen
-experiment sources/results for reproduction. Only context.md is updated now;
-no algorithm, tests, defaults, simulator files, commits or deployment are changed.
+Historical193-test passes belong to the later experimental source. The first
+restored-source test audit exposed52 incompatible archived-experiment cases.
+Those tests now explicitly load `temp_controller/currentcontroller.py`; entry-scope
+fixtures load the rejected trial's frozen source. Adapter
+tests do so only when requesting an archived feature. Normal Momentum adapters,
+economy, camera, frame and new completion tests still exercise active Controller.py.
+This test separation does not deploy or restore the rejected experimental code.
+Preserve the frozen experiment sources/results for reproduction.
 
 ## Historical experiment archive — superseded by the restoration above
 

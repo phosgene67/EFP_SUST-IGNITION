@@ -1,0 +1,60 @@
+{
+  "kind": "unit_tests_and_offline_proxy_validation",
+  "date": "2026-11-19",
+  "controller_sha256": "5fd084a2121ceb7772e084caa391df7261d39e4dddb1a20bc6d5ab086c0dbaf3",
+  "controller_file_sha256": "f1e162886a834c4511fdda4248ce132c21ed312c9a137f22079d774923a32a78",
+  "unit_tests": {
+    "command": "python -B -m unittest discover -s tests",
+    "passed": 202,
+    "failures": 0,
+    "errors": 0,
+    "note": "Archived experiment fixtures explicitly load their saved experimental controller. Active Momentum adapter and new capture/late-burn fixtures execute Controller.py.",
+    "archived_incompatibilities_found_before_fixture_separation": 52,
+    "final_run_time_s": 26.94
+  },
+  "protections": {
+    "connection_prefix_unchanged": true,
+    "official_assets_unchanged": {
+      "FINAL_SUBMISSION.simconf": true,
+      "Scoring.py": true,
+      "JetSelectionActuator.py": true,
+      "SpaceBuggyJetConfigNoMains.csv": true
+    },
+    "saved_momentum_normalized_sha256": "2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af",
+    "final_navigator_unchanged": true,
+    "changed_algorithm_definitions": [
+      "CaptureApproach",
+      "EconomyNavigator",
+      "ShootingNavigator"
+    ]
+  },
+  "default_seed100": {
+    "baseline": "tests/score_baseline_100.json",
+    "candidate": "tests/momentum_no_brake_100.json",
+    "identical_reported_entry_metrics": true,
+    "entry_metrics": {
+      "arrived": true,
+      "time_s": 255.93,
+      "fuel_kg": 38.97,
+      "pre_entry_collision": false,
+      "zero_damage_score_estimate": 44.93
+    },
+    "old_post_entry_90s_fuel_kg": 23.1234,
+    "new_post_entry_90s_fuel_kg": 0.0
+  },
+  "experiment_report": "tests/score_sweep_momentum_terminal_scope.json",
+  "native_run_performed": false,
+  "limitations": "Offline dynamics, synthetic cameras and proxy collision hull. No native score gain or 60+ median established.",
+  "archived_test_controller_sha256": "26db18b21d746cc1aa722c1d7a13a9ce33e7945d529691fa1c28ea457b41f33e",
+  "rejected_experiment": {
+    "controller_sha256": "7c11adeff9d372d1468a9d03d603e2d3a105d2098ad53e219ce32ff145c87f60",
+    "seed_count": 20,
+    "median_score_delta": 0.03499999999999659,
+    "rounding_adjusted_95pct_median_delta": [
+      -0.2949999999999966,
+      0.769999999999998
+    ],
+    "decision": "not_promoted_gain_within_seed_noise",
+    "included_in_active_controller": false
+  }
+}
