@@ -15,7 +15,7 @@ class StopSimulation(Exception):
 class AdapterTests(unittest.TestCase):
     def run_adapter(self, radar, camera_feed=False, target_position=None, scoring_distance=None, fuel_used=.05,
                     clean_main_burn=False, camera_recovery=False, reset_clock=False,
-                    flight_trace=False, trace_failure=False, dogleg=False):
+                    flight_trace=False, trace_failure=False, dogleg=False, ground_lateral=False):
         commands = []
         now = [0.]
         clock_reset = [False]
@@ -79,6 +79,7 @@ class AdapterTests(unittest.TestCase):
                     'EFP_ENTRY_SCOPE': '0',
                     'EFP_TRACK_CACHE': '0',
                     'EFP_DOGLEG': '1' if dogleg else '0',
+                    'EFP_GROUND_LATERAL': '1' if ground_lateral else '0',
                     'EFP_FLIGHT_TRACE': '1' if flight_trace else '0',
                     'EFP_CLEAN_MAIN_BURN': '1' if clean_main_burn else '0'}):
             self.runtime = {'__file__': str(SOURCE)}
@@ -96,6 +97,12 @@ class AdapterTests(unittest.TestCase):
         self.run_adapter([], dogleg=True, reset_clock=True)
         self.assertEqual(type(self.runtime['planner']).__name__, 'DoglegNavigator')
         self.assertIs(self.runtime['flight_attitude'].planner, self.runtime['planner'])
+
+    def test_ground_lateral_flag_survives_reset_and_requires_dogleg(self):
+        self.run_adapter([], dogleg=True, ground_lateral=True, reset_clock=True)
+        self.assertTrue(self.runtime['planner'].ground_lateral)
+        self.run_adapter([], dogleg=False, ground_lateral=True)
+        self.assertFalse(self.runtime['ground_lateral_enabled'])
 
     def test_dogleg_actual_arrival_zeros_linear_and_angular_commands(self):
         commands = self.run_adapter([], dogleg=True, target_position=[8050.1, 0., 0.], scoring_distance=49.9)

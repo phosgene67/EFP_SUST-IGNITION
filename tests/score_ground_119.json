@@ -1,0 +1,898 @@
+{
+  "controller_sha256": "32b83a5f8bbfd232a717dd6cf1396c690d3ad033784486a303de7b5dd785c9dc",
+  "controller_file_sha256": "b819dac3cbcff471cd2b1d933a1440d82f8d6acf1a2ee1323b83cc49b692d64f",
+  "hash_note": "controller_sha256 hashes normalized source text; controller_file_sha256 hashes deployed bytes, matching native sourceSHA256 logs.",
+  "scenario_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+  "debris_count": 500,
+  "seed": 119,
+  "control_hz": 60.0,
+  "camera_requests_hz": 4.0,
+  "benchmark_version": 7,
+  "rng_mode": "legacy",
+  "plan_latency_s": 0.0,
+  "planning_mode": "async",
+  "fuel_plan_target_override": null,
+  "allocator_solver": "highs",
+  "experiments": [
+    "dogleg",
+    "ground-lateral"
+  ],
+  "scene_variant": "final-scene",
+  "attitude_mode": "normal",
+  "fuel_audit_enabled": true,
+  "axis_thrust": false,
+  "ground_plane_m": 2.5,
+  "drift_bias_m_s2": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "limitations": "Offline model, simplified gravity and ellipsoid proxy hull; no real Unreal mesh/engine.",
+  "result": {
+    "arrived": true,
+    "time_s": 248.43,
+    "attitude_policy": "DoglegAttitude",
+    "fuel_kg": 55.18,
+    "distance_m": 398.44,
+    "peak_speed_m_s": 6.98,
+    "arrival_speed_m_s": 4.946369799470539,
+    "min_debris_gap_m": 13.59,
+    "min_proxy_hull_gap_m": 18.76,
+    "collision": false,
+    "pre_entry_collision": false,
+    "post_arrival_test_s": 90.0,
+    "min_ground_centre_height_m": 2.5,
+    "final_speed_m_s": 4.287,
+    "learned_coast_drift_m_s2": [
+      -3.1117562526416184e-10,
+      -1.7758259904873314e-09,
+      4.851462322318506e-08
+    ],
+    "phase": "MISSION_COMPLETE_COAST",
+    "images": 1353,
+    "plan_p95_ms": 357.89,
+    "plan_max_ms": 11992.66,
+    "angular_active_fraction": 0.126,
+    "linear_active_fraction": 0.359,
+    "nose_error_p95_deg": 133.57,
+    "allocator_retries": 0,
+    "coasting_fraction": 0.368,
+    "terminal_fallback": false,
+    "first_5m_s_time": 68.3,
+    "cruise_mean_after_5m_s": 6.48,
+    "cruise_min_after_5m_s": 5.0,
+    "milestones_by_remaining_metres": {
+      "1100": {
+        "time_s": 74.75,
+        "fuel_kg": 31.151,
+        "speed_m_s": 5.551
+      },
+      "1000": {
+        "time_s": 90.8,
+        "fuel_kg": 37.798,
+        "speed_m_s": 6.922
+      },
+      "600": {
+        "time_s": 150.3,
+        "fuel_kg": 41.635,
+        "speed_m_s": 6.454
+      },
+      "550": {
+        "time_s": 158.1,
+        "fuel_kg": 41.816,
+        "speed_m_s": 6.386
+      },
+      "500": {
+        "time_s": 166.0,
+        "fuel_kg": 42.164,
+        "speed_m_s": 6.318
+      },
+      "200": {
+        "time_s": 215.57,
+        "fuel_kg": 46.038,
+        "speed_m_s": 5.762
+      },
+      "50": {
+        "time_s": 248.43,
+        "fuel_kg": 55.176,
+        "speed_m_s": 4.946
+      }
+    },
+    "bent_plan_updates": 15,
+    "return_burn_events": 0,
+    "max_bend_impulse_m_s": 0.15,
+    "reserve_coast_time_s": 0.0,
+    "max_lateral_deviation_m": 105.8,
+    "zero_damage_score_estimate": 24.74,
+    "dogleg": {
+      "event": "no_safe_lane",
+      "state_time_s": 240.5,
+      "searches": 26,
+      "no_safe_lane_events": 23,
+      "search_ms": 11.795200000051409,
+      "debris_distribution": {
+        "frame": "Phobos",
+        "centers": "shuttle_relative",
+        "slab_count": 0,
+        "distance_m": 76.28734957230692,
+        "along_min_m": 50.0,
+        "along_max_m": 26.287349572306923,
+        "lat_p50_m": null,
+        "lat_p90_m": null,
+        "lat_p100_m": null
+      },
+      "bends_executed": 0,
+      "aligned": true,
+      "events": [
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 8.5,
+          "searches": 1,
+          "no_safe_lane_events": 1,
+          "search_ms": 10482.907599998725,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 481,
+            "distance_m": 1302.7446218928958,
+            "along_min_m": 50.0,
+            "along_max_m": 1252.7446218928958,
+            "lat_p50_m": 246.19953650431017,
+            "lat_p90_m": 344.59659360833405,
+            "lat_p100_m": 461.42028177167106
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 14.0,
+          "searches": 2,
+          "no_safe_lane_events": 2,
+          "search_ms": 9454.596999999922,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 479,
+            "distance_m": 1298.7019262265885,
+            "along_min_m": 50.0,
+            "along_max_m": 1248.7019262265885,
+            "lat_p50_m": 244.09097257994608,
+            "lat_p90_m": 348.6010768300393,
+            "lat_p100_m": 467.91148488620905
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 15.0,
+          "searches": 3,
+          "no_safe_lane_events": 3,
+          "search_ms": 8991.504599998734,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 479,
+            "distance_m": 1297.8295767108552,
+            "along_min_m": 50.0,
+            "along_max_m": 1247.8295767108552,
+            "lat_p50_m": 244.16826805485456,
+            "lat_p90_m": 348.76369132172726,
+            "lat_p100_m": 468.7919183978339
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 15.5,
+          "searches": 4,
+          "no_safe_lane_events": 4,
+          "search_ms": 10240.487200000643,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1297.3615158544362,
+            "along_min_m": 50.0,
+            "along_max_m": 1247.3615158544362,
+            "lat_p50_m": 244.15399872996076,
+            "lat_p90_m": 348.8420425131053,
+            "lat_p100_m": 469.23099755330696
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 16.0,
+          "searches": 5,
+          "no_safe_lane_events": 5,
+          "search_ms": 10624.534500002483,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1296.8721965803804,
+            "along_min_m": 50.0,
+            "along_max_m": 1246.8721965803804,
+            "lat_p50_m": 244.28080333749048,
+            "lat_p90_m": 348.88978230306554,
+            "lat_p100_m": 469.6693196817068
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 16.5,
+          "searches": 6,
+          "no_safe_lane_events": 6,
+          "search_ms": 11657.792300000438,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1296.362355220569,
+            "along_min_m": 50.0,
+            "along_max_m": 1246.362355220569,
+            "lat_p50_m": 244.78352130251855,
+            "lat_p90_m": 348.93638264980177,
+            "lat_p100_m": 470.1070377832734
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 17.0,
+          "searches": 7,
+          "no_safe_lane_events": 7,
+          "search_ms": 10320.846400001756,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1295.8312664491114,
+            "along_min_m": 50.0,
+            "along_max_m": 1245.8312664491114,
+            "lat_p50_m": 243.50069864927127,
+            "lat_p90_m": 348.981572849603,
+            "lat_p100_m": 470.5440034762264
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 17.5,
+          "searches": 8,
+          "no_safe_lane_events": 8,
+          "search_ms": 10090.453400000115,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1295.2789169939372,
+            "along_min_m": 50.0,
+            "along_max_m": 1245.2789169939372,
+            "lat_p50_m": 243.57671470111703,
+            "lat_p90_m": 347.96456846737226,
+            "lat_p100_m": 469.88498187071275
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 18.0,
+          "searches": 9,
+          "no_safe_lane_events": 9,
+          "search_ms": 10194.042800001625,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 478,
+            "distance_m": 1294.7053060715102,
+            "along_min_m": 50.0,
+            "along_max_m": 1244.7053060715102,
+            "lat_p50_m": 243.8793317316491,
+            "lat_p90_m": 348.7104252874448,
+            "lat_p100_m": 470.2981513690331
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 18.5,
+          "searches": 10,
+          "no_safe_lane_events": 10,
+          "search_ms": 10020.075899999938,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 477,
+            "distance_m": 1294.1104328940157,
+            "along_min_m": 50.0,
+            "along_max_m": 1244.1104328940157,
+            "lat_p50_m": 244.81439762525736,
+            "lat_p90_m": 349.8468660011541,
+            "lat_p100_m": 470.71057221614865
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 19.5,
+          "searches": 11,
+          "no_safe_lane_events": 11,
+          "search_ms": 9857.55109999809,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 476,
+            "distance_m": 1292.8568966009655,
+            "along_min_m": 50.0,
+            "along_max_m": 1242.8568966009655,
+            "lat_p50_m": 244.83363507300356,
+            "lat_p90_m": 351.0188304841832,
+            "lat_p100_m": 471.53317071715384
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 20.5,
+          "searches": 12,
+          "no_safe_lane_events": 12,
+          "search_ms": 9201.1276000012,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 474,
+            "distance_m": 1291.5183017252104,
+            "along_min_m": 50.0,
+            "along_max_m": 1241.5183017252104,
+            "lat_p50_m": 244.62286605837406,
+            "lat_p90_m": 349.89203401938,
+            "lat_p100_m": 472.35278215238077
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 21.5,
+          "searches": 13,
+          "no_safe_lane_events": 13,
+          "search_ms": 9300.525299997389,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 473,
+            "distance_m": 1290.0946418062977,
+            "along_min_m": 50.0,
+            "along_max_m": 1240.0946418062977,
+            "lat_p50_m": 244.5669808331952,
+            "lat_p90_m": 349.94350402010616,
+            "lat_p100_m": 473.16941011133173
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 23.0,
+          "searches": 14,
+          "no_safe_lane_events": 14,
+          "search_ms": 9857.309600000008,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 469,
+            "distance_m": 1287.7996406624986,
+            "along_min_m": 50.0,
+            "along_max_m": 1237.7996406624986,
+            "lat_p50_m": 244.5665370609694,
+            "lat_p90_m": 349.7675794224885,
+            "lat_p100_m": 476.0704508736498
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 24.5,
+          "searches": 15,
+          "no_safe_lane_events": 15,
+          "search_ms": 9033.677100000205,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 467,
+            "distance_m": 1285.3132061018364,
+            "along_min_m": 50.0,
+            "along_max_m": 1235.3132061018364,
+            "lat_p50_m": 244.70981272241394,
+            "lat_p90_m": 349.0076737733718,
+            "lat_p100_m": 477.3256524455915
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 57.5,
+          "searches": 16,
+          "no_safe_lane_events": 16,
+          "search_ms": 6545.385900000838,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 413,
+            "distance_m": 1183.5052295326166,
+            "along_min_m": 50.0,
+            "along_max_m": 1133.5052295326166,
+            "lat_p50_m": 246.10179848983185,
+            "lat_p90_m": 357.7607912532196,
+            "lat_p100_m": 499.7766409308344
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 78.0,
+          "searches": 17,
+          "no_safe_lane_events": 17,
+          "search_ms": 4842.2653000016,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 353,
+            "distance_m": 1081.4612110693254,
+            "along_min_m": 50.0,
+            "along_max_m": 1031.4612110693254,
+            "lat_p50_m": 242.87491784477103,
+            "lat_p90_m": 357.3445929721745,
+            "lat_p100_m": 512.5961602099786
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 93.5,
+          "searches": 18,
+          "no_safe_lane_events": 18,
+          "search_ms": 2737.8566000006685,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 302,
+            "distance_m": 981.3029232079225,
+            "along_min_m": 50.0,
+            "along_max_m": 931.3029232079225,
+            "lat_p50_m": 241.99024983324153,
+            "lat_p90_m": 361.62604970969267,
+            "lat_p100_m": 523.8459073636508
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 108.0,
+          "searches": 19,
+          "no_safe_lane_events": 19,
+          "search_ms": 2319.824099999096,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 237,
+            "distance_m": 881.0655895832472,
+            "along_min_m": 50.0,
+            "along_max_m": 831.0655895832472,
+            "lat_p50_m": 251.34066643391293,
+            "lat_p90_m": 372.8945042870582,
+            "lat_p100_m": 535.9084126380914
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 123.0,
+          "searches": 20,
+          "no_safe_lane_events": 20,
+          "search_ms": 1646.4158999988285,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 182,
+            "distance_m": 779.3883895729051,
+            "along_min_m": 50.0,
+            "along_max_m": 729.3883895729051,
+            "lat_p50_m": 239.86814344083928,
+            "lat_p90_m": 371.4269723184861,
+            "lat_p100_m": 545.2760734711613
+          }
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 138.5,
+          "searches": 21,
+          "no_safe_lane_events": 21,
+          "search_ms": 1096.699499998067,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 128,
+            "distance_m": 676.5205824189158,
+            "along_min_m": 50.0,
+            "along_max_m": 626.5205824189158,
+            "lat_p50_m": 248.1117337043546,
+            "lat_p90_m": 385.479839143599,
+            "lat_p100_m": 563.5588676590495
+          }
+        },
+        {
+          "event": "radar_evidence",
+          "state_time_s": 154.0,
+          "searches": 22,
+          "no_safe_lane_events": 21,
+          "origin": [
+            -772.2164004154004,
+            127.89299524046397,
+            -8959.181384861313
+          ],
+          "waypoint": [
+            -883.4735562291675,
+            103.99831405464596,
+            -9505.030677216251
+          ],
+          "goal": [
+            -883.4735562291675,
+            103.99831405464596,
+            -9505.030677216251
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 0.3544860444515925,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 4.1860775614150585,
+          "fuel_at_selection_kg": 41.63483535037603,
+          "slew_fuel_model_kg": 2.6538749353524165,
+          "predicted_score": 37.477995175741796,
+          "min_clearance_m": 2.4034278989968247,
+          "bends_executed": 0,
+          "search_ms": 162.84949999680975,
+          "actual_incremental_fuel_kg": 0.0
+        },
+        {
+          "event": "closed_slew_settled",
+          "state_time_s": 154.0,
+          "searches": 22,
+          "no_safe_lane_events": 21,
+          "origin": [
+            -772.2164004154004,
+            127.89299524046397,
+            -8959.181384861313
+          ],
+          "waypoint": [
+            -883.4735562291675,
+            103.99831405464596,
+            -9505.030677216251
+          ],
+          "goal": [
+            -883.4735562291675,
+            103.99831405464596,
+            -9505.030677216251
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 0.3544860444515925,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 4.1860775614150585,
+          "fuel_at_selection_kg": 41.63483535037603,
+          "slew_fuel_model_kg": 2.6538749353524165,
+          "predicted_score": 37.477995175741796,
+          "min_clearance_m": 132.13729319212072,
+          "bends_executed": 0,
+          "search_ms": 162.84949999680975,
+          "actual_incremental_fuel_kg": 1.7235218528479663,
+          "phase": "DOGLEG_SLEW",
+          "closed_time_s": 197.0
+        },
+        {
+          "event": "slew_settled",
+          "state_time_s": 197.0,
+          "searches": 23,
+          "no_safe_lane_events": 21,
+          "origin": [
+            -828.0048758415953,
+            125.58204397866835,
+            -9221.544967599608
+          ],
+          "waypoint": [
+            -887.1880743367066,
+            110.32970985770322,
+            -9507.119164882124
+          ],
+          "goal": [
+            -887.1880743367067,
+            110.32970985770328,
+            -9507.119164882124
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 0.3310652790387889,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 1.4309705498453367,
+          "fuel_at_selection_kg": 43.358357203223996,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 38.91773152501793,
+          "min_clearance_m": 135.43695918227067,
+          "bends_executed": 0,
+          "search_ms": 142.63990000108606,
+          "actual_incremental_fuel_kg": 0.0
+        },
+        {
+          "event": "closed_new_predicted_risk",
+          "state_time_s": 197.0,
+          "searches": 23,
+          "no_safe_lane_events": 21,
+          "origin": [
+            -828.0048758415953,
+            125.58204397866835,
+            -9221.544967599608
+          ],
+          "waypoint": [
+            -887.1880743367066,
+            110.32970985770322,
+            -9507.119164882124
+          ],
+          "goal": [
+            -887.1880743367067,
+            110.32970985770328,
+            -9507.119164882124
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 0.3310652790387889,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 1.4309705498453367,
+          "fuel_at_selection_kg": 43.358357203223996,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 38.91773152501793,
+          "min_clearance_m": -3.4963949078788956,
+          "bends_executed": 0,
+          "search_ms": 142.63990000108606,
+          "actual_incremental_fuel_kg": 1.1725536798653238,
+          "phase": "DOGLEG_INITIAL",
+          "closed_time_s": 199.0
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 199.0,
+          "searches": 24,
+          "no_safe_lane_events": 22,
+          "search_ms": 50.672500001383014,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 0,
+            "distance_m": 297.3263858629939,
+            "along_min_m": 50.0,
+            "along_max_m": 247.3263858629939,
+            "lat_p50_m": null,
+            "lat_p90_m": null,
+            "lat_p100_m": null
+          }
+        },
+        {
+          "event": "radar_evidence",
+          "state_time_s": 216.5,
+          "searches": 25,
+          "no_safe_lane_events": 22,
+          "origin": [
+            -851.9091255632153,
+            118.5126508408857,
+            -9335.218097021283
+          ],
+          "waypoint": [
+            -890.155228969162,
+            121.61306564796506,
+            -9510.379714435066
+          ],
+          "goal": [
+            -890.1552289691623,
+            121.61306564796342,
+            -9510.379714435066
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 1.1132663444174484,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 4.811894976182918,
+          "fuel_at_selection_kg": 46.531201950936044,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 29.360002071572776,
+          "min_clearance_m": 3.6203952876024506,
+          "bends_executed": 0,
+          "search_ms": 9.889900000416674,
+          "actual_incremental_fuel_kg": 0.0
+        },
+        {
+          "event": "closed_new_predicted_risk",
+          "state_time_s": 216.5,
+          "searches": 25,
+          "no_safe_lane_events": 22,
+          "origin": [
+            -851.9091255632153,
+            118.5126508408857,
+            -9335.218097021283
+          ],
+          "waypoint": [
+            -890.155228969162,
+            121.61306564796506,
+            -9510.379714435066
+          ],
+          "goal": [
+            -890.1552289691623,
+            121.61306564796342,
+            -9510.379714435066
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 1.1132663444174484,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 4.811894976182918,
+          "fuel_at_selection_kg": 46.531201950936044,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 29.360002071572776,
+          "min_clearance_m": -1.0557747322375355,
+          "bends_executed": 0,
+          "search_ms": 9.889900000416674,
+          "actual_incremental_fuel_kg": 4.568671757520335,
+          "phase": "DOGLEG_COAST1",
+          "closed_time_s": 240.5
+        },
+        {
+          "event": "no_safe_lane",
+          "state_time_s": 240.5,
+          "searches": 26,
+          "no_safe_lane_events": 23,
+          "search_ms": 11.795200000051409,
+          "debris_distribution": {
+            "frame": "Phobos",
+            "centers": "shuttle_relative",
+            "slab_count": 0,
+            "distance_m": 76.28734957230692,
+            "along_min_m": 50.0,
+            "along_max_m": 26.287349572306923,
+            "lat_p50_m": null,
+            "lat_p90_m": null,
+            "lat_p100_m": null
+          }
+        },
+        {
+          "event": "run_summary",
+          "state_time_s": 248.43333333333334,
+          "searches": 26,
+          "no_safe_lane_events": 23,
+          "bends_executed": 0,
+          "arrived": true,
+          "latest_selected_route": {
+            "event": "closed_new_predicted_risk",
+            "state_time_s": 216.5,
+            "searches": 25,
+            "no_safe_lane_events": 22,
+            "origin": [
+              -851.9091255632153,
+              118.5126508408857,
+              -9335.218097021283
+            ],
+            "waypoint": [
+              -890.155228969162,
+              121.61306564796506,
+              -9510.379714435066
+            ],
+            "goal": [
+              -890.1552289691623,
+              121.61306564796342,
+              -9510.379714435066
+            ],
+            "speed_m_s": 6.0,
+            "bend_deg": 0.0,
+            "delta_v_initial_m_s": 1.1132663444174484,
+            "delta_v_bend_m_s": 0.0,
+            "predicted_incremental_fuel_kg": 4.811894976182918,
+            "fuel_at_selection_kg": 46.531201950936044,
+            "slew_fuel_model_kg": 0.0,
+            "predicted_score": 29.360002071572776,
+            "min_clearance_m": -1.0557747322375355,
+            "bends_executed": 0,
+            "search_ms": 9.889900000416674,
+            "actual_incremental_fuel_kg": 4.568671757520335,
+            "phase": "DOGLEG_COAST1",
+            "closed_time_s": 240.5
+          }
+        }
+      ],
+      "run_summary": {
+        "event": "run_summary",
+        "state_time_s": 248.43333333333334,
+        "searches": 26,
+        "no_safe_lane_events": 23,
+        "bends_executed": 0,
+        "arrived": true,
+        "latest_selected_route": {
+          "event": "closed_new_predicted_risk",
+          "state_time_s": 216.5,
+          "searches": 25,
+          "no_safe_lane_events": 22,
+          "origin": [
+            -851.9091255632153,
+            118.5126508408857,
+            -9335.218097021283
+          ],
+          "waypoint": [
+            -890.155228969162,
+            121.61306564796506,
+            -9510.379714435066
+          ],
+          "goal": [
+            -890.1552289691623,
+            121.61306564796342,
+            -9510.379714435066
+          ],
+          "speed_m_s": 6.0,
+          "bend_deg": 0.0,
+          "delta_v_initial_m_s": 1.1132663444174484,
+          "delta_v_bend_m_s": 0.0,
+          "predicted_incremental_fuel_kg": 4.811894976182918,
+          "fuel_at_selection_kg": 46.531201950936044,
+          "slew_fuel_model_kg": 0.0,
+          "predicted_score": 29.360002071572776,
+          "min_clearance_m": -1.0557747322375355,
+          "bends_executed": 0,
+          "search_ms": 9.889900000416674,
+          "actual_incremental_fuel_kg": 4.568671757520335,
+          "phase": "DOGLEG_COAST1",
+          "closed_time_s": 240.5
+        }
+      }
+    },
+    "fuel_audit": {
+      "segments": {
+        "LAUNCH": {
+          "time_s": 8.0,
+          "fuel_kg": 3.3131
+        },
+        "CRUISE/GUIDE": {
+          "time_s": 0.5,
+          "fuel_kg": 0.2794
+        },
+        "CRUISE/IMPULSE_BURN": {
+          "time_s": 93.5,
+          "fuel_kg": 38.7222
+        },
+        "CRUISE/IMPULSE_COAST": {
+          "time_s": 55.0,
+          "fuel_kg": 0.0
+        },
+        "ALIGN_FOR_BURN": {
+          "time_s": 43.0,
+          "fuel_kg": 1.7235
+        },
+        "DOGLEG_INITIAL": {
+          "time_s": 12.5,
+          "fuel_kg": 5.7412
+        },
+        "CRUISE/COAST": {
+          "time_s": 3.5,
+          "fuel_kg": 0.0
+        },
+        "CAPTURE_PASS": {
+          "time_s": 16.4333,
+          "fuel_kg": 4.0757
+        },
+        "WAIT_SHIP_CAMERA": {
+          "time_s": 2.5,
+          "fuel_kg": 1.3204
+        },
+        "DOGLEG_COAST1": {
+          "time_s": 13.5,
+          "fuel_kg": 0.0
+        }
+      },
+      "command_regimes": {
+        "translation_only": {
+          "time_s": 121.6,
+          "fuel_kg": 53.4521
+        },
+        "no_command": {
+          "time_s": 84.2833,
+          "fuel_kg": 0.0
+        },
+        "attitude_only": {
+          "time_s": 42.55,
+          "fuel_kg": 1.7235
+        }
+      },
+      "counterfactual_same_tick_costs": {
+        "translation_only_kg": 53.4521,
+        "attitude_only_kg": 1.7235
+      },
+      "post_arrival_fuel_kg": 0.0,
+      "note": "Buckets sum to pre-arrival fuel. Combined commands cannot be uniquely divided into rotation/translation. Counterfactuals hold commands/pose fixed; only A/B flights measure removal effects."
+    }
+  }
+}

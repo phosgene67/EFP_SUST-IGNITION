@@ -1,0 +1,12 @@
+{
+  "kind": "verified_source_audit",
+  "reference": "01ddcd6",
+  "unchanged_existing_definitions": 51,
+  "changed_class": "DoglegNavigator: default-off basis choice only",
+  "connection_prefix_unchanged": true,
+  "official_assets_unchanged": true,
+  "ground_default": "0",
+  "dogleg_default_preserved": "1",
+  "normalized_source_sha256": "32b83a5f8bbfd232a717dd6cf1396c690d3ad033784486a303de7b5dd785c9dc",
+  "deployed_file_sha256": "b819dac3cbcff471cd2b1d933a1440d82f8d6acf1a2ee1323b83cc49b692d64f"
+}

@@ -107,6 +107,10 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
     planner = namespace.get('ShootingNavigator', namespace.get('EconomyNavigator', namespace.get('FinalNavigator', namespace['QualificationPlanner'])))()
     if 'dogleg' in experiments:
         planner = namespace['DoglegNavigator']()
+    if 'ground-lateral' in experiments:
+        if 'dogleg' not in experiments:
+            raise ValueError('ground-lateral requires dogleg')
+        planner.ground_lateral = True
     if 'clean-main-burn' in experiments:
         if not hasattr(planner, 'clean_main_burn'):
             raise ValueError('This controller revision does not implement clean-main-burn')
@@ -463,7 +467,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--experiment', action='append', default=[],
-                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg'),
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg', 'ground-lateral'),
                         help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')

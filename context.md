@@ -5,6 +5,64 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+## Annotated green route: Task 2 completed, not promoted
+
+Latest image/request proposes an early sideways exit, climb outside the dense
+region and return to the ship, targeting180s/55–60+ with efficient8+m/s flight.
+The sketch has three legs/two bends, which the one-bend planner cannot fully
+represent. Prior instruction to stop/report after each stage remains in force.
+This continuation implements Task2 only: EFP_GROUND_LATERAL, default0, within
+DoglegNavigator. User's EFP_DOGLEG default1 remains unchanged. Do not silently
+add early/wider offsets, a second bend, sensor-policy changes or forced speeds.
+
+Source/config/native log verification: launch.up=origin/|origin| in Phobos
+coordinates, pointing away from its center; native logged radial launch
+height rises0→0.1→2.1→2.8m. This is radial tangent, not an independently
+measured local terrain normal. New basis uses normalized cross(forward,up),
+with the old body-derived basis preserved for missing/invalid/parallel up.
+All offsets/fractions/speeds/costs and actuator/camera helpers stay unchanged.
+Runtime start/reset wiring and benchmark --experiment ground-lateral require
+dogleg; the feature is default-off.193 tests passed (five basis/launch tests,
+including exact candidate equivalence with Task1 when off, plus one runtime
+test). Frozen20-seed source:
+tests/score_sweeps/ground_lateral_controller.py; results tests/score_ground_SEED.json,
+seeds100–119, matched against tests/score_dogleg_diag_SEED.json. Cohort complete.
+Results:tests/score_sweep_ground.json; review/assumptions:GROUND_LATERAL.md.
+All20 arrivals/zero modeled contacts in both cohorts. Ground median score25.980
+vs27.890, delta-1.910, rounding-adjusted paired interval[-8.270,+7.125]:
+inconclusive, reject for promotion. Ground scorep10–p90 13.216–36.161,
+range-4.32–43.98; medianT243.475s,F53.750kg. Paired medianTdelta+.490s,
+Fdelta-.205kg. Mean phase change about-.107kg: alignment+.110,initial-.146,
+bend-.333,existing cruise-.426,capture/observe+.077,camera wait+.646,coast-.037.
+All20 still hit no_safe_lane:396 of469 searches vs400/467 baseline. Both
+executed six bends and had zero post-entry fuel use. Search tail remains
+large: new per-run maximum median12.636s,max14.562s under four concurrent
+benchmarks; Task1 reference median12.487s. Wall time is not charged in the
+fixed-step flight model. Keep EFP_GROUND_LATERAL=0; preserve userDogleg default1.
+
+Review found38 nominal163.4N jets, force opposite nozzle normals. Only the
+official acceleration/angular-acceleration selector is commanded. Published
+reference-mass +X acceleration.17456m/s² implies at least45.83s to gain8m/s
+from rest ignoring gravity; stronger-axis alignment is not free. At180s and
+zero damage,60 points needsF≤42.5kg;55 points needsF≤46.25kg. Coasting under
+gravity is unpowered but not constant-speed. Cameras see only their aimed
+finite FOV and cannot certify a globally debris-free region from one image.
+
+NEW measured native evidence: log261119_065413_FINAL_SUBMISSION__46a matches
+Task1 source byteSHA c347e27a… and officially succeeded atscore-54.1,T357.75s,
+F103.26kg,D0J. Native search median3.846s,max9.688s; this is one baseline run,
+not a matched cohort or evidence for ground-lateral. No IGNITION_STATE trace
+was found there. Synchronous search can hold commands while state changes;
+do not claim its share of fuel without a state/command trace. Artifact:
+tests/ground_lateral_frame_audit.json. The native/offline discrepancy and
+blocking-search tail remain unresolved; do not promise55+ from a basis change.
+All20 matched seeds are summarized.193 tests pass. Source preservation:
+tests/ground_lateral_preservation.json (textSHA32b83a5f…,bytesSHAb819dac3…);
+51 other definitions, connection prefix and official assets unchanged. No
+native test of the new flag, simulation modification, push or commit was
+performed. All benchmark jobs finished. Stop after Task2 per the staged method;
+do not claim the full green three-leg route, <180s or55+ has been achieved.
+
 ## Task 1 completed: diagnostics only; stop before Task 2
 
 User explicitly orders Tasks1–4 sequentially with a stop/report after each.

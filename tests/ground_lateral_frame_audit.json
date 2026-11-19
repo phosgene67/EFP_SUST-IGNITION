@@ -1,0 +1,112 @@
+{
+  "kind": "verified_static_model_with_separate_measured_native_records",
+  "own_initial_position_Ph_m": [
+    -651.0228484243066,
+    95.19902620579852,
+    -8239.668001620705
+  ],
+  "initial_world_to_body_DCM": [
+    [
+      0.9400129853749775,
+      0.33142261727637834,
+      -0.08083709596526525
+    ],
+    [
+      0.3325956784146644,
+      -0.943068861607392,
+      0.0011121899238790804
+    ],
+    [
+      -0.07586634317212979,
+      -0.027931541744288274,
+      -0.9967267062487468
+    ]
+  ],
+  "radial_up_Ph": [
+    -0.07876011463995222,
+    0.011517086129508207,
+    -0.9968270667818901
+  ],
+  "up_dot_origin_m": 8265.895134871549,
+  "ground_side_Ph": [
+    -0.10143285422527136,
+    -0.9948363016709499,
+    -0.003479793295806222
+  ],
+  "side_dot_up": -3.903127820947816e-18,
+  "side_dot_forward": -4.7704895589362195e-18,
+  "target_direction_body": [
+    -0.057063653001560674,
+    -0.06969040150428625,
+    0.9959352325549533
+  ],
+  "jet_count": 38,
+  "jet_force_sign": "force = -thrust * normalized_nozzle_normal",
+  "jet_thrust_minmax_N": [
+    163.4068030398339,
+    163.41866285074502
+  ],
+  "verified_cost_model": "3388.7/(80*9.8) kg per m/s of clean sequential body-axis impulse",
+  "zero_damage_fuel_ceiling_at_180s_kg": {
+    "score_55": 46.249999999999986,
+    "score_60": 42.49999999999999
+  },
+  "measured_native_baseline": {
+    "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_065413_FINAL_SUBMISSION__46a",
+    "profile": "SCORE_DOGLEG",
+    "source_sha256": "c347e27ad086fd40f26c05c75b91a7407fee04fbede2ebd8cd625fc0fd5a070e",
+    "seed": null,
+    "has_fuel_limit": false,
+    "clean_main_burn": false,
+    "order_diversity": false,
+    "recheck_coast": false,
+    "inertial_capture": false,
+    "vector_burn": false,
+    "exact_arcs": false,
+    "camera_recovery": false,
+    "coast_windows": false,
+    "status": "official_success",
+    "score": -54.1,
+    "time_s": 357.75,
+    "fuel_kg": 103.26,
+    "damage_J": 0.0,
+    "entry_distance_m": 49.72,
+    "score_from_reported_fields": -54.13702306079664,
+    "score_rounding_difference": 0.03702306079664197
+  },
+  "native_radial_ascent_samples": [
+    {
+      "time_s": 0.3,
+      "radial_launch_height_m": 0.0
+    },
+    {
+      "time_s": 5.3,
+      "radial_launch_height_m": 0.1
+    },
+    {
+      "time_s": 10.3,
+      "radial_launch_height_m": 2.1
+    },
+    {
+      "time_s": 21.4,
+      "radial_launch_height_m": 2.8
+    }
+  ],
+  "native_search_ms": {
+    "median": 3846.2323999992805,
+    "maximum": 9688.236599999072
+  },
+  "source_sha256": "32b83a5f8bbfd232a717dd6cf1396c690d3ad033784486a303de7b5dd785c9dc",
+  "caveat": "Own-pose/static actuator configuration only; no live debris truth is supplied to the planner. Radial up is outward from the Phobos origin, not a camera-measured local terrain normal. Native search timing/score is one baseline run, not a matched cohort or evidence for the new flag.",
+  "jet_force_groups": {
+    "+X": 4,
+    "-X": 6,
+    "+Y": 6,
+    "-Y": 6,
+    "+Z": 8,
+    "-Z": 8
+  },
+  "canonical_plusX_8m_s_burn_time_ignoring_gravity_s": 45.828851676852196,
+  "force_only_plusX_optimistic_8m_s_time_s": 41.473110074591276,
+  "acceleration_caveat": "Canonical allocator axis response is not a proven universal maximum over all mixed-axis commands. Force-only bound ignores torque cancellation and gravity."
+}

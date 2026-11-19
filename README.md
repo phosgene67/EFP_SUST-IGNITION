@@ -35,6 +35,7 @@ metrics/fuel audits were unchanged, and all 20 runs hit `no_safe_lane`.
 | `EFP_ENTRY_SCOPE=1` | Evaluate collision checks up to predicted safe-zone entry | Twenty-seed isolated trial showed no meaningful median gain. Stays off. |
 | `EFP_TRACK_CACHE=1` | Reuse fits for unchanged radar samples | All 20 modeled entry results matched the original; faster tracker fixture. Native score benefit unverified. Stays off. |
 | `EFP_DOGLEG=1` | Radar-only one-bend lanes, finite burns and one initial +X slew | Twenty-seed median score fell 10.385 points; higher fuel and costly search. Rejected; keep off. [Results](DOGLEG.md). |
+| `EFP_GROUND_LATERAL=1` | Radial-ground-aligned lateral basis within Dogleg | Default off. Twenty-seed median delta -1.91 points, interval -8.27 to +7.12; no demonstrated gain. [Review and results](GROUND_LATERAL.md). |
 
 Set `EFP_DOGLEG=0` explicitly to select the SCORE_MOMENTUM baseline in this
 checkout. No tested trajectory change has established the requested

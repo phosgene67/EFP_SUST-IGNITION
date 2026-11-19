@@ -2921,8 +2921,9 @@ class DoglegNavigator(ShootingNavigator):
     Camera geometry is included only inside 300 m. All uncertainty is inherited
     from the radar tracker; there is no simulator debris lookup or fuel ceiling.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, ground_lateral=False, **kwargs):
         super().__init__(**kwargs)
+        self.ground_lateral = bool(ground_lateral)
         self.lane = None
         self.lane_epoch = 0.
         self.lane_stage = 0
@@ -2986,6 +2987,13 @@ class DoglegNavigator(ShootingNavigator):
         side = self.body_rotation[np.argmin(np.abs(self.body_rotation@forward))].copy()
         side -= (side@forward)*forward
         side /= max(np.linalg.norm(side), 1e-12)
+        if self.ground_lateral and self.launch.up is not None:
+            up = np.asarray(self.launch.up, float)
+            if up.shape == (3,) and np.isfinite(up).all():
+                horizontal = np.cross(forward, up)
+                length = np.linalg.norm(horizontal)
+                if length > 1e-8:
+                    side = horizontal/length
         tangent = np.cross(forward, side)
         # Four interior capture points, without assuming the station's hull axes.
         aims = target-20.*forward+40.*np.array([side, -side, tangent, -tangent])
@@ -3362,6 +3370,7 @@ class ViewRecoveryAttitude(FreeAttitude):
 
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
 dogleg_enabled = os.environ.get('EFP_DOGLEG', '1') == '1'
+ground_lateral_enabled = dogleg_enabled and os.environ.get('EFP_GROUND_LATERAL', '0') == '1'
 navigator_type = DoglegNavigator if dogleg_enabled else ShootingNavigator
 camera_recovery_enabled = os.environ.get('EFP_CAMERA_RECOVERY', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
@@ -3385,6 +3394,8 @@ planner = navigator_type(nose_first=nose_first_enabled, clean_main_burn=clean_ma
                             inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
                             exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
                             entry_scope=entry_scope_enabled, track_cache=track_cache_enabled)
+if dogleg_enabled:
+    planner.ground_lateral = ground_lateral_enabled
 flight_attitude = (DoglegAttitude(planner) if dogleg_enabled else EconomyAttitude() if nose_first_enabled else
                    ViewRecoveryAttitude() if camera_recovery_enabled else FreeAttitude())
 # Radar.py timestamps are relative to its own startup clock, not StartDateTAI.
@@ -3424,6 +3435,8 @@ try:
                                         inertial_capture=inertial_capture_enabled, vector_burn=vector_burn_enabled,
                                         exact_arcs=exact_arcs_enabled, coast_windows=coast_windows_enabled,
                                         entry_scope=entry_scope_enabled, track_cache=track_cache_enabled)
+            if dogleg_enabled:
+                planner.ground_lateral = ground_lateral_enabled
             pose_history = PoseHistory()
             perception = CameraPerception()
             score_policy = planner.policy
@@ -3580,6 +3593,7 @@ try:
                 f'entryScope={entry_scope_enabled} '
                 f'trackCache={track_cache_enabled} '
                 f'dogleg={dogleg_enabled} '
+                f'groundLateral={ground_lateral_enabled} '
                 f'planMs={plan_ms:.1f} '
                 f'cmdBody={np.array2string(np.asarray(accel_body), precision=4, separator=",")}m/s2 '
                 f'bodyRate={np.array2string(omega_body, precision=5, separator=",")}rad/s '
