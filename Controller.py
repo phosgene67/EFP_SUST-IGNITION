@@ -3305,7 +3305,7 @@ class ViewRecoveryAttitude(FreeAttitude):
 
 
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
-dogleg_enabled = os.environ.get('EFP_DOGLEG', '0') == '1'
+dogleg_enabled = os.environ.get('EFP_DOGLEG', '1') == '1'
 navigator_type = DoglegNavigator if dogleg_enabled else ShootingNavigator
 camera_recovery_enabled = os.environ.get('EFP_CAMERA_RECOVERY', '0') == '1'
 axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
