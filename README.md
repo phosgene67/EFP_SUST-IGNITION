@@ -1,62 +1,42 @@
-| [Rules & Info](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/218) | [Competitor Starter Code (Here)](https://github.com/SimDynamX/STU4-Solution) | [Forum](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2026-escape-from-phobos)
-| ----- | ----- | ----- |
+# EFP_SUST-IGNITION
 
-# Escape from Phobos - Starter Code
-All info is on the wiki here: https://github.com/SimDynamX/STU4-Solution/wiki
+Escape from Phobos controller repository for **Team SUST IGNITION**, representing
+**Shahjalal University of Science and Technology, Bangladesh** in Space Teams University 2026.
 
-### Current Controller
+The main controller file is **`Controller.py`**. It runs within the official
+Space Teams simulation environment and controls the crew vehicle using radar,
+RGB cameras, and depth cameras.
 
-The selected controller uses **SCORE_MOMENTUM** for
-`FINAL_SUBMISSION.simconf`, with a single +X-axis turn, radar-based cruise
-checks, scored finite burns, small local avoidance maneuvers, and cached radar
-fits. RGB/depth cameras remain active for launch terrain and the station hull.
-Thrust stops after confirmed entry into the official 50 m safe zone. There is
-no hard fuel cutoff and no continuous nose-pointing servo.
+## Team
 
-Selected defaults are `EFP_STRONG_AXIS=1`, `EFP_RADAR_CRUISE=1`,
-`EFP_EXPECTED_RISK=1`, `EFP_FINE_AVOIDANCE=1`, and `EFP_TRACK_CACHE=1`.
-Later experiments were rejected and archived; dogleg is not the active planner.
+**Team members**
 
-Finalized at the user's request with the following measured limitation. The selected family has a measured native best of **47.2**. Two fresh native
-validation runs scored43.5 and24.2 (mean33.85), both with zero scored damage.
-The requested47-50 average was not reproduced; no claim of that average is made.
-The matching 20-seed offline cohort had median45.15, entry220.33 s,
-fuel43.475 kg and no modeled contacts. Those proxy results do not establish
-native performance. See [experiment evidence](tests/score55_experiment_report.md)
-and [maintained context](context.md) for source hashes and official results.
+- Md. Abdullah Al Sami Chowdhury
+- Zarif Hasan Sadiq
+- Arjun Shill
 
-Historical experiment flags and their results are documented in
-[the experiment record](tests/score55_experiment_report.md). They are not
-required to run the selected controller. Native progress and official success
-alerts are written to the simulator's `FINAL_SUBMISSION.log`.
+**Team Advisor**
 
-[Score tuning and verification](SCORE_TUNING.md) contains the score calculation,
-matched results, phase-fuel audit, limitations and reproduction commands.
-[Project context](context.md) records current instructions and historical
-regressions. [Original Momentum design](SCORE_MOMENTUM.md) documents the base.
+Irfan Nafiz Shahan
 
-**Live camera GUI:** copy **both `Controller.py` and `camera_viewer.py`** into the
-installed local `STU4-Solution` folder. The OpenCV window opens automatically during
-the next simulation run, showing top/bottom RGB and depth, detection boxes, and
-flight statistics. Press Q in the viewer to close it while flight continues.
-See [Camera interface setup](CAMERA_GUI.md) for preview commands and
-troubleshooting. The economy policy evaluates speeds up to 10 m/s; its selected
-speed depends on projected score, measured jet performance and observed clearance.
+Lecturer, Department of Electrical & Electronics Engineering
 
-See [Earlier fusion design](FINAL_DESIGN.md) for sensor implementation details,
-historical offline results, and required live camera calibration. The earlier
-[qualification guide](QUALIFICATION.md) preserves the FAST12 development record.
+Shahjalal University of Science and Technology (SUST)
 
-Run the selected completion and runtime checks with the simulator's Python:
+## Setup Guide
 
-```powershell
-python -m unittest discover -s tests -p test_momentum_capture.py -v
-python -m unittest discover -s tests -p test_active_runtime_profiles.py -v
-```
+1. Set up Space Teams PRO using the [official competition wiki](https://github.com/SimDynamX/STU4-Solution/wiki).
+2. Configure the development and simulator checkouts as described in **Local Repository Setup** below.
+3. Keep the repository's supporting files alongside `Controller.py`, including
+   `UserAPI.py` and `camera_viewer.py`.
+4. After pushing changes from the development checkout, use **Pull** in Space Teams
+   to update the simulator checkout, then run `FINAL_SUBMISSION.simconf`.
 
-The wider test archive includes retired Dogleg and trace adapter expectations.
-The final validation uses125 targeted current/archived checks; this is not a
-claim that every historical test is compatible with the selected controller.
+The camera window opens during the simulation. See the
+[camera interface setup guide](CAMERA_GUI.md) for details and troubleshooting.
+
+[Competition rules and information](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/218)
+| [Competition forum](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2026-escape-from-phobos)
 
 ### Local Repository Setup
 
