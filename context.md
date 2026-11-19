@@ -5,6 +5,146 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+## Current authoritative state: SCORE_MOMENTUM restored by the user
+
+**Latest user direction, 2026-11-19:** the user manually restored SCORE_MOMENTUM
+because subsequent versions performed worse in their testing. Future controller
+improvements must start from this Momentum version and preserve its successful
+behavior. The present request authorizes updating this context file only:
+**do not change controller code, tests, configuration or simulator files now.**
+
+This section supersedes every older "current", "selected", default-setting,
+pending-task and stop/continue instruction in the historical record below.
+The Dogleg/ground-lateral sequence is no longer the active development track.
+Do not automatically continue wider-lane or data-driven-offset tasks, restore
+the experimental controller, or assume the annotated green path is the chosen
+implementation. It remains an unproven route hypothesis.
+
+### Verified active files and version identity
+
+- Current checkout: `4210f77`, the user's manual restoration/archive commit.
+- Active entry point: `Controller.py`, constructing `ShootingNavigator` and
+  reporting `profile=SCORE_MOMENTUM`.
+- Its normalized source text exactly matches `4a8507e:Controller.py`.
+- `temp_controller/score_momentum_controller.py` exactly matches the active
+  controller. Preserve it as the user's saved Momentum copy.
+- `temp_controller/currentcontroller.py` contains the later Dogleg/ground-lateral
+  implementation. It is an archive, not the active entry point or recommended
+  baseline. Preserve it without copying it over Controller.py.
+- Active normalized-text SHA256:
+  `2b0f0f0b5674085d22d0ec5a454ed4ccde49b13e16e8645118210379578089af`.
+- Active deployed-byte SHA256 at this inspection:
+  `b461c96e8db27d760827e9f29ab9b4ec8de0335033080dcdd0f4d399fd073883`.
+  Line-ending conversion can change the byte hash without changing normalized
+  source text; compare like-for-like when identifying native runs.
+
+### What is active, and what was not carried back
+
+The active Momentum design prices finite body-axis burns and ballistic coasts
+using time/fuel/damage score, preserves useful velocity, estimates unpowered
+drift, tracks noisy radar reports, uses asynchronous RGB/depth capture and
+camera-based terminal checks, and detects safe-sphere crossings between planner
+updates. Navigation uses the Phobos frame; SetCommand receives body-frame
+acceleration/angular acceleration through the existing conversion.
+
+Verified current settings: 2 Hz planning (`PLAN_PERIOD=0.5`), per-tick velocity
+feedback in the 60 Hz loop, a 2.5 m launch handoff and an effective scored
+cruise ceiling of 10 m/s. Legacy `MAX_SPEED=25` does not mean that the active
+score optimizer commands 25 m/s. There is no active hard fuel ceiling/reserve.
+`EFP_NOSE_FIRST=0` and `EFP_AXIS_THRUST=0` are the restored defaults;
+`EFP_CAMERA_GUI=1` enables the existing viewer by default.
+
+The restored file has **no DoglegNavigator or ground-lateral implementation**.
+The later EFP_DOGLEG/EFP_GROUND_LATERAL and other experiment switches, source-hash
+logging, IGNITION_STATE flight trace and lane diagnostics are not present in
+this active source. Setting those old environment variables does not add the
+missing features. Existing fuelPhaseKg, planMs, speed, damage and camera-status
+logs remain available. Older guides describe archived versions and must not
+be treated as a feature inventory for the restored file.
+
+Restoration also predates later unconditional post-entry zero-command guards:
+the active source still contains POST_ENTRY_BRAKE behavior. Record this as a
+future verification/fix item; do not claim that later post-entry protections
+survived the rollback, and do not modify them during this documentation task.
+
+### Evidence to use as the Momentum baseline
+
+**User-reported native experience:** SCORE_MOMENTUM worked better than later
+versions and could approach roughly 50 points. This is the user's experimental
+judgment, not a verified matched 20-run native median or a guarantee.
+
+**Historical modeled baseline for this exact normalized source:** seeds100–119
+in `tests/score_sweep_baseline.json` / `tests/score_baseline_SEED.json`:
+median score38.275, p10–p90 22.984–43.789, range13.79–44.93;
+median entry time264.97 s, fuel43.725 kg;20 arrivals and zero modeled contacts.
+These archived offline estimates were not rerun during this documentation-only
+task. The model does not provide native damage energy or fully account for
+native meshes, rendering, dynamics and controller scheduling.
+
+**Later experiments, retained as rejected historical evidence:** Dogleg median
+27.890 at245.845 s/54.890 kg; ground-lateral median25.980 at243.475 s/53.750 kg.
+Both had20 modeled arrivals/no contacts, but neither improved the selected
+Momentum baseline. Ground-lateral's paired interval against Dogleg included
+zero. Reports: `tests/score_sweep_dogleg.json`, `tests/score_sweep_ground.json`,
+`DOGLEG.md`, `DOGLEG_DIAGNOSTICS.md`, `GROUND_LATERAL.md`.
+
+The measured native -54.1/357.75 s/103.26 kg result and 9.688 s search stall
+belong to the later Dogleg source c347e27a…, not this restored Momentum file.
+They demonstrate a problem in that archived version; do not attribute those
+numbers or that exact latency to current Momentum without profiling it.
+
+Other rejected experiments and their paired results remain in SCORE_TUNING.md
+and the historical notes below. A faster tracker fixture or a single better
+seed is not evidence of a native score gain. Do not restore whole failed
+bundles to recover one useful idea.
+
+### Direction for a future authorized code task
+
+Improve **achieved official score** from SCORE_MOMENTUM, initially toward55–60+
+with zero scored damage, stretch70+. Do not change the organizers' nominal
+references, scoring function or simulation to raise a number. Prioritize useful
+coasting, fewer unnecessary lateral/terminal corrections, reliable 50 m entry,
+and the actual time-versus-fuel reward. Do not force constant8 m/s, large
+high-speed corners, full nose/strong-axis slews or a field-wide bypass without
+evidence that the full cost improves score. Gravity still changes a free coast.
+Fuel targets remain tradeoffs, not reinstated hard caps.
+
+Profile the restored controller's own phase fuel and planning latency before
+assuming that an archived version's bottleneck is identical. Match native logs
+to this exact source/settings; the current restoration has no automatic source
+hash/IGNITION_STATE logging. Any added telemetry or selective restoration of a
+verified fix requires a future code task, not this one.
+
+Keep the existing connection boilerplate and official jet selector unchanged;
+leave STU4-Sim untouched. Use supported acceleration/angular-acceleration
+commands, never individual jet commands or live debris truth. Radar reports
+are shuttle-relative Phobos vectors with radial velocity only; full velocity
+is estimated. Camera coverage is finite, and center-spread percentiles do not
+prove a region is empty or establish the required bypass distance.
+
+Continue the evidence standard for future changes: establish/reuse an exact
+versioned baseline, compare at least20 identical offline seeds, test one change
+at a time behind a default-off flag, report score spread, entry time/fuel,
+phase-fuel deltas and contacts, and reject gains within seed noise. Label
+modeled, measured native and assumed quantities separately. Native55+ remains
+unverified. Official entry results, not post-entry fuel/damage, define a run's
+score. The nominal/reference run scores50; improving the controller does not
+mean changing nominal time120 s, fuel75 kg, damage threshold209200 J or the
+50 m success sphere.
+
+Historical193-test passes belong to the later experimental source. No tests
+were run after this manual restoration in this documentation task. Some tests
+and benchmark switches refer to classes/arguments removed from the active file;
+check compatibility before claiming the current suite passes. Preserve frozen
+experiment sources/results for reproduction. Only context.md is updated now;
+no algorithm, tests, defaults, simulator files, commits or deployment are changed.
+
+## Historical experiment archive — superseded by the restoration above
+
+The following record is retained for provenance. Its previous active/default
+claims, pending work and test counts describe those versions at those times;
+they are not instructions to switch away from the restored SCORE_MOMENTUM.
+
 ## Annotated green route: Task 2 completed, not promoted
 
 Latest image/request proposes an early sideways exit, climb outside the dense
