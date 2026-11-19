@@ -60,10 +60,16 @@ claim that every historical test is compatible with the selected controller.
 
 ### Local Repository Setup
 
-Our GitHub repository is named `EFP_SUST-IGNITION`, but the **local repository folder must be renamed to `STU4-Solution`** because the official `STU4-Sim` competition configuration references:
+The GitHub repository is `EFP_SUST-IGNITION`. Use these two separate checkouts:
 
-`Local/Repos/STU4-Solution/Controller.py`
+- **Development:** `E:\EFP_SUST-IGNITION-main` — edit code here, then commit and push to GitHub.
+- **Simulator:** `C:\Users\Asus\AppData\Local\SimDynamX\STPro\Assets\Repos\STU4-Solution` — update this checkout using **Pull** in Space Teams.
 
-This allows the simulator to execute our custom `Controller.py` without modifying the official simulation configuration.
+The simulator checkout must be named `STU4-Solution` because the official
+competition configuration references `Local/Repos/STU4-Solution/Controller.py`.
+The development folder can keep its current name. Keep the GitHub repository
+name (`EFP_SUST-IGNITION`) unchanged.
 
-**Note:** Only rename the local folder. Keep the GitHub repository name (`EFP_SUST-IGNITION`) unchanged.
+After editing: **commit and push from the development repository, then Pull in
+the simulator**. Avoid editing files or using Commit & Push in the simulator
+checkout; separate local commits there can cause divergence.

@@ -5,6 +5,20 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+**Repository workflow repair (2026-11-19):**
+The development source of truth is `E:/EFP_SUST-IGNITION-main`. Make future code
+changes there. The user commits/pushes that checkout to GitHub, then uses Pull
+in Space Teams to update its separate installed `STU4-Solution` checkout.
+Do not copy/edit controller files directly in the simulator checkout for normal
+development; the user explicitly requested this workflow after native test
+copies caused a separate simulator-side commit and Git divergence.
+The simulator-only commit f00046b had the SAME Controller.py blob as GitHub
+1299799. Its clean main was aligned with origin/main1299799; verified pull says
+Already up to date. Backup branch:codex/backup-stpro-f00046b in the simulator
+checkout. Complete recovery bundle: `.git/stpro-recovery-20261119.bundle` in
+the EFP development repository. Simulator pull.ff=only. No GitHub push or
+controller/official-simulation change was made during this repair.
+
 **Live development snapshot (overrides older interim descriptions below):**
 USER REVISED COMPLETION TARGET: finish as soon as practical; a native average
 of47-50 points across TWO runs is acceptable. Native55 is no longer the
