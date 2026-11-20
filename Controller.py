@@ -1499,6 +1499,7 @@ class QualificationPlanner:
         self.history = []
         self.report_cache = {}
         self.track_counter = 0
+        self.smooth_radar_position = False
         self.approach_direction = None
         self.previous_velocity = np.zeros(3)
         self.last_horizon = HORIZON
@@ -1519,6 +1520,7 @@ class QualificationPlanner:
         velocities = np.array([h[2] for h in self.history])
         centers, speeds, radii = [], [], []
         forecast_rates = []
+        measured_diameters = []
         core_radii, report_ages, track_confidence = [], [], []
         gravity_tracking = getattr(self, 'gravity_tracking', False)
         new_cache = {}
@@ -1624,8 +1626,15 @@ class QualificationPlanner:
                         rms = np.sqrt(np.mean(np.sum(residual*residual, axis=1)))
                         rate = float(np.clip(2.2*max(2., rms)/max(np.sqrt(tc@tc), 1.)+.1, .25, .6))
                         confident = rms < 5. and rate < .55
+                        if self.smooth_radar_position:
+                            # Project the regression to this report's timestamp;
+                            # averaging positions alone would lag moving debris.
+                            track['fitted_position'] = positions_fit.mean(axis=0)+tc[-1]*slope
                     if cache_reports:
                         track['forecast_quality'] = (rate, confident)
+            if (self.smooth_radar_position and confident
+                    and 'fitted_position' in track):
+                center += track['fitted_position']-track['pos']
             # Missing pre-start history and clock skew enlarge uncertainty.
             missing_history = max(0.0, times[0]-stamp)
             history_margin = (np.linalg.norm(velocities[0])*missing_history if missing_history else 0.) if cache_reports else np.linalg.norm(old_vel)*missing_history
@@ -1637,11 +1646,13 @@ class QualificationPlanner:
             forecast_rates.append(rate)
             core_radii.append(.575*max(0., report[1, 2])+3.+2.)
             report_ages.append(age)
+            measured_diameters.append(max(0., float(report[1, 2])))
             track_confidence.append(confident)
         self.report_cache = new_cache
         self.radar_forecast_rates = np.asarray(forecast_rates)
         self.radar_core_radii = np.asarray(core_radii)
         self.radar_report_ages = np.asarray(report_ages)
+        self.radar_measured_diameters = np.asarray(measured_diameters)
         self.radar_track_confidence = np.asarray(track_confidence, dtype=bool)
         return (np.asarray(centers).reshape(-1, 3),
                 np.asarray(speeds).reshape(-1, 3), np.asarray(radii))
@@ -1832,7 +1843,7 @@ class FinalNavigator(QualificationPlanner):
     def observe_scene(self, now, loc, vel, target_loc, target_vel, radar, camera):
         if self.radar_clock_enabled:
             radar = self.radar_timebase.adjust(now, radar)
-            if self.radar_timebase.just_locked:
+            if self.radar_timebase.just_locked and self.radar_timebase.offset != 0.:
                 self.report_cache.clear()
         if (getattr(self, 'radar_cruise_only', False) and self.launch.done and len(radar)
                 and np.linalg.norm(target_loc-loc) > 300.
@@ -2380,6 +2391,16 @@ def gaussian_encounter_risk(gap, sigma, relative_speed):
     return probability, 3388.7*np.asarray(relative_speed)**2
 
 
+def vectorized_encounter_risk(gap, sigma, relative_speed):
+    """Same normal-tail model, evaluated in compiled array code when available."""
+    try:
+        from scipy.special import erfc
+    except ImportError:
+        return gaussian_encounter_risk(gap, sigma, relative_speed)
+    z = np.maximum(gap, 0.)/(np.sqrt(2.)*np.maximum(sigma, .1))
+    return .5*erfc(z), 3388.7*np.asarray(relative_speed)**2
+
+
 class ShootingNavigator(EconomyNavigator):
     """Choose a scored finite burn; check its next motion chunk from sensors."""
     def __init__(self, launch=True, nose_first=False, order_diversity=False, matched_camera_prediction=False):
@@ -2388,6 +2409,8 @@ class ShootingNavigator(EconomyNavigator):
         self.matched_camera_prediction = bool(matched_camera_prediction)
         self.radar_cruise_only = False
         self.expected_risk = self.detour_diversity = False
+        self.fast_risk = False
+        self.physical_risk = False
         self.fine_avoidance = False
         self.efficient_main = self.main_accel_preloaded = False
         self.main_axis = 0
@@ -2645,8 +2668,16 @@ class ShootingNavigator(EconomyNavigator):
         confident = np.r_[self.radar_track_confidence, np.zeros(len(centers)-nr, dtype=bool)][relevant]
         ranged = (np.arange(len(centers)) < nr)[relevant]
         cores = np.r_[self.radar_core_radii, radii[nr:]][relevant]
+        size_variance = np.zeros(len(oc))
+        if self.physical_risk:
+            # Radar diameter sigma is 5%; position sigma remains 2 m.
+            # Keep the 3 m vehicle allowance; represent measurement noise in
+            # covariance instead of adding it to the physical radius as well.
+            diameters = self.radar_measured_diameters
+            cores = np.r_[.5*diameters+3., radii[nr:]][relevant]
+            size_variance = np.r_[(.025*diameters)**2, np.zeros(len(centers)-nr)][relevant]
         ages = np.r_[self.radar_report_ages, np.zeros(len(centers)-nr)][relevant]
-        hard_radii = np.where(ranged, np.maximum(cores-1., 3.), rr)
+        hard_radii = np.where(ranged, np.maximum(cores-(0. if self.physical_risk else 1.), 3.), rr)
         clearance = np.full(len(c_scores), np.inf)
         probability = np.zeros((len(c_scores), len(oc)))
         energy_risk = np.zeros_like(probability)
@@ -2663,8 +2694,9 @@ class ShootingNavigator(EconomyNavigator):
             inflation = np.where(ranged, 0., np.minimum(10., t1*ur))
             curvature = .03+.25*(t1-t0)**2/8.
             gaps = distance_to_path-hard_radii[None]-inflation[None]-curvature
-            sigma = np.sqrt(4.+((ages+t1)*ur/np.where(confident, 2.2, 1.2))**2)
-            risk_model = gaussian_encounter_risk if self.expected_risk else encounter_risk
+            sigma = np.sqrt(4.+size_variance+((ages+t1)*ur/np.where(confident, 2.2, 1.2))**2)
+            risk_model = ((vectorized_encounter_risk if self.fast_risk else gaussian_encounter_risk)
+                          if self.expected_risk else encounter_risk)
             relative_speed = np.linalg.norm(delta, axis=2)/(t1-t0)+.125*(t1-t0)
             p, energy = risk_model(distance_to_path-cores[None]-curvature, sigma[None], relative_speed)
             energy *= self.impact_energy_factor
@@ -2916,6 +2948,9 @@ class MainAxisAttitude(FreeAttitude):
         return damping
 
 
+smooth_radar_position_enabled = os.environ.get('EFP_RADAR_SMOOTH_POSITION', '1') == '1'
+fast_risk_enabled = os.environ.get('EFP_FAST_RISK', '1') == '1'
+physical_risk_enabled = os.environ.get('EFP_PHYSICAL_RISK', '0') == '1'
 nose_first_enabled = os.environ.get('EFP_NOSE_FIRST', '0') == '1'
 strong_axis_enabled = os.environ.get('EFP_STRONG_AXIS', '1') == '1'
 main_axis_y_enabled = os.environ.get('EFP_MAIN_AXIS_Y', '0') == '1'
@@ -2924,7 +2959,7 @@ local_expected_risk_enabled = os.environ.get('EFP_LOCAL_EXPECTED_RISK', '0') == 
 near_entry_goal_enabled = os.environ.get('EFP_NEAR_ENTRY_GOAL', '0') == '1'
 retain_local_speed_enabled = os.environ.get('EFP_RETAIN_LOCAL_SPEED', '0') == '1'
 wait_for_gap_enabled = os.environ.get('EFP_WAIT_FOR_GAP', '0') == '1'
-radar_clock_enabled = os.environ.get('EFP_RADAR_CLOCK', '0') == '1'
+radar_clock_enabled = os.environ.get('EFP_RADAR_CLOCK', '1') == '1'
 track_cache_enabled = os.environ.get('EFP_TRACK_CACHE', '1') == '1'
 accept_safe_pass_enabled = os.environ.get('EFP_ACCEPT_SAFE_PASS', '0') == '1'
 kinetic_impact_enabled = os.environ.get('EFP_KINETIC_IMPACT', '0') == '1'
@@ -2939,6 +2974,9 @@ axis_thrust_enabled = os.environ.get('EFP_AXIS_THRUST', '0') == '1'
 rescue_frame = target.GetBodyFixedFrame()
 planner = (AxisAlignedNavigator if strong_axis_enabled else ShootingNavigator)(nose_first=nose_first_enabled, order_diversity=order_diversity_enabled, matched_camera_prediction=camera_track_rate_enabled)
 planner.radar_cruise_only = radar_cruise_enabled
+planner.smooth_radar_position = smooth_radar_position_enabled
+planner.fast_risk = fast_risk_enabled
+planner.physical_risk = physical_risk_enabled
 planner.expected_risk, planner.detour_diversity = expected_risk_enabled, detour_diversity_enabled
 planner.fine_avoidance = fine_avoidance_enabled
 planner.efficient_main = efficient_main_enabled
@@ -2964,6 +3002,7 @@ try:
                    +f' nearEntryGoal={near_entry_goal_enabled} retainLocalSpeed={retain_local_speed_enabled}'
                    +f' waitForGap={wait_for_gap_enabled} radarClock={radar_clock_enabled} trackCache={track_cache_enabled}'
                    +f' acceptSafePass={accept_safe_pass_enabled} impactEnergyFactor={planner.impact_energy_factor}')
+    st.logger_info(f'IGNITION_ECONOMY smoothRadarPosition={smooth_radar_position_enabled} fastRisk={fast_risk_enabled} physicalRisk={physical_risk_enabled}')
 except Exception:
     pass  # Diagnostic logging must never inhibit the flight controller.
 flight_attitude = MainAxisAttitude(planner) if strong_axis_enabled else EconomyAttitude() if nose_first_enabled else FreeAttitude()
@@ -3001,6 +3040,9 @@ try:
         if now < last_plan:
             planner = (AxisAlignedNavigator if strong_axis_enabled else ShootingNavigator)(nose_first=nose_first_enabled, order_diversity=order_diversity_enabled, matched_camera_prediction=camera_track_rate_enabled)
             planner.radar_cruise_only = radar_cruise_enabled
+            planner.smooth_radar_position = smooth_radar_position_enabled
+            planner.fast_risk = fast_risk_enabled
+            planner.physical_risk = physical_risk_enabled
             planner.expected_risk, planner.detour_diversity = expected_risk_enabled, detour_diversity_enabled
             planner.fine_avoidance = fine_avoidance_enabled
             planner.efficient_main = efficient_main_enabled

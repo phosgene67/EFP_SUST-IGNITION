@@ -1,0 +1,9 @@
+{
+  "seed": 100,
+  "comparison": "physical prototype vs current source with the same explicit flags",
+  "all_non_timing_result_fields_identical": true,
+  "ignored_fields": [
+    "plan_p95_ms",
+    "plan_max_ms"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "test_shooting": {
+    "baseline": {
+      "run": 35,
+      "errors": [
+        "test_shooting.ShootingTests.test_arc_return_does_not_interrupt_an_unfinished_first_burn",
+        "test_shooting.ShootingTests.test_arc_return_starts_once_then_coasts_after_delivery",
+        "test_shooting.ShootingTests.test_arrival_cuts_active_burn_between_planning_updates",
+        "test_shooting.ShootingTests.test_clean_main_burn_does_not_bias_other_axes_or_reverse_burns",
+        "test_shooting.ShootingTests.test_clean_main_burn_is_opt_in_and_preserves_command_limit",
+        "test_shooting.ShootingTests.test_finite_arc_hits_endpoint_with_nonoverlapping_return_burn",
+        "test_shooting.ShootingTests.test_impossible_return_arc_is_rejected",
+        "test_shooting.ShootingTests.test_inertial_capture_corrects_a_miss_before_closest_approach",
+        "test_shooting.ShootingTests.test_inertial_capture_preserves_a_safe_short_coast",
+        "test_shooting.ShootingTests.test_inertial_capture_requires_current_station_observation",
+        "test_shooting.ShootingTests.test_recheck_coast_corrects_a_completed_burn_that_predicts_a_miss",
+        "test_shooting.ShootingTests.test_retained_coast_window_keeps_its_absolute_burn_start",
+        "test_shooting.ShootingTests.test_short_coast_options_are_scored_only_before_600m_with_momentum",
+        "test_shooting.ShootingTests.test_vector_burn_hits_endpoint_without_sequential_side_burns",
+        "test_shooting.ShootingTests.test_vector_burn_holds_direction_until_impulse_is_delivered"
+      ],
+      "failures": []
+    },
+    "current": {
+      "run": 35,
+      "errors": [
+        "test_shooting.ShootingTests.test_arc_return_does_not_interrupt_an_unfinished_first_burn",
+        "test_shooting.ShootingTests.test_arc_return_starts_once_then_coasts_after_delivery",
+        "test_shooting.ShootingTests.test_arrival_cuts_active_burn_between_planning_updates",
+        "test_shooting.ShootingTests.test_clean_main_burn_does_not_bias_other_axes_or_reverse_burns",
+        "test_shooting.ShootingTests.test_clean_main_burn_is_opt_in_and_preserves_command_limit",
+        "test_shooting.ShootingTests.test_finite_arc_hits_endpoint_with_nonoverlapping_return_burn",
+        "test_shooting.ShootingTests.test_impossible_return_arc_is_rejected",
+        "test_shooting.ShootingTests.test_inertial_capture_corrects_a_miss_before_closest_approach",
+        "test_shooting.ShootingTests.test_inertial_capture_preserves_a_safe_short_coast",
+        "test_shooting.ShootingTests.test_inertial_capture_requires_current_station_observation",
+        "test_shooting.ShootingTests.test_recheck_coast_corrects_a_completed_burn_that_predicts_a_miss",
+        "test_shooting.ShootingTests.test_retained_coast_window_keeps_its_absolute_burn_start",
+        "test_shooting.ShootingTests.test_short_coast_options_are_scored_only_before_600m_with_momentum",
+        "test_shooting.ShootingTests.test_vector_burn_hits_endpoint_without_sequential_side_burns",
+        "test_shooting.ShootingTests.test_vector_burn_holds_direction_until_impulse_is_delivered"
+      ],
+      "failures": []
+    }
+  },
+  "test_economy": {
+    "baseline": {
+      "run": 22,
+      "errors": [],
+      "failures": [
+        "test_economy.EconomyTests.test_entry_switches_to_coast_without_a_braking_goal"
+      ]
+    },
+    "current": {
+      "run": 22,
+      "errors": [],
+      "failures": [
+        "test_economy.EconomyTests.test_entry_switches_to_coast_without_a_braking_goal"
+      ]
+    }
+  }
+}

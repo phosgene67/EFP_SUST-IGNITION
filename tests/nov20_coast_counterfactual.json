@@ -1,0 +1,47 @@
+{
+  "kind": "modeled_counterfactual_not_a_native_flight",
+  "method": "RK4 Phobos point gravity plus constant empirical residual fitted to own measured fuel-constant coast; no debris or hull certification",
+  "coast_residual_m_s2": [
+    0.002470376426880903,
+    -0.0007356526363163879,
+    0.0015864476288866632
+  ],
+  "residual_std": [
+    2.1041646031282893e-05,
+    5.255493595710906e-05,
+    3.194854244164218e-05
+  ],
+  "native_actual_entry_s": 225.37,
+  "results": [
+    {
+      "start_time_s": 91.104848,
+      "fuel_at_start": 43.80794475436966,
+      "modeled_entry_s": null,
+      "modeled_miss_m": 53.22639919741679
+    },
+    {
+      "start_time_s": 106.138924,
+      "fuel_at_start": 44.74784112990995,
+      "modeled_entry_s": 224.33892400000002,
+      "modeled_miss_m": 47.833859563133785
+    },
+    {
+      "start_time_s": 111.155675,
+      "fuel_at_start": 45.15853418519138,
+      "modeled_entry_s": 226.255675,
+      "modeled_miss_m": 49.94154726403906
+    },
+    {
+      "start_time_s": 116.159083,
+      "fuel_at_start": 45.168324404494804,
+      "modeled_entry_s": 225.859083,
+      "modeled_miss_m": 49.76338419744901
+    },
+    {
+      "start_time_s": 126.258394,
+      "fuel_at_start": 49.67144833080859,
+      "modeled_entry_s": 225.158394,
+      "modeled_miss_m": 48.87649683840368
+    }
+  ]
+}

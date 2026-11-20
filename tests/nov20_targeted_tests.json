@@ -1,0 +1,20 @@
+{
+  "controller_file_sha256": "4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834",
+  "modules": [
+    "test_controller",
+    "test_camera_fusion",
+    "test_camera_viewer",
+    "test_momentum_capture",
+    "test_active_runtime_profiles",
+    "test_current_tracker_cache",
+    "test_momentum_risk_avoidance",
+    "test_nov20_radar_smoothing",
+    "test_nov20_vector_risk",
+    "test_nov20_physical_risk",
+    "test_radar_timebase"
+  ],
+  "tests_run": 76,
+  "errors": [],
+  "failures": [],
+  "status": "passed"
+}

@@ -1,9 +1,215 @@
 # Escape from Phobos project context
 
-Updated 2026-11-19. Read this file before controller changes and update it after
+Updated 2026-11-20. Read this file before controller changes and update it after
 each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
+
+**FINALIZED 2026-11-20 at the user's deadline instruction (overrides all earlier snapshots):**
+The user asked to finish now with the best completed average. Keep root
+Controller.py exactly SHA2564210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834.
+It matches tests/score_sweeps/nov20_conservative_clock_native_controller.py
+byte for byte. Selected SCORE_MOMENTUM uses strong-X/cache/radar cruise/
+expected risk/fine avoidance plus confident radar-position smoothing, compiled
+identical risk and existing radar clock estimator. Physical geometry OFF.
+Zero-offset clock locking preserves correct tracks. No hard fuel limit,
+new route planner or braking after actual safe-zone entry was introduced.
+
+Exact-source quiet native scores45.1/40.1/38.6, mean41.2667; time222.17/
+232.52/240.13s; fuel44.22/46.10/46.04kg; all0 scoredJ. Mean fuel45.4533kg,
+mean time231.6067s. Evidence tests/nov20_final_native_validation.json.
+The45+ average minimum and desired55+ were NOT demonstrated. Do not claim
+robust improvement over the user's submitted40.5 average or a45-point floor.
+All76 targeted tests passed on this exact source. Final hash,2829-byte
+protected helper prefix and all six official/installed file hashes verified.
+Evidence tests/nov20_finalization.json and tests/nov20_experiment_report.md.
+The user's pre-existing temp_controller/currentcontroller.py edits are untouched.
+
+Rejected follow-ups: physical-geometry native46322.1J collision/aborted run;
+early fine20 proxy seeds unchanged and native42.7/36.8 mean39.75; range-fusion
+pilot45.55 vs50.48; coast-priority20 paired mean−.0395/CI[−.4515,.3000]
+despite mean fuel−.8625kg/time+5.1165s; powered-drift assumed-bias pilot100
+44.38 vs46.66 (less fuel but17.48s slower). None promoted. Native coast-
+priority configuration was prepared but never flown. Wider49m band and
+precision-impulse taper are isolated, unflown/unselected prototypes; precision
+has no completed tests. Never silently deploy these archived experiments.
+
+Conservative diagnostic-only source ae4d054b...fb9d5 scored37.0/225.37s/
+49.67kg/0J. Separate telemetry/counterfactual files distinguish measured own
+states from modeled unpowered passes; no debris/hull certification or native
+score gain follows from the model. Some corrections were necessary (66.57m
+modeled miss at81s). Do not pool the changed-source diagnostic into the
+identical-byte cohort or conceal it when discussing native variability.
+
+User-supplied official54.0 excerpt:203.39s/41.24kg/0J, SimRunID
+a6a82e84-43ed-2c36-31a3-7eb9da19f958. Exact source/seed/original local file
+unknown; nov20_user_supplied_54_result.json. It is an individual result, not
+a new selected-source trial/average. User-started old installed baseline
+032829...e44 scored12.6/249.50s/64.13kg/0J and is recorded separately.
+
+All benchmark processes finished. Official FINAL_SUBMISSION selection was
+restored through the UI; the simulator was left idle at its main menu. Protected official STU4-Sim,
+jet allocator/CSV/scoring and installed STU4-Solution source remain unchanged.
+No GitHub push/commit or competition submission. User must push local EFP
+Controller.py and Pull the solution through the simulator to deploy this source;
+the installed checkout still has the earlier ebcc...6285b controller.
+
+**Reopened optimization task, 2026-11-20 (overrides the old finalization below):**
+The user submitted a reported 40.5 average and requests a native average above45,
+with55+ as the desired target. Reduce unnecessary acceleration/avoidance fuel;
+50 kg is an efficiency target, not a hard fuel blocker. Native testing is
+authorized. Keep source edits in this EFP repository and official software,
+physics/scoring/configuration and the installed solution checkout unchanged.
+User's existing uncommitted temp_controller/currentcontroller.py changes are
+outside this task and must be preserved.
+
+IN PROGRESS: baseline bytes ebcc0494...6285b are frozen in
+tests/score_sweeps/nov20_baseline_controller.py. A fresh20-seed offline baseline
+exactly reproduces median45.15, p10-p90 40.485-48.691, time220.33 s,
+fuel43.475 kg,20/20 arrivals/no proxy contacts. This is NOT native performance.
+Fresh unchanged native261119_212710...95c scored32.1/232.55 s/52.12 kg/0 J.
+An expanded audit reads source hashes from the separate PySys_Controller log;
+18 completed exact-source records have mean24.53, median28.3, range-9.2..49.6.
+This is a historical log sample, not a matched seed cohort or the submitted
+average. Evidence: tests/nov20_native_inventory.json.
+
+Two small changes are present in Controller.py, BOTH DEFAULT OFF while tested:
+EFP_RADAR_SMOOTH_POSITION uses an existing confident regression projected to
+the latest report timestamp, retaining raw associations and all uncertainty/
+radius bounds; EFP_FAST_RISK uses scipy.special.erfc for the SAME probability
+model, with the original math implementation as ImportError fallback.
+Protected connection/SetCommand/camera helper prefix remains byte-equivalent.
+Four new sensor/numerical tests,9 capture tests,3 reset/config tests and the
+existing tracker-cache equality test pass so far. No promotion/score claim yet.
+
+Native candidates run through isolated copies of the official scenario in
+Assets/Sims/EFP_Development, with ONLY Controller Source changed to a frozen
+file inside EFP. They do not modify STU4-Sim or the installed solution Git repo.
+Local test configs: tests/native_trial/nov20_*.simconf. Official protected file
+hashes: tests/nov20_protected_hashes.json. Restoring the launch selection to
+the official FINAL_SUBMISSION.simconf is required when native testing ends.
+
+Experiments so far (partial; complete records override these notes):
+- Accept-safe-pass alone: two early proxy seeds saved1.93-2.20 kg; matched20
+  cohort still running. Native261119_213649...5eb completed-5.3/251.07 s/
+  77.29 kg/0 J. No native gain established; do not select it on that result.
+- Useful early-lateral candidate screening pilot100:41.65 vs48.79 baseline,
+  fuel51.69 vs42.22. Rejected; do not port this prototype into active code.
+- Body-axis L1 fallback fuel pricing: seed101 identical;10540.63 vs40.70.
+  No useful gain; rejected for selection. The mathematical cost mismatch
+  alone does not demonstrate a flight-score improvement.
+- Rechecked calibrated+Z pilot10440.74 vs44.96; prior four+Z pilots also
+  mixed. No evidence to replace the +X configuration; no new native+Z trial.
+- Radar smoothing partial cohort is promising, but is not complete. Native
+  attempt261119_214620...c95 failed during lobby startup (jet-selection load
+  timeout, no flight/score); retry261119_215046...499 is running. Native
+  score and a full matched cohort remain REQUIRED before selection.
+- Vectorized risk90x80 microbenchmark:2.7299 ms ->.2128 ms median, maximum
+  probability error1.11e-16; tests/nov20_fast_risk_timing.json. This measures
+  compute only. Its20-seed equivalence cohort is running, not a score gain.
+
+Progress update: smoothing completed20/20, median46.8 (baseline45.15),
+paired median+1.86/bootstrap95%[.385,2.735],0 proxy contacts. Median paired
+fuel-.67 kg; mean fuel44.6015->43.799 kg; median phase main-burn delta-1.4462
+kg. Median entry time220.36 s. This is a small modeled gain, NOT native55.
+Native smoothing499 completed40.8/234.86 s/45.19 kg/0 J. Combined smooth+fast
+native261119_220629...35a completed39.2/237.50 s/46.01 kg/0 J. All exploratory
+native runs so far had background benchmarks active; final validation should
+run WITHOUT benchmarks. Simulator currently idle at its main menu.
+
+Vectorized risk20 seeds exactly match baseline score/time/fuel/contact results;
+this confirms policy equivalence in that cohort, not a native score improvement.
+Accept-safe-pass20 median45.67, paired median+1.155/bootstrap95%[0,2.43]:
+gain is not robust under the specified gate. Keep it OFF; no selection from it.
+
+An additional opt-in EFP_PHYSICAL_RISK (DEFAULT OFF) is now ported alone from
+the archived physical-geometry experiment. It records measured diameters,
+uses .5*diameter+existing3 m vehicle allowance as physical core, puts5% diameter
+noise into variance alongside unchanged2 m position sigma, and preserves
+camera volumes, full m*v2 impact energy, .01 fatal probability and .5 m hard
+clearance. This is being revisited ONLY on the improved radar-position tracker;
+earlier geometry-only native trials were inconsistent. No powered launch,
+kinetic-impact relaxation, camera removal or hard fuel limit is added.
+Tests/test_nov20_physical_risk.py covers the active source geometry/covariance
+and unchanged camera blockage. Experimental source is
+tests/score_sweeps/nov20_smooth_physical_controller.py;20 matched seeds are
+running (100 pilot +101-119 cohort,113 reused). Native variant is prepared but
+NOT flown:nov20_smooth_physical_native_controller.py; native scenario staged
+in Assets/Sims/EFP_Development/EFP_NOV20_SMOOTH_PHYSICAL.simconf. All three
+new flags remain OFF in active Controller.py pending selection/validation.
+
+Physical prototype pilots:10048.87/210.03 s/43.70 kg vs smoothing50.48;
+11346.73/201.55 s/47.11 kg vs smoothing31.77. Do not cherry-pick the latter.
+Revisited+Z with smoothing pilot10050.51 vs+X smoothing50.48: no material gain;
+no +Z promotion/native trial. The frozen all-options current-source equivalence
+pilot100 is running before any final native selection.
+
+Tests:7 new active-source radar/geometry/numerical checks pass; core controller
+20, camera fusion17, camera GUI11, capture9, runtime profiles3, risk avoidance3,
+tracker-cache1 passed at their stated interim revisions. Re-run appropriate
+current checks after final selection. Historical shooting/economy suites show
+the SAME15 errors/1 failure on the original baseline and current source;
+tests/nov20_historical_test_comparison.json records this. Do not claim all
+historical tests pass, or edit the user's temp_controller file to repair them.
+
+FINAL VALIDATION IN PROGRESS: all20 physical/covariance seeds finished with
+0 proxy contacts, median48.805/220.975 s/41.495 kg, mean score48.374,
+fuel range34.95-47.11 kg. Increment versus smoothing alone: paired median+2.17,
+bootstrap95%[1.10,3.44]; versus baseline+4.51,[1.025,5.79]. Median paired fuel
+-2.99 kg and time+1.185 s versus baseline. Full results and phase deltas are
+tests/nov20_matched_summary.json (all20, including the separately run seed100).
+The ported current source exactly reproduces every non-timing result field of
+the physical prototype on seed100:nov20_active_source_equivalence.json.
+
+Based on that gate, the staged native candidate now defaults ALL THREE new
+flags ON. SHA2561aec9ebf31b037e7693461512798941b9ba941375f87717783b5cb644989800a,
+frozen tests/score_sweeps/nov20_selected_controller.py.71 targeted current tests
+pass on this exact source:tests/nov20_targeted_tests.json. No further source
+edits during the native cohort. Official files/installed solution hashes are
+unchanged; protected connection/command prefix verified identical RAW bytes.
+
+All offline benchmarks are finished; process inspection confirmed none running.
+REJECTED NATIVE GEOMETRY PROFILE: quiet run222652...d62 took46322.1 J at about
+66-71 s, then spun and burned77.71 kg by171.4 s. It was aborted AFTER the
+immediate-arrival upper score bound fell to-27.89 (so45 was impossible even
+with instant free arrival). NO official finish score exists; do not invent one.
+The20 clean proxy runs did NOT establish native safety. EFP_PHYSICAL_RISK was
+immediately restored to default0. Keep the implementation opt-in for evidence,
+but DO NOT select/re-enable it from the modeled median. Full record retained
+in nov20_final_native_validation.json. The old1aec... hash is REJECTED, not final.
+
+New issue under investigation: Radar.py sets t0 AFTER its initial500-object API
+scan; Controller has a different epoch. Native fresh-report ages5.8-25.9 s
+were1.182-1.487 s (later up to1.7 s), including publication batching/transport.
+This is NOT a measured exact epoch offset or proof of collision causality.
+Revisit the existing EFP_RADAR_CLOCK estimator on the improved tracker with
+CONSERVATIVE geometry, because previous native calibration measured only.258 s
+and its results were inconsistent. New small fix: zero-offset locking does not
+erase correct tracks; nonzero retiming still clears the wrong-epoch cache.
+Five radar-timebase tests pass, including both cache cases.
+Clock remains default0 during stress pilots. Frozen source:
+tests/score_sweeps/nov20_clock_controller.py. Three pilot processes are running:
+nov20_clock_zero100 (clock on,0 skew), nov20_clock_skew_base100 (off,1.3 s
+synthetic skew), nov20_clock_skew_fixed100 (on,1.3 s synthetic skew).
+These are ASSUMED stress cases, not native clock measurements. Wait for their
+results; do not run native trials while those benchmarks are still active.
+
+Quiet native validation uses Assets/Sims/EFP_Development/EFP_NOV20_FINAL.simconf,
+with ONLY Controller Source overridden to E:/EFP_SUST-IGNITION-main/Controller.py.
+It therefore tests the EXACT user development file, not a simulator-repo copy.
+The rejected222652...d62 startup hash matched and flags smoothRadarPosition/
+fastRisk/physicalRisk were allTrue. Physical risk is NOW OFF; root hash has
+therefore changed. Full impact energy remains1.0, mainAxis0, noseFirstFalse.
+Keep simulator focused during flights. Goal is THREE consecutive trials of the
+same source, record every score (no selection of best trials). Completion still
+requires documenting whether mean>45; desired55+ remains unachieved. Records:
+tests/nov20_final_native_validation.json. Source must stay pinned throughout.
+
+Pending: finish clock stress pilots, then stage/verify a conservative candidate
+and complete a fresh quiet native cohort. Calculate its average/fuel/damage, update
+report and this context, recheck protected hashes, and restore simulator launch
+selection to official FINAL_SUBMISSION.simconf at its idle main menu. No push,
+competition submission or installed solution update is authorized/needed here.
 
 **Repository workflow repair (2026-11-19):**
 The development source of truth is `E:/EFP_SUST-IGNITION-main`. Make future code

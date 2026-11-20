@@ -37,7 +37,7 @@ if __name__ == '__main__':
         return seed, json.loads(output.read_text())
 
     rows = []
-    with ThreadPoolExecutor(max_workers=max(1, min(args.workers, 2))) as pool:
+    with ThreadPoolExecutor(max_workers=max(1, min(args.workers, 4))) as pool:
         jobs = [pool.submit(trial, seed) for seed in range(args.start, args.start+args.count)]
         for job in as_completed(jobs):
             seed, record = job.result()

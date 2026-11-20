@@ -1,0 +1,37 @@
+{
+  "status": "finalized_at_user_deadline_with_limitations",
+  "controller": "E:\\EFP_SUST-IGNITION-main\\Controller.py",
+  "controller_file_sha256": "4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834",
+  "native_scores": [
+    45.1,
+    40.1,
+    38.6
+  ],
+  "native_mean_score": 41.266666666666666,
+  "native_mean_fuel_kg": 45.45333333333333,
+  "native_mean_time_s": 231.60666666666665,
+  "native_scored_damage_J": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "target45_average_achieved": false,
+  "target55_average_achieved": false,
+  "selected_test_count": 76,
+  "selected_tests_passed": true,
+  "protected_prefix_bytes": 2829,
+  "protected_prefix_unchanged": true,
+  "protected_file_checks": {
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Sims\\FINAL_SUBMISSION.simconf": true,
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Systems\\Scoring.py": true,
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Systems\\Radar.py": true,
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Systems\\JetSelectionActuator.py": true,
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Sim\\Data\\SpaceBuggyJetConfigNoMains.csv": true,
+    "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Assets\\Repos\\STU4-Solution\\Controller.py": true
+  },
+  "unfinished_experiments_promoted": false,
+  "git_push_performed": false,
+  "competition_submission_performed": false,
+  "official_scenario_selection_restored": true,
+  "simulator_left_idle_at_main_menu": true
+}

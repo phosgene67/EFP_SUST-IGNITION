@@ -1,0 +1,520 @@
+{
+  "kind": "offline_proxy_not_native",
+  "baseline": "nov20_radar_smooth",
+  "candidate": "nov20_earlyfine",
+  "seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "profiles": {
+    "nov20_radar_smooth": {
+      "controller_sha256": "442ed8d74265968a39c965610e3f2c4b9e485d93b2f36eda7ab81a3483474101",
+      "controller_file_sha256": "c8a79d19c21e1a40c38e312d699f384caa2c33a2272e3bb7c2e8513cd7397669",
+      "arrivals": 20,
+      "contacts": 0,
+      "success_scores": {
+        "mean": 45.7055,
+        "median": 46.8,
+        "p10": 43.077,
+        "p90": 48.617,
+        "minimum": 31.77,
+        "maximum": 50.48
+      },
+      "fuel_kg": {
+        "mean": 43.799,
+        "median": 43.835,
+        "p10": 40.800000000000004,
+        "p90": 45.78300000000001,
+        "minimum": 36.6,
+        "maximum": 53.34
+      },
+      "time_s": {
+        "mean": 222.343,
+        "median": 220.36,
+        "p10": 210.793,
+        "p90": 240.065,
+        "minimum": 206.33,
+        "maximum": 245.9
+      }
+    },
+    "nov20_earlyfine": {
+      "controller_sha256": "dfe344a5efcac9a05b1e217907c55af197e24f39ef12db6c8d8ddbe7e1cd16a0",
+      "controller_file_sha256": "30c94e71e1fa98cee9eaae85316842723835a90f97bdc73e0d47007132fdff54",
+      "arrivals": 20,
+      "contacts": 0,
+      "success_scores": {
+        "mean": 45.7055,
+        "median": 46.8,
+        "p10": 43.077,
+        "p90": 48.617,
+        "minimum": 31.77,
+        "maximum": 50.48
+      },
+      "fuel_kg": {
+        "mean": 43.799,
+        "median": 43.835,
+        "p10": 40.800000000000004,
+        "p90": 45.78300000000001,
+        "minimum": 36.6,
+        "maximum": 53.34
+      },
+      "time_s": {
+        "mean": 222.343,
+        "median": 220.36,
+        "p10": 210.793,
+        "p90": 240.065,
+        "minimum": 206.33,
+        "maximum": 245.9
+      }
+    }
+  },
+  "pairs": [
+    {
+      "seed": 100,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 101,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 102,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 103,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 104,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 105,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 106,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 107,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 108,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 109,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 110,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 111,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 112,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 113,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0
+      }
+    },
+    {
+      "seed": 114,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 115,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 116,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 117,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 118,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0,
+        "CRUISE/AVOID": 0.0
+      }
+    },
+    {
+      "seed": 119,
+      "baseline_arrived": true,
+      "candidate_arrived": true,
+      "candidate_contact": false,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "phase_fuel_delta_kg": {
+        "CRUISE/IMPULSE_BURN": 0.0,
+        "CRUISE/COAST": 0.0,
+        "CRUISE/ESCAPE": 0.0,
+        "LAUNCH": 0.0,
+        "OBSERVE_CAPTURE": 0.0,
+        "CRUISE/IMPULSE_COAST": 0.0,
+        "CAPTURE_PASS": 0.0,
+        "ALIGN_MAIN_AXIS": 0.0
+      }
+    }
+  ],
+  "limitations": "Simplified gravity/synthetic radar/cameras/ellipsoid hull. Wall compute times are not flight-score evidence.",
+  "all_seeds_have_comparable_arrival_scores": true,
+  "paired_score_delta": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0.0,
+    "maximum": 0.0
+  },
+  "paired_score_mean_bootstrap95": [
+    0.0,
+    0.0
+  ],
+  "paired_score_median_bootstrap95": [
+    0.0,
+    0.0
+  ],
+  "paired_fuel_delta_kg": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0.0,
+    "maximum": 0.0
+  },
+  "paired_time_delta_s": {
+    "mean": 0.0,
+    "median": 0.0,
+    "p10": 0.0,
+    "p90": 0.0,
+    "minimum": 0.0,
+    "maximum": 0.0
+  },
+  "phase_mean_fuel_delta_kg": {
+    "ALIGN_MAIN_AXIS": 0.0,
+    "CAPTURE_PASS": 0.0,
+    "CRUISE/AVOID": 0.0,
+    "CRUISE/COAST": 0.0,
+    "CRUISE/ESCAPE": 0.0,
+    "CRUISE/IMPULSE_BURN": 0.0,
+    "CRUISE/IMPULSE_COAST": 0.0,
+    "LAUNCH": 0.0,
+    "OBSERVE_CAPTURE": 0.0
+  }
+}

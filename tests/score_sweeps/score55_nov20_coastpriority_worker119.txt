@@ -1,0 +1,23 @@
+Starting offline nov20_coastpriority, seed 119
+t=0 phase=LAUNCH d=1306 speed=0.0 fuel=0.0 chunks=0 replans=0 buffer=0 nose=89
+t=5 phase=LAUNCH d=1305 speed=0.4 fuel=2.1 chunks=0 replans=0 buffer=0 nose=90
+t=10 phase=ALIGN_MAIN_AXIS d=1302 speed=0.8 fuel=4.1 chunks=0 replans=0 buffer=0 nose=84
+t=15 phase=ALIGN_MAIN_AXIS d=1296 speed=1.3 fuel=7.1 chunks=0 replans=0 buffer=0 nose=25
+t=20 phase=ALIGN_MAIN_AXIS d=1289 speed=1.6 fuel=9.4 chunks=0 replans=0 buffer=0 nose=2
+t=70 phase=IMPULSE_BURN d=1084 speed=6.1 fuel=32.3 chunks=1 replans=2 buffer=688 nose=1
+t=120 phase=IMPULSE_COAST d=774 speed=6.0 fuel=34.0 chunks=1 replans=2 buffer=688 nose=2
+t=170 phase=IMPULSE_COAST d=488 speed=5.5 fuel=35.4 chunks=1 replans=2 buffer=688 nose=3
+t=220 phase=COAST d=225 speed=5.1 fuel=35.7 chunks=2 replans=3 buffer=604 nose=4
+t=230 phase=COAST d=176 speed=5.0 fuel=35.7 chunks=2 replans=3 buffer=604 nose=4
+t=240 phase=COAST d=129 speed=4.9 fuel=35.7 chunks=2 replans=3 buffer=604 nose=4
+t=250 phase=COAST d=85 speed=4.9 fuel=35.7 chunks=2 replans=3 buffer=604 nose=4
+t=260 phase=COURSE_TRIM d=51 speed=4.8 fuel=36.7 chunks=2 replans=3 buffer=604 nose=4
+t=270 phase=MISSION_COMPLETE_COAST d=51 speed=4.7 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=280 phase=MISSION_COMPLETE_COAST d=84 speed=4.6 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=290 phase=MISSION_COMPLETE_COAST d=124 speed=4.5 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=300 phase=MISSION_COMPLETE_COAST d=167 speed=4.4 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=310 phase=MISSION_COMPLETE_COAST d=210 speed=4.4 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=320 phase=MISSION_COMPLETE_COAST d=252 speed=4.3 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=330 phase=MISSION_COMPLETE_COAST d=294 speed=4.2 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+t=340 phase=MISSION_COMPLETE_COAST d=336 speed=4.2 fuel=37.0 chunks=2 replans=3 buffer=604 nose=4
+{"time_s": 260.5, "fuel_kg": 37.04, "zero_damage_score_estimate": 46.67, "pre_entry_collision": false}

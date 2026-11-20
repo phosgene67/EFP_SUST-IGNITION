@@ -1,0 +1,391 @@
+{
+  "kind": "measured_native_5second_sampled_buckets_not_unique_causal_breakdown",
+  "runs": [
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_223849_EFP_NOV20_FINAL__101",
+      "score": 45.1,
+      "official_entry_fuel_kg": 44.22,
+      "official_entry_time_s": 222.17,
+      "last_pre_entry_sample": {
+        "mode": "COAST",
+        "time_s": 221.7,
+        "distance_m": 51.0,
+        "speed_m_s": 6.49,
+        "fuel_kg": 44.22,
+        "phases": {
+          "CRUISE/IMPULSE_BURN": 26.43,
+          "ALIGN_MAIN_AXIS": 6.08,
+          "LAUNCH": 4.92,
+          "CRUISE/AVOID": 4.56,
+          "PHASE_TRANSITION": 1.54,
+          "COURSE_TRIM": 0.6,
+          "COAST": 0.09,
+          "CRUISE/IMPULSE_COAST": 0.01
+        }
+      },
+      "milestones": {
+        "1200": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 60.8,
+          "distance_m": 1177.0,
+          "speed_m_s": 5.59,
+          "fuel_kg": 30.54,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 13.83,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 0.83
+          }
+        },
+        "1100": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 75.9,
+          "distance_m": 1074.5,
+          "speed_m_s": 7.96,
+          "fuel_kg": 41.72,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 25.28,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 0.83
+          }
+        },
+        "1000": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 86.0,
+          "distance_m": 994.1,
+          "speed_m_s": 7.91,
+          "fuel_kg": 43.16,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.43,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 1.16,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "600": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 141.4,
+          "distance_m": 574.7,
+          "speed_m_s": 7.29,
+          "fuel_kg": 43.16,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.43,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 1.16,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "500": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 156.6,
+          "distance_m": 465.4,
+          "speed_m_s": 7.13,
+          "fuel_kg": 43.16,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.43,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 1.16,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "200": {
+          "mode": "COAST",
+          "time_s": 196.7,
+          "distance_m": 191.6,
+          "speed_m_s": 6.73,
+          "fuel_kg": 44.22,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.43,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 1.54,
+            "COURSE_TRIM": 0.6,
+            "COAST": 0.09,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "100": {
+          "mode": "COAST",
+          "time_s": 211.7,
+          "distance_m": 97.6,
+          "speed_m_s": 6.58,
+          "fuel_kg": 44.22,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.43,
+            "ALIGN_MAIN_AXIS": 6.08,
+            "LAUNCH": 4.92,
+            "CRUISE/AVOID": 4.56,
+            "PHASE_TRANSITION": 1.54,
+            "COURSE_TRIM": 0.6,
+            "COAST": 0.09,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_224605_EFP_NOV20_FINAL__efc",
+      "score": 40.1,
+      "official_entry_fuel_kg": 46.1,
+      "official_entry_time_s": 232.52,
+      "last_pre_entry_sample": {
+        "mode": "COAST",
+        "time_s": 232.0,
+        "distance_m": 51.0,
+        "speed_m_s": 6.07,
+        "fuel_kg": 46.1,
+        "phases": {
+          "CRUISE/IMPULSE_BURN": 27.09,
+          "ALIGN_MAIN_AXIS": 6.09,
+          "CRUISE/AVOID": 5.03,
+          "LAUNCH": 4.1,
+          "PHASE_TRANSITION": 3.69,
+          "CRUISE/COAST": 0.1,
+          "CRUISE/IMPULSE_COAST": 0.01
+        }
+      },
+      "milestones": {
+        "1200": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 60.9,
+          "distance_m": 1184.7,
+          "speed_m_s": 5.18,
+          "fuel_kg": 30.55,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 13.89,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 4.7,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 1.58,
+            "CRUISE/COAST": 0.1
+          }
+        },
+        "1100": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 76.1,
+          "distance_m": 1087.1,
+          "speed_m_s": 7.55,
+          "fuel_kg": 41.8,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 25.2,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 4.7,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 1.58,
+            "CRUISE/COAST": 0.1
+          }
+        },
+        "1000": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 91.3,
+          "distance_m": 973.0,
+          "speed_m_s": 7.5,
+          "fuel_kg": 43.48,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.65,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 4.7,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 1.84,
+            "CRUISE/COAST": 0.1,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "600": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 146.7,
+          "distance_m": 574.3,
+          "speed_m_s": 6.93,
+          "fuel_kg": 46.1,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.09,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 5.03,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 3.69,
+            "CRUISE/COAST": 0.1,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "500": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 161.8,
+          "distance_m": 471.1,
+          "speed_m_s": 6.78,
+          "fuel_kg": 46.1,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.09,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 5.03,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 3.69,
+            "CRUISE/COAST": 0.1,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "200": {
+          "mode": "COAST",
+          "time_s": 206.9,
+          "distance_m": 179.5,
+          "speed_m_s": 6.32,
+          "fuel_kg": 46.1,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.09,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 5.03,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 3.69,
+            "CRUISE/COAST": 0.1,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        },
+        "100": {
+          "mode": "COAST",
+          "time_s": 221.9,
+          "distance_m": 92.4,
+          "speed_m_s": 6.17,
+          "fuel_kg": 46.1,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.09,
+            "ALIGN_MAIN_AXIS": 6.09,
+            "CRUISE/AVOID": 5.03,
+            "LAUNCH": 4.1,
+            "PHASE_TRANSITION": 3.69,
+            "CRUISE/COAST": 0.1,
+            "CRUISE/IMPULSE_COAST": 0.01
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\261119_225615_EFP_NOV20_FINAL__bd9",
+      "score": 38.6,
+      "official_entry_fuel_kg": 46.04,
+      "official_entry_time_s": 240.13,
+      "last_pre_entry_sample": {
+        "mode": "COAST",
+        "time_s": 236.8,
+        "distance_m": 59.0,
+        "speed_m_s": 5.71,
+        "fuel_kg": 46.04,
+        "phases": {
+          "CRUISE/IMPULSE_BURN": 27.2,
+          "CRUISE/AVOID": 7.21,
+          "ALIGN_MAIN_AXIS": 6.1,
+          "LAUNCH": 4.26,
+          "PHASE_TRANSITION": 1.29
+        }
+      },
+      "milestones": {
+        "1200": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 61.3,
+          "distance_m": 1178.9,
+          "speed_m_s": 5.4,
+          "fuel_kg": 31.33,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 12.71,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 0.83
+          }
+        },
+        "1100": {
+          "mode": "IMPULSE_BURN",
+          "time_s": 76.4,
+          "distance_m": 1080.0,
+          "speed_m_s": 7.26,
+          "fuel_kg": 41.9,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 23.42,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 0.83
+          }
+        },
+        "1000": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 91.4,
+          "distance_m": 971.8,
+          "speed_m_s": 7.2,
+          "fuel_kg": 45.29,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.54,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 1.19
+          }
+        },
+        "600": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 146.5,
+          "distance_m": 592.5,
+          "speed_m_s": 6.59,
+          "fuel_kg": 45.29,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.54,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 1.19
+          }
+        },
+        "500": {
+          "mode": "IMPULSE_COAST",
+          "time_s": 161.6,
+          "distance_m": 494.9,
+          "speed_m_s": 6.44,
+          "fuel_kg": 45.29,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 26.54,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 1.19
+          }
+        },
+        "200": {
+          "mode": "COAST",
+          "time_s": 211.7,
+          "distance_m": 187.5,
+          "speed_m_s": 5.96,
+          "fuel_kg": 46.04,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.2,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 1.29
+          }
+        },
+        "100": {
+          "mode": "COAST",
+          "time_s": 231.8,
+          "distance_m": 79.6,
+          "speed_m_s": 5.76,
+          "fuel_kg": 46.04,
+          "phases": {
+            "CRUISE/IMPULSE_BURN": 27.2,
+            "CRUISE/AVOID": 7.21,
+            "ALIGN_MAIN_AXIS": 6.1,
+            "LAUNCH": 4.26,
+            "PHASE_TRANSITION": 1.29
+          }
+        }
+      }
+    }
+  ]
+}

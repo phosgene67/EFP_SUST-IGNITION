@@ -1,0 +1,24 @@
+Starting offline nov20_accept_pass, seed 104
+t=0 phase=LAUNCH d=1306 speed=0.0 fuel=0.0 chunks=0 replans=0 buffer=0 nose=89
+t=5 phase=LAUNCH d=1305 speed=0.4 fuel=2.1 chunks=0 replans=0 buffer=0 nose=90
+t=10 phase=ALIGN_MAIN_AXIS d=1302 speed=0.8 fuel=4.1 chunks=0 replans=0 buffer=0 nose=84
+t=15 phase=ALIGN_MAIN_AXIS d=1296 speed=1.3 fuel=7.1 chunks=0 replans=0 buffer=0 nose=25
+t=20 phase=ALIGN_MAIN_AXIS d=1289 speed=1.6 fuel=9.4 chunks=0 replans=0 buffer=0 nose=2
+t=70 phase=IMPULSE_COAST d=1077 speed=6.3 fuel=32.6 chunks=1 replans=1 buffer=401 nose=1
+t=120 phase=IMPULSE_COAST d=773 speed=5.9 fuel=32.6 chunks=1 replans=1 buffer=401 nose=1
+t=170 phase=IMPULSE_COAST d=491 speed=5.4 fuel=32.6 chunks=1 replans=1 buffer=401 nose=1
+t=220 phase=ENTRY_COAST d=231 speed=5.0 fuel=35.3 chunks=2 replans=2 buffer=582 nose=8
+t=230 phase=COAST d=183 speed=4.9 fuel=35.3 chunks=2 replans=2 buffer=582 nose=8
+t=240 phase=ENTRY_COAST d=136 speed=4.8 fuel=35.3 chunks=2 replans=2 buffer=582 nose=8
+t=250 phase=ENTRY_COAST d=92 speed=4.7 fuel=35.3 chunks=2 replans=2 buffer=582 nose=8
+t=260 phase=SHIP_BLOCKED d=58 speed=4.0 fuel=39.2 chunks=2 replans=2 buffer=582 nose=8
+t=270 phase=MISSION_COMPLETE_COAST d=45 speed=3.8 fuel=39.4 chunks=2 replans=2 buffer=582 nose=8
+t=280 phase=MISSION_COMPLETE_COAST d=60 speed=3.8 fuel=39.4 chunks=2 replans=2 buffer=582 nose=8
+t=290 phase=MISSION_COMPLETE_COAST d=90 speed=3.7 fuel=39.4 chunks=2 replans=2 buffer=582 nose=9
+t=300 phase=MISSION_COMPLETE_COAST d=123 speed=3.6 fuel=39.4 chunks=2 replans=2 buffer=582 nose=9
+t=310 phase=MISSION_COMPLETE_COAST d=157 speed=3.5 fuel=39.4 chunks=2 replans=2 buffer=582 nose=9
+t=320 phase=MISSION_COMPLETE_COAST d=191 speed=3.5 fuel=39.4 chunks=2 replans=2 buffer=582 nose=9
+t=330 phase=MISSION_COMPLETE_COAST d=224 speed=3.4 fuel=39.4 chunks=2 replans=2 buffer=582 nose=9
+t=340 phase=MISSION_COMPLETE_COAST d=257 speed=3.3 fuel=39.4 chunks=2 replans=2 buffer=582 nose=10
+t=350 phase=MISSION_COMPLETE_COAST d=290 speed=3.3 fuel=39.4 chunks=2 replans=2 buffer=582 nose=10
+{"time_s": 263.73, "fuel_kg": 39.38, "zero_damage_score_estimate": 42.99, "pre_entry_collision": false}

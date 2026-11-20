@@ -1,0 +1,429 @@
+{
+  "kind": "offline_proxy_not_native",
+  "seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "profiles": {
+    "baseline": {
+      "source_sha256": "39e807a81f071b741861ef70cc9fe6fe5a0ea3d1c982ac6c76b8724a3645d8ea",
+      "controller_file_sha256": "ebcc04946087543faa17bd7caf3b8401c7227aa524041b1cff717fd95f36285b",
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache"
+      ],
+      "arrivals": 20,
+      "contacts": 0,
+      "zero_damage_score_estimate": {
+        "median": 45.150000000000006,
+        "mean": 44.11750000000001,
+        "p10": 40.485,
+        "p90": 48.691,
+        "minimum": 29.61,
+        "maximum": 48.94
+      },
+      "time_s": {
+        "median": 220.32999999999998,
+        "mean": 225.27550000000002,
+        "p10": 208.30200000000002,
+        "p90": 250.493,
+        "minimum": 205.47,
+        "maximum": 267.62
+      },
+      "fuel_kg": {
+        "median": 43.475,
+        "mean": 44.6015,
+        "p10": 41.187000000000005,
+        "p90": 49.885000000000005,
+        "minimum": 37.12,
+        "maximum": 57.7
+      },
+      "paired": {
+        "baseline": {
+          "score_median": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "fuel_kg_median": 0.0,
+          "time_s_median": 0.0,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": 0.0,
+            "CRUISE/AVOID": 0.0,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 0.0,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.0
+          }
+        },
+        "radar_smooth": {
+          "score_median": -1.860000000000003,
+          "bootstrap95": [
+            -2.734999999999996,
+            -0.38500000000000156
+          ],
+          "fuel_kg_median": 0.6699999999999982,
+          "time_s_median": -2.7549999999999955,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": -0.27475000000000005,
+            "CRUISE/AVOID": 0.27264999999999995,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 1.4461999999999993,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": -0.13719999999999996
+          }
+        }
+      }
+    },
+    "radar_smooth": {
+      "source_sha256": "442ed8d74265968a39c965610e3f2c4b9e485d93b2f36eda7ab81a3483474101",
+      "controller_file_sha256": "c8a79d19c21e1a40c38e312d699f384caa2c33a2272e3bb7c2e8513cd7397669",
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache"
+      ],
+      "arrivals": 20,
+      "contacts": 0,
+      "zero_damage_score_estimate": {
+        "median": 46.8,
+        "mean": 45.7055,
+        "p10": 43.077,
+        "p90": 48.617,
+        "minimum": 31.77,
+        "maximum": 50.48
+      },
+      "time_s": {
+        "median": 220.36,
+        "mean": 222.343,
+        "p10": 210.793,
+        "p90": 240.065,
+        "minimum": 206.33,
+        "maximum": 245.9
+      },
+      "fuel_kg": {
+        "median": 43.835,
+        "mean": 43.799,
+        "p10": 40.800000000000004,
+        "p90": 45.78300000000001,
+        "minimum": 36.6,
+        "maximum": 53.34
+      },
+      "paired": {
+        "baseline": {
+          "score_median": 1.860000000000003,
+          "bootstrap95": [
+            0.38500000000000156,
+            2.734999999999996
+          ],
+          "fuel_kg_median": -0.6699999999999982,
+          "time_s_median": 2.7549999999999955,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": 0.27475000000000005,
+            "CRUISE/AVOID": -0.27264999999999995,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": -1.4461999999999993,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.13719999999999996
+          }
+        },
+        "radar_smooth": {
+          "score_median": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "fuel_kg_median": 0.0,
+          "time_s_median": 0.0,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": 0.0,
+            "CRUISE/AVOID": 0.0,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 0.0,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.0
+          }
+        }
+      }
+    },
+    "vector_risk": {
+      "source_sha256": "267688bf2b9ddf95ff31482952813b6af94d4b3124d956d8041c79377431abea",
+      "controller_file_sha256": "8933fbd6d910ee8b14bd42042de536202d2f2c9e6e269e7dd3d693b100911bdf",
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "fast-risk"
+      ],
+      "arrivals": 20,
+      "contacts": 0,
+      "zero_damage_score_estimate": {
+        "median": 45.150000000000006,
+        "mean": 44.11750000000001,
+        "p10": 40.485,
+        "p90": 48.691,
+        "minimum": 29.61,
+        "maximum": 48.94
+      },
+      "time_s": {
+        "median": 220.32999999999998,
+        "mean": 225.27550000000002,
+        "p10": 208.30200000000002,
+        "p90": 250.493,
+        "minimum": 205.47,
+        "maximum": 267.62
+      },
+      "fuel_kg": {
+        "median": 43.475,
+        "mean": 44.6015,
+        "p10": 41.187000000000005,
+        "p90": 49.885000000000005,
+        "minimum": 37.12,
+        "maximum": 57.7
+      },
+      "paired": {
+        "baseline": {
+          "score_median": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "fuel_kg_median": 0.0,
+          "time_s_median": 0.0,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": 0.0,
+            "CRUISE/AVOID": 0.0,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 0.0,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.0
+          }
+        },
+        "radar_smooth": {
+          "score_median": -1.860000000000003,
+          "bootstrap95": [
+            -2.734999999999996,
+            -0.38500000000000156
+          ],
+          "fuel_kg_median": 0.6699999999999982,
+          "time_s_median": -2.7549999999999955,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": -0.27475000000000005,
+            "CRUISE/AVOID": 0.27264999999999995,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 1.4461999999999993,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": -0.13719999999999996
+          }
+        }
+      }
+    },
+    "accept_pass": {
+      "source_sha256": "3df56f1be943bb209761e3c8e253f4002ce2f205eafe26b1a436054047ff9f13",
+      "controller_file_sha256": "39e29b984537ab08dee72acef24f428cfc716fe8659ccb5872f4f968df46480b",
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "accept-safe-pass"
+      ],
+      "arrivals": 20,
+      "contacts": 0,
+      "zero_damage_score_estimate": {
+        "median": 45.67,
+        "mean": 45.308499999999995,
+        "p10": 41.092999999999996,
+        "p90": 50.558,
+        "minimum": 31.17,
+        "maximum": 51.76
+      },
+      "time_s": {
+        "median": 217.64999999999998,
+        "mean": 225.0875,
+        "p10": 208.257,
+        "p90": 250.812,
+        "minimum": 205.47,
+        "maximum": 263.73
+      },
+      "fuel_kg": {
+        "median": 42.075,
+        "mean": 43.7405,
+        "p10": 39.812,
+        "p90": 48.863000000000014,
+        "minimum": 38.74,
+        "maximum": 55.48
+      },
+      "paired": {
+        "baseline": {
+          "score_median": 1.1550000000000011,
+          "bootstrap95": [
+            0.0,
+            2.429999999999996
+          ],
+          "fuel_kg_median": -1.4200000000000017,
+          "time_s_median": 0.0,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": -0.5100500000000001,
+            "CRUISE/AVOID": 0.0,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/COURSE_TRIM": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 0.0,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.0
+          }
+        },
+        "radar_smooth": {
+          "score_median": -0.15500000000000114,
+          "bootstrap95": [
+            -2.0500000000000043,
+            1.2850000000000001
+          ],
+          "fuel_kg_median": 0.19000000000000128,
+          "time_s_median": -2.780000000000001,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": -0.80375,
+            "CRUISE/AVOID": 0.27264999999999995,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/COURSE_TRIM": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": 0.8878000000000004,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": 0.00014999999999999736
+          }
+        }
+      }
+    },
+    "smooth_physical": {
+      "source_sha256": "7b7f389eba33c06f85c4e907641be013452a76a1a793e3c569137c162909fe71",
+      "controller_file_sha256": "5dac5e28604ad3cc0e432170601be070ee5e85d607e91aa7bf220c938f2f8aab",
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "radar-smooth-position",
+        "fast-risk",
+        "physical-risk"
+      ],
+      "arrivals": 20,
+      "contacts": 0,
+      "zero_damage_score_estimate": {
+        "median": 48.805,
+        "mean": 48.373999999999995,
+        "p10": 46.497,
+        "p90": 50.454,
+        "minimum": 44.53,
+        "maximum": 51.03
+      },
+      "time_s": {
+        "median": 220.975,
+        "mean": 224.87300000000005,
+        "p10": 210.007,
+        "p90": 250.803,
+        "minimum": 201.55,
+        "maximum": 254.37
+      },
+      "fuel_kg": {
+        "median": 41.495,
+        "mean": 41.4135,
+        "p10": 36.75,
+        "p90": 43.781,
+        "minimum": 34.95,
+        "maximum": 47.11
+      },
+      "paired": {
+        "baseline": {
+          "score_median": 4.509999999999998,
+          "bootstrap95": [
+            1.0250000000000021,
+            5.789999999999999
+          ],
+          "fuel_kg_median": -2.9899999999999984,
+          "time_s_median": 1.1850000000000023,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": -0.15410000000000001,
+            "CRUISE/AVOID": -1.0277500000000002,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": -1.0537000000000027,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": -0.1287
+          }
+        },
+        "radar_smooth": {
+          "score_median": 2.169999999999998,
+          "bootstrap95": [
+            1.1000000000000014,
+            3.4399999999999977
+          ],
+          "fuel_kg_median": -2.5500000000000007,
+          "time_s_median": 4.575000000000003,
+          "phase_fuel_kg_median": {
+            "ALIGN_MAIN_AXIS": 0.0,
+            "CAPTURE_PASS": 0.019549999999999956,
+            "CRUISE/AVOID": -0.8203499999999999,
+            "CRUISE/COAST": 0.0,
+            "CRUISE/ESCAPE": 0.0,
+            "CRUISE/IMPULSE_BURN": -1.1281999999999996,
+            "CRUISE/IMPULSE_COAST": 0.0,
+            "LAUNCH": 0.0,
+            "OBSERVE_CAPTURE": -0.026350000000000012
+          }
+        }
+      }
+    }
+  }
+}

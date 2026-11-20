@@ -1,0 +1,19 @@
+{
+  "kind": "user_supplied_official_log_excerpt",
+  "local_original_file_found": false,
+  "sim_run_id": "a6a82e84-43ed-2c36-31a3-7eb9da19f958",
+  "wall_time_utc": "2026-11-19T18:49:39",
+  "score": 54.0,
+  "time_s": 203.39,
+  "fuel_kg": 41.24,
+  "damage_J": 0.0,
+  "source_sha256": null,
+  "flags": "SCORE_MOMENTUM strong-X/radarCruise/expectedRisk/fineAvoidance on; radarClock off; smoothing status unknown",
+  "peak_logged_speed_m_s": 8.37,
+  "local_escape_fuel_kg": 0.33,
+  "alignment_fuel_kg": 6.28,
+  "launch_fuel_kg": 3.48,
+  "main_burn_fuel_kg": 29.3,
+  "transition_fuel_kg": 1.86,
+  "note": "Valid quoted official result; exact source/seed unknown. Do not count as a new measured trial of current source or infer an average from it."
+}

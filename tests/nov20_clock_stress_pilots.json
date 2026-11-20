@@ -1,0 +1,67 @@
+{
+  "kind": "assumed_clock_skew_offline_proxy_pilot_not_native_epoch_measurement",
+  "seeds": [
+    100
+  ],
+  "records": {
+    "clock_zero": {
+      "source_sha256": "15699d2e8e50e406b2a60864bc914dd50cb2ad2134fbb4bf48d255d14b0f137e",
+      "offset_stress_s": 0.0,
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "radar-smooth-position",
+        "fast-risk",
+        "radar-clock"
+      ],
+      "result": {
+        "zero_damage_score_estimate": 50.48,
+        "time_s": 243.53,
+        "fuel_kg": 36.6,
+        "pre_entry_collision": false
+      }
+    },
+    "clock_skew_base": {
+      "source_sha256": "15699d2e8e50e406b2a60864bc914dd50cb2ad2134fbb4bf48d255d14b0f137e",
+      "offset_stress_s": 1.3,
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "radar-smooth-position",
+        "fast-risk"
+      ],
+      "result": {
+        "zero_damage_score_estimate": 49.96,
+        "time_s": 246.5,
+        "fuel_kg": 36.54,
+        "pre_entry_collision": false
+      }
+    },
+    "clock_skew_fixed": {
+      "source_sha256": "15699d2e8e50e406b2a60864bc914dd50cb2ad2134fbb4bf48d255d14b0f137e",
+      "offset_stress_s": 1.3,
+      "experiments": [
+        "strong-axis",
+        "radar-cruise",
+        "expected-risk",
+        "fine-avoidance",
+        "track-cache",
+        "radar-smooth-position",
+        "fast-risk",
+        "radar-clock"
+      ],
+      "result": {
+        "zero_damage_score_estimate": 50.48,
+        "time_s": 243.53,
+        "fuel_kg": 36.6,
+        "pre_entry_collision": false
+      }
+    }
+  }
+}

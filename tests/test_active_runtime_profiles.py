@@ -21,9 +21,19 @@ class ActiveRuntimeProfileTests(unittest.TestCase):
     def test_environment_can_disable_selected_optional_features(self):
         self.run_adapter([], reset_clock=True, runtime_flags={
             'EFP_STRONG_AXIS':'0', 'EFP_TRACK_CACHE':'0', 'EFP_RADAR_CRUISE':'0',
-            'EFP_EXPECTED_RISK':'0', 'EFP_FINE_AVOIDANCE':'0'})
+            'EFP_EXPECTED_RISK':'0', 'EFP_FINE_AVOIDANCE':'0',
+            'EFP_RADAR_SMOOTH_POSITION':'0', 'EFP_FAST_RISK':'0', 'EFP_PHYSICAL_RISK':'0'})
         self.assertEqual(type(self.runtime['planner']).__name__, 'ShootingNavigator')
         self.assertEqual(type(self.runtime['flight_attitude']).__name__, 'FreeAttitude')
+        for name in ('smooth_radar_position', 'fast_risk', 'physical_risk'):
+            self.assertFalse(getattr(self.runtime['planner'], name))
+
+    def test_economy_experiments_survive_reset(self):
+        self.run_adapter([], reset_clock=True, runtime_flags={
+            'EFP_RADAR_SMOOTH_POSITION':'1', 'EFP_FAST_RISK':'1', 'EFP_PHYSICAL_RISK':'1'})
+        self.assertTrue(self.runtime['planner'].smooth_radar_position)
+        self.assertTrue(self.runtime['planner'].fast_risk)
+        self.assertTrue(self.runtime['planner'].physical_risk)
 
 if __name__ == '__main__':
     unittest.main()

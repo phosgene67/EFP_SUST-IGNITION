@@ -31,7 +31,8 @@ class TrackerCacheTests(unittest.TestCase):
             outputs = [p.obstacles(now, location, np.array([2., .1, 0.]), reports) for p in planners]
             for old, cached in zip(*outputs):
                 np.testing.assert_array_equal(old, cached)
-            for attribute in ('radar_forecast_rates', 'radar_core_radii', 'radar_report_ages', 'radar_track_confidence'):
+            for attribute in ('radar_forecast_rates', 'radar_core_radii', 'radar_report_ages',
+                              'radar_track_confidence', 'radar_measured_diameters'):
                 np.testing.assert_array_equal(getattr(planners[0], attribute), getattr(planners[1], attribute))
         with mock.patch.object(np, 'interp', wraps=np.interp) as interpolation:
             planners[1].obstacles(17.6, location, np.array([2., .1, 0.]), reports)

@@ -1,0 +1,20 @@
+Starting offline nov20_baseline, seed 109
+t=0 phase=LAUNCH d=1306 speed=0.0 fuel=0.0 chunks=0 replans=0 buffer=0 nose=89
+t=5 phase=LAUNCH d=1305 speed=0.4 fuel=2.1 chunks=0 replans=0 buffer=0 nose=90
+t=10 phase=ALIGN_MAIN_AXIS d=1302 speed=0.8 fuel=4.1 chunks=0 replans=0 buffer=0 nose=84
+t=15 phase=ALIGN_MAIN_AXIS d=1296 speed=1.3 fuel=7.1 chunks=0 replans=0 buffer=0 nose=25
+t=20 phase=ALIGN_MAIN_AXIS d=1289 speed=1.6 fuel=9.4 chunks=0 replans=0 buffer=0 nose=2
+t=70 phase=IMPULSE_COAST d=1062 speed=6.8 fuel=38.8 chunks=4 replans=4 buffer=710 nose=2
+t=120 phase=IMPULSE_BURN d=735 speed=6.5 fuel=39.5 chunks=4 replans=4 buffer=710 nose=2
+t=170 phase=IMPULSE_COAST d=424 speed=6.0 fuel=40.3 chunks=4 replans=4 buffer=710 nose=3
+t=220 phase=COAST d=139 speed=5.6 fuel=40.3 chunks=5 replans=5 buffer=582 nose=3
+t=230 phase=COAST d=89 speed=5.5 fuel=40.3 chunks=5 replans=5 buffer=582 nose=3
+t=240 phase=COAST d=52 speed=5.2 fuel=43.5 chunks=5 replans=5 buffer=582 nose=3
+t=250 phase=MISSION_COMPLETE_COAST d=57 speed=5.1 fuel=43.5 chunks=5 replans=5 buffer=582 nose=3
+t=260 phase=MISSION_COMPLETE_COAST d=95 speed=5.1 fuel=43.5 chunks=5 replans=5 buffer=582 nose=3
+t=270 phase=MISSION_COMPLETE_COAST d=141 speed=5.0 fuel=43.5 chunks=5 replans=5 buffer=582 nose=3
+t=280 phase=MISSION_COMPLETE_COAST d=188 speed=4.9 fuel=43.5 chunks=5 replans=5 buffer=582 nose=3
+t=290 phase=MISSION_COMPLETE_COAST d=236 speed=4.8 fuel=43.5 chunks=5 replans=5 buffer=582 nose=4
+t=300 phase=MISSION_COMPLETE_COAST d=283 speed=4.8 fuel=43.5 chunks=5 replans=5 buffer=582 nose=4
+t=310 phase=MISSION_COMPLETE_COAST d=330 speed=4.7 fuel=43.5 chunks=5 replans=5 buffer=582 nose=4
+{"time_s": 241.0, "fuel_kg": 43.5, "zero_damage_score_estimate": 41.8, "pre_entry_collision": false}

@@ -140,6 +140,18 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         planner.detour_diversity = True
     if 'fine-avoidance' in experiments:
         planner.fine_avoidance = True
+    if 'early-fine-avoidance' in experiments:
+        if not hasattr(planner, 'early_fine_avoidance'):
+            raise ValueError('early-fine-avoidance is absent from the selected source')
+        planner.early_fine_avoidance = True
+    if 'coast-priority' in experiments:
+        if not hasattr(planner, 'coast_priority'):
+            raise ValueError('coast-priority is absent from the selected source')
+        planner.coast_priority = True
+    if 'powered-drift' in experiments:
+        if not hasattr(planner, 'powered_drift'):
+            raise ValueError('powered-drift is absent from the selected source')
+        planner.powered_drift = True
     if 'efficient-main' in experiments:
         planner.efficient_main = True
     if 'calibrated-launch' in experiments:
@@ -170,6 +182,18 @@ def run(namespace, allocator, scene, max_time, seed, control_hz=60., attitude_mo
         planner.wait_for_gap = True
     if 'radar-clock' in experiments:
         planner.radar_clock_enabled = True
+    if 'radar-smooth-position' in experiments:
+        if not hasattr(planner, 'smooth_radar_position'):
+            raise ValueError('radar-smooth-position is absent from the selected controller source')
+        planner.smooth_radar_position = True
+    if 'radar-range-fusion' in experiments:
+        if not hasattr(planner, 'range_fusion'):
+            raise ValueError('radar-range-fusion is absent from the selected source')
+        planner.range_fusion = True
+    if 'fast-risk' in experiments:
+        if not hasattr(planner, 'fast_risk'):
+            raise ValueError('fast-risk is absent from the selected controller source')
+        planner.fast_risk = True
     if 'accept-safe-pass' in experiments:
         planner.accept_safe_pass = True
     if 'kinetic-impact' in experiments:
@@ -540,7 +564,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline-ref')
     parser.add_argument('--baseline-file', help='Saved controller source for a matched local comparison')
     parser.add_argument('--experiment', action='append', default=[],
-                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg', 'ground-lateral', 'strong-axis', 'camera-track-rate', 'radar-cruise', 'expected-risk', 'detour-diversity', 'fine-avoidance', 'efficient-main', 'main-axis-y', 'main-axis-z', 'entry-coast', 'local-expected-risk', 'near-entry-goal', 'retain-local-speed', 'wait-for-gap', 'radar-clock', 'accept-safe-pass', 'kinetic-impact', 'sensor-settle', 'physical-risk', 'calibrated-launch', 'efficient-x', 'powered-launch-slew', 'force-aligned-slew', 'risk-diagnostics', 'near-risk-horizon', 'score-entry-lock', 'lookahead-fuel', 'departure-risk', 'soft-risk-gates'),
+                        choices=('clean-main-burn', 'order-diversity', 'recheck-coast', 'inertial-capture', 'vector-burn', 'exact-arcs', 'camera-recovery', 'coast-windows', 'entry-scope', 'track-cache', 'dogleg', 'ground-lateral', 'strong-axis', 'camera-track-rate', 'radar-cruise', 'expected-risk', 'detour-diversity', 'fine-avoidance', 'efficient-main', 'main-axis-y', 'main-axis-z', 'entry-coast', 'local-expected-risk', 'near-entry-goal', 'retain-local-speed', 'wait-for-gap', 'radar-clock', 'accept-safe-pass', 'kinetic-impact', 'sensor-settle', 'physical-risk', 'calibrated-launch', 'efficient-x', 'powered-launch-slew', 'force-aligned-slew', 'risk-diagnostics', 'near-risk-horizon', 'score-entry-lock', 'lookahead-fuel', 'departure-risk', 'soft-risk-gates', 'fast-risk', 'radar-smooth-position', 'early-fine-avoidance', 'radar-range-fusion', 'coast-priority', 'powered-drift'),
                         help='Opt-in controller experiment, disabled by default')
     parser.add_argument('--attitude-mode', choices=('normal', 'off', 'nose-first', 'nose-only', 'burn-only'), default='normal',
                         help='Offline ablation only; does not change the live controller')

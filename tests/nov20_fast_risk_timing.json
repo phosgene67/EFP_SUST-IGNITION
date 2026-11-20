@@ -1,0 +1,10 @@
+{
+  "kind": "measured_microbenchmark_under_concurrent_load",
+  "shape": [
+    90,
+    80
+  ],
+  "baseline_median_ms": 2.729899997575558,
+  "vectorized_median_ms": 0.21280000146362,
+  "max_probability_error": 1.1102230246251565e-16
+}

@@ -12,6 +12,23 @@ def report(stamp):
 
 
 class RadarTimebaseTests(unittest.TestCase):
+    def test_zero_offset_lock_preserves_tracks_but_real_retiming_discards_them(self):
+        for offset, retained in ((0., True), (.8, False)):
+            p = NS['FinalNavigator'](launch=False)
+            p.radar_clock_enabled = True
+            p.radar_timebase.offset = offset
+            p.radar_timebase.just_locked = True
+            p.radar_timebase.adjust = lambda now, reports: reports
+            p.report_cache = {'sentinel': object()}
+            seen = []
+            def obstacles(*args):
+                seen.append(bool(p.report_cache))
+                return np.empty((0, 3)), np.empty((0, 3)), np.empty(0)
+            p.obstacles = obstacles
+            p.observe_scene(10., np.array([9000., 0., 0.]), np.zeros(3),
+                np.array([10300., 0., 0.]), np.zeros(3), [], None)
+            self.assertEqual(seen, [retained])
+
     def test_locks_lower_envelope_once_without_chasing_later_delays(self):
         clock = NS['RadarTimebase']()
         for now in np.arange(2., 9., .5):

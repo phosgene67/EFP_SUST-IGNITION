@@ -1,0 +1,148 @@
+{
+  "kind": "offline_proxy_not_native",
+  "comparison": "early fine versus radar smoothing conservative source",
+  "pairs": [
+    {
+      "seed": 100,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 101,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 102,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 103,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 104,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 105,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 106,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 107,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 108,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 109,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 110,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 111,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 112,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 113,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 114,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 115,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 116,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 117,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 118,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    },
+    {
+      "seed": 119,
+      "score_delta": 0.0,
+      "fuel_delta_kg": 0.0,
+      "time_delta_s": 0.0,
+      "contact": false
+    }
+  ],
+  "median_score_delta": 0.0,
+  "note": "No modeled gain; native early-low-speed fallback differs from synthetic flights. Native tests exploratory, not a promotion based on these results."
+}
