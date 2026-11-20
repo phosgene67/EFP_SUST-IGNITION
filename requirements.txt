@@ -1,0 +1,18 @@
+# Python packages for EFP_SUST-IGNITION.
+# Versions match the tested Space Teams PRO v0.56.0 Python 3.12 environment.
+# Install with: python -m pip install -r requirements.txt
+#
+# The required spaceteams SDK and simulation engine are supplied by Space Teams
+# PRO. They are not installed by this file; launch Controller.py through the sim.
+
+# Controller mathematics, radar tracking, and RGB/depth array processing.
+numpy==2.5.4
+
+# Compiled collision-risk calculations and offline optimization benchmarks.
+scipy==1.18.1
+
+# Live RGB/depth camera interface (GUI build, not opencv-python-headless).
+opencv-python==5.0.0.93
+
+# Image handling in the supplied BasicController.py example (PIL import).
+Pillow==13.0.0

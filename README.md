@@ -38,6 +38,36 @@ The camera window opens during the simulation. See the
 [Competition rules and information](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/218)
 | [Competition forum](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2026-escape-from-phobos)
 
+### Install Python Packages
+
+`requirements.txt` includes NumPy, SciPy, OpenCV, and Pillow, pinned to the
+versions tested with Space Teams PRO v0.56.0 and Python 3.12.
+
+Open PowerShell in the development repository and install the packages into
+the simulator's bundled Python environment:
+
+```powershell
+Set-Location "E:\EFP_SUST-IGNITION-main"
+& "$env:LOCALAPPDATA\SimDynamX\STPro\Versions\v0.56.0\py\Scripts\python.exe" -m pip install -r requirements.txt
+```
+
+If you use a different Space Teams version, replace `v0.56.0` with its installed
+version folder.
+
+For a separate local Python 3.12 environment, run this from the repository folder
+using that environment's Python:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+Packages are installed into the Python environment used by the command. Installing
+them into your local development environment does not update the simulator's
+bundled environment.
+
+Space Teams PRO supplies the `spaceteams` SDK and simulation engine separately.
+Continue to launch `Controller.py` through the simulator.
+
 ### Local Repository Setup
 
 The GitHub repository is `EFP_SUST-IGNITION`. Use these two separate checkouts:
