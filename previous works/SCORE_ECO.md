@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `SCORE_ECO.md`.
+
 # Score-based controller candidate
 
 Historical design: the active controller is now `ShootingNavigator`, profile
@@ -129,13 +134,13 @@ diagnostic fell below 50. Remaining losses include launch/orientation overhead,
 debris avoidance and corrections near the ship. This is a tested development
 candidate, not a claim that the requested score target has been solved.
 
-Historical raw results: [seed 100](tests/score_eco_results.json),
-[seed 101](tests/score_eco_seed101_results.json),
-[clear-corridor diagnostic](tests/score_eco_clear_results.json), and
-[matched baseline](tests/score_eco_baseline_results.json).
+Historical raw results: [seed 100](../tests/score_eco_results.json),
+[seed 101](../tests/score_eco_seed101_results.json),
+[clear-corridor diagnostic](../tests/score_eco_clear_results.json), and
+[matched baseline](../tests/score_eco_baseline_results.json).
 `distance_m` in these artifacts is the position at the end of the post-entry
 parking test, not the range at which the clock stopped. The archived
-[tuning history](tests/score_eco_tuning_history.json) includes failed and worse
+[tuning history](../tests/score_eco_tuning_history.json) includes failed and worse
 earlier experiments, with their own source hashes; those are not results for the
 delivered controller. All numbers above are offline estimates, not official
 competition results.

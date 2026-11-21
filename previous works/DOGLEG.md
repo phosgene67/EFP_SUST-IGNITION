@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `DOGLEG.md`.
+
 # Dogleg lane experiment
 
 `EFP_DOGLEG=1` selects the new planner in Controller.py. The original experiment
@@ -147,7 +152,7 @@ and terminal fuel outweighed the time saving. This falsifies the claimed gain
 for **this implementation/configuration**, not every possible dogleg policy.
 The archive preserves its rejected configuration for review; it is not promoted.
 Full per-seed metrics, raw phase buckets, bootstrap interval and source hashes:
-[paired report](tests/score_sweep_dogleg.json).
+[paired report](../tests/score_sweep_dogleg.json).
 
 **Measured compute limitation:** per-run maximum planner calls ranged from
 5.093 to6.763 s, median5.870 s, under four concurrent benchmarks. The individual-pair refinement is

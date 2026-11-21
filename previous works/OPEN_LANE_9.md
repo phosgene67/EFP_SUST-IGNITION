@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `OPEN_LANE_9.md`.
+
 # OPEN_LANE_9: wider routes, continuous handoffs and arrival hold
 
 > Historical version. The active candidate is now **SCORE_ECO**; see
@@ -69,7 +74,7 @@ while replacing the snapshot. The viewer now closes the file before NPZ
 decompression; the background publisher retries brief replacement locks and clears
 recovered snapshot faults. Camera perception continues independently of the GUI.
 
-![Synthetic preview of persistent arrival indication](docs/open_lane_arrival_demo.png)
+![Synthetic preview of persistent arrival indication](../docs/open_lane_arrival_demo.png)
 
 This is a synthetic layout preview, not a live flight image.
 

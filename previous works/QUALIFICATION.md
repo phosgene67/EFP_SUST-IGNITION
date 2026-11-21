@@ -1,8 +1,13 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `QUALIFICATION.md`.
+
 # Codebase guide: Escape from Phobos qualification controller
 
 > **Version note:** This guide documents the qualification/FAST12 controller and
 > its historical tests. The active final-round candidate now combines radar with
-> RGB/depth capture and finite-burn planning. See [the controller overview](README.md#current-controller)
+> RGB/depth capture and finite-burn planning. See [the controller overview](../Final%20Submission%20Algorithm.md#3-system-architecture)
 > for its current architecture.
 
 ## 1. What this document does

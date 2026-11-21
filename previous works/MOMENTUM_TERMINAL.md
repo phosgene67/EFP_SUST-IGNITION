@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `MOMENTUM_TERMINAL.md`.
+
 # SCORE_MOMENTUM completion and terminal validation
 
 2026-11-19. These changes start from the user's restored Momentum controller,

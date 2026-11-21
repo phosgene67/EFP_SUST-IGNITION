@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `SCORE_SERVO.md`.
+
 # Nonblocking control and fuel planning: SCORE_SERVO
 
 This build addresses control timing, incomplete detour execution and unnecessary

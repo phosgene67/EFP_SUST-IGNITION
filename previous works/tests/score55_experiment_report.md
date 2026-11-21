@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `tests/score55_experiment_report.md`.
+
 Finalized at the user's explicit request; no further tuning is pending. See final_native_validation.json for the accepted limitation.
 
 Current selected Momentum source:ebcc04946087543faa17bd7caf3b8401c7227aa524041b1cff717fd95f36285b.

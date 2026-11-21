@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `SCORE_TUNING.md`.
+
 # Score tuning from the original Momentum controller
 
 The reference is commit `4a8507e`. The current controller restores its
@@ -40,7 +45,7 @@ requests reproduce the supplied axis values to rounding, with -Z approximately
 published LP and duty remap. A universal score ceiling cannot be inferred
 without gravity, range, initial velocity and overhead assumptions.
 Configuration values, file hashes and allocator calculations are stored in
-[the model verification record](tests/score_model_verification.json).
+[the model verification record](../tests/score_model_verification.json).
 
 ### Where 4.32 comes from, and what 8–9 m/s means
 
@@ -83,7 +88,7 @@ Earlier attitude changes added overhead, so these numbers do not justify
 restoring nose-first control. Faster acceleration, useful coast and little
 correction overhead matter together. Spending the full 50 kg at the +Z 8/9
 entry times would instead score only 40.07/44.51. No forced minimum speed or
-fuel cutoff is introduced. [Diagnostic records](tests/score_speed_tradeoff.json).
+fuel cutoff is introduced. [Diagnostic records](../tests/score_speed_tradeoff.json).
 Reproduce with `python -B tests/benchmark_speed_tradeoff.py --sim-config
 PATH_TO_FINAL_SUBMISSION --output tests/score_speed_tradeoff.json`.
 
@@ -109,7 +114,7 @@ These runs vary radar noise and 0.02 m/s debris velocity jitter. The harness
 uses synthetic images, spherical debris and an ellipsoid ship proxy. It
 does not reproduce rotating meshes or native contact energy. Zero damage is
 modeled from absence of contact. Native damage joules are unavailable.
-[Full baseline records](tests/score_sweep_baseline.json).
+[Full baseline records](../tests/score_sweep_baseline.json).
 
 ## Default-off clean main burn
 
@@ -147,7 +152,7 @@ Median phase-fuel changes were -0.831 kg for cruise impulse burns, +1.021 kg
 for avoidance and +1.061 kg for camera waiting. One run used 89.72 kg.
 The actuator hypothesis reproduced higher thrust, but did not establish
 a reliable score gain. It remains default off.
-[Full paired results](tests/score_sweep_clean.json).
+[Full paired results](../tests/score_sweep_clean.json).
 
 ## Default-off burn-order diversity
 
@@ -170,7 +175,7 @@ and fuel changes were -3.462 s and -1.082 kg; the score mean rose by 2.027.
 The score p10 improved from 22.984 to 29.662, while p90 stayed 43.789.
 This lower-tail improvement does not establish the requested median gain.
 The experiment is inconclusive, rejected for promotion and remains off.
-[Full paired results](tests/score_sweep_order.json).
+[Full paired results](../tests/score_sweep_order.json).
 
 ## Default-off completed-coast recheck
 
@@ -194,7 +199,7 @@ mean paired changes were +0.730 s and -0.0445 kg. The score p10–p90 was
 23.157–43.789. The unit regression is corrected, but this does not establish
 a flight-score improvement or prove that it resolves the unidentified native
 60 m miss. The experiment remains off and is rejected for score promotion.
-[Full paired results](tests/score_sweep_recheck.json).
+[Full paired results](../tests/score_sweep_recheck.json).
 
 ## Inertia experiments requested after the baseline review
 
@@ -254,11 +259,11 @@ The inertial-capture score change was +0.815 points, with a paired bootstrap
 interval +0.01 to +2.89. Allowing for the legacy reports' 0.01-point rounding
 makes its lower bound include zero. The signal is marginal and remains off.
 Its paired median phase-fuel change was -0.1487 kg in capture and zero in cruise.
-[Capture records](tests/score_sweep_capture.json).
+[Capture records](../tests/score_sweep_capture.json).
 
 The vector-burn median fell by 1.90 points. Its rounding-adjusted interval was
 -3.19 to +1.37, and fuel increased. Simultaneous translation did not establish
-a useful score gain and is rejected. [Vector records](tests/score_sweep_vector_v2.json).
+a useful score gain and is rejected. [Vector records](../tests/score_sweep_vector_v2.json).
 
 `EFP_EXACT_ARCS=1` corrects another internal prediction error: original lateral
 detours treat an initial offset and -2x return impulse as instantaneous kicks.
@@ -271,7 +276,7 @@ gravity-gradient endpoint correction or the old corridor/reserve policy.
 Both arc cohorts stalled on seed105 at approximately 95 m in `WAIT_SHIP_CAMERA`.
 Neither completed cohort selected a return that reached its execution time.
 The executor change therefore did not fix that camera failure. Both are rejected.
-[Arc V1 records](tests/score_sweep_arcs.json), [V2 records](tests/score_sweep_arcs_v2.json).
+[Arc V1 records](../tests/score_sweep_arcs.json), [V2 records](../tests/score_sweep_arcs_v2.json).
 
 `EFP_COAST_WINDOWS=1` adds 1, 2 and 4 s coast prefixes to the immediate-burn
 option, only above 600 m remaining and with at least 1.5 m/s forward closing
@@ -285,7 +290,7 @@ The short-window cohort reduced median fuel at 600 m from 41.684 to 39.6915 kg,
 at a median crossing time of 162.88 s versus 156.785 s. None crossed below35 kg.
 Paired median cruise fuel change was -2.3952 kg, including -2.3386 kg in impulse
 burns, on the 19 clean pairs. Seed105 stalled awaiting camera coverage, so the
-planner alone is rejected. [Coast-window records](tests/score_sweep_windows.json).
+planner alone is rejected. [Coast-window records](../tests/score_sweep_windows.json).
 
 `EFP_CAMERA_RECOVERY=1` addresses the camera stall separately. The old waiting
 logic supplied a ship-pointing hint which `FreeAttitude` ignored. The new
@@ -309,8 +314,8 @@ The full coast-window plus V2-view cohort completed 20/20 without modeled
 contact. Its median score was36.325, median time275.75 s and fuel42.13 kg.
 It resolved the window-only camera timeout, but net median score versus the
 original was -1.95 points, rounding-adjusted interval [-2.53,+1.09]. Reliability
-recovery is not a score win. [Combined records](tests/score_sweep_coast_view.json),
-[isolated view addition](tests/score_sweep_view_added.json).
+recovery is not a score win. [Combined records](../tests/score_sweep_coast_view.json),
+[isolated view addition](../tests/score_sweep_view_added.json).
 
 `EFP_ENTRY_SCOPE=1` tests the mission's actual end condition. The old station-line
 check extended 100 m past its 47 m tangent point; this could reject a successful
@@ -326,8 +331,8 @@ braking, while a pre-entry obstruction still blocks the approach. Independent
 The combined cohort's median score37.39 was below the original38.275; its
 rounding-adjusted median-delta interval was[-2.28,+2.02]. Entry-only had median
 paired time/fuel changes of zero and a median-delta interval[-0.295,+0.77].
-Neither demonstrated a score gain. [Combined entry records](tests/score_sweep_entry_scope.json),
-[isolated entry records](tests/score_sweep_entry_only.json).
+Neither demonstrated a score gain. [Combined entry records](../tests/score_sweep_entry_scope.json),
+[isolated entry records](../tests/score_sweep_entry_only.json).
 
 `EFP_TRACK_CACHE=1` restores a numerical-equivalence tracking optimization from
 the later `731c8df` Momentum revision. Unchanged radar reports reuse their
@@ -336,19 +341,19 @@ uncertainty and planning costs stay the same. On a paired500-object mature-track
 fixture, the original tracker took median131.98 ms versus31.58 ms for the
 later cache, with zero output difference. These are measured CPU timings under
 concurrent offline load, not native score results. Native blocking-time effects
-still require verification. [Timing record](tests/tracker_cache_audit.json).
+still require verification. [Timing record](../tests/tracker_cache_audit.json).
 
 The current flag implementation was separately checked on the same kind of
 500-object paired fixture: median107.79 ms versus24.32 ms, with exact numerical
 outputs and uncertainty metadata. This measures repeated unchanged samples,
 an upper-bound cache opportunity; native cycles also include new samples.
-[Current timing record](tests/tracker_cache_current_audit.json).
+[Current timing record](../tests/tracker_cache_current_audit.json).
 
 The final cache-only replay completed all20 matched seeds with zero modeled
 contacts. Every reported entry time, fuel, score and phase-fuel total matched
 the original. Median score38.275, time264.97 s and fuel43.725 kg are unchanged.
 This validates modeled flight equivalence; it establishes no score gain. The
-flag remains off until native timing is verified. [Cache replay](tests/score_sweep_cache.json).
+flag remains off until native timing is verified. [Cache replay](../tests/score_sweep_cache.json).
 
 The scoring search can choose a faster late burn, including candidates near
 9 m/s, when it beats coasting after its fuel cost and sensed path risk. A forced
@@ -361,10 +366,10 @@ Three recent native runs match the restored baseline's exact CRLF file hash
 at commit `b524b36`: scores5.1/9.7/14.2, fuel63.92/59.30/57.90 kg, and zero
 entry damage. This is measured native evidence, not a 20-run median. One run
 spent an extra12.5 kg between about31 and56 s while speed stayed near2 m/s.
-[Native observations](tests/inertia_native_observations.json).
+[Native observations](../tests/inertia_native_observations.json).
 
 A later complete scan includes all source-matched November18 logs, rather than
-only those three diagnostic examples. See [same-source native inventory](tests/inertia_native_inventory.json)
+only those three diagnostic examples. See [same-source native inventory](../tests/inertia_native_inventory.json)
 for descriptive medians, full spread and every discovered log. Unknown seeds,
 aborted runs and a live run prevent a matched native comparison. The newly
 completed143820 run scored24.1 at265.27 s,53.36 kg and zero entry damage.
@@ -436,7 +441,7 @@ and use the corresponding frozen source; no completed trajectory experiment has
 earned promotion to the default controller.
 Keep the official success alert and entry time/fuel/damage for each run.
 Twenty matched native runs are needed to assess the requested native median.
-The available [native log inventory](tests/native_score_inventory.json)
+The available [native log inventory](../tests/native_score_inventory.json)
 contains mixed versions and missing seed/source fields.
 
 Rebuild that inventory with `tests/summarize_native_logs.py --root LOG_ROOT

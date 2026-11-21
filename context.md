@@ -1,9 +1,28 @@
 # Escape from Phobos project context
 
-Updated 2026-11-20. Read this file before controller changes and update it after
+Updated 2026-11-21. Read this file before controller changes and update it after
 each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
+
+**Documentation reorganization, 2026-11-21; no controller changes:**
+The user requested an archive of superseded Markdown and a complete technical
+description of the final algorithm. Seventeen historical documents now reside in
+[previous works](previous%20works/README.md), including the original Momentum,
+Dogleg, qualification, and older tuning descriptions. Their historical status
+is explicit; the SCORE_MOMENTUM name alone does not identify current code bytes.
+[Final Submission Algorithm](Final%20Submission%20Algorithm.md) is the maintained
+architecture/equations/control-flow/validation reference. README setup,
+CAMERA_GUI.md, this context, AGENTS.md, and the latest
+[November 20 experiment report](tests/nov20_experiment_report.md) remain outside
+the archive. README links point to the paper and archive; camera documentation
+now correctly describes zero thrust after entry. Source, tests, JSON evidence,
+and official simulation files were not changed. This is documentation work,
+not a new flight experiment or evidence of a higher native score. The selected
+controller and measured results in the finalized entry below remain authoritative.
+A read-only check on 2026-11-21 finds the installed STU4-Solution Controller.py
+now has the same selected 4210afa4...32834 hash. The older warning below about
+the installed ebcc...6285b source is historical; this task did not update it.
 
 **FINALIZED 2026-11-20 at the user's deadline instruction (overrides all earlier snapshots):**
 The user asked to finish now with the best completed average. Keep root

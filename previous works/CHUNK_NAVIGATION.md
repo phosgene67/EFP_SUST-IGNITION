@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `CHUNK_NAVIGATION.md`.
+
 # Rolling chunk controller: CHUNK_NAV_12
 
 > Historical version. The active source now uses **SCORE_ECO** with score-based

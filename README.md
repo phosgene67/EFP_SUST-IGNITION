@@ -38,6 +38,11 @@ The camera window opens during the simulation. See the
 [Competition rules and information](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/218)
 | [Competition forum](https://github.com/SimDynamX/SpaceTeamsPRO/discussions/categories/2026-escape-from-phobos)
 
+For the implemented architecture, equations, control flow, and validation results,
+see [Final Submission Algorithm](Final%20Submission%20Algorithm.md).
+Superseded designs and earlier reports are listed in
+[previous works](previous%20works/README.md).
+
 ### Install Python Packages
 
 `requirements.txt` includes NumPy, SciPy, OpenCV, and Pillow, pinned to the

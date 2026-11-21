@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `SCORE_COAST.md`.
+
 # Coast revalidation: SCORE_COAST
 
 This is an incremental correction to `SCORE_MOMENTUM`. It does not establish

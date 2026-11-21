@@ -3,7 +3,8 @@
 The active flight profile is **SCORE_MOMENTUM** for `FINAL_SUBMISSION.simconf`.
 RGB and depth use the original 80-degree field of view. Camera requests are
 asynchronous. The log reports the controller source hash and active experiment
-flags. See [score tuning](SCORE_TUNING.md) for their default-off settings.
+flags. See the [final algorithm configuration](Final%20Submission%20Algorithm.md#13-runtime-configuration)
+for the selected defaults and disabled experimental options.
 
 The footer records entry fuel. After safe-zone entry, all thrust goes to zero
 and the vehicle coasts.
@@ -39,7 +40,7 @@ This screenshot is a **synthetic demonstration**, not a live mission result.
 | Header | Controller mode, simulation time, measured speed, requested cruise, target distance, fuel, damage, processed/rejected frames, radar associations, and an explicitly unofficial projected score. |
 | FREE ATTITUDE / NOSE FIRST / ALIGNING | Default is FREE ATTITUDE: no fuel is spent forcing the nose along velocity or leveling the horizon. The displayed angle is informational. The old optional nose-first mode retains its alignment labels. |
 | Camera status | Capture error information, if present. |
-| ARRIVAL ZONE REACHED banner | Persistent controller observation of entry, followed by braking/parking; consult the official Scoring log for the congratulations and score. |
+| ARRIVAL ZONE REACHED banner | Persistent controller observation of entry, followed by zero thrust and coasting; consult the official Scoring log for the congratulations and score. |
 
 These boxes come from the actual perception code. They are generic contrast/depth
 regions, not a trained classifier assigning labels such as "meteoroid" or "ship".

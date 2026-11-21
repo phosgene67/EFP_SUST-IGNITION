@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `FINAL_SUBMISSION.md`.
+
 # FINAL_NAV_500 controller
 
 > Historical version. The active controller is now **OPEN_LANE_9**. See

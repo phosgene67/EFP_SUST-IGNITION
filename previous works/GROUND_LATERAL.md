@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `GROUND_LATERAL.md`.
+
 # Ground-aligned route basis: isolated Task 2
 
 The latest annotated image proposes three legs: an early sideways exit, a climb
@@ -150,8 +155,8 @@ The fixed-step harness excludes them from entry time. The separate native
 baseline maximum of 9.688 s independently shows that synchronous search is a
 real deployment issue. No native latency or score gain is claimed for this flag.
 
-Full paired results: [tests/score_sweep_ground.json](tests/score_sweep_ground.json).
-Source preservation: [tests/ground_lateral_preservation.json](tests/ground_lateral_preservation.json).
+Full paired results: [tests/score_sweep_ground.json](../tests/score_sweep_ground.json).
+Source preservation: [tests/ground_lateral_preservation.json](../tests/ground_lateral_preservation.json).
 Per-seed outputs: tests/score_ground_SEED.json. Reproduce the comparison with:
 
 ```powershell

@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `FINAL_DESIGN.md`.
+
 # Final-round radar and camera controller
 
 > **Historical design:** the active source is now **SCORE_ECO** for

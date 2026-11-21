@@ -1,3 +1,8 @@
+> **Historical document — archived 21 November 2026.**
+> This describes an earlier revision or experiment. For the delivered implementation, see
+> [Final Submission Algorithm](../Final%20Submission%20Algorithm.md). Archived commands and flags refer to their historical revision.
+> Original location: `DOGLEG_DIAGNOSTICS.md`.
+
 # Task 1: dogleg diagnostics, no flight-policy change
 
 Scope: Task 1 only. Ground-aligned axes, absolute offsets, early waypoints and
@@ -115,8 +120,8 @@ Native damage energy is not simulated. Fixed-step offline flight time does
 not charge wall-clock planning/logging time, so native timing remains unverified.
 
 Full results and per-run failure distributions:
-[diagnostic report](tests/dogleg_diagnostics_report.json).
-Source preservation: [audit](tests/dogleg_diagnostic_preservation.json).
+[diagnostic report](../tests/dogleg_diagnostics_report.json).
+Source preservation: [audit](../tests/dogleg_diagnostic_preservation.json).
 **Task 1 is complete. Tasks 2–4 have not started.**
 
 Reproduce the report after generating all 20 seeds with the same benchmark
