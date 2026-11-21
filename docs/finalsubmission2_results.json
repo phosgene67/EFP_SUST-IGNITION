@@ -1,0 +1,345 @@
+{
+  "kind": "user_identified_final_submission_native_logs",
+  "review_date": "2026-11-21",
+  "submission_status": "User states this archive was uploaded as the final competition submission; logs verify native run outcomes, not organizer acceptance or ranking.",
+  "archive": {
+    "name": "finalsubmission2.zip",
+    "source_path": "C:\\Users\\Asus\\AppData\\Local\\SimDynamX\\STPro\\Logs\\finalsubmission2.zip",
+    "sha256": "006ca4a9479e0657a34b0210175330da81823455e5ffe0007782dcd975449e12",
+    "bytes": 314446
+  },
+  "method": "Read ZIP members without executing or extracting supplied files. Use exactly one official Scoring result per distinct run UUID; Controller log hashes establish source identity. Preserve separate development and submitted cohorts.",
+  "summary": {
+    "score": 47.75,
+    "time_s": 217.895,
+    "fuel_kg": 43.005,
+    "damage_J": 0.0,
+    "count": 2,
+    "successes": 2,
+    "zero_scored_damage_runs": 2,
+    "score_range": [
+      47.1,
+      48.4
+    ],
+    "median_score": 47.75,
+    "sample_mean_above45": true,
+    "sample_mean_at_least55": false
+  },
+  "runs": [
+    {
+      "directory": "261120_043631_FINAL_SUBMISSION__73e",
+      "run_uuid": "73eeaa8e-4b62-4da3-7707-b19ea109fd54",
+      "seed": null,
+      "status": "official_success",
+      "result": {
+        "score": 48.4,
+        "time_s": 221.9,
+        "fuel_kg": 41.76,
+        "damage_J": 0.0,
+        "entry_distance_m": 49.81
+      },
+      "controller_sha256": "4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834",
+      "matches_current_controller": true,
+      "active_flags": {
+        "strongAxis": true,
+        "mainAxis": 0,
+        "orderDiversity": false,
+        "cameraTrackRate": false,
+        "radarCruise": true,
+        "expectedRisk": true,
+        "detourDiversity": false,
+        "fineAvoidance": true,
+        "efficientMain": false,
+        "entryCoast": false,
+        "localExpectedRisk": false,
+        "nearEntryGoal": false,
+        "retainLocalSpeed": false,
+        "waitForGap": false,
+        "radarClock": true,
+        "trackCache": true,
+        "acceptSafePass": false,
+        "impactEnergyFactor": 1.0,
+        "smoothRadarPosition": true,
+        "fastRisk": true,
+        "physicalRisk": false
+      },
+      "configuration_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "canonical_logs": {
+        "scoring": {
+          "archive_member": "261120_043631_FINAL_SUBMISSION__73e/FINAL_SUBMISSION_PySys_Scoring.log",
+          "sha256": "d5f15dc4579e7bd39e4ceab55ecdc9bd2c7f0fde1017f77926910c2c32c01d39"
+        },
+        "controller": {
+          "archive_member": "261120_043631_FINAL_SUBMISSION__73e/FINAL_SUBMISSION_PySys_Controller.log",
+          "sha256": "08ab79e17defa83d8fab57428fbbbabbc140dc4f156029c268203baa27135ed2"
+        }
+      },
+      "startup_evidence": [
+        {
+          "line": 62,
+          "text": "2026-11-20T04:36:38 [INFO]----[PySys_Controller]: IGNITION_SOURCE sourceSHA256=4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834 strongAxis=True mainAxis=0 orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False entryCoast=False localExpectedRisk=False nearEntryGoal=False retainLocalSpeed=False waitForGap=False radarClock=True trackCache=True acceptSafePass=False impactEnergyFactor=1.0"
+        },
+        {
+          "line": 63,
+          "text": "2026-11-20T04:36:38 [INFO]----[PySys_Controller]: IGNITION_ECONOMY smoothRadarPosition=True fastRisk=True physicalRisk=False"
+        }
+      ],
+      "official_result_evidence": [
+        {
+          "line": 115,
+          "text": "2026-11-20T04:40:20 [WARN]---[PySys_Scoring]: OnScreenAlert: Successfully escaped Phobos with a score of 48.4; congratulations!"
+        },
+        {
+          "line": 116,
+          "text": "2026-11-20T04:40:20 [WARN]---[PySys_Scoring]: OnScreenAlert: Sim elapsed time   = 221.9 s"
+        },
+        {
+          "line": 117,
+          "text": "2026-11-20T04:40:20 [WARN]---[PySys_Scoring]: OnScreenAlert: Distance to ship   = 49.81 m"
+        },
+        {
+          "line": 118,
+          "text": "2026-11-20T04:40:20 [WARN]---[PySys_Scoring]: OnScreenAlert: Total damage taken = 0.0 J"
+        },
+        {
+          "line": 119,
+          "text": "2026-11-20T04:40:20 [WARN]---[PySys_Scoring]: OnScreenAlert: Total fuel used    = 41.76 kg"
+        }
+      ],
+      "controller_arrival_evidence": [
+        {
+          "line": 116,
+          "text": "2026-11-20T04:40:20 [INFO]----[PySys_Controller]: OnScreenAlert: Safe zone entered; thrusters off. Official result is in the Scoring log."
+        }
+      ],
+      "recomputed_score_from_rounded_fields": 48.3984136998648,
+      "absolute_rounding_difference": 0.0015863001352016681,
+      "telemetry": {
+        "preentry_sample_count": 45,
+        "peak_sampled_speed_m_s": 7.78,
+        "final_fuel_plateau_first_sample": {
+          "time_s": 136.4,
+          "distance_m": 605.4,
+          "speed_m_s": 7.26,
+          "fuel_kg": 41.76,
+          "damage_J": 0.0,
+          "requested_acceleration_m_s2": 0.0,
+          "projected_score": 46.8,
+          "estimated_radar_clock_offset_s": 0.3,
+          "mode": "IMPULSE_COAST",
+          "arrived": false,
+          "image_count": 514,
+          "rejected_images": 0,
+          "phase_fuel_kg": {
+            "CRUISE/IMPULSE_BURN": 31.31,
+            "ALIGN_MAIN_AXIS": 6.15,
+            "LAUNCH": 3.39,
+            "PHASE_TRANSITION": 0.92
+          },
+          "controller_log_line": 97,
+          "raw_line": "2026-11-20T04:38:54 [INFO]----[PySys_Controller]: OnScreenLogMessage: IGNITION IMPULSE_COAST profile=SCORE_MOMENTUM t=136.4s distance=605.4m speed=7.26m/s clearance=20.2m noseFirst=False strongAxis=True orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False axisThrust=False planMs=65.8 radarLag=0.947s radarTracks=500 confidentTracks=487 radarClockOffset=0.300s radarClockLocked=True coastDrift=[ 0.0019,-0.0008, 0.0016]m/s2 damage=0.0J fuel=41.76kg fuelPhaseKg=[CRUISE/IMPULSE_BURN:31.31,ALIGN_MAIN_AXIS:6.15,LAUNCH:3.39,PHASE_TRANSITION:0.92] lookahead=20s planDV=0.00m/s stopDistance=351.8m routeNodes=0 chunk=0 nextReady=False buffer=0.0m replans=0 launchHeight=2.6m laneTurn=0deg arrivalZone=False cmdAccel=0.000m/s2 cruise=7.3m/s projectedScore=46.8 burnRemaining=0.0s images=514 rejected=0 rgbMatches=9 depthMatches=28 cameraFault=none attitude=FREE_ATTITUDE noseError=1.9deg travelBody=[ 7.26, 0.15,-0.19]m/s guiFault=none"
+        },
+        "last_preentry_sample": {
+          "time_s": 221.8,
+          "distance_m": 50.4,
+          "speed_m_s": 6.4,
+          "fuel_kg": 41.76,
+          "damage_J": 0.0,
+          "requested_acceleration_m_s2": 0.0,
+          "projected_score": 45.7,
+          "estimated_radar_clock_offset_s": 0.3,
+          "mode": "COAST",
+          "arrived": false,
+          "image_count": 841,
+          "rejected_images": 0,
+          "phase_fuel_kg": {
+            "CRUISE/IMPULSE_BURN": 31.31,
+            "ALIGN_MAIN_AXIS": 6.15,
+            "LAUNCH": 3.39,
+            "PHASE_TRANSITION": 0.92
+          },
+          "controller_log_line": 115,
+          "raw_line": "2026-11-20T04:40:19 [INFO]----[PySys_Controller]: OnScreenLogMessage: IGNITION COAST profile=SCORE_MOMENTUM t=221.8s distance=50.4m speed=6.40m/s clearance=26.3m noseFirst=False strongAxis=True orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False axisThrust=False planMs=76.9 radarLag=0.680s radarTracks=500 confidentTracks=496 radarClockOffset=0.300s radarClockLocked=True coastDrift=[ 0.0022,-0.0008, 0.0016]m/s2 damage=0.0J fuel=41.76kg fuelPhaseKg=[CRUISE/IMPULSE_BURN:31.31,ALIGN_MAIN_AXIS:6.15,LAUNCH:3.39,PHASE_TRANSITION:0.92] lookahead=6s planDV=0.51m/s stopDistance=272.9m routeNodes=0 chunk=0 nextReady=False buffer=0.0m replans=3 launchHeight=2.6m laneTurn=0deg arrivalZone=False cmdAccel=0.000m/s2 cruise=6.4m/s projectedScore=45.7 burnRemaining=0.0s images=841 rejected=0 rgbMatches=0 depthMatches=0 cameraFault=none attitude=FREE_ATTITUDE noseError=3.6deg travelBody=[ 6.38, 0.25,-0.32]m/s guiFault=none"
+        },
+        "first_postentry_sample": null
+      },
+      "limitations": [
+        "Native seed not exposed in the inspected logs.",
+        "Displayed telemetry is sampled about every 5 s, not a complete thrust history.",
+        "Logged timestamps are retained as recorded; no timezone conversion was inferred."
+      ]
+    },
+    {
+      "directory": "261120_044029_FINAL_SUBMISSION__ff0",
+      "run_uuid": "ff065d57-49f8-30ac-c7cc-9da5d9649288",
+      "seed": null,
+      "status": "official_success",
+      "result": {
+        "score": 47.1,
+        "time_s": 213.89,
+        "fuel_kg": 44.25,
+        "damage_J": 0.0,
+        "entry_distance_m": 49.88
+      },
+      "controller_sha256": "4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834",
+      "matches_current_controller": true,
+      "active_flags": {
+        "strongAxis": true,
+        "mainAxis": 0,
+        "orderDiversity": false,
+        "cameraTrackRate": false,
+        "radarCruise": true,
+        "expectedRisk": true,
+        "detourDiversity": false,
+        "fineAvoidance": true,
+        "efficientMain": false,
+        "entryCoast": false,
+        "localExpectedRisk": false,
+        "nearEntryGoal": false,
+        "retainLocalSpeed": false,
+        "waitForGap": false,
+        "radarClock": true,
+        "trackCache": true,
+        "acceptSafePass": false,
+        "impactEnergyFactor": 1.0,
+        "smoothRadarPosition": true,
+        "fastRisk": true,
+        "physicalRisk": false
+      },
+      "configuration_sha256": "45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751",
+      "canonical_logs": {
+        "scoring": {
+          "archive_member": "261120_044029_FINAL_SUBMISSION__ff0/FINAL_SUBMISSION_PySys_Scoring.log",
+          "sha256": "bedc927bc99b0959e944bf4e09214860d4fea7a31e8eca939bae596baa9a4d96"
+        },
+        "controller": {
+          "archive_member": "261120_044029_FINAL_SUBMISSION__ff0/FINAL_SUBMISSION_PySys_Controller.log",
+          "sha256": "0f6ab32f56ac2e13d458fec4e11f42dfae90a95f061cddaaa07fe8dc6ec37e36"
+        }
+      },
+      "startup_evidence": [
+        {
+          "line": 65,
+          "text": "2026-11-20T04:40:36 [INFO]----[PySys_Controller]: IGNITION_SOURCE sourceSHA256=4210afa43e5a2570eb3fcd12c6e276c8697a69da631931fb1abeac3613332834 strongAxis=True mainAxis=0 orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False entryCoast=False localExpectedRisk=False nearEntryGoal=False retainLocalSpeed=False waitForGap=False radarClock=True trackCache=True acceptSafePass=False impactEnergyFactor=1.0"
+        },
+        {
+          "line": 66,
+          "text": "2026-11-20T04:40:36 [INFO]----[PySys_Controller]: IGNITION_ECONOMY smoothRadarPosition=True fastRisk=True physicalRisk=False"
+        }
+      ],
+      "official_result_evidence": [
+        {
+          "line": 113,
+          "text": "2026-11-20T04:44:09 [WARN]---[PySys_Scoring]: OnScreenAlert: Sim elapsed time   = 213.89 s"
+        },
+        {
+          "line": 114,
+          "text": "2026-11-20T04:44:09 [WARN]---[PySys_Scoring]: OnScreenAlert: Successfully escaped Phobos with a score of 47.1; congratulations!"
+        },
+        {
+          "line": 115,
+          "text": "2026-11-20T04:44:09 [WARN]---[PySys_Scoring]: OnScreenAlert: Total fuel used    = 44.25 kg"
+        },
+        {
+          "line": 116,
+          "text": "2026-11-20T04:44:09 [WARN]---[PySys_Scoring]: OnScreenAlert: Distance to ship   = 49.88 m"
+        },
+        {
+          "line": 117,
+          "text": "2026-11-20T04:44:09 [WARN]---[PySys_Scoring]: OnScreenAlert: Total damage taken = 0.0 J"
+        }
+      ],
+      "controller_arrival_evidence": [
+        {
+          "line": 114,
+          "text": "2026-11-20T04:44:09 [INFO]----[PySys_Controller]: OnScreenAlert: Safe zone entered; thrusters off. Official result is in the Scoring log."
+        }
+      ],
+      "recomputed_score_from_rounded_fields": 47.10360465659921,
+      "absolute_rounding_difference": 0.003604656599208056,
+      "telemetry": {
+        "preentry_sample_count": 43,
+        "peak_sampled_speed_m_s": 8.07,
+        "final_fuel_plateau_first_sample": {
+          "time_s": 131.6,
+          "distance_m": 595.8,
+          "speed_m_s": 7.47,
+          "fuel_kg": 44.25,
+          "damage_J": 0.0,
+          "requested_acceleration_m_s2": 0.0,
+          "projected_score": 45.9,
+          "estimated_radar_clock_offset_s": 0.0,
+          "mode": "IMPULSE_COAST",
+          "arrived": false,
+          "image_count": 492,
+          "rejected_images": 0,
+          "phase_fuel_kg": {
+            "CRUISE/IMPULSE_BURN": 33.76,
+            "ALIGN_MAIN_AXIS": 6.21,
+            "LAUNCH": 3.37,
+            "PHASE_TRANSITION": 0.84,
+            "CRUISE/IMPULSE_COAST": 0.06
+          },
+          "controller_log_line": 96,
+          "raw_line": "2026-11-20T04:42:47 [INFO]----[PySys_Controller]: OnScreenLogMessage: IGNITION IMPULSE_COAST profile=SCORE_MOMENTUM t=131.6s distance=595.8m speed=7.47m/s clearance=13.4m noseFirst=False strongAxis=True orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False axisThrust=False planMs=83.9 radarLag=0.492s radarTracks=500 confidentTracks=486 radarClockOffset=0.000s radarClockLocked=True coastDrift=[ 2.1396e-03,-5.9666e-05, 1.5794e-03]m/s2 damage=0.0J fuel=44.25kg fuelPhaseKg=[CRUISE/IMPULSE_BURN:33.76,ALIGN_MAIN_AXIS:6.21,LAUNCH:3.37,PHASE_TRANSITION:0.84,CRUISE/IMPULSE_COAST:0.06] lookahead=20s planDV=0.00m/s stopDistance=372.0m routeNodes=0 chunk=0 nextReady=False buffer=0.0m replans=0 launchHeight=2.8m laneTurn=0deg arrivalZone=False cmdAccel=0.000m/s2 cruise=7.5m/s projectedScore=45.9 burnRemaining=0.0s images=492 rejected=0 rgbMatches=9 depthMatches=25 cameraFault=none attitude=FREE_ATTITUDE noseError=3.8deg travelBody=[ 7.45,-0.22,-0.45]m/s guiFault=none"
+        },
+        "last_preentry_sample": {
+          "time_s": 211.9,
+          "distance_m": 54.7,
+          "speed_m_s": 6.65,
+          "fuel_kg": 44.25,
+          "damage_J": 0.0,
+          "requested_acceleration_m_s2": 0.0,
+          "projected_score": 44.5,
+          "estimated_radar_clock_offset_s": 0.0,
+          "mode": "COAST",
+          "arrived": false,
+          "image_count": 802,
+          "rejected_images": 0,
+          "phase_fuel_kg": {
+            "CRUISE/IMPULSE_BURN": 33.76,
+            "ALIGN_MAIN_AXIS": 6.21,
+            "LAUNCH": 3.37,
+            "PHASE_TRANSITION": 0.84,
+            "CRUISE/IMPULSE_COAST": 0.06
+          },
+          "controller_log_line": 113,
+          "raw_line": "2026-11-20T04:44:08 [INFO]----[PySys_Controller]: OnScreenLogMessage: IGNITION COAST profile=SCORE_MOMENTUM t=211.9s distance=54.7m speed=6.65m/s clearance=21.3m noseFirst=False strongAxis=True orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False axisThrust=False planMs=82.7 radarLag=0.316s radarTracks=500 confidentTracks=489 radarClockOffset=0.000s radarClockLocked=True coastDrift=[ 0.0024,-0.0008, 0.0016]m/s2 damage=0.0J fuel=44.25kg fuelPhaseKg=[CRUISE/IMPULSE_BURN:33.76,ALIGN_MAIN_AXIS:6.21,LAUNCH:3.37,PHASE_TRANSITION:0.84,CRUISE/IMPULSE_COAST:0.06] lookahead=6s planDV=0.28m/s stopDistance=295.0m routeNodes=8 chunk=1 nextReady=True buffer=683.5m replans=1 launchHeight=2.8m laneTurn=0deg arrivalZone=False cmdAccel=0.000m/s2 cruise=6.7m/s projectedScore=44.5 burnRemaining=0.0s images=802 rejected=0 rgbMatches=0 depthMatches=0 cameraFault=none attitude=FREE_ATTITUDE noseError=5.1deg travelBody=[ 6.63,-0.12,-0.58]m/s guiFault=none"
+        },
+        "first_postentry_sample": {
+          "time_s": 217.0,
+          "distance_m": 48.4,
+          "speed_m_s": 6.6,
+          "fuel_kg": 44.25,
+          "damage_J": 0.0,
+          "requested_acceleration_m_s2": 0.0,
+          "projected_score": 47.1,
+          "estimated_radar_clock_offset_s": 0.0,
+          "mode": "MISSION_COMPLETE_COAST",
+          "arrived": true,
+          "image_count": 821,
+          "rejected_images": 0,
+          "phase_fuel_kg": {
+            "CRUISE/IMPULSE_BURN": 33.76,
+            "ALIGN_MAIN_AXIS": 6.21,
+            "LAUNCH": 3.37,
+            "PHASE_TRANSITION": 0.84,
+            "CRUISE/IMPULSE_COAST": 0.06
+          },
+          "controller_log_line": 120,
+          "raw_line": "2026-11-20T04:44:13 [INFO]----[PySys_Controller]: OnScreenLogMessage: IGNITION MISSION_COMPLETE_COAST profile=SCORE_MOMENTUM t=217.0s distance=48.4m speed=6.60m/s clearance=infm noseFirst=False strongAxis=True orderDiversity=False cameraTrackRate=False radarCruise=True expectedRisk=True detourDiversity=False fineAvoidance=True efficientMain=False axisThrust=False planMs=2.7 radarLag=0.287s radarTracks=500 confidentTracks=492 radarClockOffset=0.000s radarClockLocked=True coastDrift=[ 0.0024,-0.0008, 0.0016]m/s2 damage=0.0J fuel=44.25kg fuelPhaseKg=[CRUISE/IMPULSE_BURN:33.76,ALIGN_MAIN_AXIS:6.21,LAUNCH:3.37,PHASE_TRANSITION:0.84,CRUISE/IMPULSE_COAST:0.06] lookahead=6s planDV=0.38m/s stopDistance=293.7m routeNodes=8 chunk=1 nextReady=True buffer=683.5m replans=1 launchHeight=2.8m laneTurn=0deg arrivalZone=True cmdAccel=0.000m/s2 cruise=6.6m/s projectedScore=47.1 burnRemaining=0.0s images=821 rejected=0 rgbMatches=1 depthMatches=0 cameraFault=none attitude=FREE_ATTITUDE noseError=5.2deg travelBody=[ 6.58,-0.11,-0.59]m/s guiFault=none"
+        }
+      },
+      "limitations": [
+        "Native seed not exposed in the inspected logs.",
+        "Displayed telemetry is sampled about every 5 s, not a complete thrust history.",
+        "Logged timestamps are retained as recorded; no timezone conversion was inferred."
+      ]
+    }
+  ],
+  "limitations": [
+    "Two submitted runs are not a statistically established performance floor or native 20-seed comparison.",
+    "Background workload and native seed equivalence to development runs are not established.",
+    "Archive contains logs/configuration but no controller source snapshot; source identity relies on logged startup hashes."
+  ]
+}

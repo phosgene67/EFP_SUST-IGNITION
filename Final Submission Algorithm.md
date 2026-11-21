@@ -18,10 +18,13 @@ launch and one-time alignment of the stronger translation axis precede cruise;
 local trajectory rollouts provide fallback avoidance, and terminal guidance aims
 to cross the rescue spacecraft's scoring sphere without requiring a stop. The
 implementation remains in `Controller.py`; camera visualization is an optional,
-separate process. Three completed native trials of the selected controller bytes
-scored 45.1, 40.1, and 38.6, with mean 41.27, mean entry fuel 45.45 kg, and zero
-scored damage. The requested 45-point average and desired 55-point average were
-not demonstrated. Offline experiments support a modest radar-estimation
+separate process. The two runs in the user-identified uploaded final submission
+scored 48.4 and 47.1, with mean 47.75, mean entry time 217.90 s, mean entry fuel
+43.01 kg, and zero scored damage. Both startup logs identify the exact controller
+hash documented here. This submitted pair exceeds the requested 45-point average;
+the desired 55-point average was not demonstrated. An earlier, separate
+three-run development cohort averaged 41.27 and is retained for comparison.
+Offline experiments support a modest radar-estimation
 improvement but do not establish equivalent native gains. This document explains
 the implemented method, its approximations, and the limits of the available
 evidence rather than presenting an unverified optimality or safety claim.
@@ -54,8 +57,13 @@ Three evidence labels are used throughout:
 
 Current setup instructions remain in [README.md](README.md). Superseded designs
 are indexed in [previous works](previous%20works/README.md); they do not define
-the delivered configuration. The latest experiment audit is
-[`tests/nov20_experiment_report.md`](tests/nov20_experiment_report.md).
+the delivered configuration. The development experiment audit is
+[`tests/nov20_experiment_report.md`](tests/nov20_experiment_report.md). The
+subsequently supplied final-submission logs are summarized, with source hashes
+and verbatim result evidence, in
+[`docs/finalsubmission2_results.json`](docs/finalsubmission2_results.json).
+The user identifies this archive as the uploaded competition submission; the
+logs establish native run outcomes, not organizer acceptance or ranking [18].
 
 ## Contents
 
@@ -1238,7 +1246,9 @@ planning, common geometry, and the same sensor setup. Pairing reduces variation
 from different debris motion seeds. The saved bootstrap intervals resample
 paired seed deltas; they do not quantify native simulator uncertainty.
 
-### 14.2 Completed native validation of the delivered bytes
+### 14.2 Native results: development and uploaded submission
+
+#### 14.2.1 Earlier development validation
 
 All three runs below used the controller hash stated at the start of this
 document, conservative collision bounds, and selected defaults. No background
@@ -1258,8 +1268,8 @@ damage in these three trials. Display rounding explains small differences when
 recomputing scores from rounded log fields. The native seeds were not exposed,
 so these are not a 20-seed paired native experiment.
 
-These results do not establish a 45-point floor, a 45-point average, a 55-point
-average, or fuel below 40 kg. They also do not establish a robust improvement
+This earlier cohort did not establish a 45-point average, a 55-point average,
+or fuel below 40 kg. It also did not establish a robust improvement
 over the user's previously submitted 40.5 average. Three clean trials do not
 prove zero-damage reliability over arbitrary seeds.
 
@@ -1269,6 +1279,53 @@ identical-byte cohort. The user supplied an official 54.0 result at 203.39 s,
 41.24 kg, and zero damage; its exact source, seed, and original local log file
 were unavailable. That excerpt supports the individual result, not a claim that
 the selected bytes average 54 [13, 15].
+
+#### 14.2.2 Uploaded final-submission archive
+
+The user subsequently provided `finalsubmission2.zip`, identifying it as the
+logs uploaded for the final competition submission. It contains two distinct
+run UUIDs. Each run appears in several process logs; the results below use
+exactly one official `PySys_Scoring` result per UUID, avoiding duplicate counting.
+The archive was inspected without executing its contents [18].
+
+| Submitted run directory | Official score | Entry time (s) | Entry fuel (kg) | Scored damage (J) | Entry distance (m) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `261120_043631_FINAL_SUBMISSION__73e` | 48.4 | 221.90 | 41.76 | 0 | 49.81 |
+| `261120_044029_FINAL_SUBMISSION__ff0` | 47.1 | 213.89 | 44.25 | 0 | 49.88 |
+| **Arithmetic mean** | **47.75** | **217.895** | **43.005** | **0** | — |
+
+**Measured submission summary:** two successes, zero scored damage in both,
+score range 47.1–48.4, and mean/median score 47.75. Both individual scores exceed
+45; the pair meets the requested average above 45. Neither run nor their average
+reaches 55. Neither uses less than 40 kg. This is a two-run submission result,
+not a guarantee of a 45-point minimum over future seeds.
+
+**Source and scenario identity.** Both `PySys_Controller` startup messages record
+the full controller SHA-256 printed at the start of this paper. Both record
+strong-X alignment, track caching, radar cruise, expected risk, fine avoidance,
+radar clock estimation, confident-position smoothing, and compiled risk enabled;
+physical-risk geometry and continuous nose-first control are disabled. Their
+archived `FINAL_SUBMISSION.simconf` files both have SHA-256
+`45761cb5e7f17fa0742819614433b246153f669affd2f43d6aa38d4e9d58f751`, matching
+the official configuration identity in reference [3]. The archive includes no
+controller source snapshot, so attribution relies on the logged startup hashes,
+checked against the repository source.
+
+**Scoring consistency.** Applying the documented formula to the displayed
+time/fuel/damage values gives approximately 48.398 and 47.104, consistent with
+the one-decimal official scores. The faster run saves 8.01 s but uses 2.49 kg
+more fuel. Its time term improves by about 2.03 points while its fuel term loses
+3.32 points, explaining the approximately 1.30-point lower total. This is a
+descriptive comparison of the recorded outcomes, not a controlled experiment
+proving which maneuver caused the difference.
+
+**Provenance.** The archive SHA-256 is
+`006ca4a9479e0657a34b0210175330da81823455e5ffe0007782dcd975449e12`.
+The preserved evidence JSON records archive-member hashes, run UUIDs, startup
+flags, original Scoring lines and line numbers, and selected telemetry. Native
+seeds and background workload are not established by these logs. This cohort is
+kept separate from the three development trials; its higher average alone does
+not establish a paired algorithm improvement or a competition ranking.
 
 ### 14.3 Matched offline comparisons
 
@@ -1301,6 +1358,8 @@ completed official score for that run. Smaller physical geometry remains off.
 
 ### 14.4 Fuel-by-phase findings
 
+#### 14.4.1 Earlier development audit
+
 Saved native audits near entry give the following ranges [11]:
 
 | Sampled command phase | Observed fuel range across selected native trials |
@@ -1317,6 +1376,50 @@ in burn phases. In the second selected native run, fuel remained 46.10 kg from
 approximately 505 m remaining through entry. That run contains no terminal fuel
 saving to obtain by removing an imagined late brake. Its score requires better
 earlier impulse/path efficiency or time, not a change to thrust already at zero.
+
+#### 14.4.2 Submitted-run fuel and momentum evidence
+
+The last pre-entry controller snapshots in the uploaded archive report these
+sampled phase buckets [18]:
+
+| Phase | `043631...73e` (kg) | `044029...ff0` (kg) |
+| --- | ---: | ---: |
+| `CRUISE/IMPULSE_BURN` | 31.31 | 33.76 |
+| `ALIGN_MAIN_AXIS` | 6.15 | 6.21 |
+| `LAUNCH` | 3.39 | 3.37 |
+| `PHASE_TRANSITION` | 0.92 | 0.84 |
+| `CRUISE/IMPULSE_COAST` | Not listed | 0.06 |
+| **Official entry fuel** | **41.76** | **44.25** |
+
+The phase entries are rounded sampled ledger values; their sum can differ
+slightly from the official total. A missing bucket is not proof that no
+avoidance occurred: a finite-burn phase can include transverse corrections,
+and short events need not appear in five-second status samples. These labels
+do not isolate rotation-only fuel or individual thruster consumption.
+
+In the first submitted run, the final reported fuel level of 41.76 kg is already
+present at $t=136.4$ s, with 605.4 m remaining and speed 7.26 m/s. Every subsequent
+pre-entry fuel sample and the official entry total retain that value. In the
+second run, 44.25 kg is already present at $t=131.6$ s, with 595.8 m remaining
+and speed 7.47 m/s, and remains the reported total through entry. Thus both
+submitted runs show the intended long final coast over roughly the last 600 m,
+without an increase in reported fuel. The five-second sampling and displayed
+precision do not establish a continuous exact-zero-thrust history.
+
+Peak **sampled** pre-entry speeds are 7.78 and 8.07 m/s. The last pre-entry
+snapshots show 6.40 m/s at 221.8 s and 6.65 m/s at 211.9 s, respectively, both
+with zero requested linear acceleration. These are sampled speeds, not exact
+speed-at-entry measurements. A speed reduction while fuel remains unchanged
+does not demonstrate active braking; it is consistent with the gravity/frame
+effects discussed in Section 4. Both official entry distances lie inside 50 m.
+
+The first run's last pre-entry snapshot records 841 processed images, and the
+second records 802; both report zero rejected images at those snapshots. This
+confirms operation of the camera pipeline during these runs, without proving
+that every image changed the path decision. The second run additionally records
+`MISSION_COMPLETE_COAST` after entry with unchanged fuel. The first controller
+log has no later periodic post-entry snapshot; its official success footer,
+rather than an inferred later state, establishes completion.
 
 ### 14.5 Rejected follow-ups
 
@@ -1350,9 +1453,10 @@ as a successful full-suite run [14].
 
 ## 15. Limitations and interpretation
 
-The strongest result supported here is a working sensor-driven controller that
-completed three identical-source native trials without scored damage. Its
-measured average is below the requested optimization target. The main limits are:
+The submitted archive supports two completed native runs, both with zero scored
+damage and mean score 47.75. It meets the requested 45-point average for that
+pair; the 55-point target remains unmet. Earlier development results are retained
+separately. The main limits are:
 
 - **Model mismatch:** local constant acceleration and an empirical coast bias
   approximate native gravity/frame effects; they do not reproduce the complete
@@ -1374,9 +1478,10 @@ measured average is below the requested optimization target. The main limits are
 - **Sensor and scheduling limits:** radar freshness differs per object;
   low-resolution cameras cover only their views; synchronous computation can
   delay control. Camera coverage is not semantic identification.
-- **Evidence size:** native validation has three unpaired unknown-seed trials;
-  the larger matched cohorts use simplified offline physics. Neither establishes
-  a competition-wide performance bound.
+- **Evidence size:** the uploaded submission contains two unknown-seed trials;
+  a separate development cohort contains three. These are not a matched native
+  comparison. The larger paired cohorts use simplified offline physics; the
+  available evidence does not establish a competition-wide performance bound.
 
 Potential future research includes a more accurate finite-burn entry-time
 objective, an execution-consistent return schedule, calibrated encounter models,
@@ -1478,7 +1583,9 @@ the setup authority.
 `BasicController.py`, unit tests, benchmark snapshots, and this paper do not
 participate in live control. They support development and review. This
 documentation update changes no controller, official simulator, or scoring
-code and performs no GitHub push or competition submission.
+code and performs no additional GitHub push or competition submission. The user
+reports that the two-run archive in Section 14.2.2 was already uploaded as the
+final submission; organizer acceptance and ranking are not recorded in it.
 
 ## 17. Conclusions
 
@@ -1489,9 +1596,14 @@ Guarded launch and one-time strong-X alignment prepare cruise; local rollouts
 handle situations outside the finite-shot family; a tangent pass and high-rate
 entry latch complete the mission without requiring a stop at the station.
 
-The available native evidence is three successful zero-scored-damage runs with
-mean score 41.27 and mean fuel 45.45 kg. The optimization targets remain unmet.
-The implementation and experiment record support continued work on reducing
+The uploaded final-submission evidence contains two successful zero-scored-damage
+runs with scores 48.4 and 47.1: mean score 47.75, mean time 217.90 s, and mean
+fuel 43.01 kg. Both logs identify the documented controller bytes, and both show
+an extended final coast at unchanged reported fuel. The pair exceeds the
+45-point average target; 55 remains unmet. The earlier three-run development
+mean of 41.27 is retained as separate evidence, not substituted for or pooled
+with the submitted pair. The implementation and experiment record support
+continued work on reducing
 unnecessary velocity-vector changes, while the rejected experiments demonstrate
 why less fuel or a better offline score alone is insufficient evidence of an
 improved native submission.
@@ -1540,6 +1652,10 @@ implied.
     [camera guide](CAMERA_GUI.md): installation and operating instructions.
 17. [Historical document index](previous%20works/README.md): superseded designs;
     these are not the selected runtime specification.
+18. [Uploaded final-submission evidence](docs/finalsubmission2_results.json):
+    archive identity, two distinct run UUIDs, startup source/flag evidence,
+    canonical official result lines, cohort statistics, and sampled phase/coast
+    telemetry derived from the user-provided `finalsubmission2.zip`.
 
 ## Appendix A. Source-section reading guide
 

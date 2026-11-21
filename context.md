@@ -5,6 +5,27 @@ each tested change. It is a maintained summary of the available chat history,
 repository history, guides, archived experiments and local simulation logs.
 The original chats and logs remain the sources for details.
 
+**Uploaded final-submission evidence, reviewed 2026-11-21 (results addendum):**
+The user supplied `finalsubmission2.zip` from the simulator Logs directory and
+states it was uploaded as the final competition submission. Two distinct native
+successes are present: `261120_043631_FINAL_SUBMISSION__73e` scored48.4 at221.90s,
+41.76kg/0J/49.81m; `261120_044029_FINAL_SUBMISSION__ff0` scored47.1 at213.89s,
+44.25kg/0J/49.88m. Submitted-pair mean47.75, time217.895s, fuel43.005kg,
+both0 scoredJ. Both startup hashes match selected Controller.py4210afa4...32834
+and its active defaults; both archived scenario hashes match the protected
+official configuration. This pair achieves the requested45+ average, not55+.
+The earlier three-run development mean41.2667 below remains historical and
+separate; do not pool it into the submitted pair or claim a paired algorithm gain.
+Native seeds/background workload are unknown. Logs do not verify organizer
+acceptance or ranking. Fuel is unchanged from sampled distance605.4m/595.8m
+through entry in the two submitted runs; final coast behavior is supported.
+Archive SHA256006ca4a9479e0657a34b0210175330da81823455e5ffe0007782dcd975449e12.
+Evidence with canonical Scoring lines, startup flags, member hashes, UUIDs and
+selected telemetry: [docs/finalsubmission2_results.json](docs/finalsubmission2_results.json).
+[Final Submission Algorithm](Final%20Submission%20Algorithm.md) now leads with
+these submitted results, retaining development/offline data separately. No
+controller/source/simulator changes or additional native flights were made.
+
 **Documentation reorganization, 2026-11-21; no controller changes:**
 The user requested an archive of superseded Markdown and a complete technical
 description of the final algorithm. Seventeen historical documents now reside in
